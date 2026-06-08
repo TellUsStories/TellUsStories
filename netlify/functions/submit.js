@@ -121,15 +121,31 @@ Sois los hijos de alguien extraordinaria.
 No lo olvidéis nunca.
 Cuidarla siempre."
 
-REGLAS:
+REGLAS DE TEXTO:
 - Frases MUY cortas. Máximo 8 palabras por línea
 - Cada idea en su propia línea (usa \\n)
+- Máximo 10-15 líneas por página con texto — no más
+- El texto va SIEMPRE a la izquierda. La ilustración a la derecha
 - Tono cálido, cercano, con humor suave
 - Habla SIEMPRE directamente a los niños
 - Detalles muy específicos y reales
 - Un toque de humor por capítulo
 - Marca frases emotivas con [T]frase[/T]
 - NO uses adjetivos genéricos
+
+ESTRUCTURA DEL LIBRO — 20 páginas exactas:
+- Páginas 1-2: portadilla interior + dedicatoria (solo ilustración, texto mínimo)
+- Páginas 3-4: introducción (texto izquierda + ilustración grande derecha)
+- Páginas 5-8: infancia (texto+ilustración, máximo 1 página solo ilustración)
+- Páginas 9-12: juventud y aventuras (texto+ilustración, máximo 1 página solo ilustración)
+- Páginas 13-16: amor y familia (texto+ilustración, máximo 1 página solo ilustración)
+- Páginas 17-18: con los niños hoy (texto+ilustración)
+- Páginas 19-20: legado y cierre (texto emotivo izquierda + ilustración preciosa derecha)
+
+TIPOS DE PÁGINA — máximo 3-4 páginas "solo_ilustracion" en todo el libro:
+- "texto_ilustracion": texto corto izquierda (10-15 líneas máximo), ilustración grande derecha
+- "solo_ilustracion": sin texto, solo ilustración (usar con moderación, máximo 3-4 veces)
+- "frase_grande": una sola frase muy emotiva centrada, ilustración de fondo
 
 PARA CADA PÁGINA genera también un prompt de Midjourney en inglés.
 El prompt debe describir la escena exacta y terminar SIEMPRE con:
@@ -138,15 +154,16 @@ El prompt debe describir la escena exacta y terminar SIEMPRE con:
 HISTORIA:
 ${historyText}
 
-Escribe entre 8 y 12 páginas. Responde SOLO con este JSON:
+Genera exactamente 20 páginas. Responde SOLO con este JSON:
 {
   "titulo": "Las aventuras de ${nombre}",
   "paginas": [
     {
       "numero": 1,
+      "tipo": "solo_ilustracion",
       "titulo": "Antes de ser ${relacion}",
-      "texto": "texto con \\n para saltos de línea",
-      "midjourney_prompt": "prompt completo en inglés"
+      "texto": "texto con \\n para saltos de línea (vacío si es solo_ilustracion)",
+      "midjourney_prompt": "prompt completo en inglés muy descriptivo de la escena"
     }
   ]
 }`;
@@ -199,7 +216,7 @@ function buildEmailHtml(allData, protagonist, libro) {
       .replace(/\n/g, "<br>");
     return `
       <div style="margin-bottom:28px;padding:20px;background:#fffbeb;border-radius:12px;border-left:4px solid #fde68a;">
-        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b45309;margin-bottom:6px;">Página ${p.numero}</div>
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b45309;margin-bottom:6px;">Página ${p.numero} · ${p.tipo || 'texto_ilustracion'}</div>
         <div style="font-size:18px;color:#b45309;font-style:italic;margin-bottom:10px;">${p.titulo}</div>
         <div style="font-size:14px;line-height:2;color:#2c1810;margin-bottom:14px;">${textoFormateado}</div>
         <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:10px;">
