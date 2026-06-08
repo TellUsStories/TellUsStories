@@ -1,0 +1,13 @@
+{
+  "name": "tale-us-stories",
+  "version": "1.0.0",
+  "description": "Backend para Tale Us Stories — libros ilustrados personalizados",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "busboy": "^1.6.0",
+    "openai": "^4.47.1",
+    "resend": "^3.2.0"
+  }
+}
