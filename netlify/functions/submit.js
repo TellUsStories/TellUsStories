@@ -1,10 +1,5 @@
 // netlify/functions/submit.js
 // Tale Us Stories — pipeline completo
-// 1. Recibe formulario con audios
-// 2. Transcribe con Whisper
-// 3. Genera libro completo con Claude
-// 4. Genera prompts de Midjourney por página
-// 5. Envía email con todo a Cristina
 
 const { Resend } = require("resend");
 const OpenAI = require("openai");
@@ -133,7 +128,7 @@ REGLAS DE TEXTO:
 - Marca frases emotivas con [T]frase[/T]
 - NO uses adjetivos genéricos
 
-ESTRUCTURA DEL LIBRO — 20 páginas exactas:
+ESTRUCTURA DEL LIBRO — 20 páginas interiores exactas (sin contar portada ni contraportada):
 - Páginas 1-2: portadilla interior + dedicatoria (solo ilustración, texto mínimo)
 - Páginas 3-4: introducción (texto izquierda + ilustración grande derecha)
 - Páginas 5-8: infancia (texto+ilustración, máximo 1 página solo ilustración)
@@ -147,30 +142,43 @@ TIPOS DE PÁGINA — máximo 3-4 páginas "solo_ilustracion" en todo el libro:
 - "solo_ilustracion": sin texto, solo ilustración (usar con moderación, máximo 3-4 veces)
 - "frase_grande": una sola frase muy emotiva centrada, ilustración de fondo
 
-PARA CADA PÁGINA genera también un prompt de Midjourney en inglés.
-El prompt debe describir la escena exacta y terminar SIEMPRE con:
+PARA CADA PÁGINA genera un prompt de Midjourney en inglés que describa la escena exacta y termine SIEMPRE con:
 "children's book illustration, warm watercolor style, rounded cartoon faces, small black dot eyes, rosy peach cheeks, dark brown ink outlines, flowing watercolor washes with paint splatter drops, warm ochre and cream tones, white background, cozy tender mood --ar 3:2 --sref [TUS_REFERENCIAS]"
+
+PORTADA:
+- Título siempre: "EL UNIVERSO DE ${nombre.toUpperCase()}"
+- Estilo: siluetas de adulto y niño, fondo a cuadros azul y crema, círculo dorado central, paleta azul marino + terracota + dorado, tipografía bold impactante
+- Genera un prompt de Midjourney para replicar este estilo exacto
+- El prompt de portada termina con: "book cover illustration, bold graphic watercolor style, silhouettes, checkered background pattern in blue and cream, golden circle, navy blue and terracotta and gold palette, bold typography composition, Tale Us Stories --ar 2:3 --sref [TUS_REFERENCIAS]"
+
+CONTRAPORTADA:
+- Una sola frase corta, emotiva, que defina la esencia de ${nombre}
+- Máximo 2 líneas
+- En el mismo tono cálido del libro
+- Ejemplo: "Antes de ser tu mamá, fue una niña que soñaba con el mundo. Y lo encontró."
 
 HISTORIA:
 ${historyText}
 
-Genera exactamente 20 páginas. Responde SOLO con este JSON:
+Responde SOLO con este JSON:
 {
-  "titulo": "Las aventuras de ${nombre}",
+  "titulo": "EL UNIVERSO DE ${nombre.toUpperCase()}",
+  "portada_prompt": "prompt completo de Midjourney para la portada",
+  "contraportada_frase": "frase emotiva para la contraportada",
   "paginas": [
     {
       "numero": 1,
       "tipo": "solo_ilustracion",
-      "titulo": "Antes de ser ${relacion}",
+      "titulo": "título de la página",
       "texto": "texto con \\n para saltos de línea (vacío si es solo_ilustracion)",
-      "midjourney_prompt": "prompt completo en inglés muy descriptivo de la escena"
+      "midjourney_prompt": "prompt completo en inglés muy descriptivo"
     }
   ]
 }`;
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 4000,
+    max_tokens: 5000,
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -211,16 +219,16 @@ function buildEmailHtml(allData, protagonist, libro) {
   }).join("");
 
   const libroHtml = libro.paginas.map(p => {
-    const textoFormateado = p.texto
+    const textoFormateado = (p.texto || "")
       .replace(/\[T\](.*?)\[\/T\]/g, '<span style="color:#b45309;">$1</span>')
       .replace(/\n/g, "<br>");
     return `
       <div style="margin-bottom:28px;padding:20px;background:#fffbeb;border-radius:12px;border-left:4px solid #fde68a;">
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b45309;margin-bottom:6px;">Página ${p.numero} · ${p.tipo || 'texto_ilustracion'}</div>
         <div style="font-size:18px;color:#b45309;font-style:italic;margin-bottom:10px;">${p.titulo}</div>
-        <div style="font-size:14px;line-height:2;color:#2c1810;margin-bottom:14px;">${textoFormateado}</div>
+        ${textoFormateado ? `<div style="font-size:14px;line-height:2;color:#2c1810;margin-bottom:14px;">${textoFormateado}</div>` : '<div style="font-size:12px;color:#8b6914;font-style:italic;margin-bottom:14px;">— Solo ilustración —</div>'}
         <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:10px;">
-          <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">🎨 Prompt Midjourney — copia y pega</div>
+          <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">🎨 Prompt Midjourney</div>
           <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(p.midjourney_prompt)}</div>
         </div>
       </div>`;
@@ -231,27 +239,44 @@ function buildEmailHtml(allData, protagonist, libro) {
 <head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#fdf6e3;font-family:Georgia,serif;">
 <div style="max-width:700px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+
   <div style="background:linear-gradient(135deg,#b45309,#d97706);padding:32px 40px;text-align:center;">
     <p style="margin:0;font-size:11px;letter-spacing:3px;color:#fde68a;text-transform:uppercase;">Tale Us Stories</p>
     <h1 style="margin:8px 0 4px;font-size:22px;color:#fff;font-weight:400;">📖 Nuevo libro generado</h1>
     <p style="margin:0;font-size:16px;color:#fde68a;font-style:italic;">${escapeHtml(libro.titulo)}</p>
   </div>
+
   <div style="padding:20px 40px;background:#fffbeb;border-bottom:2px solid #fde68a;">
     <p style="margin:0;font-size:14px;color:#2c1810;line-height:1.8;">
       <strong>Protagonista:</strong> ${escapeHtml(nombre)}<br>
       <strong>Relación:</strong> ${escapeHtml(relacion)}<br>
       <strong>Para:</strong> ${escapeHtml(ninos)}<br>
-      <strong>Páginas generadas:</strong> ${libro.paginas.length}
+      <strong>Páginas interiores:</strong> ${libro.paginas.length}
     </p>
   </div>
+
+  <div style="padding:24px 40px;background:#fff8f0;border-bottom:1px solid #fde68a;">
+    <h2 style="margin:0 0 12px;font-size:14px;color:#b45309;">🎨 Portada — EL UNIVERSO DE ${escapeHtml(nombre.toUpperCase())}</h2>
+    <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:12px;">
+      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">Prompt Midjourney portada</div>
+      <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(libro.portada_prompt || '')}</div>
+    </div>
+    <div style="margin-top:12px;padding:12px;background:#fffbeb;border-radius:8px;">
+      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">💬 Frase contraportada</div>
+      <div style="font-size:14px;color:#2c1810;font-style:italic;line-height:1.8;">${escapeHtml(libro.contraportada_frase || '')}</div>
+    </div>
+  </div>
+
   <div style="padding:32px 40px;">
-    <h2 style="margin:0 0 20px;font-size:16px;color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">✨ Texto del libro + Prompts Midjourney</h2>
+    <h2 style="margin:0 0 20px;font-size:16px;color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">✨ 20 páginas interiores + Prompts Midjourney</h2>
     ${libroHtml}
   </div>
+
   <div style="padding:28px 40px;background:#f9f5eb;border-top:1px solid #e7e0d0;">
     <h2 style="margin:0 0 16px;font-size:15px;color:#b45309;">📝 Historia original transcrita</h2>
     ${historiaHtml}
   </div>
+
   <div style="padding:16px 40px;background:#f0e8d8;text-align:center;">
     <p style="margin:0;font-size:11px;color:#8b6914;">Generado automáticamente · Tale Us Stories · ${new Date().toLocaleString("es-ES")}</p>
   </div>
