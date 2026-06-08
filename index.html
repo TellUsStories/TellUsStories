@@ -6,7 +6,7 @@
 <title>Tale Us Stories · Cuéntanoslo</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--cream:#FDF6EE;--coral:#C8544A;--coral-l:#FCEAE6;--navy:#1E2D4A;--muted:#8A7060;--border:#E8D5C0;--white:#FFFFFF;}
+  :root{--cream:#FAF6EF;--coral:#C8544A;--coral-l:#F0EAE0;--navy:#1E2D4A;--muted:#8A7060;--border:#DDD0BC;--white:#FFFFFF;}
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:var(--cream);font-family:'Lato',sans-serif;color:var(--navy);min-height:100vh;}
   .prog-track{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:100;}
@@ -22,7 +22,7 @@
   .sh-chapter{font-size:10px;letter-spacing:4px;color:var(--coral);text-transform:uppercase;margin-bottom:6px;}
   .sh-title{font-family:'Playfair Display',serif;font-size:29px;line-height:1.25;color:var(--navy);margin-bottom:10px;}
   .sh-sub{font-size:14px;color:var(--muted);line-height:1.65;font-weight:300;}
-  .chapter-badge{display:inline-flex;align-items:center;gap:10px;background:var(--coral-l);border:1px solid var(--coral);border-radius:4px;padding:8px 16px;margin-bottom:24px;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:10px;background:var(--cream);border:1px solid var(--coral);border-radius:4px;padding:8px 16px;margin-bottom:24px;}
   .ch-num{font-size:11px;font-weight:700;color:var(--coral);letter-spacing:1px;}
   .ch-name{font-family:'Playfair Display',serif;font-size:15px;color:var(--navy);}
   .field{margin-bottom:20px;}
@@ -41,14 +41,14 @@
   .gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px;}
   .gender-opt{border:2px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;transition:all .2s;background:var(--white);text-align:center;}
   .gender-opt:hover{border-color:var(--coral);}
-  .gender-opt.selected{border-color:var(--coral);background:var(--coral-l);}
+  .gender-opt.selected{border-color:var(--coral);background:var(--cream);}
   .gender-emoji{font-size:30px;margin-bottom:8px;}
   .gender-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
   .gender-desc{font-size:12px;color:var(--muted);}
   /* VOICE CARD */
   .vc{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:22px;margin-bottom:14px;transition:border-color .2s;}
   .vc:hover{border-color:rgba(200,84,74,.3);}
-  .vc.done{border-color:var(--coral);background:var(--coral-l);}
+  .vc.done{border-color:var(--coral);background:var(--cream);}
   .vc-q{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);line-height:1.45;margin-bottom:5px;}
   .vc-h{font-size:12px;color:var(--muted);margin-bottom:15px;font-style:italic;line-height:1.5;}
   .vc-ctrls{display:flex;align-items:center;gap:11px;flex-wrap:wrap;}
@@ -77,13 +77,13 @@
   .tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
   .tone-opt{border:1.5px solid var(--border);border-radius:6px;padding:14px 16px;cursor:pointer;transition:all .2s;background:var(--white);}
   .tone-opt:hover{border-color:var(--coral);}
-  .tone-opt.selected{border-color:var(--coral);background:var(--coral-l);}
+  .tone-opt.selected{border-color:var(--coral);background:var(--cream);}
   .te{font-size:20px;margin-bottom:5px;}
   .tt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px;}
   .td{font-size:11px;color:var(--muted);line-height:1.4;}
   /* UPLOAD */
   .uzone{border:2px dashed var(--border);border-radius:6px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--white);}
-  .uzone:hover{border-color:var(--coral);background:var(--coral-l);}
+  .uzone:hover{border-color:var(--coral);background:var(--cream);}
   .uzone-icon{font-size:22px;margin-bottom:6px;}
   .uzone-txt{font-size:13px;color:var(--muted);}
   #fileInput{display:none;}
@@ -121,7 +121,7 @@
   .ibox-t{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--coral);margin-bottom:12px;}
   .is{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
   .is:last-child{margin:0;}
-  .in-num{width:24px;height:24px;background:var(--coral-l);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--coral);font-weight:700;flex-shrink:0;}
+  .in-num{width:24px;height:24px;background:var(--cream);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--coral);font-weight:700;flex-shrink:0;}
   .it{font-size:13px;color:var(--muted);line-height:1.5;}
   .it strong{color:var(--navy);}
 </style>
@@ -583,7 +583,7 @@
     <h3>Estructura del libro</h3>
     <div id="rv-chapters"></div>
   </div>
-  <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
+  <div class="sb" style="background:#F0EAE0;border-color:var(--coral);">
     <h3 style="color:var(--coral);">¿Qué pasa ahora?</h3>
     <div class="sr"><span class="sk">48 horas</span><span class="sv">Recibes el borrador del texto completo para revisarlo.</span></div>
     <div class="sr"><span class="sk">+ 3-4 días</span><span class="sv">Ilustraciones y maquetación final.</span></div>
