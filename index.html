@@ -156,33 +156,24 @@
   .hero-gallery {
     margin-top: 80px;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: 400px 300px;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
 
-  .gallery-item {
-    background: var(--cream);
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .gallery-item.tall {
+  .gallery-item-tall {
     grid-row: span 2;
-    background: transparent;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    overflow: visible;
   }
 
-  .gallery-item.tall img {
+  .gallery-item-tall img {
     width: 100%;
     flex: 1;
     object-fit: cover;
     border-radius: 8px;
     min-height: 0;
+    display: block;
   }
 
   .gallery-caption {
@@ -193,24 +184,46 @@
     padding-left: 4px;
   }
 
-  .gallery-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+  .gallery-item-interior {
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 3/2;
   }
 
-  .gallery-placeholder-icon { font-size: 32px; opacity: 0.3; }
+  .gallery-item-interior img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
-  .gallery-placeholder-text {
-    font-size: 10px;
-    letter-spacing: 2px;
+  .gallery-contraportada {
+    background: var(--navy);
+    border-radius: 8px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    aspect-ratio: 3/2;
+  }
+
+  .contraportada-frase {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: white;
+    line-height: 1.6;
+    max-width: 320px;
+  }
+
+  .contraportada-brand {
+    font-size: 11px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--text-muted);
-    opacity: 0.5;
+    color: var(--gold);
   }
 
   .divider {
@@ -538,8 +551,8 @@
     nav { padding: 20px 24px; }
     .nav-links { display: none; }
     .hero { padding: 120px 24px 80px; }
-    .hero-gallery { grid-template-columns: 1fr 1fr; grid-template-rows: 240px 240px; }
-    .gallery-item.tall { grid-row: span 1; }
+    .hero-gallery { grid-template-columns: 1fr; }
+    .gallery-item-tall { grid-row: span 1; }
     .divider { margin: 0 24px; }
     .section-sobre { padding: 80px 24px; grid-template-columns: 1fr; gap: 48px; }
     .section-como { padding: 80px 24px; }
@@ -580,29 +593,17 @@
   </div>
 
   <div class="hero-gallery">
-    <div class="gallery-item tall">
+    <div class="gallery-item-tall">
       <img src="portada-maria.jpg" alt="El universo de María">
       <span class="gallery-caption">El universo de María</span>
     </div>
-    <div class="gallery-item">
-      <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/página_ejemplo_rlllmf" alt="Página interior" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
-    </div>
-    <div class="gallery-item">
-      <div class="gallery-placeholder">
-        <span class="gallery-placeholder-icon">🌸</span>
-        <span class="gallery-placeholder-text">Detalle</span>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="gallery-item-interior">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/página_ejemplo_rlllmf" alt="Página interior">
       </div>
-    </div>
-    <div class="gallery-item">
-      <div class="gallery-placeholder">
-        <span class="gallery-placeholder-icon">👨‍👩‍👧</span>
-        <span class="gallery-placeholder-text">Ilustración</span>
-      </div>
-    </div>
-    <div class="gallery-item">
-      <div class="gallery-placeholder">
-        <span class="gallery-placeholder-icon">💛</span>
-        <span class="gallery-placeholder-text">Detalle</span>
+      <div class="gallery-contraportada">
+        <p class="contraportada-frase">"Antes de ser todo para ti,<br>fue simplemente una persona<br>con una historia única."</p>
+        <span class="contraportada-brand">Tale Us Stories</span>
       </div>
     </div>
   </div>
@@ -710,7 +711,7 @@
       <div class="precio-item">Envío a domicilio incluido</div>
       <div class="precio-item">Entrega en 2-3 semanas</div>
     </div>
-    <a href="index.html" class="btn-gold">Crear mi libro ahora</a>
+    <a href="formulario.html" class="btn-gold">Crear mi libro ahora</a>
   </div>
 </section>
 
