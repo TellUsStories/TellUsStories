@@ -168,7 +168,30 @@
     position: relative;
   }
 
-  .gallery-item.tall { grid-row: span 2; }
+  .gallery-item.tall {
+    grid-row: span 2;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: visible;
+  }
+
+  .gallery-item.tall img {
+    width: 100%;
+    flex: 1;
+    object-fit: cover;
+    border-radius: 8px;
+    min-height: 0;
+  }
+
+  .gallery-caption {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--text-muted);
+    padding-left: 4px;
+  }
 
   .gallery-placeholder {
     width: 100%;
@@ -188,16 +211,6 @@
     text-transform: uppercase;
     color: var(--text-muted);
     opacity: 0.5;
-  }
-
-  .gallery-caption {
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-    font-family: 'Playfair Display', serif;
-    font-size: 12px;
-    font-style: italic;
-    color: var(--text-muted);
   }
 
   .divider {
@@ -333,9 +346,7 @@
     margin: 0 auto;
   }
 
-  .libro-header {
-    margin-bottom: 64px;
-  }
+  .libro-header { margin-bottom: 64px; }
 
   .libro-label {
     font-size: 11px;
@@ -521,10 +532,7 @@
     color: var(--text);
   }
 
-  .footer-text {
-    font-size: 13px;
-    color: var(--text-muted);
-  }
+  .footer-text { font-size: 13px; color: var(--text-muted); }
 
   @media (max-width: 900px) {
     nav { padding: 20px 24px; }
@@ -573,7 +581,7 @@
 
   <div class="hero-gallery">
     <div class="gallery-item tall">
-      <img src="portada-maria.jpg" alt="El universo de María" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
+      <img src="portada-maria.jpg" alt="El universo de María">
       <span class="gallery-caption">El universo de María</span>
     </div>
     <div class="gallery-item">
