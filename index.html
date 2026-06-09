@@ -158,10 +158,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+    align-items: stretch;
   }
 
   .gallery-item-tall {
-    grid-row: span 2;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -172,7 +172,6 @@
     flex: 1;
     object-fit: cover;
     border-radius: 8px;
-    min-height: 0;
     display: block;
   }
 
@@ -184,16 +183,23 @@
     padding-left: 4px;
   }
 
+  .gallery-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
   .gallery-item-interior {
     border-radius: 8px;
     overflow: hidden;
-    aspect-ratio: 3/2;
+    flex: 1;
   }
 
   .gallery-item-interior img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center center;
     display: block;
   }
 
@@ -207,7 +213,7 @@
     align-items: center;
     text-align: center;
     gap: 16px;
-    aspect-ratio: 3/2;
+    flex: 1;
   }
 
   .contraportada-frase {
@@ -552,7 +558,6 @@
     .nav-links { display: none; }
     .hero { padding: 120px 24px 80px; }
     .hero-gallery { grid-template-columns: 1fr; }
-    .gallery-item-tall { grid-row: span 1; }
     .divider { margin: 0 24px; }
     .section-sobre { padding: 80px 24px; grid-template-columns: 1fr; gap: 48px; }
     .section-como { padding: 80px 24px; }
@@ -597,7 +602,7 @@
       <img src="portada-maria.jpg" alt="El universo de María">
       <span class="gallery-caption">El universo de María</span>
     </div>
-    <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="gallery-right">
       <div class="gallery-item-interior">
         <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/página_ejemplo_rlllmf" alt="Página interior">
       </div>
