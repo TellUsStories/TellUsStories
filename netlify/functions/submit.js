@@ -119,8 +119,11 @@ Cuidarla siempre."
 REGLAS DE TEXTO:
 - Frases MUY cortas. Máximo 8 palabras por línea
 - Cada idea en su propia línea (usa \\n)
-- Máximo 10-15 líneas por página con texto — no más
-- El texto va SIEMPRE a la izquierda. La ilustración a la derecha
+- Máximo 10 líneas por página con texto — no más
+- El texto va CENTRADO en la página — nunca justificado
+- El título de cada página va arriba centrado
+- El texto va en el centro/parte superior de la página
+- La ilustración ocupa la parte inferior de la página
 - Tono cálido, cercano, con humor suave
 - Habla SIEMPRE directamente a los niños
 - Detalles muy específicos y reales
@@ -130,32 +133,30 @@ REGLAS DE TEXTO:
 
 ESTRUCTURA DEL LIBRO — 20 páginas interiores exactas (sin contar portada ni contraportada):
 - Páginas 1-2: portadilla interior + dedicatoria (solo ilustración, texto mínimo)
-- Páginas 3-4: introducción (texto izquierda + ilustración grande derecha)
+- Páginas 3-4: introducción (texto centrado arriba + ilustración abajo)
 - Páginas 5-8: infancia (texto+ilustración, máximo 1 página solo ilustración)
 - Páginas 9-12: juventud y aventuras (texto+ilustración, máximo 1 página solo ilustración)
 - Páginas 13-16: amor y familia (texto+ilustración, máximo 1 página solo ilustración)
 - Páginas 17-18: con los niños hoy (texto+ilustración)
-- Páginas 19-20: legado y cierre (texto emotivo izquierda + ilustración preciosa derecha)
+- Páginas 19-20: legado y cierre (texto emotivo centrado + ilustración preciosa abajo)
 
 TIPOS DE PÁGINA — máximo 3-4 páginas "solo_ilustracion" en todo el libro:
-- "texto_ilustracion": texto corto izquierda (10-15 líneas máximo), ilustración grande derecha
-- "solo_ilustracion": sin texto, solo ilustración (usar con moderación, máximo 3-4 veces)
+- "texto_ilustracion": título arriba centrado, texto centrado (máximo 10 líneas), ilustración grande abajo
+- "solo_ilustracion": sin texto, solo ilustración (máximo 3-4 veces en todo el libro)
 - "frase_grande": una sola frase muy emotiva centrada, ilustración de fondo
 
-PARA CADA PÁGINA genera un prompt de Midjourney en inglés que describa la escena exacta y termine SIEMPRE con:
-"children's book illustration, warm watercolor style, rounded cartoon faces, small black dot eyes, rosy peach cheeks, dark brown ink outlines, flowing watercolor washes with paint splatter drops, warm ochre and cream tones, white background, cozy tender mood --ar 3:2 --sref [TUS_REFERENCIAS]"
+PARA CADA PÁGINA genera un prompt en inglés para Nano Banana (Google Gemini image AI).
+El prompt debe describir la escena exacta y terminar SIEMPRE con:
+"children's book illustration, warm watercolor style, rounded cartoon faces, small black dot eyes, rosy peach cheeks, dark brown ink outlines, flowing watercolor washes with paint splatter drops, warm ochre and cream tones, white background, cozy tender mood --ar 3:2"
 
 PORTADA:
 - Título siempre: "EL UNIVERSO DE ${nombre.toUpperCase()}"
-- Estilo: siluetas de adulto y niño, fondo a cuadros azul y crema, círculo dorado central, paleta azul marino + terracota + dorado, tipografía bold impactante
-- Genera un prompt de Midjourney para replicar este estilo exacto
-- El prompt de portada termina con: "book cover illustration, bold graphic watercolor style, silhouettes, checkered background pattern in blue and cream, golden circle, navy blue and terracotta and gold palette, bold typography composition, Tale Us Stories --ar 2:3 --sref [TUS_REFERENCIAS]"
+- Estilo: siluetas de adulto y niño, fondo a cuadros azul y crema, círculo dorado central, paleta azul marino + terracota + dorado, tipografía bold
+- Prompt termina con: "book cover illustration, bold graphic watercolor style, silhouettes, checkered background in blue and cream, golden circle, navy blue terracotta and gold palette, bold typography --ar 2:3"
 
 CONTRAPORTADA:
-- Una sola frase corta, emotiva, que defina la esencia de ${nombre}
+- Una sola frase corta y emotiva que defina la esencia de ${nombre}
 - Máximo 2 líneas
-- En el mismo tono cálido del libro
-- Ejemplo: "Antes de ser tu mamá, fue una niña que soñaba con el mundo. Y lo encontró."
 
 HISTORIA:
 ${historyText}
@@ -163,7 +164,7 @@ ${historyText}
 Responde SOLO con este JSON:
 {
   "titulo": "EL UNIVERSO DE ${nombre.toUpperCase()}",
-  "portada_prompt": "prompt completo de Midjourney para la portada",
+  "portada_prompt": "prompt completo para la portada",
   "contraportada_frase": "frase emotiva para la contraportada",
   "paginas": [
     {
@@ -171,7 +172,7 @@ Responde SOLO con este JSON:
       "tipo": "solo_ilustracion",
       "titulo": "título de la página",
       "texto": "texto con \\n para saltos de línea (vacío si es solo_ilustracion)",
-      "midjourney_prompt": "prompt completo en inglés muy descriptivo"
+      "imagen_prompt": "prompt completo para Nano Banana"
     }
   ]
 }`;
@@ -225,11 +226,11 @@ function buildEmailHtml(allData, protagonist, libro) {
     return `
       <div style="margin-bottom:28px;padding:20px;background:#fffbeb;border-radius:12px;border-left:4px solid #fde68a;">
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b45309;margin-bottom:6px;">Página ${p.numero} · ${p.tipo || 'texto_ilustracion'}</div>
-        <div style="font-size:18px;color:#b45309;font-style:italic;margin-bottom:10px;">${p.titulo}</div>
-        ${textoFormateado ? `<div style="font-size:14px;line-height:2;color:#2c1810;margin-bottom:14px;">${textoFormateado}</div>` : '<div style="font-size:12px;color:#8b6914;font-style:italic;margin-bottom:14px;">— Solo ilustración —</div>'}
+        <div style="font-size:18px;color:#c47a3a;font-style:italic;margin-bottom:10px;">${p.titulo}</div>
+        ${textoFormateado ? `<div style="font-size:14px;line-height:2;color:#4a3728;text-align:center;margin-bottom:14px;">${textoFormateado}</div>` : '<div style="font-size:12px;color:#8b6914;font-style:italic;margin-bottom:14px;text-align:center;">— Solo ilustración —</div>'}
         <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:10px;">
-          <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">🎨 Prompt Midjourney</div>
-          <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(p.midjourney_prompt)}</div>
+          <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">🎨 Prompt Nano Banana</div>
+          <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(p.imagen_prompt)}</div>
         </div>
       </div>`;
   }).join("");
@@ -239,13 +240,11 @@ function buildEmailHtml(allData, protagonist, libro) {
 <head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#fdf6e3;font-family:Georgia,serif;">
 <div style="max-width:700px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
-
   <div style="background:linear-gradient(135deg,#b45309,#d97706);padding:32px 40px;text-align:center;">
     <p style="margin:0;font-size:11px;letter-spacing:3px;color:#fde68a;text-transform:uppercase;">Tale Us Stories</p>
     <h1 style="margin:8px 0 4px;font-size:22px;color:#fff;font-weight:400;">📖 Nuevo libro generado</h1>
     <p style="margin:0;font-size:16px;color:#fde68a;font-style:italic;">${escapeHtml(libro.titulo)}</p>
   </div>
-
   <div style="padding:20px 40px;background:#fffbeb;border-bottom:2px solid #fde68a;">
     <p style="margin:0;font-size:14px;color:#2c1810;line-height:1.8;">
       <strong>Protagonista:</strong> ${escapeHtml(nombre)}<br>
@@ -254,29 +253,25 @@ function buildEmailHtml(allData, protagonist, libro) {
       <strong>Páginas interiores:</strong> ${libro.paginas.length}
     </p>
   </div>
-
   <div style="padding:24px 40px;background:#fff8f0;border-bottom:1px solid #fde68a;">
-    <h2 style="margin:0 0 12px;font-size:14px;color:#b45309;">🎨 Portada — EL UNIVERSO DE ${escapeHtml(nombre.toUpperCase())}</h2>
-    <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:12px;">
-      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">Prompt Midjourney portada</div>
+    <h2 style="margin:0 0 12px;font-size:14px;color:#b45309;">🎨 Portada — ${escapeHtml(libro.titulo)}</h2>
+    <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:12px;margin-bottom:12px;">
+      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">Prompt Nano Banana portada</div>
       <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(libro.portada_prompt || '')}</div>
     </div>
-    <div style="margin-top:12px;padding:12px;background:#fffbeb;border-radius:8px;">
+    <div style="padding:12px;background:#fffbeb;border-radius:8px;">
       <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">💬 Frase contraportada</div>
       <div style="font-size:14px;color:#2c1810;font-style:italic;line-height:1.8;">${escapeHtml(libro.contraportada_frase || '')}</div>
     </div>
   </div>
-
   <div style="padding:32px 40px;">
-    <h2 style="margin:0 0 20px;font-size:16px;color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">✨ 20 páginas interiores + Prompts Midjourney</h2>
+    <h2 style="margin:0 0 20px;font-size:16px;color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">✨ 20 páginas interiores + Prompts Nano Banana</h2>
     ${libroHtml}
   </div>
-
   <div style="padding:28px 40px;background:#f9f5eb;border-top:1px solid #e7e0d0;">
     <h2 style="margin:0 0 16px;font-size:15px;color:#b45309;">📝 Historia original transcrita</h2>
     ${historiaHtml}
   </div>
-
   <div style="padding:16px 40px;background:#f0e8d8;text-align:center;">
     <p style="margin:0;font-size:11px;color:#8b6914;">Generado automáticamente · Tale Us Stories · ${new Date().toLocaleString("es-ES")}</p>
   </div>
@@ -323,7 +318,7 @@ exports.handler = async (event) => {
       if (value) byChapter[chapKey].push(`${FIELD_LABELS[field]}: ${value}`);
     }
     const historyText = Object.entries(CHAPTER_NAMES).map(([key, title]) => {
-      const entries = byChapter[key] || [];
+      const entries = byChapter[key] || [];\
       if (!entries.length) return "";
       return `## ${title}\n${entries.join("\n")}`;
     }).filter(Boolean).join("\n\n");
