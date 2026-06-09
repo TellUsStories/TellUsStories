@@ -6,6 +6,14 @@ const OpenAI = require("openai");
 const Anthropic = require("@anthropic-ai/sdk");
 const Busboy = require("busboy");
 
+const STYLE_REFERENCES = [
+  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/CFAF1E7E-286F-4116-A4B0-DE687CF86E64_rq1la7",
+  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/C0B79D43-292C-4710-9B20-371795061A8B_hispsx",
+  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/4D123E22-18F7-4CA1-B978-6C34DCEF317D_j0m2xp",
+  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/65DD5291-0A73-40FB-B450-ADE533641DC8_sbzrok",
+  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/405CC2FA-7C38-4136-BD14-97B64A3B802A_juzcdd",
+];
+
 const FIELD_TO_CHAPTER = {
   q1_nombre: "cap1", q1_apodo: "cap1", q1_nacimiento: "cap1",
   q2_lugar: "cap2", q2_recuerdo: "cap2", q2_juego: "cap2",
@@ -70,7 +78,64 @@ async function transcribeAudio(openai, fileData, fieldName) {
     return response.text?.trim() || null;
   } catch (err) {
     console.error(`Error transcribiendo ${fieldName}:`, err.message);
-    return `[Error de transcripción: ${err.message}]`;
+    return `[Error: ${err.message}]`;
+  }
+}
+
+async function uploadPhotoToPiAPI(fileData) {
+  if (!fileData || fileData.buffer.length < 1000) return null;
+  try {
+    const formData = new FormData();
+    const blob = new Blob([fileData.buffer], { type: fileData.mimetype });
+    formData.append("file", blob, fileData.filename);
+    const response = await fetch("https://api.piapi.ai/api/v1/task", {
+      method: "POST",
+      headers: { "X-API-KEY": process.env.PIAPI_API_KEY },
+      body: formData,
+    });
+    const data = await response.json();
+    return data?.data?.url || null;
+  } catch (err) {
+    console.error("Error subiendo foto:", err.message);
+    return null;
+  }
+}
+
+async function generarIlustracion(prompt, imageUrls = []) {
+  try {
+    const body = {
+      model: "Qubico/nano-banana-2",
+      task_type: "nano-banana-2",
+      input: { prompt, image_urls: imageUrls },
+    };
+
+    const response = await fetch("https://api.piapi.ai/api/v1/task", {
+      method: "POST",
+      headers: {
+        "X-API-KEY": process.env.PIAPI_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+    const taskId = data?.data?.task_id;
+    if (!taskId) return null;
+
+    for (let i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      const statusRes = await fetch(`https://api.piapi.ai/api/v1/task/${taskId}`, {
+        headers: { "X-API-KEY": process.env.PIAPI_API_KEY },
+      });
+      const statusData = await statusRes.json();
+      const status = statusData?.data?.status;
+      if (status === "completed") return statusData?.data?.output?.image_url || null;
+      if (status === "failed") return null;
+    }
+    return null;
+  } catch (err) {
+    console.error("Error generando ilustración:", err.message);
+    return null;
   }
 }
 
@@ -119,11 +184,10 @@ Cuidarla siempre."
 REGLAS DE TEXTO:
 - Frases MUY cortas. Máximo 8 palabras por línea
 - Cada idea en su propia línea (usa \\n)
-- Máximo 10 líneas por página con texto — no más
-- El texto va CENTRADO en la página — nunca justificado
+- Máximo 10 líneas por página con texto
+- El texto va CENTRADO en la página
 - El título de cada página va arriba centrado
-- El texto va en el centro/parte superior de la página
-- La ilustración ocupa la parte inferior de la página
+- La ilustración ocupa la parte inferior
 - Tono cálido, cercano, con humor suave
 - Habla SIEMPRE directamente a los niños
 - Detalles muy específicos y reales
@@ -131,32 +195,29 @@ REGLAS DE TEXTO:
 - Marca frases emotivas con [T]frase[/T]
 - NO uses adjetivos genéricos
 
-ESTRUCTURA DEL LIBRO — 20 páginas interiores exactas (sin contar portada ni contraportada):
-- Páginas 1-2: portadilla interior + dedicatoria (solo ilustración, texto mínimo)
-- Páginas 3-4: introducción (texto centrado arriba + ilustración abajo)
-- Páginas 5-8: infancia (texto+ilustración, máximo 1 página solo ilustración)
-- Páginas 9-12: juventud y aventuras (texto+ilustración, máximo 1 página solo ilustración)
-- Páginas 13-16: amor y familia (texto+ilustración, máximo 1 página solo ilustración)
+ESTRUCTURA — 20 páginas interiores exactas:
+- Páginas 1-2: portadilla + dedicatoria (solo ilustración)
+- Páginas 3-4: introducción (texto + ilustración)
+- Páginas 5-8: infancia (texto+ilustración, máx 1 solo ilustración)
+- Páginas 9-12: juventud (texto+ilustración, máx 1 solo ilustración)
+- Páginas 13-16: amor y familia (texto+ilustración, máx 1 solo ilustración)
 - Páginas 17-18: con los niños hoy (texto+ilustración)
-- Páginas 19-20: legado y cierre (texto emotivo centrado + ilustración preciosa abajo)
+- Páginas 19-20: legado y cierre (texto emotivo + ilustración)
 
-TIPOS DE PÁGINA — máximo 3-4 páginas "solo_ilustracion" en todo el libro:
-- "texto_ilustracion": título arriba centrado, texto centrado (máximo 10 líneas), ilustración grande abajo
-- "solo_ilustracion": sin texto, solo ilustración (máximo 3-4 veces en todo el libro)
-- "frase_grande": una sola frase muy emotiva centrada, ilustración de fondo
+TIPOS: máximo 3-4 "solo_ilustracion" en todo el libro:
+- "texto_ilustracion": título arriba, texto centrado (máx 10 líneas), ilustración abajo
+- "solo_ilustracion": sin texto, solo ilustración
+- "frase_grande": una sola frase emotiva centrada
 
-PARA CADA PÁGINA genera un prompt en inglés para Nano Banana (Google Gemini image AI).
-El prompt debe describir la escena exacta y terminar SIEMPRE con:
-"children's book illustration, warm watercolor style, rounded cartoon faces, small black dot eyes, rosy peach cheeks, dark brown ink outlines, flowing watercolor washes with paint splatter drops, warm ochre and cream tones, white background, cozy tender mood --ar 3:2"
+PARA CADA PÁGINA genera un prompt para Nano Banana.
+Termina SIEMPRE con:
+"children's book illustration, warm watercolor style, rounded cartoon faces, small black dot eyes, rosy peach cheeks, dark brown ink outlines, flowing watercolor washes with paint splatter drops, warm ochre and cream tones, white background, cozy tender mood"
 
-PORTADA:
-- Título siempre: "EL UNIVERSO DE ${nombre.toUpperCase()}"
-- Estilo: siluetas de adulto y niño, fondo a cuadros azul y crema, círculo dorado central, paleta azul marino + terracota + dorado, tipografía bold
-- Prompt termina con: "book cover illustration, bold graphic watercolor style, silhouettes, checkered background in blue and cream, golden circle, navy blue terracotta and gold palette, bold typography --ar 2:3"
+PORTADA: título "EL UNIVERSO DE ${nombre.toUpperCase()}"
+Estilo siluetas, fondo cuadros azul y crema, círculo dorado.
+Prompt termina con: "book cover illustration, bold graphic watercolor style, silhouettes, checkered background blue and cream, golden circle, navy blue terracotta gold palette, bold typography"
 
-CONTRAPORTADA:
-- Una sola frase corta y emotiva que defina la esencia de ${nombre}
-- Máximo 2 líneas
+CONTRAPORTADA: frase corta y emotiva. Máximo 2 líneas.
 
 HISTORIA:
 ${historyText}
@@ -164,15 +225,15 @@ ${historyText}
 Responde SOLO con este JSON:
 {
   "titulo": "EL UNIVERSO DE ${nombre.toUpperCase()}",
-  "portada_prompt": "prompt completo para la portada",
-  "contraportada_frase": "frase emotiva para la contraportada",
+  "portada_prompt": "prompt para portada",
+  "contraportada_frase": "frase emotiva",
   "paginas": [
     {
       "numero": 1,
       "tipo": "solo_ilustracion",
-      "titulo": "título de la página",
-      "texto": "texto con \\n para saltos de línea (vacío si es solo_ilustracion)",
-      "imagen_prompt": "prompt completo para Nano Banana"
+      "titulo": "título",
+      "texto": "texto con \\n (vacío si solo_ilustracion)",
+      "imagen_prompt": "prompt para Nano Banana"
     }
   ]
 }`;
@@ -194,7 +255,7 @@ function escapeHtml(str) {
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-function buildEmailHtml(allData, protagonist, libro) {
+function buildEmailHtml(allData, protagonist, libro, paginasConImagenes) {
   const { nombre, ninos, relacion } = protagonist;
 
   const byChapter = {};
@@ -219,15 +280,16 @@ function buildEmailHtml(allData, protagonist, libro) {
       </div>`;
   }).join("");
 
-  const libroHtml = libro.paginas.map(p => {
+  const libroHtml = paginasConImagenes.map(p => {
     const textoFormateado = (p.texto || "")
-      .replace(/\[T\](.*?)\[\/T\]/g, '<span style="color:#b45309;">$1</span>')
+      .replace(/\[T\](.*?)\[\/T\]/g, '<span style="color:#c47a3a;">$1</span>')
       .replace(/\n/g, "<br>");
     return `
       <div style="margin-bottom:28px;padding:20px;background:#fffbeb;border-radius:12px;border-left:4px solid #fde68a;">
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b45309;margin-bottom:6px;">Página ${p.numero} · ${p.tipo || 'texto_ilustracion'}</div>
         <div style="font-size:18px;color:#c47a3a;font-style:italic;margin-bottom:10px;">${p.titulo}</div>
-        ${textoFormateado ? `<div style="font-size:14px;line-height:2;color:#4a3728;text-align:center;margin-bottom:14px;">${textoFormateado}</div>` : '<div style="font-size:12px;color:#8b6914;font-style:italic;margin-bottom:14px;text-align:center;">— Solo ilustración —</div>'}
+        ${textoFormateado ? `<div style="font-size:14px;line-height:2;color:#5a3e28;text-align:center;margin-bottom:14px;">${textoFormateado}</div>` : '<div style="font-size:12px;color:#8b6914;font-style:italic;margin-bottom:14px;text-align:center;">— Solo ilustración —</div>'}
+        ${p.imagen_url ? `<div style="text-align:center;margin-bottom:12px;"><img src="${p.imagen_url}" style="max-width:100%;border-radius:8px;border:1px solid #e8d5b0;" /></div>` : ''}
         <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:10px;">
           <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">🎨 Prompt Nano Banana</div>
           <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(p.imagen_prompt)}</div>
@@ -250,22 +312,18 @@ function buildEmailHtml(allData, protagonist, libro) {
       <strong>Protagonista:</strong> ${escapeHtml(nombre)}<br>
       <strong>Relación:</strong> ${escapeHtml(relacion)}<br>
       <strong>Para:</strong> ${escapeHtml(ninos)}<br>
-      <strong>Páginas interiores:</strong> ${libro.paginas.length}
+      <strong>Páginas:</strong> ${libro.paginas.length}
     </p>
   </div>
   <div style="padding:24px 40px;background:#fff8f0;border-bottom:1px solid #fde68a;">
     <h2 style="margin:0 0 12px;font-size:14px;color:#b45309;">🎨 Portada — ${escapeHtml(libro.titulo)}</h2>
-    <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:12px;margin-bottom:12px;">
-      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">Prompt Nano Banana portada</div>
-      <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(libro.portada_prompt || '')}</div>
-    </div>
     <div style="padding:12px;background:#fffbeb;border-radius:8px;">
       <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">💬 Frase contraportada</div>
       <div style="font-size:14px;color:#2c1810;font-style:italic;line-height:1.8;">${escapeHtml(libro.contraportada_frase || '')}</div>
     </div>
   </div>
   <div style="padding:32px 40px;">
-    <h2 style="margin:0 0 20px;font-size:16px;color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">✨ 20 páginas interiores + Prompts Nano Banana</h2>
+    <h2 style="margin:0 0 20px;font-size:16px;color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">✨ 20 páginas + Ilustraciones</h2>
     ${libroHtml}
   </div>
   <div style="padding:28px 40px;background:#f9f5eb;border-top:1px solid #e7e0d0;">
@@ -290,13 +348,20 @@ exports.handler = async (event) => {
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const resend = new Resend(process.env.RESEND_API_KEY);
 
+    // 1. Transcribir audios
+    const audioFiles = Object.entries(files).filter(([name]) => !name.includes("photo"));
     const transcriptions = await Promise.all(
-      Object.keys(files).map(async (fieldName) => {
-        const text = await transcribeAudio(openai, files[fieldName], fieldName);
+      audioFiles.map(async ([fieldName, fileData]) => {
+        const text = await transcribeAudio(openai, fileData, fieldName);
         return { fieldName, text };
       })
     );
 
+    // 2. Foto protagonista
+    const photoFile = files["protagonist_photo"] || files["photo"] || null;
+    const photoUrl = photoFile ? await uploadPhotoToPiAPI(photoFile) : null;
+
+    // 3. Fusionar datos
     const allData = { ...fields };
     for (const { fieldName, text } of transcriptions) {
       if (!text) continue;
@@ -304,6 +369,7 @@ exports.handler = async (event) => {
       allData[baseField] = allData[baseField] ? `${allData[baseField]}\n\n[Audio]: ${text}` : `[Audio]: ${text}`;
     }
 
+    // 4. Protagonista
     const protagonist = {
       nombre: fields.protagonistName || fields.q1_nombre || "el protagonista",
       genero: fields.gender || "mujer",
@@ -311,6 +377,7 @@ exports.handler = async (event) => {
       relacion: fields.relacion || (fields.gender === "hombre" ? "papá" : "mamá"),
     };
 
+    // 5. Historia en texto
     const byChapter = {};
     for (const [field, chapKey] of Object.entries(FIELD_TO_CHAPTER)) {
       if (!byChapter[chapKey]) byChapter[chapKey] = [];
@@ -318,16 +385,32 @@ exports.handler = async (event) => {
       if (value) byChapter[chapKey].push(`${FIELD_LABELS[field]}: ${value}`);
     }
     const historyText = Object.entries(CHAPTER_NAMES).map(([key, title]) => {
-      const entries = byChapter[key] || [];\
+      const entries = byChapter[key] || [];
       if (!entries.length) return "";
       return `## ${title}\n${entries.join("\n")}`;
     }).filter(Boolean).join("\n\n");
 
+    // 6. Generar libro con Claude
     console.log("Generando libro con Claude...");
     const libro = await generarLibro(anthropic, historyText, protagonist);
 
-    const htmlBody = buildEmailHtml(allData, protagonist, libro);
-    const subject = `📖 ${libro.titulo} — listo para ilustrar`;
+    // 7. Referencias Nano Banana
+    const imageRefs = photoUrl
+      ? [photoUrl, ...STYLE_REFERENCES.slice(0, 3)]
+      : STYLE_REFERENCES.slice(0, 4);
+
+    // 8. Generar ilustraciones
+    console.log("Generando ilustraciones con Nano Banana...");
+    const paginasConImagenes = await Promise.all(
+      libro.paginas.map(async (pagina) => {
+        const imagenUrl = await generarIlustracion(pagina.imagen_prompt, imageRefs);
+        return { ...pagina, imagen_url: imagenUrl };
+      })
+    );
+
+    // 9. Enviar email
+    const htmlBody = buildEmailHtml(allData, protagonist, libro, paginasConImagenes);
+    const subject = `📖 ${libro.titulo} — listo para revisar`;
 
     const { error: emailError } = await resend.emails.send({
       from: "Tale Us Stories <onboarding@resend.dev>",
