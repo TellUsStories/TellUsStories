@@ -209,9 +209,16 @@ TIPOS: máximo 3-4 "solo_ilustracion" en todo el libro:
 - "solo_ilustracion": sin texto, solo ilustración
 - "frase_grande": una sola frase emotiva centrada
 
-PARA CADA PÁGINA genera un prompt para Nano Banana.
-Termina SIEMPRE con:
-"children's book illustration, warm watercolor style, rounded cartoon faces, small black dot eyes, rosy peach cheeks, dark brown ink outlines, flowing watercolor washes with paint splatter drops, warm ochre and cream tones, white background, cozy tender mood"
+PARA CADA PÁGINA genera un prompt para Nano Banana siguiendo EXACTAMENTE este formato:
+
+Para páginas con texto e ilustración ("texto_ilustracion"):
+"Single children's book page, flat layout, horizontal. LEFT HALF: warm off-white background #FFFDF8. Title [TÍTULO EN MAYÚSCULAS] in large cursive terracotta handwriting, small terracotta heart below. Body text in warm dark brown handwriting: [TEXTO EXACTO DE LA PÁGINA] Some phrases highlighted in terracotta. RIGHT HALF: same warm off-white background #FFFDF8. [DESCRIPCIÓN DETALLADA DE LA ESCENA]. Above them floating watercolor scenes with NO circles NO borders: [VIÑETAS FLOTANTES RELEVANTES A LA HISTORIA]. Many golden stars scattered. Stuffed rabbit. HEAVY watercolor texture, visible wet brush strokes, paint bleeds and blooms, loose expressive watercolor washes, paint splatter drops, very painterly and artistic, warm ochre amber and cream tones. Both sides EXACT SAME background color #FFFDF8, no division line, uniform single background across entire page, cozy tender mood."
+
+Para páginas solo ilustración ("solo_ilustracion"):
+"Single children's book page, flat layout. Warm off-white background #FFFDF8. [DESCRIPCIÓN DETALLADA DE LA ESCENA]. HEAVY watercolor texture, visible wet brush strokes, paint bleeds and blooms, loose expressive watercolor washes, paint splatter drops, warm ochre amber and cream tones, white background #FFFDF8, cozy tender mood, children's book illustration style."
+
+Para páginas de frase grande ("frase_grande"):
+"Single children's book page, flat layout. Warm off-white background #FFFDF8. Large elegant cursive text centered: [FRASE] in terracotta color. Small decorative watercolor illustration below the text: [DESCRIPCIÓN ILUSTRACIÓN]. Warm ochre amber and cream tones, cozy tender mood."
 
 PORTADA: título "EL UNIVERSO DE ${nombre.toUpperCase()}"
 Estilo siluetas, fondo cuadros azul y crema, círculo dorado.
@@ -233,7 +240,7 @@ Responde SOLO con este JSON:
       "tipo": "solo_ilustracion",
       "titulo": "título",
       "texto": "texto con \\n (vacío si solo_ilustracion)",
-      "imagen_prompt": "prompt para Nano Banana"
+      "imagen_prompt": "prompt completo para Nano Banana"
     }
   ]
 }`;
@@ -348,7 +355,6 @@ exports.handler = async (event) => {
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // 1. Transcribir audios
     const audioFiles = Object.entries(files).filter(([name]) => !name.includes("photo"));
     const transcriptions = await Promise.all(
       audioFiles.map(async ([fieldName, fileData]) => {
@@ -357,11 +363,9 @@ exports.handler = async (event) => {
       })
     );
 
-    // 2. Foto protagonista
     const photoFile = files["protagonist_photo"] || files["photo"] || null;
     const photoUrl = photoFile ? await uploadPhotoToPiAPI(photoFile) : null;
 
-    // 3. Fusionar datos
     const allData = { ...fields };
     for (const { fieldName, text } of transcriptions) {
       if (!text) continue;
@@ -369,7 +373,6 @@ exports.handler = async (event) => {
       allData[baseField] = allData[baseField] ? `${allData[baseField]}\n\n[Audio]: ${text}` : `[Audio]: ${text}`;
     }
 
-    // 4. Protagonista
     const protagonist = {
       nombre: fields.protagonistName || fields.q1_nombre || "el protagonista",
       genero: fields.gender || "mujer",
@@ -377,7 +380,6 @@ exports.handler = async (event) => {
       relacion: fields.relacion || (fields.gender === "hombre" ? "papá" : "mamá"),
     };
 
-    // 5. Historia en texto
     const byChapter = {};
     for (const [field, chapKey] of Object.entries(FIELD_TO_CHAPTER)) {
       if (!byChapter[chapKey]) byChapter[chapKey] = [];
@@ -390,16 +392,13 @@ exports.handler = async (event) => {
       return `## ${title}\n${entries.join("\n")}`;
     }).filter(Boolean).join("\n\n");
 
-    // 6. Generar libro con Claude
     console.log("Generando libro con Claude...");
     const libro = await generarLibro(anthropic, historyText, protagonist);
 
-    // 7. Referencias Nano Banana
     const imageRefs = photoUrl
       ? [photoUrl, ...STYLE_REFERENCES.slice(0, 3)]
       : STYLE_REFERENCES.slice(0, 4);
 
-    // 8. Generar ilustraciones
     console.log("Generando ilustraciones con Nano Banana...");
     const paginasConImagenes = await Promise.all(
       libro.paginas.map(async (pagina) => {
@@ -408,7 +407,6 @@ exports.handler = async (event) => {
       })
     );
 
-    // 9. Enviar email
     const htmlBody = buildEmailHtml(allData, protagonist, libro, paginasConImagenes);
     const subject = `📖 ${libro.titulo} — listo para revisar`;
 
