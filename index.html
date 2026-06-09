@@ -153,25 +153,26 @@
     border-color: var(--text);
   }
 
+  /* GALERÍA — portada y contraportada lado a lado */
   .hero-gallery {
     margin-top: 80px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
-    align-items: stretch;
+    height: 680px;
   }
 
-  .gallery-item-tall {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .gallery-item-tall img {
-    width: 100%;
-    flex: 1;
-    object-fit: cover;
+  .gallery-book {
     border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .gallery-book img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
     display: block;
   }
 
@@ -181,55 +182,7 @@
     font-style: italic;
     color: var(--text-muted);
     padding-left: 4px;
-  }
-
-  .gallery-right {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .gallery-item-interior {
-    border-radius: 8px;
-    overflow: hidden;
-    flex: 1;
-  }
-
-  .gallery-item-interior img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-    display: block;
-  }
-
-  .gallery-contraportada {
-    background: var(--navy);
-    border-radius: 8px;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    gap: 16px;
-    flex: 1;
-  }
-
-  .contraportada-frase {
-    font-family: 'Playfair Display', serif;
-    font-size: 17px;
-    font-style: italic;
-    color: white;
-    line-height: 1.6;
-    max-width: 320px;
-  }
-
-  .contraportada-brand {
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold);
+    margin-top: 8px;
   }
 
   .divider {
@@ -238,13 +191,14 @@
     margin: 0 64px;
   }
 
+  /* SECCIÓN SOBRE — con imagen real de página interior */
   .section-sobre {
     padding: 120px 64px;
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 120px;
+    gap: 80px;
     align-items: center;
   }
 
@@ -275,14 +229,16 @@
   }
 
   .sobre-image {
-    background: var(--cream);
     border-radius: 8px;
-    aspect-ratio: 4/5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 8px;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .sobre-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
   }
 
   .section-como {
@@ -557,7 +513,8 @@
     nav { padding: 20px 24px; }
     .nav-links { display: none; }
     .hero { padding: 120px 24px 80px; }
-    .hero-gallery { grid-template-columns: 1fr; }
+    .hero-gallery { grid-template-columns: 1fr; height: auto; }
+    .gallery-book { height: 400px; }
     .divider { margin: 0 24px; }
     .section-sobre { padding: 80px 24px; grid-template-columns: 1fr; gap: 48px; }
     .section-como { padding: 80px 24px; }
@@ -598,35 +555,28 @@
   </div>
 
   <div class="hero-gallery">
-    <div class="gallery-item-tall">
-      <img src="portada-maria.jpg" alt="El universo de María">
-      <span class="gallery-caption">El universo de María</span>
+    <div class="gallery-book">
+      <img src="portada-maria.jpg" alt="El universo de María — portada">
     </div>
-    <div class="gallery-right">
-      <div class="gallery-item-interior">
-        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/página_ejemplo_rlllmf" alt="Página interior">
-      </div>
-      <div class="gallery-contraportada">
-        <p class="contraportada-frase">"Antes de ser todo para ti,<br>fue simplemente una persona<br>con una historia única."</p>
-        <span class="contraportada-brand">Tale Us Stories</span>
-      </div>
+    <div class="gallery-book">
+      <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/ChatGPT_Image_9_jun_2026_20_29_03_xf6qic" alt="El universo de María — contraportada">
     </div>
   </div>
+  <p class="gallery-caption">El universo de María</p>
 </section>
 
 <div class="divider"></div>
 
 <section class="section-sobre" id="sobre">
   <div>
-    <p class="sobre-label">Nuestra historia</p>
-    <h2 class="sobre-title">Cada vida merece ser recordada</h2>
+    <p class="sobre-label">El libro por dentro</p>
+    <h2 class="sobre-title">Cada página, una historia que preservar</h2>
     <p class="sobre-text">
       Creamos libros que preservan la memoria de las personas que más queremos. Cada libro es único — escrito a partir de los recuerdos de quienes mejor conocen al protagonista, ilustrado en estilo acuarela cálido, y pensado para que los niños descubran a los adultos de su vida desde una perspectiva nueva y emocionante.
     </p>
   </div>
   <div class="sobre-image">
-    <span style="font-size:48px;opacity:0.2;">📚</span>
-    <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);opacity:0.4;">Próximamente</span>
+    <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/página_ejemplo_rlllmf" alt="Página interior del libro">
   </div>
 </section>
 
