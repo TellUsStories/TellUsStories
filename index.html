@@ -153,27 +153,25 @@
     border-color: var(--text);
   }
 
-  /* GALERÍA — portada y contraportada lado a lado */
   .hero-gallery {
     margin-top: 80px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    justify-content: center;
     gap: 12px;
-    height: 680px;
   }
 
   .gallery-book {
     border-radius: 8px;
     overflow: hidden;
-    height: 100%;
+    max-width: 380px;
+    flex: 1;
   }
 
   .gallery-book img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
+    height: auto;
     display: block;
+    border-radius: 8px;
   }
 
   .gallery-caption {
@@ -191,7 +189,6 @@
     margin: 0 64px;
   }
 
-  /* SECCIÓN SOBRE — con imagen real de página interior */
   .section-sobre {
     padding: 120px 64px;
     max-width: 1200px;
@@ -513,8 +510,8 @@
     nav { padding: 20px 24px; }
     .nav-links { display: none; }
     .hero { padding: 120px 24px 80px; }
-    .hero-gallery { grid-template-columns: 1fr; height: auto; }
-    .gallery-book { height: 400px; }
+    .hero-gallery { flex-direction: column; align-items: center; }
+    .gallery-book { max-width: 100%; }
     .divider { margin: 0 24px; }
     .section-sobre { padding: 80px 24px; grid-template-columns: 1fr; gap: 48px; }
     .section-como { padding: 80px 24px; }
