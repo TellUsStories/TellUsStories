@@ -1,4 +1,3 @@
-# netlify.toml — Tale Us Stories
 [build]
   publish = "."
   functions = "netlify/functions"
@@ -7,18 +6,19 @@
   node_bundler = "esbuild"
 
 [[redirects]]
-  from   = "/api/submit"
-  to     = "/.netlify/functions/submit"
+  from = "/api/submit"
+  to = "/.netlify/functions/submit"
   status = 200
 
 [[redirects]]
-  from   = "/api/submit-background"
-  to     = "/.netlify/functions/submit-background"
-  status = 200
+  from = "/api/submit-background"
+  to = "/.netlify/functions/submit-background"
+  status = 202
+  force = true
 
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options        = "DENY"
+    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Referrer-Policy = "strict-origin-when-cross-origin"
