@@ -1,40 +1,28 @@
 // netlify/functions/submit-background.js
-// Tale Us Stories — Background Function (hasta 15 minutos)
-
 const { Resend } = require("resend");
 const OpenAI = require("openai");
 const Anthropic = require("@anthropic-ai/sdk");
 const Busboy = require("busboy");
 
-const STYLE_REFERENCES = [
-  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/CFAF1E7E-286F-4116-A4B0-DE687CF86E64_rq1la7",
-  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/C0B79D43-292C-4710-9B20-371795061A8B_hispsx",
-  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/4D123E22-18F7-4CA1-B978-6C34DCEF317D_j0m2xp",
-  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/65DD5291-0A73-40FB-B450-ADE533641DC8_sbzrok",
-  "https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/405CC2FA-7C38-4136-BD14-97B64A3B802A_juzcdd",
-];
-
 const FIELD_TO_CHAPTER = {
-  q1_nombre: "cap1", q1_apodo: "cap1", q1_nacimiento: "cap1",
-  q2_lugar: "cap2", q2_recuerdo: "cap2", q2_juego: "cap2",
-  q3_sueno: "cap3", q3_aventura: "cap3", q3_trabajo: "cap3",
-  q4_pareja: "cap4", q4_hijos: "cap4",
-  q5_actividad: "cap5", q5_lugar: "cap5",
-  q6_consejo: "cap6", q6_deseo: "cap6",
+  q1_nombre:"cap1",q1_apodo:"cap1",q1_nacimiento:"cap1",
+  q2_lugar:"cap2",q2_recuerdo:"cap2",q2_juego:"cap2",
+  q3_sueno:"cap3",q3_aventura:"cap3",q3_trabajo:"cap3",
+  q4_pareja:"cap4",q4_hijos:"cap4",
+  q5_actividad:"cap5",q5_lugar:"cap5",
+  q6_consejo:"cap6",q6_deseo:"cap6",
 };
-
 const CHAPTER_NAMES = {
-  cap1: "Quién es", cap2: "Infancia", cap3: "Juventud",
-  cap4: "Amor y familia", cap5: "Con los niños hoy", cap6: "El legado",
+  cap1:"Quién es",cap2:"Infancia",cap3:"Juventud",
+  cap4:"Amor y familia",cap5:"Con los niños hoy",cap6:"El legado",
 };
-
 const FIELD_LABELS = {
-  q1_nombre: "Nombre completo", q1_apodo: "Apodo", q1_nacimiento: "Nacimiento",
-  q2_lugar: "Dónde creció", q2_recuerdo: "Recuerdo de infancia", q2_juego: "Juego favorito",
-  q3_sueno: "Sueño de juventud", q3_aventura: "Gran aventura", q3_trabajo: "Primer trabajo",
-  q4_pareja: "Historia de amor", q4_hijos: "Llegada de los hijos",
-  q5_actividad: "Actividad con los niños", q5_lugar: "Lugar especial",
-  q6_consejo: "Consejo para el futuro", q6_deseo: "Deseo para los niños",
+  q1_nombre:"Nombre",q1_apodo:"Apodo",q1_nacimiento:"Nacimiento",
+  q2_lugar:"Dónde creció",q2_recuerdo:"Recuerdo infancia",q2_juego:"Juego favorito",
+  q3_sueno:"Sueño juventud",q3_aventura:"Gran aventura",q3_trabajo:"Primer trabajo",
+  q4_pareja:"Historia de amor",q4_hijos:"Llegada hijos",
+  q5_actividad:"Actividad con niños",q5_lugar:"Lugar especial",
+  q6_consejo:"Consejo futuro",q6_deseo:"Deseo para niños",
 };
 
 function parseMultipart(event) {
@@ -44,7 +32,6 @@ function parseMultipart(event) {
     const fields = {};
     const files = {};
     const filePromises = [];
-
     bb.on("field", (name, val) => { fields[name] = val; });
     bb.on("file", (name, stream, info) => {
       const chunks = [];
@@ -57,19 +44,15 @@ function parseMultipart(event) {
       });
       filePromises.push(p);
     });
-
     bb.on("finish", async () => { await Promise.all(filePromises); resolve({ fields, files }); });
     bb.on("error", reject);
-
-    const body = event.isBase64Encoded
-      ? Buffer.from(event.body, "base64")
-      : Buffer.from(event.body || "", "utf8");
+    const body = event.isBase64Encoded ? Buffer.from(event.body, "base64") : Buffer.from(event.body || "", "utf8");
     bb.write(body);
     bb.end();
   });
 }
 
-async function transcribeAudio(openai, fileData, fieldName) {
+async function transcribeAudio(openai, fileData) {
   if (!fileData || fileData.buffer.length < 1000) return null;
   try {
     const blob = new Blob([fileData.buffer], { type: fileData.mimetype });
@@ -77,255 +60,48 @@ async function transcribeAudio(openai, fileData, fieldName) {
     const response = await openai.audio.transcriptions.create({ file, model: "whisper-1", language: "es" });
     return response.text?.trim() || null;
   } catch (err) {
-    console.error(`Error transcribiendo ${fieldName}:`, err.message);
-    return `[Error: ${err.message}]`;
-  }
-}
-
-async function generarIlustracion(prompt, imageUrls = []) {
-  try {
-    const body = {
-      model: "Qubico/nano-banana-2",
-      task_type: "nano-banana-2",
-      input: { prompt, image_urls: imageUrls },
-    };
-
-    const response = await fetch("https://api.piapi.ai/api/v1/task", {
-      method: "POST",
-      headers: {
-        "X-API-KEY": process.env.PIAPI_API_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    const data = await response.json();
-    const taskId = data?.data?.task_id;
-    if (!taskId) return null;
-
-    for (let i = 0; i < 30; i++) {
-      await new Promise(r => setTimeout(r, 3000));
-      const statusRes = await fetch(`https://api.piapi.ai/api/v1/task/${taskId}`, {
-        headers: { "X-API-KEY": process.env.PIAPI_API_KEY },
-      });
-      const statusData = await statusRes.json();
-      const status = statusData?.data?.status;
-      if (status === "completed") return statusData?.data?.output?.image_url || null;
-      if (status === "failed") return null;
-    }
-    return null;
-  } catch (err) {
-    console.error("Error generando ilustración:", err.message);
+    console.error("Error transcribiendo:", err.message);
     return null;
   }
-}
-
-async function generarLibro(anthropic, historyText, protagonist) {
-  const { nombre, relacion, ninos, genero } = protagonist;
-  const nino_a = genero === "hombre" ? "niño" : "niña";
-  const ella_el = genero === "hombre" ? "Él" : "Ella";
-
-  const prompt = `Eres el escritor de "Tale Us Stories", editorial de libros ilustrados personalizados donde los niños descubren la historia real de un adulto que quieren.
-
-Escribe el texto completo de un libro ilustrado para niños basándote en esta historia real.
-
-REGLAS DE TEXTO:
-- Frases MUY cortas. Máximo 8 palabras por línea
-- Cada idea en su propia línea (usa \\n)
-- Máximo 10 líneas por página con texto
-- Tono cálido, cercano, con humor suave
-- Habla SIEMPRE directamente a los niños
-- Detalles muy específicos y reales
-- Marca frases emotivas con [T]frase[/T]
-
-ESTRUCTURA — 20 páginas interiores exactas:
-- Páginas 1-2: portadilla + dedicatoria (solo ilustración)
-- Páginas 3-4: introducción (texto + ilustración)
-- Páginas 5-8: infancia
-- Páginas 9-12: juventud
-- Páginas 13-16: amor y familia
-- Páginas 17-18: con los niños hoy
-- Páginas 19-20: legado y cierre
-
-TIPOS:
-- "texto_ilustracion": título + texto + ilustración
-- "solo_ilustracion": sin texto
-- "frase_grande": una sola frase emotiva
-
-PARA CADA PÁGINA genera un prompt para Nano Banana:
-
-Para "texto_ilustracion":
-"Single children's book page, flat layout, horizontal. LEFT HALF: warm off-white background #FFFDF8. Title [TÍTULO] in large cursive terracotta handwriting, small terracotta heart below. Body text in warm dark brown handwriting: [TEXTO]. Some phrases highlighted in terracotta. RIGHT HALF: same warm off-white background #FFFDF8. [ESCENA]. Above floating watercolor scenes with NO circles NO borders: [VIÑETAS]. Many golden stars scattered. Stuffed rabbit. HEAVY watercolor texture, visible wet brush strokes, paint bleeds and blooms, loose expressive watercolor washes, paint splatter drops, very painterly and artistic, warm ochre amber and cream tones. Both sides EXACT SAME background color #FFFDF8, no division line, cozy tender mood."
-
-Para "solo_ilustracion":
-"Single children's book page, flat layout. Warm off-white background #FFFDF8. [ESCENA]. HEAVY watercolor texture, warm ochre amber and cream tones, cozy tender mood."
-
-Para "frase_grande":
-"Single children's book page, flat layout. Warm off-white background #FFFDF8. Large elegant cursive text centered: [FRASE] in terracotta. Small watercolor illustration below. Warm ochre tones, cozy tender mood."
-
-PORTADA: "EL UNIVERSO DE ${nombre.toUpperCase()}" — siluetas, cuadros azul/crema, círculo dorado. Prompt termina con: "book cover illustration, bold graphic watercolor style, silhouettes, checkered background blue and cream, golden circle, navy blue terracotta gold palette, bold typography"
-
-CONTRAPORTADA: frase emotiva máximo 2 líneas.
-
-HISTORIA:
-${historyText}
-
-Responde SOLO con JSON válido:
-{
-  "titulo": "EL UNIVERSO DE ${nombre.toUpperCase()}",
-  "portada_prompt": "...",
-  "contraportada_frase": "...",
-  "paginas": [
-    {
-      "numero": 1,
-      "tipo": "solo_ilustracion",
-      "titulo": "...",
-      "texto": "",
-      "imagen_prompt": "..."
-    }
-  ]
-}`;
-
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
-    max_tokens: 5000,
-    messages: [{ role: "user", content: prompt }],
-  });
-
-  const text = response.content[0].text;
-  const clean = text.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean);
-}
-
-function escapeHtml(str) {
-  return String(str || "")
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
-
-function buildEmailHtml(allData, protagonist, libro, paginasConImagenes) {
-  const { nombre, ninos, relacion } = protagonist;
-
-  const byChapter = {};
-  for (const [field, chapKey] of Object.entries(FIELD_TO_CHAPTER)) {
-    if (!byChapter[chapKey]) byChapter[chapKey] = [];
-    const value = allData[field];
-    if (value) byChapter[chapKey].push({ field, value });
-  }
-
-  const historiaHtml = Object.entries(CHAPTER_NAMES).map(([key, title]) => {
-    const entries = byChapter[key] || [];
-    if (!entries.length) return "";
-    const rows = entries.map(({ field, value }) => `
-      <tr>
-        <td style="padding:6px 12px;color:#8b6914;font-size:12px;vertical-align:top;width:160px;">${FIELD_LABELS[field] || field}</td>
-        <td style="padding:6px 12px;font-size:13px;line-height:1.6;color:#2c1810;">${escapeHtml(value)}</td>
-      </tr>`).join("");
-    return `
-      <div style="margin-bottom:20px;">
-        <h3 style="margin:0 0 8px;font-size:12px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:1px;">${title}</h3>
-        <table style="width:100%;border-collapse:collapse;background:#fffbeb;border-radius:8px;">${rows}</table>
-      </div>`;
-  }).join("");
-
-  const libroHtml = paginasConImagenes.map(p => {
-    const textoFormateado = (p.texto || "")
-      .replace(/\[T\](.*?)\[\/T\]/g, '<span style="color:#c47a3a;">$1</span>')
-      .replace(/\n/g, "<br>");
-    return `
-      <div style="margin-bottom:28px;padding:20px;background:#fffbeb;border-radius:12px;border-left:4px solid #fde68a;">
-        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b45309;margin-bottom:6px;">Página ${p.numero} · ${p.tipo || 'texto_ilustracion'}</div>
-        <div style="font-size:18px;color:#c47a3a;font-style:italic;margin-bottom:10px;">${escapeHtml(p.titulo)}</div>
-        ${textoFormateado ? `<div style="font-size:14px;line-height:2;color:#5a3e28;text-align:center;margin-bottom:14px;">${textoFormateado}</div>` : '<div style="font-size:12px;color:#8b6914;font-style:italic;margin-bottom:14px;text-align:center;">— Solo ilustración —</div>'}
-        ${p.imagen_url ? `<div style="text-align:center;margin-bottom:12px;"><img src="${p.imagen_url}" style="max-width:100%;border-radius:8px;" /></div>` : ''}
-        <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:10px;">
-          <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">🎨 Prompt Nano Banana</div>
-          <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(p.imagen_prompt)}</div>
-        </div>
-      </div>`;
-  }).join("");
-
-  return `<!DOCTYPE html>
-<html lang="es">
-<head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;background:#fdf6e3;font-family:Georgia,serif;">
-<div style="max-width:700px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;">
-  <div style="background:linear-gradient(135deg,#b45309,#d97706);padding:32px 40px;text-align:center;">
-    <p style="margin:0;font-size:11px;letter-spacing:3px;color:#fde68a;text-transform:uppercase;">Tale Us Stories</p>
-    <h1 style="margin:8px 0 4px;font-size:22px;color:#fff;font-weight:400;">📖 Nuevo libro generado</h1>
-    <p style="margin:0;font-size:16px;color:#fde68a;font-style:italic;">${escapeHtml(libro.titulo)}</p>
-  </div>
-  <div style="padding:20px 40px;background:#fffbeb;border-bottom:2px solid #fde68a;">
-    <p style="margin:0;font-size:14px;color:#2c1810;line-height:1.8;">
-      <strong>Protagonista:</strong> ${escapeHtml(nombre)}<br>
-      <strong>Relación:</strong> ${escapeHtml(relacion)}<br>
-      <strong>Para:</strong> ${escapeHtml(ninos)}<br>
-      <strong>Páginas:</strong> ${libro.paginas.length}
-    </p>
-  </div>
-  <div style="padding:24px 40px;background:#fff8f0;border-bottom:1px solid #fde68a;">
-    <h2 style="margin:0 0 12px;font-size:14px;color:#b45309;">💬 Frase contraportada</h2>
-    <div style="font-size:14px;color:#2c1810;font-style:italic;">${escapeHtml(libro.contraportada_frase || '')}</div>
-  </div>
-  <div style="padding:32px 40px;">
-    <h2 style="margin:0 0 20px;font-size:16px;color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">✨ 20 páginas + Ilustraciones</h2>
-    ${libroHtml}
-  </div>
-  <div style="padding:28px 40px;background:#f9f5eb;border-top:1px solid #e7e0d0;">
-    <h2 style="margin:0 0 16px;font-size:15px;color:#b45309;">📝 Historia original</h2>
-    ${historiaHtml}
-  </div>
-  <div style="padding:16px 40px;background:#f0e8d8;text-align:center;">
-    <p style="margin:0;font-size:11px;color:#8b6914;">Tale Us Stories · ${new Date().toLocaleString("es-ES")}</p>
-  </div>
-</div>
-</body>
-</html>`;
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
-  }
+  if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
 
   try {
+    console.log("Iniciando pipeline...");
     const { fields, files } = await parseMultipart(event);
+    console.log("Formulario parseado. Campos:", Object.keys(fields).join(", "));
 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const audioFiles = Object.entries(files).filter(([name]) => name.endsWith('_audio'));
-    const transcriptions = await Promise.all(
-      audioFiles.map(async ([fieldName, fileData]) => {
-        const text = await transcribeAudio(openai, fileData, fieldName);
-        return { fieldName, text };
-      })
-    );
-
+    // Transcribir audios
     const allData = { ...fields };
-    for (const { fieldName, text } of transcriptions) {
-      if (!text) continue;
-      const baseField = fieldName.replace(/_audio$/, "");
-      allData[baseField] = allData[baseField]
-        ? `${allData[baseField]}\n\n[Audio]: ${text}`
-        : `[Audio]: ${text}`;
+    const audioEntries = Object.entries(files).filter(([name]) => name.endsWith('_audio'));
+    console.log(`Transcribiendo ${audioEntries.length} audios...`);
+    for (const [fieldName, fileData] of audioEntries) {
+      const text = await transcribeAudio(openai, fileData);
+      if (text) {
+        const baseField = fieldName.replace(/_audio$/, "");
+        allData[baseField] = allData[baseField] ? `${allData[baseField]}\n${text}` : text;
+      }
     }
 
     const protagonist = {
-      nombre: fields.protagonistName || fields.q1_nombre || "el protagonista",
+      nombre: fields.protagonistName || "el protagonista",
       genero: fields.gender || "mujer",
-      ninos: fields.childName || fields.senderName || "los niños",
-      relacion: fields.relacion || (fields.gender === "hombre" ? "papá" : "mamá"),
+      ninos: fields.childName || "los niños",
+      relacion: fields.relacion || "mamá",
     };
 
+    // Construir historia
     const byChapter = {};
     for (const [field, chapKey] of Object.entries(FIELD_TO_CHAPTER)) {
       if (!byChapter[chapKey]) byChapter[chapKey] = [];
-      const value = allData[field];
-      if (value) byChapter[chapKey].push(`${FIELD_LABELS[field]}: ${value}`);
+      if (allData[field]) byChapter[chapKey].push(`${FIELD_LABELS[field]}: ${allData[field]}`);
     }
-
     const historyText = Object.entries(CHAPTER_NAMES).map(([key, title]) => {
       const entries = byChapter[key] || [];
       if (!entries.length) return "";
@@ -333,31 +109,82 @@ exports.handler = async (event) => {
     }).filter(Boolean).join("\n\n");
 
     console.log("Generando libro con Claude...");
-    const libro = await generarLibro(anthropic, historyText, protagonist);
+    const { nombre, relacion, ninos, genero } = protagonist;
+    const nino_a = genero === "hombre" ? "niño" : "niña";
 
-    const imageRefs = STYLE_REFERENCES.slice(0, 4);
+    const claudeResponse = await anthropic.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 5000,
+      messages: [{ role: "user", content: `Eres el escritor de "Tale Us Stories". Escribe un libro ilustrado de 20 páginas para niños basándote en esta historia real.
 
-    console.log("Generando ilustraciones con Nano Banana...");
-    const paginasConImagenes = await Promise.all(
-      libro.paginas.map(async (pagina) => {
-        const imagenUrl = await generarIlustracion(pagina.imagen_prompt, imageRefs);
-        return { ...pagina, imagen_url: imagenUrl };
-      })
-    );
+PROTAGONISTA: ${nombre} (${relacion} de ${ninos})
+GÉNERO: ${genero}
 
-    const htmlBody = buildEmailHtml(allData, protagonist, libro, paginasConImagenes);
+REGLAS:
+- Frases cortas, máximo 8 palabras por línea
+- Habla directamente a los niños
+- Tono cálido con humor suave
+- Máx 10 líneas por página
+- Marca frases emotivas con [T]frase[/T]
 
+HISTORIA:
+${historyText || "Historia de prueba — protagonista especial para los niños."}
+
+Responde SOLO con JSON:
+{
+  "titulo": "EL UNIVERSO DE ${nombre.toUpperCase()}",
+  "contraportada_frase": "frase emotiva de 2 líneas",
+  "paginas": [
+    {"numero": 1, "tipo": "solo_ilustracion", "titulo": "Portadilla", "texto": "", "imagen_prompt": "prompt para ilustración"},
+    {"numero": 2, "tipo": "texto_ilustracion", "titulo": "Título", "texto": "texto\\nde la página", "imagen_prompt": "prompt"}
+  ]
+}` }],
+    });
+
+    const rawText = claudeResponse.content[0].text;
+    const clean = rawText.replace(/\`\`\`json|\`\`\`/g, "").trim();
+    const libro = JSON.parse(clean);
+    console.log(`Libro generado: ${libro.paginas.length} páginas`);
+
+    // Construir email
+    const paginasHtml = libro.paginas.map(p => {
+      const texto = (p.texto || "").replace(/\[T\](.*?)\[\/T\]/g, '<strong style="color:#c47a3a;">$1</strong>').replace(/\n/g, "<br>");
+      return `<div style="margin-bottom:20px;padding:16px;background:#fffbeb;border-radius:8px;border-left:4px solid #fde68a;">
+        <div style="font-size:10px;color:#b45309;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">Página ${p.numero} · ${p.tipo}</div>
+        <div style="font-size:16px;color:#c47a3a;font-style:italic;margin-bottom:8px;">${p.titulo}</div>
+        ${texto ? `<div style="font-size:13px;line-height:1.8;color:#5a3e28;margin-bottom:8px;">${texto}</div>` : ''}
+        <div style="font-size:11px;color:#6b4c2a;font-family:monospace;background:#fff;padding:8px;border-radius:4px;border:1px dashed #e8d5b0;">🎨 ${p.imagen_prompt}</div>
+      </div>`;
+    }).join("");
+
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="font-family:Georgia,serif;background:#fdf6e3;padding:20px;">
+<div style="max-width:700px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#b45309,#d97706);padding:32px;text-align:center;">
+    <h1 style="color:white;margin:0;font-size:24px;">📖 ${libro.titulo}</h1>
+    <p style="color:#fde68a;margin:8px 0 0;font-style:italic;">${libro.contraportada_frase}</p>
+  </div>
+  <div style="padding:20px 32px;background:#fffbeb;">
+    <p style="font-size:14px;color:#2c1810;"><strong>Protagonista:</strong> ${nombre} · <strong>Para:</strong> ${ninos} · <strong>Páginas:</strong> ${libro.paginas.length}</p>
+  </div>
+  <div style="padding:24px 32px;">${paginasHtml}</div>
+  <div style="padding:16px 32px;background:#f0e8d8;text-align:center;">
+    <p style="font-size:11px;color:#8b6914;">Tale Us Stories · ${new Date().toLocaleString("es-ES")}</p>
+  </div>
+</div>
+</body></html>`;
+
+    console.log("Enviando email...");
     await resend.emails.send({
       from: "Tale Us Stories <onboarding@resend.dev>",
       to: [process.env.TO_EMAIL || "cristinacasanovas@hotmail.com"],
       subject: `📖 ${libro.titulo} — listo para revisar`,
-      html: htmlBody,
+      html,
     });
-
-    console.log("Email enviado correctamente");
+    console.log("Email enviado correctamente ✅");
 
   } catch (err) {
-    console.error("Error en background function:", err);
+    console.error("Error:", err.message, err.stack);
   }
 
   return { statusCode: 202, body: "" };
