@@ -1,19 +1,21 @@
 # netlify.toml — Tale Us Stories
-
 [build]
-  publish = "."           # raíz del proyecto (donde está index.html)
+  publish = "."
   functions = "netlify/functions"
 
 [functions]
-  node_bundler = "esbuild"   # más rápido y ligero que webpack
+  node_bundler = "esbuild"
 
-# Redirigir /api/submit → función serverless
 [[redirects]]
   from   = "/api/submit"
   to     = "/.netlify/functions/submit"
   status = 200
 
-# Headers de seguridad básicos
+[[redirects]]
+  from   = "/api/submit-background"
+  to     = "/.netlify/functions/submit-background"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
