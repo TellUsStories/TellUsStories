@@ -763,8 +763,8 @@ async function submit() {
   var photos = document.getElementById('fileInput') ? document.getElementById('fileInput').files : null;
   if (photos) Array.from(photos).slice(0, 15).forEach(function(f, i) { fd.append('photo_' + i, f); });
   try {
-    var res = await fetch('/api/submit-background', { method: 'POST', body: fd });
-    if (res.ok || res.status === 202) {
+    var res = await fetch('https://hook.eu1.make.com/tbdowzpkxyenjvbc4ck15fxxm3g26z5r', { method: 'POST', body: fd });
+    if (res.ok || res.status === 200) {
       document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
       document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || 'el protagonista';
       go(TOTAL + 1);
