@@ -584,19 +584,16 @@ function nameOrPronoun() {
 function updateAll() {
   const nm = nameOrPronoun();
   document.querySelectorAll('.G-name').forEach(function(el) { el.textContent = nm; });
-
   var artProt = gender === 'f' ? 'a la protagonista' : 'al protagonista';
   var el1 = document.getElementById('txt-presentamos');
   if (el1) el1.textContent = artProt;
   var el2 = document.getElementById('txt-describirías');
   if (el2) el2.textContent = artProt;
-
   document.querySelectorAll('.G-el').forEach(function(el) { el.textContent = g('el'); });
   document.querySelectorAll('.G-lo').forEach(function(el) { el.textContent = g('lo'); });
   document.querySelectorAll('.G-unna').forEach(function(el) { el.textContent = g('unna'); });
   document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
   document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
-
   var cn = document.getElementById('childNames')?.value.trim() || 'los niños';
   var cnh = document.getElementById('childNamesH');
   if (cnh) cnh.textContent = cn;
@@ -766,7 +763,7 @@ async function submit() {
   var photos = document.getElementById('fileInput') ? document.getElementById('fileInput').files : null;
   if (photos) Array.from(photos).slice(0, 15).forEach(function(f, i) { fd.append('photo_' + i, f); });
   try {
-    var res = await fetch('/api/submit', { method: 'POST', body: fd });
+    var res = await fetch('/api/submit-background', { method: 'POST', body: fd });
     var data = await res.json();
     if (data.ok) {
       document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
