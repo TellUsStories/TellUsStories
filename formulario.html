@@ -566,15 +566,16 @@ const TOTAL = 7;
 let gender = 'f';
 
 const G = {
-  el:   ['ella',   'él'],
-  lo:   ['la',     'lo'],
-  unna: ['una',    'un'],
-  ninoa:['niña',   'niño'],
-  oa:   ['a',      'o'],
-  name: ['ella',   'él'],
+  el:   ['ella', 'él'],
+  lo:   ['la',   'lo'],
+  unna: ['una',  'un'],
+  ninoa:['niña', 'niño'],
+  oa:   ['a',    'o'],
+  name: ['ella', 'él'],
 };
 
 function g(key) { return G[key][gender === 'f' ? 0 : 1]; }
+
 function nameOrPronoun() {
   const n = document.getElementById('protName')?.value.trim();
   return n || g('name');
@@ -582,28 +583,28 @@ function nameOrPronoun() {
 
 function updateAll() {
   const nm = nameOrPronoun();
-  document.querySelectorAll('.G-name').forEach(el => el.textContent = nm);
+  document.querySelectorAll('.G-name').forEach(function(el) { el.textContent = nm; });
 
-  const artProt = gender === 'f' ? 'a la protagonista' : 'al protagonista';
-  const el1 = document.getElementById('txt-presentamos');
+  var artProt = gender === 'f' ? 'a la protagonista' : 'al protagonista';
+  var el1 = document.getElementById('txt-presentamos');
   if (el1) el1.textContent = artProt;
-  const el2 = document.getElementById('txt-describirías');
+  var el2 = document.getElementById('txt-describirías');
   if (el2) el2.textContent = artProt;
 
-  document.querySelectorAll('.G-el').forEach(el => el.textContent = g('el'));
-  document.querySelectorAll('.G-lo').forEach(el => el.textContent = g('lo'));
-  document.querySelectorAll('.G-unna').forEach(el => el.textContent = g('unna'));
-  document.querySelectorAll('.G-ninoa').forEach(el => el.textContent = g('ninoa'));
-  document.querySelectorAll('.G-oa').forEach(el => el.textContent = g('oa'));
+  document.querySelectorAll('.G-el').forEach(function(el) { el.textContent = g('el'); });
+  document.querySelectorAll('.G-lo').forEach(function(el) { el.textContent = g('lo'); });
+  document.querySelectorAll('.G-unna').forEach(function(el) { el.textContent = g('unna'); });
+  document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
+  document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
 
-  const cn = document.getElementById('childNames')?.value.trim() || 'los niños';
-  const cnh = document.getElementById('childNamesH');
+  var cn = document.getElementById('childNames')?.value.trim() || 'los niños';
+  var cnh = document.getElementById('childNamesH');
   if (cnh) cnh.textContent = cn;
 }
 
 function setGender(g_val, el) {
   gender = g_val;
-  document.querySelectorAll('.gender-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.gender-opt').forEach(function(o) { o.classList.remove('selected'); });
   el.classList.add('selected');
   updateAll();
 }
@@ -611,36 +612,41 @@ function setGender(g_val, el) {
 function onNameInput() { updateAll(); }
 
 function go(n) {
-  const prevId = cur <= TOTAL ? 's' + cur : 'sFinal';
-  document.getElementById(prevId)?.classList.remove('active');
+  var prevId = cur <= TOTAL ? 's' + cur : 'sFinal';
+  var prevEl = document.getElementById(prevId);
+  if (prevEl) prevEl.classList.remove('active');
   cur = n;
-  const nextId = n <= TOTAL ? 's' + n : 'sFinal';
-  document.getElementById(nextId)?.classList.add('active');
-  document.getElementById('stepLbl').textContent = n < TOTAL ? `Paso ${n + 1} de ${TOTAL}` : '¡Listo!';
-  document.getElementById('prog').style.width = `${Math.min((n / TOTAL) * 100, 100)}%`;
+  var nextId = n <= TOTAL ? 's' + n : 'sFinal';
+  var nextEl = document.getElementById(nextId);
+  if (nextEl) nextEl.classList.add('active');
+  var stepLbl = document.getElementById('stepLbl');
+  if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Paso ' + (n + 1) + ' de ' + TOTAL) : '¡Listo!';
+  var prog = document.getElementById('prog');
+  if (prog) prog.style.width = Math.min((n / TOTAL) * 100, 100) + '%';
   updateAll();
   if (n === TOTAL) buildReview();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-const recorders = {}, audioBlobs = {}, timers = {}, recSecs = {};
+var recorders = {}, audioBlobs = {}, timers = {}, recSecs = {};
 
 async function toggleRec(idx) {
-  const btn = document.getElementById('rb' + idx);
-  if (recorders[idx]?.state === 'recording') { recorders[idx].stop(); return; }
+  var btn = document.getElementById('rb' + idx);
+  if (recorders[idx] && recorders[idx].state === 'recording') { recorders[idx].stop(); return; }
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    document.getElementById('permBanner')?.classList.remove('show');
-    const mr = new MediaRecorder(stream);
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    var permBanner = document.getElementById('permBanner');
+    if (permBanner) permBanner.classList.remove('show');
+    var mr = new MediaRecorder(stream);
     recorders[idx] = mr;
-    const chunks = [];
-    mr.ondataavailable = e => chunks.push(e.data);
-    mr.onstop = () => {
-      stream.getTracks().forEach(t => t.stop());
-      const blob = new Blob(chunks, { type: 'audio/webm' });
+    var chunks = [];
+    mr.ondataavailable = function(e) { chunks.push(e.data); };
+    mr.onstop = function() {
+      stream.getTracks().forEach(function(t) { t.stop(); });
+      var blob = new Blob(chunks, { type: 'audio/webm' });
       audioBlobs[idx] = blob;
-      const url = URL.createObjectURL(blob);
-      const a = document.getElementById('ap' + idx);
+      var url = URL.createObjectURL(blob);
+      var a = document.getElementById('ap' + idx);
       a.src = url; a.classList.add('show');
       document.getElementById('bd' + idx).classList.add('show');
       document.getElementById('bc' + idx).classList.add('show');
@@ -653,42 +659,57 @@ async function toggleRec(idx) {
     btn.classList.add('rec');
     btn.innerHTML = '<span class="rdot"></span> Detener';
     recSecs[idx] = 0;
-    timers[idx] = setInterval(() => {
+    timers[idx] = setInterval(function() {
       recSecs[idx]++;
       document.getElementById('rt' + idx).textContent = fmt(recSecs[idx]);
     }, 1000);
-  } catch (e) {
-    document.getElementById('permBanner')?.classList.add('show');
-    document.getElementById('tf' + idx)?.classList.add('show');
+  } catch(e) {
+    var pb = document.getElementById('permBanner');
+    if (pb) pb.classList.add('show');
+    var tf = document.getElementById('tf' + idx);
+    if (tf) tf.classList.add('show');
   }
 }
 
 function clearRec(idx) {
-  try { recorders[idx]?.stop(); } catch (e) {}
+  try { if (recorders[idx]) recorders[idx].stop(); } catch(e) {}
   audioBlobs[idx] = null;
-  const a = document.getElementById('ap' + idx);
+  var a = document.getElementById('ap' + idx);
   a.src = ''; a.classList.remove('show');
   document.getElementById('bd' + idx).classList.remove('show');
   document.getElementById('bc' + idx).classList.remove('show');
   document.getElementById('vc' + idx).classList.remove('done');
   document.getElementById('rt' + idx).textContent = '0:00';
-  const btn = document.getElementById('rb' + idx);
+  var btn = document.getElementById('rb' + idx);
   btn.classList.remove('rec');
   btn.innerHTML = '<span class="rdot"></span> Grabar';
   clearInterval(timers[idx]);
 }
 
-function toggleTF(idx) { document.getElementById('tf' + idx)?.classList.toggle('show'); }
-function fmt(s) { return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; }
-function selTone(el) { document.querySelectorAll('.tone-opt').forEach(o => o.classList.remove('selected')); el.classList.add('selected'); }
+function toggleTF(idx) {
+  var tf = document.getElementById('tf' + idx);
+  if (tf) tf.classList.toggle('show');
+}
+
+function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+
+function selTone(el) {
+  document.querySelectorAll('.tone-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
 function handleFiles(input) {
-  const list = document.getElementById('fileList'); list.innerHTML = '';
-  Array.from(input.files).slice(0, 15).forEach(f => {
-    const d = document.createElement('div'); d.className = 'fi'; d.textContent = f.name; list.appendChild(d);
+  var list = document.getElementById('fileList');
+  list.innerHTML = '';
+  Array.from(input.files).slice(0, 15).forEach(function(f) {
+    var d = document.createElement('div');
+    d.className = 'fi';
+    d.textContent = f.name;
+    list.appendChild(d);
   });
 }
 
-const CHAPTERS = [
+var CHAPTERS = [
   { name: 'Cap. 0 · Quién es', qs: [0, 1, 2] },
   { name: 'Cap. 1 · Infancia', qs: [3, 4] },
   { name: 'Cap. 2 · Juventud', qs: [5, 6] },
@@ -703,17 +724,66 @@ function buildReview() {
   document.getElementById('rv-type').textContent  = document.getElementById('bookType').value || '—';
   document.getElementById('rv-ord').textContent   = document.getElementById('orderer').value || '—';
   document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
-  const tEl = document.querySelector('.tone-opt.selected .tt');
-  document.getElementById('rv-tone').textContent  = tEl?.textContent || 'Equilibrado';
-  const c = document.getElementById('rv-chapters');
+  var tEl = document.querySelector('.tone-opt.selected .tt');
+  document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrado';
+  var c = document.getElementById('rv-chapters');
   c.innerHTML = '';
-  CHAPTERS.forEach(ch => {
-    const answered = ch.qs.filter(i => audioBlobs[i] || document.querySelector(`#tf${i} textarea`)?.value?.trim()).length;
-    const row = document.createElement('div');
+  CHAPTERS.forEach(function(ch) {
+    var answered = ch.qs.filter(function(i) {
+      var tf = document.querySelector('#tf' + i + ' textarea');
+      return audioBlobs[i] || (tf && tf.value && tf.value.trim());
+    }).length;
+    var row = document.createElement('div');
     row.className = 'sr';
-    row.innerHTML = `<span class="sk" style="text-transform:none;letter-spacing:0;font-size:12px;">${ch.name}</span><span class="sv">${answered}/${ch.qs.length} respondidas ${answered === ch.qs.length ? '✓' : ''}</span>`;
+    row.innerHTML = '<span class="sk" style="text-transform:none;letter-spacing:0;font-size:12px;">' + ch.name + '</span><span class="sv">' + answered + '/' + ch.qs.length + ' respondidas ' + (answered === ch.qs.length ? '✓' : '') + '</span>';
     c.appendChild(row);
   });
 }
 
-asy
+async function submit() {
+  var btn = document.querySelector('.btn-next[onclick="submit()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+  var fd = new FormData();
+  fd.append('protagonistName', document.getElementById('protName').value || '');
+  fd.append('childName',       document.getElementById('childNames').value || '');
+  fd.append('gender',          gender === 'f' ? 'mujer' : 'hombre');
+  fd.append('relacion',        document.getElementById('bookType').value || '');
+  fd.append('senderName',      document.getElementById('orderer').value || '');
+  fd.append('senderEmail',     document.getElementById('email').value || '');
+  fd.append('q1_nacimiento',   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '');
+  fd.append('q1_apodo',        document.getElementById('job') ? document.getElementById('job').value : '');
+  fd.append('q2_juego',        document.getElementById('sport') ? document.getElementById('sport').value : '');
+  fd.append('q5_lugar',        document.getElementById('places') ? document.getElementById('places').value : '');
+  fd.append('tone',            document.querySelector('.tone-opt.selected .tt') ? document.querySelector('.tone-opt.selected .tt').textContent : 'Equilibrado');
+  var fieldMap = {0:'q1_nombre',1:'q2_lugar',2:'q2_recuerdo',3:'q2_recuerdo',4:'q2_juego',5:'q3_sueno',6:'q3_aventura',7:'q4_pareja',8:'q4_hijos',9:'q5_actividad',10:'q5_actividad',11:'q5_lugar',12:'q6_consejo',13:'q6_deseo'};
+  for (var i = 0; i <= 13; i++) {
+    var tf = document.querySelector('#tf' + i + ' textarea');
+    if (tf && tf.value && tf.value.trim()) fd.append(fieldMap[i] || ('q_extra_' + i), tf.value.trim());
+  }
+  for (var idx in audioBlobs) {
+    if (audioBlobs[idx]) fd.append((fieldMap[idx] || ('q_extra_' + idx)) + '_audio', audioBlobs[idx], 'q' + idx + '.webm');
+  }
+  var photos = document.getElementById('fileInput') ? document.getElementById('fileInput').files : null;
+  if (photos) Array.from(photos).slice(0, 15).forEach(function(f, i) { fd.append('photo_' + i, f); });
+  try {
+    var res = await fetch('/api/submit', { method: 'POST', body: fd });
+    var data = await res.json();
+    if (data.ok) {
+      document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
+      document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || 'el protagonista';
+      go(TOTAL + 1);
+    } else {
+      alert('Hubo un error al enviar. Por favor inténtalo de nuevo.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Enviar historia ♥'; }
+    }
+  } catch(err) {
+    alert('Error de conexión. Por favor inténtalo de nuevo.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Enviar historia ♥'; }
+  }
+}
+
+document.getElementById('prog').style.width = '0%';
+updateAll();
+</script>
+</body>
+</html>
