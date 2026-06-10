@@ -1,5 +1,5 @@
 // netlify/functions/submit-background.js
-// Tale Us Stories — pipeline completo (Background Function — hasta 15 min)
+// Tale Us Stories — Background Function (hasta 15 minutos)
 
 const { Resend } = require("resend");
 const OpenAI = require("openai");
@@ -82,25 +82,6 @@ async function transcribeAudio(openai, fileData, fieldName) {
   }
 }
 
-async function uploadPhotoToPiAPI(fileData) {
-  if (!fileData || fileData.buffer.length < 1000) return null;
-  try {
-    const formData = new FormData();
-    const blob = new Blob([fileData.buffer], { type: fileData.mimetype });
-    formData.append("file", blob, fileData.filename);
-    const response = await fetch("https://api.piapi.ai/api/v1/task", {
-      method: "POST",
-      headers: { "X-API-KEY": process.env.PIAPI_API_KEY },
-      body: formData,
-    });
-    const data = await response.json();
-    return data?.data?.url || null;
-  } catch (err) {
-    console.error("Error subiendo foto:", err.message);
-    return null;
-  }
-}
-
 async function generarIlustracion(prompt, imageUrls = []) {
   try {
     const body = {
@@ -148,98 +129,59 @@ async function generarLibro(anthropic, historyText, protagonist) {
 
 Escribe el texto completo de un libro ilustrado para niños basándote en esta historia real.
 
-ESTILO OBLIGATORIO:
-
-EJEMPLO PÁGINA 1:
-"${ninos},
-vosotros conocéis a ${nombre} como ${relacion}.
-La que encuentra los zapatos que nadie encuentra.
-La que organiza cumpleaños para treinta personas
-como si fuera algo normal.
-
-Pero antes de ser vuestra ${relacion}...
-fue una ${nino_a}.
-Y esta es la historia de cómo
-esa ${nino_a} se convirtió en vuestra ${relacion}.
-
-Aunque, para ser sinceros,
-nadie sabe muy bien cómo
-le dio tiempo a hacer tantas cosas."
-
-EJEMPLO PÁGINA FINAL:
-"Vuestra ${relacion} ha cruzado océanos.
-Ha construido hogares.
-Os ha traído al mundo.
-Ha llorado, ha reído,
-ha caído y se ha levantado.
-
-${ella_el} la tiene.
-Y vosotros,
-también la tenéis.
-
-Sois los hijos de alguien extraordinaria.
-No lo olvidéis nunca.
-Cuidarla siempre."
-
 REGLAS DE TEXTO:
 - Frases MUY cortas. Máximo 8 palabras por línea
 - Cada idea en su propia línea (usa \\n)
 - Máximo 10 líneas por página con texto
-- El texto va CENTRADO en la página
-- El título de cada página va arriba centrado
 - Tono cálido, cercano, con humor suave
 - Habla SIEMPRE directamente a los niños
 - Detalles muy específicos y reales
-- Un toque de humor por capítulo
 - Marca frases emotivas con [T]frase[/T]
-- NO uses adjetivos genéricos
 
 ESTRUCTURA — 20 páginas interiores exactas:
 - Páginas 1-2: portadilla + dedicatoria (solo ilustración)
 - Páginas 3-4: introducción (texto + ilustración)
-- Páginas 5-8: infancia (texto+ilustración, máx 1 solo ilustración)
-- Páginas 9-12: juventud (texto+ilustración, máx 1 solo ilustración)
-- Páginas 13-16: amor y familia (texto+ilustración, máx 1 solo ilustración)
-- Páginas 17-18: con los niños hoy (texto+ilustración)
-- Páginas 19-20: legado y cierre (texto emotivo + ilustración)
+- Páginas 5-8: infancia
+- Páginas 9-12: juventud
+- Páginas 13-16: amor y familia
+- Páginas 17-18: con los niños hoy
+- Páginas 19-20: legado y cierre
 
-TIPOS: máximo 3-4 "solo_ilustracion" en todo el libro:
-- "texto_ilustracion": título arriba, texto centrado (máx 10 líneas), ilustración abajo
-- "solo_ilustracion": sin texto, solo ilustración
-- "frase_grande": una sola frase emotiva centrada
+TIPOS:
+- "texto_ilustracion": título + texto + ilustración
+- "solo_ilustracion": sin texto
+- "frase_grande": una sola frase emotiva
 
-PARA CADA PÁGINA genera un prompt para Nano Banana siguiendo EXACTAMENTE este formato:
+PARA CADA PÁGINA genera un prompt para Nano Banana:
 
-Para páginas con texto e ilustración ("texto_ilustracion"):
-"Single children's book page, flat layout, horizontal. LEFT HALF: warm off-white background #FFFDF8. Title [TÍTULO EN MAYÚSCULAS] in large cursive terracotta handwriting, small terracotta heart below. Body text in warm dark brown handwriting: [TEXTO EXACTO DE LA PÁGINA] Some phrases highlighted in terracotta. RIGHT HALF: same warm off-white background #FFFDF8. [DESCRIPCIÓN DETALLADA DE LA ESCENA]. Above them floating watercolor scenes with NO circles NO borders: [VIÑETAS FLOTANTES RELEVANTES A LA HISTORIA]. Many golden stars scattered. Stuffed rabbit. HEAVY watercolor texture, visible wet brush strokes, paint bleeds and blooms, loose expressive watercolor washes, paint splatter drops, very painterly and artistic, warm ochre amber and cream tones. Both sides EXACT SAME background color #FFFDF8, no division line, uniform single background across entire page, cozy tender mood."
+Para "texto_ilustracion":
+"Single children's book page, flat layout, horizontal. LEFT HALF: warm off-white background #FFFDF8. Title [TÍTULO] in large cursive terracotta handwriting, small terracotta heart below. Body text in warm dark brown handwriting: [TEXTO]. Some phrases highlighted in terracotta. RIGHT HALF: same warm off-white background #FFFDF8. [ESCENA]. Above floating watercolor scenes with NO circles NO borders: [VIÑETAS]. Many golden stars scattered. Stuffed rabbit. HEAVY watercolor texture, visible wet brush strokes, paint bleeds and blooms, loose expressive watercolor washes, paint splatter drops, very painterly and artistic, warm ochre amber and cream tones. Both sides EXACT SAME background color #FFFDF8, no division line, cozy tender mood."
 
-Para páginas solo ilustración ("solo_ilustracion"):
-"Single children's book page, flat layout. Warm off-white background #FFFDF8. [DESCRIPCIÓN DETALLADA DE LA ESCENA]. HEAVY watercolor texture, visible wet brush strokes, paint bleeds and blooms, loose expressive watercolor washes, paint splatter drops, warm ochre amber and cream tones, white background #FFFDF8, cozy tender mood, children's book illustration style."
+Para "solo_ilustracion":
+"Single children's book page, flat layout. Warm off-white background #FFFDF8. [ESCENA]. HEAVY watercolor texture, warm ochre amber and cream tones, cozy tender mood."
 
-Para páginas de frase grande ("frase_grande"):
-"Single children's book page, flat layout. Warm off-white background #FFFDF8. Large elegant cursive text centered: [FRASE] in terracotta color. Small decorative watercolor illustration below the text: [DESCRIPCIÓN ILUSTRACIÓN]. Warm ochre amber and cream tones, cozy tender mood."
+Para "frase_grande":
+"Single children's book page, flat layout. Warm off-white background #FFFDF8. Large elegant cursive text centered: [FRASE] in terracotta. Small watercolor illustration below. Warm ochre tones, cozy tender mood."
 
-PORTADA: título "EL UNIVERSO DE ${nombre.toUpperCase()}"
-Estilo siluetas, fondo cuadros azul y crema, círculo dorado.
-Prompt termina con: "book cover illustration, bold graphic watercolor style, silhouettes, checkered background blue and cream, golden circle, navy blue terracotta gold palette, bold typography"
+PORTADA: "EL UNIVERSO DE ${nombre.toUpperCase()}" — siluetas, cuadros azul/crema, círculo dorado. Prompt termina con: "book cover illustration, bold graphic watercolor style, silhouettes, checkered background blue and cream, golden circle, navy blue terracotta gold palette, bold typography"
 
-CONTRAPORTADA: frase corta y emotiva. Máximo 2 líneas.
+CONTRAPORTADA: frase emotiva máximo 2 líneas.
 
 HISTORIA:
 ${historyText}
 
-Responde SOLO con este JSON:
+Responde SOLO con JSON válido:
 {
   "titulo": "EL UNIVERSO DE ${nombre.toUpperCase()}",
-  "portada_prompt": "prompt para portada",
-  "contraportada_frase": "frase emotiva",
+  "portada_prompt": "...",
+  "contraportada_frase": "...",
   "paginas": [
     {
       "numero": 1,
       "tipo": "solo_ilustracion",
-      "titulo": "título",
-      "texto": "texto con \\n (vacío si solo_ilustracion)",
-      "imagen_prompt": "prompt completo para Nano Banana"
+      "titulo": "...",
+      "texto": "",
+      "imagen_prompt": "..."
     }
   ]
 }`;
@@ -293,9 +235,9 @@ function buildEmailHtml(allData, protagonist, libro, paginasConImagenes) {
     return `
       <div style="margin-bottom:28px;padding:20px;background:#fffbeb;border-radius:12px;border-left:4px solid #fde68a;">
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b45309;margin-bottom:6px;">Página ${p.numero} · ${p.tipo || 'texto_ilustracion'}</div>
-        <div style="font-size:18px;color:#c47a3a;font-style:italic;margin-bottom:10px;">${p.titulo}</div>
+        <div style="font-size:18px;color:#c47a3a;font-style:italic;margin-bottom:10px;">${escapeHtml(p.titulo)}</div>
         ${textoFormateado ? `<div style="font-size:14px;line-height:2;color:#5a3e28;text-align:center;margin-bottom:14px;">${textoFormateado}</div>` : '<div style="font-size:12px;color:#8b6914;font-style:italic;margin-bottom:14px;text-align:center;">— Solo ilustración —</div>'}
-        ${p.imagen_url ? `<div style="text-align:center;margin-bottom:12px;"><img src="${p.imagen_url}" style="max-width:100%;border-radius:8px;border:1px solid #e8d5b0;" /></div>` : ''}
+        ${p.imagen_url ? `<div style="text-align:center;margin-bottom:12px;"><img src="${p.imagen_url}" style="max-width:100%;border-radius:8px;" /></div>` : ''}
         <div style="background:#fff;border:1px dashed #e8d5b0;border-radius:8px;padding:10px;">
           <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">🎨 Prompt Nano Banana</div>
           <div style="font-size:11px;color:#4a2c0a;font-family:monospace;line-height:1.6;">${escapeHtml(p.imagen_prompt)}</div>
@@ -307,7 +249,7 @@ function buildEmailHtml(allData, protagonist, libro, paginasConImagenes) {
 <html lang="es">
 <head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#fdf6e3;font-family:Georgia,serif;">
-<div style="max-width:700px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+<div style="max-width:700px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;">
   <div style="background:linear-gradient(135deg,#b45309,#d97706);padding:32px 40px;text-align:center;">
     <p style="margin:0;font-size:11px;letter-spacing:3px;color:#fde68a;text-transform:uppercase;">Tale Us Stories</p>
     <h1 style="margin:8px 0 4px;font-size:22px;color:#fff;font-weight:400;">📖 Nuevo libro generado</h1>
@@ -322,22 +264,19 @@ function buildEmailHtml(allData, protagonist, libro, paginasConImagenes) {
     </p>
   </div>
   <div style="padding:24px 40px;background:#fff8f0;border-bottom:1px solid #fde68a;">
-    <h2 style="margin:0 0 12px;font-size:14px;color:#b45309;">🎨 Portada — ${escapeHtml(libro.titulo)}</h2>
-    <div style="padding:12px;background:#fffbeb;border-radius:8px;">
-      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b6914;margin-bottom:4px;">💬 Frase contraportada</div>
-      <div style="font-size:14px;color:#2c1810;font-style:italic;line-height:1.8;">${escapeHtml(libro.contraportada_frase || '')}</div>
-    </div>
+    <h2 style="margin:0 0 12px;font-size:14px;color:#b45309;">💬 Frase contraportada</h2>
+    <div style="font-size:14px;color:#2c1810;font-style:italic;">${escapeHtml(libro.contraportada_frase || '')}</div>
   </div>
   <div style="padding:32px 40px;">
     <h2 style="margin:0 0 20px;font-size:16px;color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">✨ 20 páginas + Ilustraciones</h2>
     ${libroHtml}
   </div>
   <div style="padding:28px 40px;background:#f9f5eb;border-top:1px solid #e7e0d0;">
-    <h2 style="margin:0 0 16px;font-size:15px;color:#b45309;">📝 Historia original transcrita</h2>
+    <h2 style="margin:0 0 16px;font-size:15px;color:#b45309;">📝 Historia original</h2>
     ${historiaHtml}
   </div>
   <div style="padding:16px 40px;background:#f0e8d8;text-align:center;">
-    <p style="margin:0;font-size:11px;color:#8b6914;">Generado automáticamente · Tale Us Stories · ${new Date().toLocaleString("es-ES")}</p>
+    <p style="margin:0;font-size:11px;color:#8b6914;">Tale Us Stories · ${new Date().toLocaleString("es-ES")}</p>
   </div>
 </div>
 </body>
@@ -345,7 +284,9 @@ function buildEmailHtml(allData, protagonist, libro, paginasConImagenes) {
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
 
   try {
     const { fields, files } = await parseMultipart(event);
@@ -354,7 +295,7 @@ exports.handler = async (event) => {
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const audioFiles = Object.entries(files).filter(([name]) => !name.includes("photo"));
+    const audioFiles = Object.entries(files).filter(([name]) => name.endsWith('_audio'));
     const transcriptions = await Promise.all(
       audioFiles.map(async ([fieldName, fileData]) => {
         const text = await transcribeAudio(openai, fileData, fieldName);
@@ -362,14 +303,13 @@ exports.handler = async (event) => {
       })
     );
 
-    const photoFile = files["protagonist_photo"] || files["photo"] || null;
-    const photoUrl = photoFile ? await uploadPhotoToPiAPI(photoFile) : null;
-
     const allData = { ...fields };
     for (const { fieldName, text } of transcriptions) {
       if (!text) continue;
       const baseField = fieldName.replace(/_audio$/, "");
-      allData[baseField] = allData[baseField] ? `${allData[baseField]}\n\n[Audio]: ${text}` : `[Audio]: ${text}`;
+      allData[baseField] = allData[baseField]
+        ? `${allData[baseField]}\n\n[Audio]: ${text}`
+        : `[Audio]: ${text}`;
     }
 
     const protagonist = {
@@ -385,6 +325,7 @@ exports.handler = async (event) => {
       const value = allData[field];
       if (value) byChapter[chapKey].push(`${FIELD_LABELS[field]}: ${value}`);
     }
+
     const historyText = Object.entries(CHAPTER_NAMES).map(([key, title]) => {
       const entries = byChapter[key] || [];
       if (!entries.length) return "";
@@ -394,9 +335,7 @@ exports.handler = async (event) => {
     console.log("Generando libro con Claude...");
     const libro = await generarLibro(anthropic, historyText, protagonist);
 
-    const imageRefs = photoUrl
-      ? [photoUrl, ...STYLE_REFERENCES.slice(0, 3)]
-      : STYLE_REFERENCES.slice(0, 4);
+    const imageRefs = STYLE_REFERENCES.slice(0, 4);
 
     console.log("Generando ilustraciones con Nano Banana...");
     const paginasConImagenes = await Promise.all(
@@ -407,29 +346,19 @@ exports.handler = async (event) => {
     );
 
     const htmlBody = buildEmailHtml(allData, protagonist, libro, paginasConImagenes);
-    const subject = `📖 ${libro.titulo} — listo para revisar`;
 
-    const { error: emailError } = await resend.emails.send({
+    await resend.emails.send({
       from: "Tale Us Stories <onboarding@resend.dev>",
       to: [process.env.TO_EMAIL || "cristinacasanovas@hotmail.com"],
-      subject,
+      subject: `📖 ${libro.titulo} — listo para revisar`,
       html: htmlBody,
     });
 
-    if (emailError) throw new Error(`Resend error: ${emailError.message}`);
-
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ok: true, message: "Libro generado y enviado.", titulo: libro.titulo, paginas: libro.paginas.length }),
-    };
+    console.log("Email enviado correctamente");
 
   } catch (err) {
-    console.error("Error:", err);
-    return {
-      statusCode: 500,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ok: false, error: err.message || "Error interno" }),
-    };
+    console.error("Error en background function:", err);
   }
+
+  return { statusCode: 202, body: "" };
 };
