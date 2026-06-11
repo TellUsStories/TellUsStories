@@ -740,31 +740,34 @@ function buildReview() {
 async function submit() {
   var btn = document.querySelector('.btn-next[onclick="submit()"]');
   if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
-  var fd = new FormData();
-  fd.append('protagonistName', document.getElementById('protName').value || '');
-  fd.append('childName',       document.getElementById('childNames').value || '');
-  fd.append('gender',          gender === 'f' ? 'mujer' : 'hombre');
-  fd.append('relacion',        document.getElementById('bookType').value || '');
-  fd.append('senderName',      document.getElementById('orderer').value || '');
-  fd.append('senderEmail',     document.getElementById('email').value || '');
-  fd.append('q1_nacimiento',   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '');
-  fd.append('q1_apodo',        document.getElementById('job') ? document.getElementById('job').value : '');
-  fd.append('q2_juego',        document.getElementById('sport') ? document.getElementById('sport').value : '');
-  fd.append('q5_lugar',        document.getElementById('places') ? document.getElementById('places').value : '');
-  fd.append('tone',            document.querySelector('.tone-opt.selected .tt') ? document.querySelector('.tone-opt.selected .tt').textContent : 'Equilibrado');
+
+  var payload = {
+    protagonistName: document.getElementById('protName').value || '',
+    childName:       document.getElementById('childNames').value || '',
+    gender:          gender === 'f' ? 'mujer' : 'hombre',
+    relacion:        document.getElementById('bookType').value || '',
+    senderName:      document.getElementById('orderer').value || '',
+    senderEmail:     document.getElementById('email').value || '',
+    q1_nacimiento:   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '',
+    q1_apodo:        document.getElementById('job') ? document.getElementById('job').value : '',
+    q2_juego:        document.getElementById('sport') ? document.getElementById('sport').value : '',
+    q5_lugar:        document.getElementById('places') ? document.getElementById('places').value : '',
+    tone:            document.querySelector('.tone-opt.selected .tt') ? document.querySelector('.tone-opt.selected .tt').textContent : 'Equilibrado',
+  };
+
   var fieldMap = {0:'q1_nombre',1:'q2_lugar',2:'q2_recuerdo',3:'q2_recuerdo',4:'q2_juego',5:'q3_sueno',6:'q3_aventura',7:'q4_pareja',8:'q4_hijos',9:'q5_actividad',10:'q5_actividad',11:'q5_lugar',12:'q6_consejo',13:'q6_deseo'};
   for (var i = 0; i <= 13; i++) {
     var tf = document.querySelector('#tf' + i + ' textarea');
-    if (tf && tf.value && tf.value.trim()) fd.append(fieldMap[i] || ('q_extra_' + i), tf.value.trim());
+    if (tf && tf.value && tf.value.trim()) payload[fieldMap[i] || ('q_extra_' + i)] = tf.value.trim();
   }
-  for (var idx in audioBlobs) {
-    if (audioBlobs[idx]) fd.append((fieldMap[idx] || ('q_extra_' + idx)) + '_audio', audioBlobs[idx], 'q' + idx + '.webm');
-  }
-  var photos = document.getElementById('fileInput') ? document.getElementById('fileInput').files : null;
-  if (photos) Array.from(photos).slice(0, 15).forEach(function(f, i) { fd.append('photo_' + i, f); });
+
   try {
-    var res = await fetch('https://hook.eu1.make.com/tbdowzpkxyenjvbc4ck15fxxm3g26z5r', { method: 'POST', body: fd });
-    if (res.ok || res.status === 200) {
+    var res = await fetch('https://hook.eu1.make.com/tbdowzpkxyenjvbc4ck15fxxm3g26z5r', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
       document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
       document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || 'el protagonista';
       go(TOTAL + 1);
