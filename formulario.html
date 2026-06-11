@@ -168,6 +168,21 @@
     </div>
   </div>
   <div class="field">
+    <label>¿Quién narra el libro?</label>
+    <div class="gender-grid">
+      <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">El propio protagonista</div>
+        <div class="gender-desc">"Cuando yo era pequeña…"</div>
+      </div>
+      <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
+        <div class="gender-emoji">👨‍👩‍👧</div>
+        <div class="gender-title">Otra persona</div>
+        <div class="gender-desc">"Antes de ser vuestra mamá…"</div>
+      </div>
+    </div>
+  </div>
+  <div class="field">
     <label>Tu email</label>
     <input type="email" id="email" placeholder="Te enviaremos el borrador aquí">
   </div>
@@ -564,6 +579,13 @@
 let cur = 0;
 const TOTAL = 7;
 let gender = 'f';
+let narrator = 'other';
+
+function setNarrator(val, el) {
+  narrator = val;
+  document.querySelectorAll('#n1,#n2').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
 
 const G = {
   el:   ['ella', 'él'],
@@ -753,6 +775,7 @@ async function submit() {
     q2_juego:        document.getElementById('sport') ? document.getElementById('sport').value : '',
     q5_lugar:        document.getElementById('places') ? document.getElementById('places').value : '',
     tone:            document.querySelector('.tone-opt.selected .tt') ? document.querySelector('.tone-opt.selected .tt').textContent : 'Equilibrado',
+    narrator:        narrator === 'protagonist' ? 'protagonista' : 'otra_persona',
   };
 
   var fieldMap = {0:'q1_nombre',1:'q2_lugar',2:'q2_recuerdo',3:'q2_recuerdo',4:'q2_juego',5:'q3_sueno',6:'q3_aventura',7:'q4_pareja',8:'q4_hijos',9:'q5_actividad',10:'q5_actividad',11:'q5_lugar',12:'q6_consejo',13:'q6_deseo'};
