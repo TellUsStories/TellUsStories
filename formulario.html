@@ -647,7 +647,44 @@ function go(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-var recorders = {}, audioBlobs = {}, timers = {}, recSecs = {};
+var recorders = {}, audioBlobs = {}, timers = {}, recSecs = {}, transcribedTexts = {};
+
+async function blobToBase64(blob) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      var result = reader.result;
+      var base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function transcribeAudio(idx, blob) {
+  var bd = document.getElementById('bd' + idx);
+  if (bd) { bd.textContent = 'Transcribiendo…'; bd.classList.add('show'); }
+  try {
+    var base64 = await blobToBase64(blob);
+    var res = await fetch('/.netlify/functions/transcribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audioBase64: base64, mimeType: blob.type })
+    });
+    var data = await res.json();
+    if (res.ok && data.text) {
+      transcribedTexts[idx] = data.text.trim();
+      if (bd) bd.textContent = 'Grabado ✓';
+    } else {
+      if (bd) bd.textContent = 'Grabado (sin transcribir)';
+      transcribedTexts[idx] = '';
+    }
+  } catch (err) {
+    if (bd) bd.textContent = 'Grabado (sin transcribir)';
+    transcribedTexts[idx] = '';
+  }
+}
 
 async function toggleRec(idx) {
   var btn = document.getElementById('rb' + idx);
@@ -673,6 +710,7 @@ async function toggleRec(idx) {
       btn.classList.remove('rec');
       btn.innerHTML = '<span class="rdot"></span> Grabar';
       clearInterval(timers[idx]);
+      transcribeAudio(idx, blob);
     };
     mr.start();
     btn.classList.add('rec');
@@ -693,9 +731,12 @@ async function toggleRec(idx) {
 function clearRec(idx) {
   try { if (recorders[idx]) recorders[idx].stop(); } catch(e) {}
   audioBlobs[idx] = null;
+  transcribedTexts[idx] = '';
   var a = document.getElementById('ap' + idx);
   a.src = ''; a.classList.remove('show');
-  document.getElementById('bd' + idx).classList.remove('show');
+  var bd = document.getElementById('bd' + idx);
+  bd.textContent = 'Grabado';
+  bd.classList.remove('show');
   document.getElementById('bc' + idx).classList.remove('show');
   document.getElementById('vc' + idx).classList.remove('done');
   document.getElementById('rt' + idx).textContent = '0:00';
@@ -781,7 +822,10 @@ async function submit() {
   var fieldMap = {0:'q1_nombre',1:'q2_lugar',2:'q2_recuerdo',3:'q2_recuerdo',4:'q2_juego',5:'q3_sueno',6:'q3_aventura',7:'q4_pareja',8:'q4_hijos',9:'q5_actividad',10:'q5_actividad',11:'q5_lugar',12:'q6_consejo',13:'q6_deseo'};
   for (var i = 0; i <= 13; i++) {
     var tf = document.querySelector('#tf' + i + ' textarea');
-    if (tf && tf.value && tf.value.trim()) payload[fieldMap[i] || ('q_extra_' + i)] = tf.value.trim();
+    var value = (transcribedTexts[i] && transcribedTexts[i].trim())
+      ? transcribedTexts[i].trim()
+      : (tf && tf.value && tf.value.trim() ? tf.value.trim() : '');
+    if (value) payload[fieldMap[i] || ('q_extra_' + i)] = value;
   }
 
   try {
