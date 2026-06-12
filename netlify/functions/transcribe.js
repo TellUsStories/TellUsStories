@@ -17,17 +17,27 @@ exports.handler = async (event) => {
   }
 
   try {
+    if (!process.env.OPENAI_API_KEY) {
+      console.log("ERROR: OPENAI_API_KEY no esta definida");
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: "OPENAI_API_KEY no configurada" }),
+      };
+    }
+
     const { audioBase64, mimeType } = JSON.parse(event.body);
 
     if (!audioBase64) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: "No se recibió audio" }),
+        body: JSON.stringify({ error: "No se recibio audio" }),
       };
     }
 
     const audioBuffer = Buffer.from(audioBase64, "base64");
+    console.log("Audio recibido, bytes:", audioBuffer.length);
 
     const boundary = "----NetlifyFormBoundary" + Date.now();
     const ext = (mimeType && mimeType.includes("webm")) ? "webm" : "mp3";
@@ -55,6 +65,8 @@ exports.handler = async (event) => {
       Buffer.from(modelField + languageField + closing, "utf-8"),
     ]);
 
+    console.log("Llamando a Whisper, body size:", body.length);
+
     const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
       method: "POST",
       headers: {
@@ -64,7 +76,20 @@ exports.handler = async (event) => {
       body: body,
     });
 
-    const data = await response.json();
+    const rawText = await response.text();
+    console.log("Whisper status:", response.status);
+    console.log("Whisper response:", rawText.substring(0, 500));
+
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (e) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: "Respuesta no JSON de Whisper: " + rawText.substring(0, 200) }),
+      };
+    }
 
     if (!response.ok) {
       return {
@@ -80,6 +105,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({ text: data.text }),
     };
   } catch (err) {
+    console.log("ERROR CATCH:", err.message, err.stack);
     return {
       statusCode: 500,
       headers,
