@@ -4,18 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tale Us Stories — Libros ilustrados personalizados</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --cream: #FAF7F2;
+    --cream: #FDFBF5;
     --white: #FFFFFF;
-    --terracota: #C4622D;
-    --gold: #D4A853;
+    --terracota: #A05A2C;
+    --gold: #E8C46A;
+    --watercolor: #F6E3B4;
     --navy: #1E2D4A;
     --text: #1A1410;
-    --text-muted: #8A7060;
+    --text-muted: #9C8A78;
     --border: #EAE4DC;
   }
 
@@ -69,7 +70,7 @@
   .nav-links a:hover { color: var(--text); }
 
   .nav-cta {
-    background: var(--text) !important;
+    background: var(--terracota) !important;
     color: white !important;
     padding: 10px 24px;
     border-radius: 100px;
@@ -80,6 +81,36 @@
     padding: 160px 64px 80px;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: -100px;
+    width: 500px;
+    height: 350px;
+    background: var(--watercolor);
+    opacity: 0.45;
+    border-radius: 50%;
+    filter: blur(40px);
+    z-index: -1;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 50px;
+    right: -150px;
+    width: 450px;
+    height: 320px;
+    background: var(--watercolor);
+    opacity: 0.35;
+    border-radius: 50%;
+    filter: blur(40px);
+    z-index: -1;
   }
 
   .hero-tag {
@@ -93,18 +124,18 @@
   }
 
   .hero-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(44px, 6vw, 80px);
-    font-weight: 400;
-    line-height: 1.08;
-    color: var(--text);
-    letter-spacing: -1.5px;
+    font-family: 'Caveat', cursive;
+    font-size: clamp(48px, 7vw, 90px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--terracota);
+    letter-spacing: 0;
     max-width: 800px;
     margin-bottom: 40px;
   }
 
   .hero-title em {
-    font-style: italic;
+    font-style: normal;
     color: var(--terracota);
   }
 
@@ -124,19 +155,20 @@
   }
 
   .btn-dark {
-    background: var(--text);
-    color: white;
-    padding: 16px 40px;
+    background: transparent;
+    color: var(--terracota);
+    border: 2px solid var(--terracota);
+    padding: 14px 38px;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 500;
     text-decoration: none;
     border-radius: 100px;
-    transition: background 0.2s, transform 0.2s;
+    transition: background 0.2s, color 0.2s;
   }
 
   .btn-dark:hover {
-    background: #3a2a1e;
-    transform: translateY(-1px);
+    background: var(--terracota);
+    color: white;
   }
 
   .hero-link {
@@ -232,11 +264,29 @@
   .section-como {
     padding: 80px 64px;
     background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-como::before {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -120px;
+    width: 400px;
+    height: 280px;
+    background: var(--watercolor);
+    opacity: 0.35;
+    border-radius: 50%;
+    filter: blur(40px);
+    z-index: 0;
   }
 
   .section-como-inner {
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
   .como-header {
@@ -345,6 +395,14 @@
     justify-content: center;
     gap: 8px;
     padding: 20px;
+    overflow: hidden;
+  }
+
+  .libro-page img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
   }
 
   .libro-page-icon { font-size: 24px; opacity: 0.25; }
@@ -389,7 +447,25 @@
     grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
+    position: relative;
+    overflow: hidden;
   }
+
+  .section-precio::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 350px;
+    height: 280px;
+    background: var(--terracota);
+    opacity: 0.18;
+    border-radius: 50%;
+    filter: blur(50px);
+    z-index: 0;
+  }
+
+  .precio-left, .precio-right { position: relative; z-index: 1; }
 
   .precio-tag {
     font-size: 11px;
@@ -476,7 +552,7 @@
   }
 
   .btn-gold:hover {
-    background: #c49a48;
+    background: #DDB456;
     transform: translateY(-1px);
   }
 
@@ -486,6 +562,22 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  footer::before {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    right: 10%;
+    width: 240px;
+    height: 160px;
+    background: var(--watercolor);
+    opacity: 0.3;
+    border-radius: 50%;
+    filter: blur(35px);
+    z-index: 0;
   }
 
   .footer-logo {
@@ -493,9 +585,16 @@
     font-size: 16px;
     font-weight: 600;
     color: var(--text);
+    position: relative;
+    z-index: 1;
   }
 
-  .footer-text { font-size: 13px; color: var(--text-muted); }
+  .footer-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 1;
+  }
 
   @media (max-width: 900px) {
     nav { padding: 20px 24px; }
@@ -518,6 +617,13 @@
 </style>
 </head>
 <body>
+
+<svg style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -2;" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="5%" cy="8%" r="3" fill="#E8C46A" opacity="0.5"/>
+  <circle cx="8%" cy="14%" r="2" fill="#E8C46A" opacity="0.4"/>
+  <circle cx="92%" cy="10%" r="3" fill="#E8C46A" opacity="0.5"/>
+  <circle cx="95%" cy="18%" r="2" fill="#E8C46A" opacity="0.4"/>
+</svg>
 
 <nav>
   <a href="#" class="nav-logo">Tale Us Stories</a>
