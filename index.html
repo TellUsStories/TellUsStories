@@ -103,7 +103,12 @@
     margin-bottom: 40px;
   }
 
-  .hero-title em {
+  .hero-title em,
+  .sobre-title em,
+  .como-title em,
+  .libro-title em,
+  .precio-title em,
+  .creadora-text strong {
     font-style: italic;
     color: var(--terracota);
   }
@@ -153,31 +158,64 @@
     border-color: var(--text);
   }
 
-  .hero-gallery {
-    margin-top: 80px;
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-  }
-
-  .gallery-book {
-    border-radius: 8px;
-    overflow: hidden;
-    max-width: 380px;
-    flex: 1;
-  }
-
-  .gallery-book img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 8px;
-  }
-
   .divider {
     height: 1px;
     background: var(--border);
     margin: 0 64px;
+  }
+
+  .section-creadora {
+    padding: 80px 64px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .creadora-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--terracota);
+    margin-bottom: 24px;
+  }
+
+  .creadora-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .creadora-text p {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.85;
+    margin-bottom: 18px;
+  }
+
+  .creadora-text p:last-child { margin-bottom: 0; }
+
+  .creadora-image {
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  .creadora-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
   }
 
   .section-sobre {
@@ -195,7 +233,7 @@
     font-weight: 500;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--terracota);
     margin-bottom: 24px;
   }
 
@@ -316,7 +354,7 @@
     font-weight: 500;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--terracota);
     margin-bottom: 16px;
   }
 
@@ -382,7 +420,7 @@
 
   .section-precio {
     margin: 0 64px 80px;
-    background: var(--text);
+    background: #E3B89A;
     border-radius: 16px;
     padding: 80px;
     display: grid;
@@ -396,7 +434,7 @@
     font-weight: 500;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--terracota);
     margin-bottom: 24px;
   }
 
@@ -404,7 +442,7 @@
     font-family: 'Playfair Display', serif;
     font-size: clamp(28px, 3vw, 42px);
     font-weight: 400;
-    color: white;
+    color: var(--text);
     line-height: 1.2;
     letter-spacing: -0.5px;
     margin-bottom: 24px;
@@ -412,12 +450,12 @@
 
   .precio-desc {
     font-size: 15px;
-    color: rgba(255,255,255,0.5);
+    color: var(--text-muted);
     line-height: 1.75;
   }
 
   .precio-right {
-    background: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.5);
     border-radius: 12px;
     padding: 48px;
   }
@@ -426,14 +464,14 @@
     font-family: 'Playfair Display', serif;
     font-size: 72px;
     font-weight: 700;
-    color: white;
+    color: var(--text);
     line-height: 1;
     margin-bottom: 4px;
   }
 
   .precio-unit {
     font-size: 13px;
-    color: rgba(255,255,255,0.4);
+    color: var(--text-muted);
     margin-bottom: 40px;
   }
 
@@ -449,22 +487,22 @@
     gap: 12px;
     align-items: center;
     font-size: 14px;
-    color: rgba(255,255,255,0.65);
+    color: var(--text);
   }
 
   .precio-item::before {
     content: '';
     width: 4px;
     height: 4px;
-    background: var(--gold);
+    background: var(--terracota);
     border-radius: 50%;
     flex-shrink: 0;
   }
 
   .btn-gold {
     width: 100%;
-    background: var(--gold);
-    color: var(--text);
+    background: var(--terracota);
+    color: white;
     padding: 16px;
     font-size: 15px;
     font-weight: 500;
@@ -476,7 +514,7 @@
   }
 
   .btn-gold:hover {
-    background: #c49a48;
+    background: #a84f24;
     transform: translateY(-1px);
   }
 
@@ -501,9 +539,9 @@
     nav { padding: 20px 24px; }
     .nav-links { display: none; }
     .hero { padding: 120px 24px 60px; }
-    .hero-gallery { flex-direction: column; align-items: center; }
-    .gallery-book { max-width: 100%; }
     .divider { margin: 0 24px; }
+    .section-creadora { padding: 60px 24px; grid-template-columns: 1fr; gap: 48px; }
+    .creadora-image { max-width: 260px; }
     .section-sobre { padding: 60px 24px; grid-template-columns: 1fr; gap: 48px; }
     .section-como { padding: 60px 24px; }
     .steps { grid-template-columns: 1fr; gap: 2px; }
@@ -522,7 +560,7 @@
 <nav>
   <a href="#" class="nav-logo">Tale Us Stories</a>
   <ul class="nav-links">
-    <li><a href="#sobre">Quiénes somos</a></li>
+    <li><a href="#creadora">Quiénes somos</a></li>
     <li><a href="#como">Cómo funciona</a></li>
     <li><a href="#libro">El libro</a></li>
     <li><a href="#precio" class="nav-cta">Crear mi libro</a></li>
@@ -541,13 +579,20 @@
     <a href="#precio" class="btn-dark">Crear mi libro</a>
     <a href="#como" class="hero-link">Ver cómo funciona</a>
   </div>
+</section>
 
-  <div class="hero-gallery">
-    <div class="gallery-book">
-      <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/WhatsApp_Image_2026-06-09_at_18.32.40_sj4yn9" alt="El universo de María — portada" style="border-radius:8px;">
-    </div>
-    <div class="gallery-book">
-      <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/ChatGPT_Image_9_jun_2026_20_29_03_xf6qic" alt="El universo de María — contraportada" style="border-radius:8px;">
+<div class="divider"></div>
+
+<section class="section-creadora" id="creadora">
+  <div class="creadora-image">
+    <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/WhatsApp_Image_2026-06-15_at_11.01.56_nr3hj8" alt="Cris, fundadora de Tale Us Stories">
+  </div>
+  <div>
+    <p class="creadora-label">Quiénes somos</p>
+    <div class="creadora-text">
+      <p>Los niños crecen rodeados de etiquetas — mamá, papá, abuela, tío. Pero detrás de cada una hay una persona entera: alguien que soñó, que tuvo miedo, que se enamoró, que vivió mil cosas antes de convertirse en esa etiqueta.</p>
+      <p>Tale Us Stories nace de las ganas de regalarles esa primera mirada: descubrir, página a página, <strong>quién es realmente</strong> esa persona que tienen al lado.</p>
+      <p>Conocer la historia de quienes nos rodean fortalece el vínculo y ayuda a construir la propia identidad. Cuando un niño entiende de dónde viene, entiende también un poco mejor quién es él mismo.</p>
     </div>
   </div>
 </section>
@@ -557,7 +602,7 @@
 <section class="section-sobre" id="sobre">
   <div>
     <p class="sobre-label">El libro por dentro</p>
-    <h2 class="sobre-title">Cada página, una historia que preservar</h2>
+    <h2 class="sobre-title">Cada página, una <em>historia</em> que preservar</h2>
     <p class="sobre-text">
       Creamos libros que preservan la memoria de las personas que más queremos. Cada libro es único — escrito a partir de los recuerdos de quienes mejor conocen al protagonista, ilustrado en estilo acuarela cálido, y pensado para que los niños descubran a los adultos de su vida desde una perspectiva nueva y emocionante.
     </p>
@@ -572,7 +617,7 @@
 <section class="section-como" id="como">
   <div class="section-como-inner">
     <div class="como-header">
-      <h2 class="como-title">Tres pasos. Un libro para siempre.</h2>
+      <h2 class="como-title">Tres pasos. <em>Un libro para siempre.</em></h2>
       <p class="como-subtitle">Un proceso sencillo pensado para que tú solo tengas que contar la historia.</p>
     </div>
     <div class="steps">
@@ -643,7 +688,7 @@
     <p class="precio-desc">No hay dos libros iguales. Cada uno es creado desde cero a partir de la historia real de una persona única.</p>
   </div>
   <div class="precio-right">
-    <div class="precio-amount">85€</div>
+    <div class="precio-amount">75€</div>
     <p class="precio-unit">precio único · envío incluido</p>
     <div class="precio-list">
       <div class="precio-item">20 páginas ilustradas en acuarela</div>
