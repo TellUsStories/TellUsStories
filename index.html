@@ -183,16 +183,6 @@
     margin-bottom: 24px;
   }
 
-  .creadora-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(28px, 3vw, 40px);
-    font-weight: 400;
-    line-height: 1.2;
-    letter-spacing: -0.5px;
-    color: var(--text);
-    margin-bottom: 28px;
-  }
-
   .creadora-text p {
     font-size: 16px;
     font-weight: 300;
@@ -341,7 +331,6 @@
     line-height: 1.75;
   }
 
-  /* SECCIÓN LIBRO */
   .section-libro {
     padding: 56px 64px;
     max-width: 1200px;
@@ -367,7 +356,6 @@
     color: var(--text);
   }
 
-  /* Grid de 4 portadas en una fila */
   .portadas-subtitulo {
     font-size: 13px;
     font-weight: 500;
@@ -393,8 +381,9 @@
 
   .portada-opcion img {
     width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+    aspect-ratio: 3 / 4;
+    object-fit: contain;
+    background: var(--cream);
     border-radius: 8px;
     display: block;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -405,14 +394,6 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   }
 
-  .portada-num {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  /* Features */
   .libro-features {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -510,7 +491,7 @@
   .precio-item::before {
     content: '';
     width: 4px;
-    height-4px;
+    height: 4px;
     background: var(--terracota);
     border-radius: 50%;
     flex-shrink: 0;
@@ -602,7 +583,7 @@
 
 <section class="section-creadora" id="creadora">
   <div class="creadora-image">
-    <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/e7afaf45-a9ba-4214-8e84-23f19ad66ac2_fhojrs" alt="Cris, fundadora de Tale Us Stories">
+    <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782668692/ChatGPT_Image_28_jun_2026_19_44_41_miuc9q.png" alt="Cris, fundadora de Tale Us Stories">
   </div>
   <div>
     <p class="creadora-label">Quiénes somos</p>
@@ -669,19 +650,15 @@
   <div class="portadas-grid">
     <div class="portada-opcion">
       <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667257/Dise%C3%B1o_sin_t%C3%ADtulo_9_upstlk.png" alt="Estilo de portada 1">
-      <span class="portada-num">Estilo 1</span>
     </div>
     <div class="portada-opcion">
       <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667316/Dise%C3%B1o_sin_t%C3%ADtulo_12_ci3uem.png" alt="Estilo de portada 2">
-      <span class="portada-num">Estilo 2</span>
     </div>
     <div class="portada-opcion">
       <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667320/Dise%C3%B1o_sin_t%C3%ADtulo_11_xeozba.png" alt="Estilo de portada 3">
-      <span class="portada-num">Estilo 3</span>
     </div>
     <div class="portada-opcion">
       <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667321/Dise%C3%B1o_sin_t%C3%ADtulo_10_v0btj1.png" alt="Estilo de portada 4">
-      <span class="portada-num">Estilo 4</span>
     </div>
   </div>
 
