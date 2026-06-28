@@ -341,13 +341,14 @@
     line-height: 1.75;
   }
 
+  /* SECCIÓN LIBRO */
   .section-libro {
     padding: 56px 64px;
     max-width: 1200px;
     margin: 0 auto;
   }
 
-  .libro-header { margin-bottom: 32px; }
+  .libro-header { margin-bottom: 40px; }
 
   .libro-label {
     font-size: 11px;
@@ -366,49 +367,52 @@
     color: var(--text);
   }
 
-  .libro-pages {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-    margin: 0 auto 32px;
-    max-width: 900px;
+  /* Grid de 4 portadas en una fila */
+  .portadas-subtitulo {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
   }
 
-  .libro-page {
-    background: var(--cream);
-    border-radius: 6px;
-    aspect-ratio: 3/4;
+  .portadas-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .portada-opcion {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 20px;
-    overflow: hidden;
-    position: relative;
+    gap: 10px;
   }
 
-  .libro-page-img {
+  .portada-opcion img {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
     display: block;
-    border-radius: 6px;
-    position: absolute;
-    top: 0; left: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
 
-  .libro-page-icon { font-size: 24px; opacity: 0.25; }
+  .portada-opcion img:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  }
 
-  .libro-page-label {
-    font-size: 10px;
+  .portada-num {
+    font-size: 11px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--text-muted);
-    opacity: 0.5;
-    text-align: center;
   }
 
+  /* Features */
   .libro-features {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -506,7 +510,7 @@
   .precio-item::before {
     content: '';
     width: 4px;
-    height: 4px;
+    height-4px;
     background: var(--terracota);
     border-radius: 50%;
     flex-shrink: 0;
@@ -561,7 +565,7 @@
     .step:first-child { border-radius: 8px 8px 0 0; }
     .step:last-child { border-radius: 0 0 8px 8px; }
     .section-libro { padding: 60px 24px; }
-    .libro-pages { max-width: 100%; }
+    .portadas-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .libro-features { grid-template-columns: 1fr; }
     .section-precio { margin: 0 24px 60px; padding: 48px 32px; grid-template-columns: 1fr; gap: 40px; }
     footer { padding: 40px 24px; flex-direction: column; gap: 12px; text-align: center; }
@@ -660,14 +664,27 @@
     <p class="libro-label">El producto</p>
     <h2 class="libro-title">Un objeto tan único como la persona que lo protagoniza</h2>
   </div>
-  <div class="libro-pages">
-    <div class="libro-page">
-      <img class="libro-page-img" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/a2c1791c-cdb4-4740-943c-f70914b3d978_xxwrxj" alt="Portada — El Universo de María">
+
+  <p class="portadas-subtitulo">Elige el estilo de tu portada</p>
+  <div class="portadas-grid">
+    <div class="portada-opcion">
+      <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667257/Dise%C3%B1o_sin_t%C3%ADtulo_9_upstlk.png" alt="Estilo de portada 1">
+      <span class="portada-num">Estilo 1</span>
     </div>
-    <div class="libro-page">
-      <img class="libro-page-img" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/350b3cb7-34a3-4eff-8bc2-563093a2a9e2_othxrp" alt="Contraportada — El Universo de María">
+    <div class="portada-opcion">
+      <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667316/Dise%C3%B1o_sin_t%C3%ADtulo_12_ci3uem.png" alt="Estilo de portada 2">
+      <span class="portada-num">Estilo 2</span>
+    </div>
+    <div class="portada-opcion">
+      <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667320/Dise%C3%B1o_sin_t%C3%ADtulo_11_xeozba.png" alt="Estilo de portada 3">
+      <span class="portada-num">Estilo 3</span>
+    </div>
+    <div class="portada-opcion">
+      <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667321/Dise%C3%B1o_sin_t%C3%ADtulo_10_v0btj1.png" alt="Estilo de portada 4">
+      <span class="portada-num">Estilo 4</span>
     </div>
   </div>
+
   <div class="libro-features">
     <div>
       <h3 class="libro-feature-title">20 páginas ilustradas</h3>
