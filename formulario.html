@@ -44,6 +44,17 @@
   .gender-emoji{font-size:30px;margin-bottom:8px;}
   .gender-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
   .gender-desc{font-size:12px;color:var(--muted);}
+
+  /* PORTADAS */
+  .portada-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;}
+  .portada-card{border:2px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:all .2s;background:var(--white);}
+  .portada-card:hover{border-color:var(--coral);}
+  .portada-card.selected{border-color:var(--coral);box-shadow:0 0 0 3px rgba(200,84,74,.15);}
+  .portada-card img{width:100%;aspect-ratio:3/4;object-fit:contain;background:var(--cream);display:block;}
+  .portada-card-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 0;}
+  .portada-card.selected .portada-card-num{color:var(--coral);}
+  @media(max-width:500px){.portada-grid{grid-template-columns:repeat(2,1fr);}}
+
   .vc{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:22px;margin-bottom:14px;transition:border-color .2s;}
   .vc:hover{border-color:rgba(200,84,74,.3);}
   .vc.done{border-color:var(--coral);background:var(--coral-l);}
@@ -182,6 +193,31 @@
       </div>
     </div>
   </div>
+
+  <!-- SELECCIÓN DE PORTADA -->
+  <div class="field">
+    <label>Elige el estilo de portada</label>
+    <div class="hint">Puedes cambiarlo más adelante si lo necesitas.</div>
+    <div class="portada-grid">
+      <div class="portada-card selected" onclick="selPortada(this, '1')" data-portada="1">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667257/Dise%C3%B1o_sin_t%C3%ADtulo_9_upstlk.png" alt="Portada estilo 1">
+        <div class="portada-card-num">Estilo 1</div>
+      </div>
+      <div class="portada-card" onclick="selPortada(this, '2')" data-portada="2">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667316/Dise%C3%B1o_sin_t%C3%ADtulo_12_ci3uem.png" alt="Portada estilo 2">
+        <div class="portada-card-num">Estilo 2</div>
+      </div>
+      <div class="portada-card" onclick="selPortada(this, '3')" data-portada="3">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667320/Dise%C3%B1o_sin_t%C3%ADtulo_11_xeozba.png" alt="Portada estilo 3">
+        <div class="portada-card-num">Estilo 3</div>
+      </div>
+      <div class="portada-card" onclick="selPortada(this, '4')" data-portada="4">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782667321/Dise%C3%B1o_sin_t%C3%ADtulo_10_v0btj1.png" alt="Portada estilo 4">
+        <div class="portada-card-num">Estilo 4</div>
+      </div>
+    </div>
+  </div>
+
   <div class="field">
     <label>Tu email</label>
     <input type="email" id="email" placeholder="Te enviaremos el borrador aquí">
@@ -546,6 +582,7 @@
     <div class="sr"><span class="sk">Tipo</span><span class="sv" id="rv-type">—</span></div>
     <div class="sr"><span class="sk">Encargado por</span><span class="sv" id="rv-ord">—</span></div>
     <div class="sr"><span class="sk">Email</span><span class="sv" id="rv-email">—</span></div>
+    <div class="sr"><span class="sk">Portada</span><span class="sv" id="rv-portada">—</span></div>
     <div class="sr"><span class="sk">Tono</span><span class="sv" id="rv-tone">—</span></div>
   </div>
   <div class="sb">
@@ -580,6 +617,13 @@ let cur = 0;
 const TOTAL = 7;
 let gender = 'f';
 let narrator = 'other';
+let selectedPortada = '1';
+
+function selPortada(el, num) {
+  document.querySelectorAll('.portada-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedPortada = num;
+}
 
 function setNarrator(val, el) {
   narrator = val;
@@ -784,6 +828,7 @@ function buildReview() {
   document.getElementById('rv-type').textContent  = document.getElementById('bookType').value || '—';
   document.getElementById('rv-ord').textContent   = document.getElementById('orderer').value || '—';
   document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
+  document.getElementById('rv-portada').textContent = 'Estilo ' + selectedPortada;
   var tEl = document.querySelector('.tone-opt.selected .tt');
   document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrado';
   var c = document.getElementById('rv-chapters');
@@ -811,6 +856,7 @@ async function submit() {
     relacion:        document.getElementById('bookType').value || '',
     senderName:      document.getElementById('orderer').value || '',
     senderEmail:     document.getElementById('email').value || '',
+    portadaEstilo:   'Estilo ' + selectedPortada,
     q1_nacimiento:   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '',
     q1_apodo:        document.getElementById('job') ? document.getElementById('job').value : '',
     q2_juego:        document.getElementById('sport') ? document.getElementById('sport').value : '',
