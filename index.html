@@ -429,84 +429,194 @@
     line-height: 1.7;
   }
 
+  /* NUEVA SECCIÓN PRECIO */
   .section-precio {
-    margin: 0 64px 56px;
-    background: #E3B89A;
-    border-radius: 16px;
-    padding: 56px 80px;
+    position: relative;
+    overflow: hidden;
+    background: var(--cream);
+    padding: 80px 64px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
   }
 
+  .precio-blob {
+    position: absolute;
+    bottom: -60px;
+    left: -80px;
+    width: 340px;
+    height: 340px;
+    background: rgba(212, 168, 83, 0.15);
+    border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
+    pointer-events: none;
+  }
+
+  .precio-blob2 {
+    position: absolute;
+    bottom: 20px;
+    left: 60px;
+    width: 200px;
+    height: 200px;
+    background: rgba(196, 98, 45, 0.08);
+    border-radius: 40% 60% 30% 70% / 60% 40% 70% 30%;
+    border: 1.5px solid rgba(196, 98, 45, 0.2);
+    pointer-events: none;
+  }
+
+  .precio-left { position: relative; z-index: 1; }
+
   .precio-tag {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 2.5px;
     text-transform: uppercase;
     color: var(--terracota);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+  }
+
+  .precio-tag::before {
+    content: '✦';
+    font-size: 14px;
   }
 
   .precio-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(28px, 3vw, 42px);
+    font-size: clamp(36px, 4vw, 56px);
     font-weight: 400;
     color: var(--text);
-    line-height: 1.2;
-    letter-spacing: -0.5px;
-    margin-bottom: 24px;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+
+  .precio-title em {
+    font-style: italic;
+    color: var(--terracota);
+  }
+
+  .precio-divider {
+    width: 40px;
+    height: 2px;
+    background: var(--terracota);
+    margin: 20px 0 24px;
   }
 
   .precio-desc {
     font-size: 15px;
     color: var(--text-muted);
     line-height: 1.75;
+    max-width: 380px;
+    margin-bottom: 40px;
+  }
+
+  .precio-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .precio-feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .precio-feature-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(196, 98, 45, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .precio-feature-name {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .precio-feature-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
   }
 
   .precio-right {
-    background: rgba(255,255,255,0.5);
-    border-radius: 12px;
+    position: relative;
+    z-index: 1;
+    background: var(--white);
+    border-radius: 16px;
     padding: 48px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.06);
+  }
+
+  .precio-right-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-align: center;
   }
 
   .precio-amount {
     font-family: 'Playfair Display', serif;
-    font-size: 72px;
+    font-size: 80px;
     font-weight: 700;
     color: var(--text);
     line-height: 1;
+    text-align: center;
     margin-bottom: 4px;
   }
 
   .precio-unit {
-    font-size: 13px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 40px;
+    text-align: center;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
   }
 
   .precio-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 40px;
+    gap: 16px;
+    margin-bottom: 36px;
   }
 
   .precio-item {
     display: flex;
-    gap: 12px;
+    gap: 14px;
     align-items: center;
     font-size: 14px;
     color: var(--text);
   }
 
-  .precio-item::before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    background: var(--terracota);
+  .precio-item-icon {
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
     flex-shrink: 0;
   }
 
@@ -514,13 +624,17 @@
     width: 100%;
     background: var(--terracota);
     color: white;
-    padding: 16px;
-    font-size: 15px;
-    font-weight: 500;
+    padding: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     text-decoration: none;
-    border-radius: 100px;
-    display: block;
-    text-align: center;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     transition: background 0.2s, transform 0.2s;
   }
 
@@ -561,7 +675,8 @@
     .section-libro { padding: 60px 24px; }
     .portadas-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .libro-features { grid-template-columns: 1fr; }
-    .section-precio { margin: 0 24px 60px; padding: 48px 32px; grid-template-columns: 1fr; gap: 40px; }
+    .section-precio { padding: 60px 24px; grid-template-columns: 1fr; gap: 40px; }
+    .precio-features-grid { grid-template-columns: repeat(3, 1fr); }
     footer { padding: 40px 24px; flex-direction: column; gap: 12px; text-align: center; }
   }
 </style>
@@ -701,23 +816,46 @@
 </section>
 
 <section class="section-precio" id="precio">
+  <div class="precio-blob"></div>
+  <div class="precio-blob2"></div>
+
   <div class="precio-left">
-    <p class="precio-tag">El regalo más especial</p>
-    <h2 class="precio-title">Un libro que durará para siempre</h2>
-    <p class="precio-desc">No hay dos libros iguales. Cada uno es creado desde cero a partir de la historia real de una persona única.</p>
-  </div>
-  <div class="precio-right">
-    <div class="precio-amount">75€</div>
-    <p class="precio-unit">precio único · envío incluido</p>
-    <div class="precio-list">
-      <div class="precio-item">20 páginas ilustradas en acuarela</div>
-      <div class="precio-item">Tapa dura A4 vertical</div>
-      <div class="precio-item">Personajes con rasgos reales</div>
-      <div class="precio-item">Escrito a partir de recuerdos reales</div>
-      <div class="precio-item">Envío a domicilio incluido</div>
-      <div class="precio-item">Entrega en 2-3 semanas</div>
+    <p class="precio-tag">Historias reales. Recuerdos que perduran.</p>
+    <h2 class="precio-title">Un libro que durará para <em>siempre.</em></h2>
+    <div class="precio-divider"></div>
+    <p class="precio-desc">Creamos libros ilustrados en acuarela a partir de tu historia. Cada página está hecha con cuidado, para emocionar hoy y siempre.</p>
+    <div class="precio-features-grid">
+      <div class="precio-feature">
+        <div class="precio-feature-icon">♥</div>
+        <div class="precio-feature-name">Historias reales</div>
+        <div class="precio-feature-desc">Escrito a partir de recuerdos reales.</div>
+      </div>
+      <div class="precio-feature">
+        <div class="precio-feature-icon">✏️</div>
+        <div class="precio-feature-name">Ilustrado en acuarela</div>
+        <div class="precio-feature-desc">Cada página, una obra única.</div>
+      </div>
+      <div class="precio-feature">
+        <div class="precio-feature-icon">🎁</div>
+        <div class="precio-feature-name">Un regalo inolvidable</div>
+        <div class="precio-feature-desc">Para emocionar a quien más quieres.</div>
+      </div>
     </div>
-    <a href="formulario.html" class="btn-gold">Crear mi libro ahora</a>
+  </div>
+
+  <div class="precio-right">
+    <p class="precio-right-label">Tu libro completo</p>
+    <div class="precio-amount">75€</div>
+    <p class="precio-unit">Precio único · Envío incluido</p>
+    <div class="precio-list">
+      <div class="precio-item"><div class="precio-item-icon">📖</div>20 páginas ilustradas en acuarela</div>
+      <div class="precio-item"><div class="precio-item-icon">📕</div>Tapa dura A4 vertical</div>
+      <div class="precio-item"><div class="precio-item-icon">👤</div>Personajes con rasgos reales</div>
+      <div class="precio-item"><div class="precio-item-icon">✏️</div>Escrito a partir de recuerdos reales</div>
+      <div class="precio-item"><div class="precio-item-icon">🚚</div>Envío a domicilio incluido</div>
+      <div class="precio-item"><div class="precio-item-icon">📅</div>Entrega en 2–3 semanas</div>
+    </div>
+    <a href="formulario.html" class="btn-gold">CREAR MI LIBRO →</a>
   </div>
 </section>
 
