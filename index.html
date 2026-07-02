@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tale Us Stories — Libros ilustrados personalizados</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.383.0/umd/lucide.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -429,7 +430,7 @@
     line-height: 1.7;
   }
 
-  /* NUEVA SECCIÓN PRECIO */
+  /* SECCIÓN PRECIO */
   .section-precio {
     position: relative;
     overflow: hidden;
@@ -478,10 +479,7 @@
     margin-bottom: 20px;
   }
 
-  .precio-tag::before {
-    content: '✦';
-    font-size: 14px;
-  }
+  .precio-tag::before { content: '✦'; font-size: 14px; }
 
   .precio-title {
     font-family: 'Playfair Display', serif;
@@ -493,10 +491,7 @@
     margin-bottom: 8px;
   }
 
-  .precio-title em {
-    font-style: italic;
-    color: var(--terracota);
-  }
+  .precio-title em { font-style: italic; color: var(--terracota); }
 
   .precio-divider {
     width: 40px;
@@ -528,14 +523,22 @@
   }
 
   .precio-feature-icon {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: rgba(196, 98, 45, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    color: var(--terracota);
+  }
+
+  .precio-feature-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--terracota);
+    stroke-width: 1.5;
+    fill: none;
   }
 
   .precio-feature-name {
@@ -616,8 +619,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
     flex-shrink: 0;
+  }
+
+  .precio-item-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--text-muted);
+    stroke-width: 1.5;
+    fill: none;
   }
 
   .btn-gold {
@@ -826,17 +836,23 @@
     <p class="precio-desc">Creamos libros ilustrados en acuarela a partir de tu historia. Cada página está hecha con cuidado, para emocionar hoy y siempre.</p>
     <div class="precio-features-grid">
       <div class="precio-feature">
-        <div class="precio-feature-icon">♥</div>
+        <div class="precio-feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
         <div class="precio-feature-name">Historias reales</div>
         <div class="precio-feature-desc">Escrito a partir de recuerdos reales.</div>
       </div>
       <div class="precio-feature">
-        <div class="precio-feature-icon">✏️</div>
+        <div class="precio-feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+        </div>
         <div class="precio-feature-name">Ilustrado en acuarela</div>
         <div class="precio-feature-desc">Cada página, una obra única.</div>
       </div>
       <div class="precio-feature">
-        <div class="precio-feature-icon">🎁</div>
+        <div class="precio-feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+        </div>
         <div class="precio-feature-name">Un regalo inolvidable</div>
         <div class="precio-feature-desc">Para emocionar a quien más quieres.</div>
       </div>
@@ -848,12 +864,30 @@
     <div class="precio-amount">75€</div>
     <p class="precio-unit">Precio único · Envío incluido</p>
     <div class="precio-list">
-      <div class="precio-item"><div class="precio-item-icon">📖</div>20 páginas ilustradas en acuarela</div>
-      <div class="precio-item"><div class="precio-item-icon">📕</div>Tapa dura A4 vertical</div>
-      <div class="precio-item"><div class="precio-item-icon">👤</div>Personajes con rasgos reales</div>
-      <div class="precio-item"><div class="precio-item-icon">✏️</div>Escrito a partir de recuerdos reales</div>
-      <div class="precio-item"><div class="precio-item-icon">🚚</div>Envío a domicilio incluido</div>
-      <div class="precio-item"><div class="precio-item-icon">📅</div>Entrega en 2–3 semanas</div>
+      <div class="precio-item">
+        <div class="precio-item-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        20 páginas ilustradas en acuarela
+      </div>
+      <div class="precio-item">
+        <div class="precio-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        Tapa dura A4 vertical
+      </div>
+      <div class="precio-item">
+        <div class="precio-item-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        Personajes con rasgos reales
+      </div>
+      <div class="precio-item">
+        <div class="precio-item-icon"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        Escrito a partir de recuerdos reales
+      </div>
+      <div class="precio-item">
+        <div class="precio-item-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        Envío a domicilio incluido
+      </div>
+      <div class="precio-item">
+        <div class="precio-item-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        Entrega en 2–3 semanas
+      </div>
     </div>
     <a href="formulario.html" class="btn-gold">CREAR MI LIBRO →</a>
   </div>
