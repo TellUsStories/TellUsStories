@@ -80,6 +80,7 @@
     padding: 160px 64px 80px;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
   }
 
   .hero-tag {
@@ -156,6 +157,25 @@
   .hero-link:hover {
     color: var(--text);
     border-color: var(--text);
+  }
+
+  /* ESTRELLITAS */
+  .hero-stars {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 35%;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    opacity: 0.85;
+  }
+
+  .star img { display: block; }
+
+  @media (max-width: 900px) {
+    .hero-stars { width: 20%; opacity: 0.5; }
   }
 
   .divider {
@@ -576,6 +596,17 @@
   <div class="hero-actions">
     <a href="#precio" class="btn-dark">Crear mi libro</a>
     <a href="#como" class="hero-link">Ver cómo funciona</a>
+  </div>
+
+  <!-- ESTRELLITAS -->
+  <div class="hero-stars">
+    <div class="star" style="top:8%;right:18%;"><img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1783001512/ChatGPT_Image_2_jul_2026_16_11_29_sojmqt.png" width="28" alt=""></div>
+    <div class="star" style="top:18%;right:5%;"><img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1783001868/ChatGPT_Image_2_jul_2026_16_17_30_ejbsbh.png" width="38" alt=""></div>
+    <div class="star" style="top:32%;right:22%;"><img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1783001512/ChatGPT_Image_2_jul_2026_16_11_29_sojmqt.png" width="22" alt=""></div>
+    <div class="star" style="top:48%;right:8%;"><img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1783001868/ChatGPT_Image_2_jul_2026_16_17_30_ejbsbh.png" width="32" alt=""></div>
+    <div class="star" style="top:60%;right:25%;"><img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1783001512/ChatGPT_Image_2_jul_2026_16_11_29_sojmqt.png" width="24" alt=""></div>
+    <div class="star" style="top:72%;right:12%;"><img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1783001512/ChatGPT_Image_2_jul_2026_16_11_29_sojmqt.png" width="20" alt=""></div>
+    <div class="star" style="top:82%;right:28%;"><img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1783001868/ChatGPT_Image_2_jul_2026_16_17_30_ejbsbh.png" width="34" alt=""></div>
   </div>
 </section>
 
