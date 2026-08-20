@@ -865,7 +865,7 @@ async function submit() {
     narrator:        narrator === 'protagonist' ? 'protagonista' : 'otra_persona',
   };
 
-  var fieldMap = {0:'q1_nombre',1:'q2_lugar',2:'q2_recuerdo',3:'q2_recuerdo',4:'q2_juego',5:'q3_sueno',6:'q3_aventura',7:'q4_pareja',8:'q4_hijos',9:'q5_actividad',10:'q5_actividad',11:'q5_lugar',12:'q6_consejo',13:'q6_deseo'};
+  var fieldMap = {0:'q1_nombre',1:'q2_lugar',2:'q2_gesto',3:'q2_recuerdo',4:'q2_juego',5:'q3_sueno',6:'q3_aventura',7:'q4_pareja',8:'q4_hijos',9:'q5_ninos',10:'q5_actividad',11:'q5_lugar',12:'q6_consejo',13:'q6_deseo'};
   for (var i = 0; i <= 13; i++) {
     var tf = document.querySelector('#tf' + i + ' textarea');
     var value = (transcribedTexts[i] && transcribedTexts[i].trim())
