@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta C · La hora del cuento — Tale Us Stories</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* Propuesta C: el momento en que se lee el libro. Portada nocturna de cuento antes de dormir,
+     con las estrellas doradas que ya usa la marca, y un selector "¿Para quién es?" que personaliza la web. */
+  :root {
+    --noche: #1C2340;
+    --noche-2: #262F55;
+    --luz: #F6EFE3;
+    --luz-2: #EAE0CF;
+    --oro: #E2B65C;
+    --terracota: #C4622D;
+    --tinta: #22202A;
+    --suave: #6D6676;
+    --display: 'Fraunces', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--luz); color: var(--tinta); font-family: var(--sans); line-height: 1.6; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding-inline: max(20px, env(safe-area-inset-left, 0px)); }
+
+  .noche { background: radial-gradient(120% 90% at 80% 10%, var(--noche-2), var(--noche)); color: var(--luz); position: relative; overflow: hidden; }
+  .noche canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  nav { position: relative; display: flex; justify-content: space-between; align-items: center; padding-block: 20px; }
+  .logo { font-family: var(--display); font-size: 19px; color: var(--luz); text-decoration: none; }
+  .logo i { color: var(--oro); }
+  .nav-cta { color: var(--noche); background: var(--oro); text-decoration: none; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: 100px; }
+
+  .hero { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding-block: 40px 80px; }
+  .pregunta { font-size: 13px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--oro); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 26px; }
+  .chips button { font: 500 14px var(--sans); color: var(--luz); background: transparent; border: 1.5px solid rgba(246,239,227,.35); border-radius: 100px; padding: 8px 16px; cursor: pointer; transition: all .2s; }
+  .chips button[aria-pressed="true"] { background: var(--luz); color: var(--noche); border-color: var(--luz); }
+  .chips button:focus-visible { outline: 2px solid var(--oro); outline-offset: 2px; }
+  h1 { font-family: var(--display); font-weight: 400; font-size: clamp(36px, 5.6vw, 64px); line-height: 1.08; letter-spacing: -.5px; text-wrap: balance; }
+  h1 em { color: var(--oro); }
+  .hero p { color: rgba(246,239,227,.78); font-size: 17px; max-width: 32em; margin-top: 18px; }
+  .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 28px; }
+  .btn { background: var(--terracota); color: #fff; text-decoration: none; font-weight: 700; font-size: 15px; padding: 16px 28px; border-radius: 100px; box-shadow: 0 0 0 0 rgba(226,182,92,.5); transition: box-shadow .3s; }
+  .btn:hover { box-shadow: 0 0 0 8px rgba(226,182,92,.18); }
+  .desde { font-size: 14px; color: rgba(246,239,227,.75); }
+
+  .lampara { position: relative; justify-self: center; width: min(100%, 330px); }
+  .lampara::before { content: ''; position: absolute; inset: -20%; background: radial-gradient(circle, rgba(226,182,92,.35), transparent 62%); }
+  .lampara img { position: relative; width: 100%; display: block; border-radius: 4px 10px 10px 4px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.6); }
+
+  section { padding-block: 72px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--terracota); }
+  h2 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; letter-spacing: -.5px; margin-top: 10px; text-wrap: balance; }
+  h2 em { color: var(--terracota); }
+
+  /* Bento: lo que hace especial al libro */
+  .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(150px, auto); gap: 14px; margin-top: 36px; }
+  .celda { background: #fff; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; }
+  .celda b { font-family: var(--display); font-weight: 400; font-size: 22px; line-height: 1.2; }
+  .celda span { font-size: 14px; color: var(--suave); }
+  .celda.grande { grid-column: span 2; grid-row: span 2; padding: 0; overflow: hidden; position: relative; background: var(--luz-2); }
+  .celda.grande img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .celda.grande .pie { position: absolute; left: 14px; right: 14px; bottom: 14px; background: rgba(246,239,227,.94); border-radius: 14px; padding: 14px 16px; }
+  .celda.oscura { background: var(--noche); color: var(--luz); }
+  .celda.oscura span { color: rgba(246,239,227,.7); }
+  .celda .cifra { font-family: var(--display); font-size: 48px; line-height: 1; color: var(--terracota); }
+  .celda.oscura .cifra { color: var(--oro); }
+
+  /* Ocasiones */
+  .ocasiones { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; margin-top: 24px; scrollbar-width: none; }
+  .ocasiones::-webkit-scrollbar { display: none; }
+  .ocasion { flex: 0 0 auto; scroll-snap-align: start; background: #fff; border-radius: 16px; padding: 16px 18px; min-width: 170px; }
+  .ocasion b { display: block; font-family: var(--display); font-weight: 400; font-size: 18px; }
+  .ocasion span { font-size: 13px; color: var(--suave); }
+  .ocasion.memoria { background: var(--noche); color: var(--luz); }
+  .ocasion.memoria span { color: rgba(246,239,227,.7); }
+
+  /* Precio y preguntas */
+  .cierre { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .precio { background: var(--noche); color: var(--luz); border-radius: 24px; padding: 32px; }
+  .fila { display: flex; justify-content: space-between; align-items: baseline; padding-block: 14px; border-bottom: 1px solid rgba(246,239,227,.15); }
+  .fila b { font-family: var(--display); font-weight: 400; font-size: 36px; color: var(--oro); }
+  .precio p { font-size: 14px; color: rgba(246,239,227,.75); margin: 16px 0 22px; }
+  details { border-bottom: 1px solid var(--luz-2); }
+  summary { cursor: pointer; list-style: none; padding: 16px 28px 16px 0; font-weight: 500; position: relative; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; position: absolute; right: 4px; top: 12px; font-size: 22px; color: var(--terracota); }
+  details[open] summary::after { content: '–'; }
+  details p { padding-bottom: 16px; color: var(--suave); font-size: 15px; }
+
+  footer { padding-block: 32px 48px; text-align: center; font-size: 13px; color: var(--suave); }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; padding-block: 16px 56px; }
+    .lampara { width: min(66%, 240px); order: -1; }
+    .bento { grid-template-columns: 1fr 1fr; }
+    .celda.grande { grid-column: span 2; grid-row: auto; aspect-ratio: 4 / 5; }
+    .cierre { grid-template-columns: 1fr; }
+    section { padding-block: 52px; }
+    .nav-cta { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noche">
+  <canvas id="cielo" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <nav><a class="logo" href="../index.html">Tale Us <i>Stories</i></a><a class="nav-cta" href="../formulario.html">Crear mi libro</a></nav>
+    <header class="hero">
+      <div>
+        <div class="pregunta">¿Para quién es el libro?</div>
+        <div class="chips" role="group" aria-label="Para quién es el libro">
+          <button type="button" aria-pressed="true" data-quien="mamá" data-art="ella">Mamá</button>
+          <button type="button" aria-pressed="false" data-quien="papá" data-art="él">Papá</button>
+          <button type="button" aria-pressed="false" data-quien="la abuela" data-art="ella">Abuela</button>
+          <button type="button" aria-pressed="false" data-quien="el abuelo" data-art="él">Abuelo</button>
+        </div>
+        <h1>Esta noche, el cuento es sobre <em id="quien">mamá</em>.</h1>
+        <p>Su infancia, sus sueños, cómo empezó todo. Nos lo cuentas con notas de voz y lo convertimos en un libro ilustrado en acuarela de 40 páginas para leer juntos antes de dormir, para que los niños descubran quién era <span id="art">ella</span> antes de la etiqueta.</p>
+        <div class="ctas"><a class="btn" href="../formulario.html">Crear su libro</a><span class="desde">Desde 40 € · envío incluido</span></div>
+      </div>
+      <div class="lampara"><img src="../portada-maria.jpg" alt="Portada del libro «El universo de María»"></div>
+    </header>
+  </div>
+</div>
+
+<section class="wrap">
+  <span class="eyebrow">El libro</span>
+  <h2>Hecho a mano, <em>página a página.</em></h2>
+  <div class="bento">
+    <div class="celda grande"><img loading="lazy" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_800/página_ejemplo_rlllmf" alt="Página interior de ejemplo"><div class="pie"><b>Acuarela con sus rasgos reales</b><br><span>A partir de una foto de su cara</span></div></div>
+    <div class="celda"><div class="cifra">40</div><b>páginas</b><span>A4 vertical</span></div>
+    <div class="celda oscura"><div class="cifra">5</div><b>capítulos</b><span>De la infancia al legado</span></div>
+    <div class="celda"><b>Notas de voz</b><span>15-20 minutos, se guarda solo</span></div>
+    <div class="celda"><b>2-3 semanas</b><span>Del formulario a tu casa</span></div>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <span class="eyebrow">Ideal para</span>
+  <div class="ocasiones">
+    <div class="ocasion"><b>Día de la Madre</b><span>Primer domingo de mayo</span></div>
+    <div class="ocasion"><b>Día del Padre</b><span>19 de marzo</span></div>
+    <div class="ocasion"><b>Navidad</b><span>Pídelo antes del 1 de diciembre</span></div>
+    <div class="ocasion"><b>Una jubilación</b><span>Toda una vida en un libro</span></div>
+    <div class="ocasion"><b>La llegada de un nieto</b><span>Para que conozca a sus abuelos</span></div>
+    <div class="ocasion memoria"><b>En memoria</b><span>De alguien que ya no está</span></div>
+  </div>
+</section>
+
+<section class="wrap cierre" style="padding-top:0">
+  <div class="precio">
+    <span class="eyebrow" style="color:var(--oro)">Precio</span>
+    <div class="fila"><span>Tapa blanda</span><b>40 €</b></div>
+    <div class="fila"><span>Tapa dura · la más elegida</span><b>62 €</b></div>
+    <p>Las dos con envío incluido, 40 páginas en A4.</p>
+    <a class="btn" href="../formulario.html">Crear su libro</a>
+  </div>
+  <div>
+    <span class="eyebrow">Preguntas frecuentes</span>
+    <details><summary>¿Cuánto se tarda en rellenar el formulario?</summary><p>Unos 15-20 minutos con notas de voz. Se guarda solo, así que puedes hacerlo a ratos.</p></details>
+    <details><summary>¿Y si no tengo fotos?</summary><p>Lo dibujamos a partir de cómo nos lo describas. Con una foto de su cara se parecerá mucho más.</p></details>
+    <details><summary>¿Puedo hacerlo en memoria de alguien?</summary><p>Sí. Es una forma preciosa de que los niños conozcan su historia.</p></details>
+    <details><summary>¿Qué hacéis con mis recuerdos y fotos?</summary><p>Solo los usamos para crear vuestro libro. Nunca los publicamos.</p></details>
+  </div>
+</section>
+
+<footer>Tale Us Stories · Hecho con amor en Barcelona · @tale_us_stories</footer>
+
+<script>
+  // Selector "¿Para quién es?": cambia el titular y el texto del botón
+  document.querySelectorAll('.chips button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.chips button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); });
+      document.getElementById('quien').textContent = b.dataset.quien;
+      document.getElementById('art').textContent = b.dataset.art;
+    });
+  });
+  // Cielo con estrellas que titilan (estático si se prefiere menos movimiento)
+  (function () {
+    var c = document.getElementById('cielo'), x = c.getContext('2d'), est = [];
+    var quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function tam() { var r = window.devicePixelRatio || 1; c.width = c.offsetWidth * r; c.height = c.offsetHeight * r; x.setTransform(r, 0, 0, r, 0, 0);
+      est = Array.from({ length: Math.round(c.offsetWidth / 9) }, function () { return { x: Math.random() * c.offsetWidth, y: Math.random() * c.offsetHeight, r: Math.random() * 1.4 + .3, f: Math.random() * 6 }; }); }
+    function pinta(t) { x.clearRect(0, 0, c.offsetWidth, c.offsetHeight);
+      est.forEach(function (s) { x.globalAlpha = .35 + .45 * Math.abs(Math.sin(t / 1400 + s.f)); x.fillStyle = '#E2B65C'; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill(); });
+      if (!quieto) requestAnimationFrame(pinta); }
+    tam(); window.addEventListener('resize', tam); requestAnimationFrame(pinta);
+  })();
+</script>
+</body>
+</html>
