@@ -267,6 +267,45 @@
     line-height: 1.85;
   }
 
+  .capitulos {
+    list-style: none;
+    margin-top: 32px;
+    border-left: 1.5px solid var(--border);
+    padding-left: 24px;
+  }
+
+  .capitulos li {
+    position: relative;
+    padding: 0 0 18px;
+  }
+
+  .capitulos li:last-child { padding-bottom: 0; }
+
+  .capitulos li::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1.5px solid var(--terracota);
+  }
+
+  .cap-nombre {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .cap-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
   .sobre-image {
     border-radius: 8px;
     overflow: hidden;
@@ -911,6 +950,14 @@
   <div>
     <p class="sobre-label">El libro por dentro</p>
     <h2 class="sobre-title">Así empieza <em>su historia</em></h2>
+    <p class="sobre-text">40 páginas que recorren su vida, de la infancia a hoy, contadas a los niños en voz alta.</p>
+    <ul class="capitulos">
+      <li><div class="cap-nombre">Infancia</div><div class="cap-desc">Cómo era de pequeño o pequeña, sus travesuras y sus lugares.</div></li>
+      <li><div class="cap-nombre">Juventud</div><div class="cap-desc">Sus sueños, sus aventuras y las decisiones valientes.</div></li>
+      <li><div class="cap-nombre">Amor y familia</div><div class="cap-desc">Cómo empezó todo y la llegada de cada niño.</div></li>
+      <li><div class="cap-nombre">Con los niños hoy</div><div class="cap-desc">Los planes, los rituales y los recuerdos que comparten.</div></li>
+      <li><div class="cap-nombre">El legado</div><div class="cap-desc">Lo que quiere que sepan cuando sean mayores.</div></li>
+    </ul>
   </div>
   <div class="sobre-image">
     <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/página_ejemplo_rlllmf" alt="Página interior del libro">
