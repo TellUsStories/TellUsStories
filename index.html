@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tale Us Stories — Libros ilustrados personalizados</title>
+<meta name="description" content="Convertimos la historia real de mamá, papá o los abuelos en un cuento ilustrado en acuarela de 40 páginas, para que los niños descubran quién era antes de la etiqueta. Desde 40 €, envío incluido.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tale Us Stories">
+<meta property="og:title" content="Antes de ser mamá, papá o abuela, fueron muchas otras cosas">
+<meta property="og:description" content="Un cuento ilustrado de 40 páginas con su historia real, para que los niños la descubran. Tú solo nos la cuentas con notas de voz.">
+<meta property="og:image" content="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_jpg,q_auto,w_1200/p%C3%A1gina_ejemplo_rlllmf">
+<meta property="og:url" content="https://tale-us-stories.netlify.app/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23C4622D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.383.0/umd/lucide.min.js"></script>
 <style>
@@ -629,6 +638,50 @@
     fill: none;
   }
 
+  .formatos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .formato {
+    position: relative;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 12px 18px;
+    text-align: center;
+  }
+
+  .formato.destacado { border-color: var(--terracota); }
+
+  .formato-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--terracota);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .formato-nombre {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .formato .precio-amount { font-size: 48px; margin-bottom: 0; }
+
   .btn-gold {
     width: 100%;
     background: var(--terracota);
@@ -686,10 +739,102 @@
 
   .footer-text { font-size: 13px; color: var(--text-muted); }
 
+  .section-faq {
+    padding: 64px 64px 80px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .faq-label, .ideal-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--terracota);
+    margin-bottom: 16px;
+  }
+
+  .faq-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 32px;
+  }
+
+  .faq-item { border-bottom: 1px solid var(--border); }
+
+  .faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 20px 32px 20px 0;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text);
+    position: relative;
+  }
+
+  .faq-item summary::-webkit-details-marker { display: none; }
+
+  .faq-item summary::after {
+    content: '+';
+    position: absolute;
+    right: 4px;
+    top: 16px;
+    font-size: 22px;
+    color: var(--terracota);
+    transition: transform 0.2s;
+  }
+
+  .faq-item[open] summary::after { transform: rotate(45deg); }
+
+  .faq-item p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    padding: 0 32px 20px 0;
+  }
+
+  .section-ideal {
+    padding: 64px 64px 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .ideal-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .ideal-chip {
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--white);
+  }
+
+  .ideal-chip.especial {
+    border-color: var(--terracota);
+    color: var(--terracota);
+  }
+
   @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
-    .nav-links { display: none; }
-    .hero { padding: 120px 24px 60px; }
+    nav { padding: 16px 24px; }
+    .nav-links { display: flex; gap: 0; }
+    .nav-links li:not(:last-child) { display: none; }
+    .nav-cta { padding: 8px 18px; }
+    .hero { padding: 100px 24px 48px; }
+    .hero-tag { margin-bottom: 20px; }
+    .hero-title { margin-bottom: 20px; }
+    .hero-body { font-size: 16px; margin-bottom: 24px; }
+    .section-faq { padding: 48px 24px 60px; }
+    .section-ideal { padding: 48px 24px 8px; }
     .divider { margin: 0 24px; }
     .section-creadora { padding: 60px 24px; grid-template-columns: 1fr; gap: 48px; }
     .creadora-image { max-width: 260px; }
@@ -715,20 +860,21 @@
     <li><a href="#creadora">Quiénes somos</a></li>
     <li><a href="#como">Cómo funciona</a></li>
     <li><a href="#libro">El libro</a></li>
-    <li><a href="#precio" class="nav-cta">Crear mi libro</a></li>
+    <li><a href="formulario.html" class="nav-cta">Crear mi libro</a></li>
   </ul>
 </nav>
 
 <section class="hero">
   <span class="hero-tag">Libros ilustrados personalizados</span>
   <h1 class="hero-title">
-    Detrás de cada persona que quieres, hay una historia que <em>merece ser contada.</em>
+    Antes de ser mamá, papá o abuela, fueron <em>muchas otras cosas.</em>
   </h1>
   <p class="hero-body">
-    En Tale Us Stories convertimos recuerdos reales en libros ilustrados personalizados. Recopilamos experiencias, anécdotas y momentos especiales para crear historias únicas que preservan la memoria familiar y ayudan a los más pequeños a conocer a las personas más importantes de su vida desde una perspectiva más cercana, humana y emocionante.
+    Convertimos su historia real en un cuento ilustrado de 40 páginas, para que los niños descubran quién era esa persona antes de la etiqueta, y para que ella misma se reconozca al leerlo. Tú solo nos la cuentas con notas de voz.
   </p>
+  <p class="hero-body" style="margin-top:-8px;font-weight:600;">Desde 40 € · Tapa dura o blanda · Envío incluido</p>
   <div class="hero-actions">
-    <a href="#precio" class="btn-dark">Crear mi libro</a>
+    <a href="formulario.html" class="btn-dark">Crear mi libro</a>
     <a href="#como" class="hero-link">Ver cómo funciona</a>
   </div>
 
@@ -746,14 +892,15 @@
 
 <section class="section-creadora" id="creadora">
   <div class="creadora-image">
-    <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782668692/ChatGPT_Image_28_jun_2026_19_44_41_miuc9q.png" alt="Cris, fundadora de Tale Us Stories">
+    <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782668692/ChatGPT_Image_28_jun_2026_19_44_41_miuc9q.png" alt="Ilustración de Tale Us Stories">
   </div>
   <div>
     <p class="creadora-label">Quiénes somos</p>
     <div class="creadora-text">
-      <p>Los niños crecen rodeados de etiquetas — mamá, papá, abuela, tío. Pero detrás de cada una hay una persona entera: alguien que soñó, que tuvo miedo, que se enamoró, que vivió mil cosas antes de convertirse en esa etiqueta.</p>
-      <p>Tale Us Stories nace de las ganas de regalarles esa primera mirada: descubrir, página a página, <strong>quién es realmente</strong> esa persona que tienen al lado.</p>
-      <p>Conocer la historia de quienes nos rodean fortalece el vínculo y ayuda a construir la propia identidad. Cuando un niño entiende de dónde viene, entiende también un poco mejor quién es él mismo.</p>
+      <p><strong>Detrás de cada etiqueta hay una persona entera.</strong></p>
+      <p>Tale Us Stories nace de algo que veo a mi alrededor. Mis amigas, mujeres increíbles, se han ido perdiendo poco a poco detrás de una sola palabra: <em>mamá</em>. Tanto que a veces ni ellas mismas se acuerdan de quién eran antes. De lo que soñaban, de lo que se atrevieron a hacer, de lo que las hacía reír.</p>
+      <p>Y pensé: si ni ellas mismas se quitan esa etiqueta, ¿cómo van a verlas de otra manera sus hijos? Y no les pasa solo a las madres: también a los padres, a los abuelos, a los tíos… a todos los que un día pasaron a ser, sobre todo, "mamá", "papá" o "abuela".</p>
+      <p>Por eso creo estos libros. Para que los niños descubran que esa persona también fue una niña o un niño con miedos, un adolescente con sueños, alguien que se enamoró y que vivió mil cosas antes de convertirse en su etiqueta. Y para que, al leerlo, <strong>se reconozca otra vez</strong>.</p>
     </div>
   </div>
 </section>
@@ -763,10 +910,7 @@
 <section class="section-sobre" id="sobre">
   <div>
     <p class="sobre-label">El libro por dentro</p>
-    <h2 class="sobre-title">Cada página, una <em>historia</em> que preservar</h2>
-    <p class="sobre-text">
-      Creamos libros que preservan la memoria de las personas que más queremos. Cada libro es único — escrito a partir de los recuerdos de quienes mejor conocen al protagonista, ilustrado en estilo acuarela cálido, y pensado para que los niños descubran a los adultos de su vida desde una perspectiva nueva y emocionante.
-    </p>
+    <h2 class="sobre-title">Así empieza <em>su historia</em></h2>
   </div>
   <div class="sobre-image">
     <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto/página_ejemplo_rlllmf" alt="Página interior del libro">
@@ -785,12 +929,12 @@
       <div class="step">
         <span class="step-num">01</span>
         <h3 class="step-title">Cuéntanos la historia</h3>
-        <p class="step-desc">Rellena nuestro formulario con notas de voz. Te guiamos con preguntas sobre la infancia, los sueños, el amor y la familia. Sin límites, sin prisas.</p>
+        <p class="step-desc">Rellena nuestro formulario con notas de voz. Te guiamos con preguntas sobre la infancia, los sueños, el amor y la familia. Unos 15 minutos, y se guarda solo: puedes hacerlo a ratos.</p>
       </div>
       <div class="step">
         <span class="step-num">02</span>
         <h3 class="step-title">Creamos el libro</h3>
-        <p class="step-desc">Transformamos esas historias en un libro ilustrado de 20 páginas. Texto personalizado, ilustraciones en acuarela con los rasgos reales del protagonista.</p>
+        <p class="step-desc">Transformamos esas historias en un libro ilustrado de 40 páginas. Sube una foto y lo dibujamos en acuarela con sus rasgos de verdad.</p>
       </div>
       <div class="step">
         <span class="step-num">03</span>
@@ -827,17 +971,30 @@
 
   <div class="libro-features">
     <div>
-      <h3 class="libro-feature-title">20 páginas ilustradas</h3>
-      <p class="libro-feature-desc">Estructura narrativa en 6 capítulos — desde la infancia hasta el legado familiar.</p>
+      <h3 class="libro-feature-title">40 páginas ilustradas</h3>
+      <p class="libro-feature-desc">Estructura narrativa en 5 capítulos — desde la infancia hasta el legado familiar.</p>
     </div>
     <div>
       <h3 class="libro-feature-title">Estilo acuarela cálido</h3>
       <p class="libro-feature-desc">Ilustraciones únicas con los rasgos reales del protagonista, en tonos ocres y crema.</p>
     </div>
     <div>
-      <h3 class="libro-feature-title">Tapa dura A4</h3>
-      <p class="libro-feature-desc">Impresión de alta calidad. Para mamá, papá, abuelo, abuela — cualquier persona especial.</p>
+      <h3 class="libro-feature-title">Tapa dura o blanda, A4</h3>
+      <p class="libro-feature-desc">Impresión de alta calidad en papel grueso, pensada para durar generaciones.</p>
     </div>
+  </div>
+</section>
+
+<section class="section-ideal" id="ideal">
+  <p class="ideal-label">Ideal para</p>
+  <div class="ideal-chips">
+    <span class="ideal-chip">Día de la Madre</span>
+    <span class="ideal-chip">Día del Padre</span>
+    <span class="ideal-chip">Cumpleaños de los abuelos</span>
+    <span class="ideal-chip">Navidad</span>
+    <span class="ideal-chip">Una jubilación</span>
+    <span class="ideal-chip">La llegada de un nieto</span>
+    <span class="ideal-chip especial">En memoria de alguien que ya no está</span>
   </div>
 </section>
 
@@ -877,16 +1034,26 @@
 
   <div class="precio-right">
     <p class="precio-right-label">Tu libro completo</p>
-    <div class="precio-amount">75€</div>
-    <p class="precio-unit">Precio único · Envío incluido</p>
+    <div class="formatos">
+      <div class="formato">
+        <p class="formato-nombre">Tapa blanda</p>
+        <div class="precio-amount">40€</div>
+      </div>
+      <div class="formato destacado">
+        <span class="formato-badge">La más elegida</span>
+        <p class="formato-nombre">Tapa dura</p>
+        <div class="precio-amount">62€</div>
+      </div>
+    </div>
+    <p class="precio-unit">Envío incluido en los dos formatos</p>
     <div class="precio-list">
       <div class="precio-item">
         <div class="precio-item-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-        20 páginas ilustradas en acuarela
+        40 páginas ilustradas en acuarela
       </div>
       <div class="precio-item">
         <div class="precio-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-        Tapa dura A4 vertical
+        Tapa dura o blanda, A4 vertical
       </div>
       <div class="precio-item">
         <div class="precio-item-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
@@ -907,6 +1074,35 @@
     </div>
     <a href="formulario.html" class="btn-gold">CREAR MI LIBRO →</a>
   </div>
+</section>
+
+<section class="section-faq" id="faq">
+  <p class="faq-label">Preguntas frecuentes</p>
+  <h2 class="faq-title">Lo que más nos preguntáis</h2>
+  <details class="faq-item">
+    <summary>¿Cuánto se tarda en rellenar el formulario?</summary>
+    <p>Unos 15-20 minutos. Respondes con notas de voz, como si se lo contaras a una amiga, y lo transcribimos nosotros. Se guarda solo en tu dispositivo, así que puedes hacerlo a ratos.</p>
+  </details>
+  <details class="faq-item">
+    <summary>¿Para quién puedo hacer el libro?</summary>
+    <p>Para cualquier persona especial para unos niños: mamá, papá, los abuelos, un tío o una tía… También en memoria de alguien que ya no está, para que los niños conozcan su historia.</p>
+  </details>
+  <details class="faq-item">
+    <summary>¿Y si no tengo fotos?</summary>
+    <p>No pasa nada: lo dibujamos a partir de cómo nos lo describas. Si subes una foto de su cara, las ilustraciones se le parecerán mucho más.</p>
+  </details>
+  <details class="faq-item">
+    <summary>¿Qué diferencia hay entre tapa blanda y tapa dura?</summary>
+    <p>El contenido es el mismo: 40 páginas ilustradas en A4. La tapa dura es más resistente y elegante, pensada para guardarla toda la vida. Las dos llevan el envío incluido.</p>
+  </details>
+  <details class="faq-item">
+    <summary>¿Cuánto tarda en llegar?</summary>
+    <p>Entre 2 y 3 semanas desde que nos envías la historia.</p>
+  </details>
+  <details class="faq-item">
+    <summary>¿Qué hacéis con las fotos y los recuerdos que os cuento?</summary>
+    <p>Solo los usamos para crear vuestro libro. Nunca los publicamos ni los usamos para nada más sin vuestro permiso.</p>
+  </details>
 </section>
 
 <footer>
