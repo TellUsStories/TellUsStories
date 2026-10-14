@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tale Us Stories — Su historia, antes de la etiqueta</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Convertimos la historia real de mamá, papá, los abuelos o los tíos en un cuento ilustrado en acuarela de 40 páginas, para que los niños descubran quién era antes de la etiqueta. Desde 40 €, envío incluido.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23C4622D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../portadas/portadas.css">
+<style>
+  /* B pro: "La etiqueta", ahora para cualquier protagonista.
+     Moderna (grotesca rotunda) + clásica (serif de libro, ornamentos, portadas de tela).
+     Colores de siempre: crema, terracota, dorado y tinta. */
+  :root {
+    --papel: #FAF4EA;
+    --papel-2: #F1E5D3;
+    --terracota: #C4622D;
+    --dorado: #D4A853;
+    --tinta: #1A1410;
+    --suave: #6E5A4B;
+    --blanco: #FFFFFF;
+    --display: 'Bricolage Grotesque', 'Arial Black', sans-serif;
+    --texto: 'Literata', Georgia, serif;
+    --titular: var(--display);
+    --peso-titular: 800;
+  }
+  /* Interruptor de revisión: la misma web con titulares clásicos */
+  html.clasica { --titular: 'Cormorant Garamond', Georgia, serif; --peso-titular: 600; }
+  html.clasica h2, html.clasica .persona { letter-spacing: 0; }
+  html.clasica h2 em { font-style: italic; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--papel); color: var(--tinta); font-family: var(--texto); line-height: 1.65; font-size: 17px; overflow-x: hidden; }
+  img { max-width: 100%; }
+  a { color: inherit; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding-inline: max(20px, env(safe-area-inset-left, 0px)); }
+  :focus-visible { outline: 3px solid var(--dorado); outline-offset: 3px; }
+  .eyebrow { display: inline-block; font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--terracota); margin-bottom: 10px; }
+  h2 { font-family: var(--titular); font-weight: var(--peso-titular); font-size: clamp(34px, 5vw, 56px); line-height: 1.02; letter-spacing: -1px; text-wrap: balance; }
+  h2 em { font-style: normal; color: var(--terracota); }
+  .orla { display: flex; align-items: center; gap: 14px; color: var(--dorado); font-size: 18px; margin: 18px 0 0; }
+  .orla::before, .orla::after { content: ''; height: 1.5px; width: 48px; background: currentColor; }
+  section { padding-block: 84px; }
+  .boton { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; font-size: 17px; text-decoration: none; color: var(--tinta); background: var(--dorado); padding: 16px 28px; border-radius: 14px; border: none; cursor: pointer; box-shadow: 4px 4px 0 var(--tinta); transition: transform .15s, box-shadow .15s; }
+  .boton:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--tinta); }
+  .boton.claro { background: var(--papel); }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--papel) 94%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid transparent; }
+  nav .wrap { display: flex; justify-content: space-between; align-items: center; padding-block: 14px; gap: 16px; }
+  .logo { font-family: var(--display); font-weight: 800; font-size: 15px; letter-spacing: 2px; text-transform: uppercase; color: var(--tinta); text-decoration: none; line-height: 1.05; }
+  .logo span { display: block; width: 28px; height: 3px; background: var(--terracota); margin-top: 5px; border-radius: 2px; }
+  .menu { display: flex; align-items: center; gap: 26px; list-style: none; font-family: var(--display); font-weight: 500; font-size: 14px; }
+  .menu a { text-decoration: none; color: var(--suave); }
+  .menu a:hover { color: var(--terracota); }
+  .pill { color: var(--papel) !important; background: var(--tinta); padding: 10px 18px; border-radius: 100px; }
+
+  /* HERO */
+  .hero { padding-block: 40px 70px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: center; }
+  .etiqueta { display: inline-block; position: relative; font-family: var(--display); font-weight: 800; font-size: clamp(60px, 11vw, 136px); line-height: .95; text-transform: uppercase; letter-spacing: -2px; }
+  .etiqueta::after { content: ''; position: absolute; left: -4%; right: -4%; top: 52%; height: .12em; background: var(--terracota); border-radius: 6px; transform: rotate(-4deg); transform-origin: left; }
+  .etiqueta.anima::after { animation: tacha .7s .3s cubic-bezier(.6,.1,.3,1) both; }
+  @keyframes tacha { from { transform: rotate(-4deg) scaleX(0); } }
+  .persona { display: block; font-family: var(--titular); font-weight: var(--peso-titular); font-size: clamp(27px, 4.2vw, 46px); line-height: 1.1; color: var(--terracota); margin-top: 14px; min-height: 2.25em; text-wrap: balance; }
+  .persona.anima { animation: entra .5s .5s ease both; }
+  @keyframes entra { from { opacity: 0; transform: translateY(10px); } }
+  .hero-texto { max-width: 31em; margin-top: 14px; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; margin-top: 26px; }
+  .datos { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 22px; font-family: var(--display); font-weight: 500; font-size: 14px; color: var(--suave); }
+  .datos span::before { content: '✦ '; color: var(--dorado); }
+  .hero-portadas { position: relative; height: clamp(360px, 44vw, 500px); }
+  .hero-portadas > div { position: absolute; width: 58%; transition: transform .4s; }
+  .hero-portadas .h1 { left: 0; top: 8%; transform: rotate(-7deg); }
+  .hero-portadas .h2 { right: 0; top: 0; transform: rotate(6deg); }
+  .hero-portadas .h3 { left: 21%; top: 20%; z-index: 2; transform: rotate(-1deg); }
+  .hero-portadas:hover .h1 { transform: rotate(-10deg) translateX(-10px); }
+  .hero-portadas:hover .h2 { transform: rotate(9deg) translateX(10px); }
+
+  /* Cinta */
+  .banda { background: var(--tinta); color: var(--papel); overflow: hidden; padding-block: 18px; }
+  .cinta { display: flex; gap: 44px; width: max-content; animation: corre 40s linear infinite; font-family: var(--display); font-weight: 500; font-size: 20px; white-space: nowrap; }
+  .cinta s { color: var(--dorado); text-decoration-color: var(--terracota); text-decoration-thickness: 3px; margin-right: 6px; }
+  @keyframes corre { to { transform: translateX(-50%); } }
+
+  /* CONFIGURADOR */
+  .config { background: var(--papel-2); }
+  .config-grid { display: grid; grid-template-columns: 1fr 380px; gap: 56px; align-items: center; margin-top: 36px; }
+  .paso-c { display: grid; gap: 10px; margin-bottom: 22px; }
+  .paso-c > label, .paso-c > span { font-family: var(--display); font-weight: 700; font-size: 14px; }
+  .paso-c > label b, .paso-c > span b { color: var(--terracota); margin-right: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips button { font: 600 15px var(--display); border: 2px solid var(--tinta); background: var(--papel); color: var(--tinta); border-radius: 100px; padding: 8px 16px; cursor: pointer; }
+  .chips button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); }
+  .campo { font: 17px var(--texto); padding: 12px 14px; border: 2px solid var(--tinta); border-radius: 12px; background: var(--blanco); color: var(--tinta); width: 100%; max-width: 340px; }
+  .estilos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 460px; }
+  .estilos button { border: 2px solid transparent; background: none; padding: 3px; border-radius: 10px; cursor: pointer; }
+  .estilos button[aria-pressed="true"] { border-color: var(--tinta); }
+  .estilos button span { display: block; font: 600 11px var(--display); color: var(--suave); margin-top: 4px; }
+  .vista { position: relative; }
+  .vista .portada-b { transition: transform .3s; }
+  .vista:hover .portada-b { transform: rotate(-1.5deg) scale(1.01); }
+  .vista-pie { text-align: center; font-size: 14px; color: var(--suave); margin-top: 14px; font-style: italic; }
+
+  /* QUIÉNES SOMOS */
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .foto-marco { position: relative; max-width: 400px; justify-self: center; width: 100%; }
+  .foto-marco img { width: 100%; display: block; border-radius: 20px; background: var(--papel-2); aspect-ratio: 4 / 5; object-fit: cover; }
+  .foto-marco::before { content: ''; position: absolute; inset: 18px -18px -18px 18px; border-radius: 20px; background: var(--dorado); z-index: -1; }
+  .firma { font-family: 'Caveat', cursive; font-weight: 700; font-size: 30px; color: var(--terracota); margin-top: 8px; }
+  .texto-largo { display: grid; gap: 16px; margin-top: 22px; }
+  .texto-largo strong { font-weight: 400; background: linear-gradient(transparent 60%, color-mix(in srgb, var(--dorado) 55%, transparent) 60%); }
+
+  /* CÓMO FUNCIONA */
+  .baldosas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 36px; }
+  .baldosa { background: var(--papel-2); border-radius: 20px; padding: 28px; display: grid; gap: 8px; align-content: start; }
+  .baldosa:nth-child(2) { background: var(--terracota); color: var(--papel); }
+  .baldosa .n { font-family: var(--display); font-weight: 800; font-size: 44px; line-height: 1; color: var(--terracota); }
+  .baldosa:nth-child(2) .n { color: var(--dorado); }
+  .baldosa h3 { font-family: var(--display); font-weight: 800; font-size: 22px; margin-top: 6px; }
+  .baldosa p { font-size: 15px; }
+  .baldosa .tiempo { font-family: var(--display); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; opacity: .8; }
+
+  /* POR DENTRO */
+  .franja { background: var(--tinta); color: var(--papel); }
+  .franja h2 { color: var(--papel); }
+  .indice { list-style: none; margin-top: 28px; border-top: 1px solid rgba(250, 244, 234, .2); }
+  .indice li { display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid rgba(250, 244, 234, .2); }
+  .indice .num { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 30px; color: var(--dorado); line-height: 1; }
+  .indice b { font-family: var(--display); font-weight: 700; font-size: 19px; display: block; }
+  .indice span { font-size: 15px; opacity: .75; }
+  .indice .pags { font-family: var(--display); font-size: 13px; opacity: .6; white-space: nowrap; }
+  .pagina-ej img { width: 100%; display: block; border-radius: 12px; box-shadow: 10px 10px 0 var(--terracota); background: var(--papel-2); aspect-ratio: 2 / 3; object-fit: cover; }
+
+  /* PRECIO */
+  .precio { background: var(--terracota); color: var(--papel); border-radius: 28px; padding: 48px clamp(22px, 5vw, 56px); display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
+  .precio h2 { color: var(--papel); }
+  .precio ul { list-style: none; margin-top: 18px; display: grid; gap: 6px; font-size: 16px; }
+  .precio li::before { content: '★ '; color: var(--dorado); }
+  .formatos { display: flex; gap: 14px; }
+  .fmt { position: relative; background: var(--papel); color: var(--tinta); border-radius: 18px; padding: 22px 20px 18px; text-align: center; min-width: 140px; }
+  .fmt small { font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; display: block; color: var(--suave); }
+  .fmt b { font-family: var(--display); font-weight: 800; font-size: 44px; line-height: 1.1; }
+  .fmt span { font-size: 13px; color: var(--suave); }
+  .fmt.top { outline: 3px solid var(--dorado); outline-offset: 3px; }
+  .fmt .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--dorado); color: var(--tinta); font-family: var(--display); font-weight: 800; font-size: 11px; white-space: nowrap; padding: 4px 10px; border-radius: 100px; }
+  .precio .nota { font-size: 14px; margin: 12px 0 22px; opacity: .9; }
+
+  /* PARA QUIÉN / CUÁNDO */
+  .ocasiones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 30px; }
+  .ocasion { border: 2px solid var(--tinta); border-radius: 18px; padding: 18px; display: grid; gap: 4px; align-content: start; }
+  .ocasion b { font-family: var(--display); font-weight: 800; font-size: 18px; }
+  .ocasion span { font-size: 14px; color: var(--suave); }
+  .ocasion.especial { background: var(--tinta); color: var(--papel); }
+  .ocasion.especial span { color: rgba(250, 244, 234, .75); }
+
+  /* FAQ */
+  .faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: start; }
+  details { border-bottom: 2px solid var(--papel-2); }
+  summary { cursor: pointer; list-style: none; padding: 20px 40px 20px 0; font-family: var(--display); font-weight: 700; font-size: 18px; position: relative; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; position: absolute; right: 4px; top: 14px; font-size: 28px; color: var(--terracota); transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { padding-bottom: 20px; color: var(--suave); }
+  .ayuda { margin-top: 18px; color: var(--suave); }
+  .ayuda a { color: var(--terracota); font-weight: 600; }
+
+  /* CIERRE */
+  .cierre { text-align: center; }
+  .cierre h2 { max-width: 16em; margin-inline: auto; }
+  .cierre .ctas { justify-content: center; }
+
+  footer { background: var(--tinta); color: var(--papel); padding-block: 40px 40px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; font-family: var(--display); font-weight: 500; font-size: 14px; }
+  footer .logo { color: var(--papel); }
+  footer a { text-decoration: none; color: var(--dorado); }
+
+  /* Barra fija en el móvil */
+  .barra { display: none; }
+  /* Botón de revisión (solo propuesta) */
+  .revision { position: fixed; z-index: 40; left: max(12px, env(safe-area-inset-left, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 4px; background: var(--blanco); border: 2px solid var(--tinta); border-radius: 100px; padding: 4px; font: 600 12px var(--display); box-shadow: 0 6px 20px -8px rgba(0,0,0,.4); }
+  .revision button { font: inherit; border: none; background: none; padding: 6px 10px; border-radius: 100px; cursor: pointer; color: var(--tinta); }
+  .revision button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); }
+
+  @media (max-width: 900px) {
+    .menu li:not(:last-child) { display: none; }
+    .hero, .dos, .config-grid, .faq-grid { grid-template-columns: 1fr; }
+    .hero { padding-block: 12px 56px; gap: 28px; }
+    .hero-portadas { order: -1; height: 330px; max-width: 330px; width: 100%; justify-self: center; }
+    .hero-portadas > div { width: 52%; }
+    .config-grid { gap: 32px; }
+    .vista { max-width: 220px; width: 100%; justify-self: center; order: -1; }
+    .baldosas { grid-template-columns: 1fr; }
+    .ocasiones { grid-template-columns: 1fr 1fr; }
+    .precio { grid-template-columns: 1fr; }
+    .fmt { flex: 1; min-width: 0; }
+    section { padding-block: 60px; }
+    .dos { gap: 44px; }
+    .foto-marco { max-width: 280px; }
+    footer { padding-bottom: 110px; }
+    .barra { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; align-items: center; justify-content: space-between; gap: 12px; background: var(--tinta); color: var(--papel); padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+    .barra small { display: block; font: 500 12px var(--display); opacity: .7; }
+    .barra b { font: 800 20px var(--display); }
+    .barra a { background: var(--dorado); color: var(--tinta); text-decoration: none; font: 800 15px var(--display); padding: 12px 20px; border-radius: 12px; white-space: nowrap; }
+    .revision { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .cinta, .etiqueta.anima::after, .persona.anima { animation: none; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="#">Tale Us<br>Stories<span></span></a>
+  <ul class="menu">
+    <li><a href="#portada">Su portada</a></li>
+    <li><a href="#como">Cómo funciona</a></li>
+    <li><a href="#dentro">El libro</a></li>
+    <li><a href="#precio">Precio</a></li>
+    <li><a class="pill" href="../b/formulario.html">Crear su libro</a></li>
+  </ul>
+</div></nav>
+
+<header class="wrap hero">
+  <div>
+    <h1 class="etiqueta anima" id="etiqueta">Abuela</h1>
+    <div class="persona anima" id="persona" aria-live="polite">la primera de su pueblo en ir a la universidad.</div>
+    <p class="hero-texto">Mamá, papá, abuela, abuelo, tía, tío… Antes de la etiqueta hubo una persona entera. Nos cuentas su historia con notas de voz y la convertimos en un cuento ilustrado en acuarela de 40 páginas, para que los niños la descubran.</p>
+    <div class="ctas">
+      <a class="boton" href="#portada">Crear su libro →</a>
+    </div>
+    <div class="datos"><span>Desde 40 €, envío incluido</span><span>15-20 min con notas de voz</span><span>En casa en 2-3 semanas</span></div>
+  </div>
+  <div class="hero-portadas" aria-hidden="true">
+    <div class="h1" data-portada="tela" data-nombre="Antonio" data-rol="Abuelo" data-color="verde"></div>
+    <div class="h2" data-portada="noche" data-nombre="Laura" data-rol="Tía"></div>
+    <div class="h3" data-portada="album" data-nombre="Paco" data-rol="Abuelo"></div>
+  </div>
+</header>
+
+<div class="banda" aria-hidden="true"><div class="cinta" id="cinta"></div></div>
+
+<section class="config" id="portada">
+  <div class="wrap">
+    <span class="eyebrow">Empieza aquí · 10 segundos</span>
+    <h2>Haz su portada <em>ahora mismo.</em></h2>
+    <div class="config-grid">
+      <div>
+        <div class="paso-c"><span><b>1</b>¿Para quién es?</span><div class="chips" id="c-rol" role="group" aria-label="Para quién es"></div></div>
+        <div class="paso-c"><label for="c-nombre"><b>2</b>¿Cómo se llama?</label><input class="campo" id="c-nombre" placeholder="Ej: Carmen" maxlength="14" autocomplete="off"></div>
+        <div class="paso-c"><label for="c-ninos"><b>3</b>¿Para qué niños es?</label><input class="campo" id="c-ninos" placeholder="Ej: Mia y Leo" maxlength="22" autocomplete="off"></div>
+        <div class="paso-c"><span><b>4</b>Elige el estilo</span><div class="estilos" id="c-estilo" role="group" aria-label="Estilo de portada"></div></div>
+        <a class="boton" id="c-empezar" href="../b/formulario.html">Empezar su libro →</a>
+      </div>
+      <div class="vista"><div id="c-vista"></div><p class="vista-pie">Así quedará. La ilustración será su retrato en acuarela.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="como">
+  <span class="eyebrow">Cómo funciona</span>
+  <h2>Tú solo tienes que <em>contarlo.</em></h2>
+  <div class="baldosas">
+    <div class="baldosa"><div class="n">1</div><h3>Nos lo cuentas</h3><p>Preguntas guiadas sobre su infancia, sus sueños, el amor y la familia. Respondes con notas de voz, como si se lo contaras a una amiga. Se guarda solo.</p><span class="tiempo">15-20 minutos</span></div>
+    <div class="baldosa"><div class="n">2</div><h3>Lo escribimos e ilustramos</h3><p>Convertimos sus recuerdos en un cuento de 40 páginas en acuarela, con sus rasgos reales a partir de una foto.</p><span class="tiempo">5 capítulos</span></div>
+    <div class="baldosa"><div class="n">3</div><h3>Lo leéis juntos</h3><p>Impreso en A4, en tapa dura o blanda, y en casa listo para regalar.</p><span class="tiempo">2-3 semanas</span></div>
+  </div>
+</section>
+
+<section class="franja" id="dentro">
+  <div class="wrap dos">
+    <div>
+      <span class="eyebrow" style="color:var(--dorado)">El libro por dentro</span>
+      <h2>Cinco capítulos, <em>una vida.</em></h2>
+      <ol class="indice">
+        <li><span class="num">i</span><div><b>Infancia</b><span>Cómo era de pequeño o pequeña, sus travesuras y sus lugares.</span></div><span class="pags">pág. 3</span></li>
+        <li><span class="num">ii</span><div><b>Juventud</b><span>Sus sueños, sus aventuras y las decisiones valientes.</span></div><span class="pags">pág. 9</span></li>
+        <li><span class="num">iii</span><div><b>Amor y familia</b><span>Cómo empezó todo y la llegada de cada niño.</span></div><span class="pags">pág. 17</span></li>
+        <li><span class="num">iv</span><div><b>Con los niños hoy</b><span>Los planes, los rituales y los recuerdos que comparten.</span></div><span class="pags">pág. 25</span></li>
+        <li><span class="num">v</span><div><b>El legado</b><span>Lo que quiere que sepan cuando sean mayores.</span></div><span class="pags">pág. 33</span></li>
+      </ol>
+    </div>
+    <div class="pagina-ej"><img loading="lazy" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_1000/página_ejemplo_rlllmf" alt="Página interior del libro"></div>
+  </div>
+</section>
+
+<section class="wrap dos" id="creadora">
+  <div class="foto-marco"><img loading="lazy" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_800/v1782668692/ChatGPT_Image_28_jun_2026_19_44_41_miuc9q.png" alt="Ilustración de Tale Us Stories"></div>
+  <div>
+    <span class="eyebrow">Por qué existe</span>
+    <h2>Detrás de cada etiqueta hay una <em>persona entera.</em></h2>
+    <div class="texto-largo">
+      <p>Tale Us Stories nace de algo que veo a mi alrededor: gente increíble que se ha ido quedando detrás de una sola palabra. <i>Mamá</i>, <i>papá</i>, <i>abuela</i>… Tanto que a veces ni ellos mismos se acuerdan de quién eran antes. De lo que soñaban, de lo que se atrevieron a hacer, de lo que les hacía reír.</p>
+      <p>Por eso creo estos libros. Para que los niños descubran que esa persona también fue una niña o un niño con miedos, un adolescente con sueños, alguien que se enamoró y que vivió mil cosas antes de convertirse en su etiqueta. Y para que, al leerlo, <strong>se reconozca otra vez</strong>.</p>
+    </div>
+    <div class="orla">❦</div>
+  </div>
+</section>
+
+<section class="wrap" id="precio" style="padding-top:0">
+  <div class="precio">
+    <div>
+      <h2>Un libro que durará para siempre.</h2>
+      <ul><li>40 páginas ilustradas en acuarela</li><li>Su retrato con rasgos reales</li><li>Escrito a partir de sus recuerdos</li><li>A4 vertical · en casa en 2-3 semanas</li></ul>
+    </div>
+    <div>
+      <div class="formatos">
+        <div class="fmt"><small>Tapa blanda</small><b>40 €</b><span>Para leer mucho</span></div>
+        <div class="fmt top"><span class="badge">La más elegida</span><small>Tapa dura</small><b>62 €</b><span>Para toda la vida</span></div>
+      </div>
+      <p class="nota">Envío incluido en los dos formatos.</p>
+      <a class="boton claro" href="#portada">Crear su libro →</a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <span class="eyebrow">Ideal para</span>
+  <h2>Un regalo para <em>cualquier momento.</em></h2>
+  <div class="ocasiones">
+    <div class="ocasion"><b>Día de la Madre</b><span>Primer domingo de mayo</span></div>
+    <div class="ocasion"><b>Día del Padre</b><span>19 de marzo</span></div>
+    <div class="ocasion"><b>Día de los Abuelos</b><span>26 de julio</span></div>
+    <div class="ocasion"><b>Navidad</b><span>Pídelo con 3 semanas de margen</span></div>
+    <div class="ocasion"><b>Un cumpleaños</b><span>Mejor si es redondo</span></div>
+    <div class="ocasion"><b>Una jubilación</b><span>Toda una vida en un libro</span></div>
+    <div class="ocasion"><b>Un nuevo nieto</b><span>Para que conozca a su familia</span></div>
+    <div class="ocasion especial"><b>En memoria</b><span>De alguien que ya no está</span></div>
+  </div>
+</section>
+
+<section class="wrap faq-grid" id="faq" style="padding-top:0">
+  <div>
+    <span class="eyebrow">Preguntas frecuentes</span>
+    <h2>Lo que más nos <em>preguntáis.</em></h2>
+    <p class="ayuda">¿Otra duda? Escríbenos por <a href="https://www.instagram.com/tale_us_stories" target="_blank" rel="noopener">Instagram</a>.</p>
+  </div>
+  <div>
+    <details><summary>¿Para quién puedo hacer el libro?</summary><p>Para cualquier persona especial para unos niños: mamá, papá, los abuelos, un tío o una tía, un padrino… También en memoria de alguien que ya no está.</p></details>
+    <details><summary>¿Cuánto se tarda en rellenar el formulario?</summary><p>Unos 15-20 minutos. Respondes con notas de voz y lo transcribimos nosotros. Se guarda solo, así que puedes hacerlo a ratos.</p></details>
+    <details><summary>¿Y si no tengo fotos?</summary><p>Lo dibujamos a partir de cómo nos lo describas. Con una foto de su cara se parecerá mucho más.</p></details>
+    <details><summary>¿Qué diferencia hay entre tapa blanda y tapa dura?</summary><p>El contenido es el mismo: 40 páginas ilustradas en A4. La tapa dura es más resistente y elegante, pensada para guardarla toda la vida.</p></details>
+    <details><summary>¿Cuánto tarda en llegar?</summary><p>Entre 2 y 3 semanas desde que nos envías la historia.</p></details>
+    <details><summary>¿Qué hacéis con las fotos y los recuerdos?</summary><p>Solo los usamos para crear vuestro libro. Nunca los publicamos ni los usamos para nada más sin vuestro permiso.</p></details>
+  </div>
+</section>
+
+<section class="wrap cierre" style="padding-top:0">
+  <div class="orla" style="justify-content:center;margin-bottom:18px">❦</div>
+  <h2>Su historia merece <em>ser contada.</em></h2>
+  <div class="ctas"><a class="boton" href="#portada">Crear su libro →</a></div>
+</section>
+
+<footer><div class="wrap">
+  <span class="logo">Tale Us Stories</span>
+  <a href="https://www.instagram.com/tale_us_stories" target="_blank" rel="noopener">@tale_us_stories</a>
+  <span>Hecho con amor · Barcelona</span>
+</div></footer>
+
+<div class="barra"><div><small>Su libro desde</small><b>40 €</b></div><a href="#portada">Crear su libro</a></div>
+
+<div class="revision" role="group" aria-label="Estilo de titulares (solo para revisar)">
+  <button type="button" aria-pressed="true" data-t="moderna">Moderna</button>
+  <button type="button" aria-pressed="false" data-t="clasica">Clásica</button>
+</div>
+
+<script src="../portadas/portadas.js"></script>
+<script>
+  // Portadas de la cabecera
+  document.querySelectorAll('[data-portada]').forEach(function (el) {
+    el.innerHTML = TUSPortadas.portada(el.dataset.portada, { nombre: el.dataset.nombre, rol: el.dataset.rol, color: el.dataset.color, ninos: 'Mia y Leo' });
+    var a = el.querySelector('.acuarela'); if (a) a.classList.add('sin-rotulo');
+  });
+
+  // Etiqueta tachada: todos los protagonistas por turnos
+  var PARES = [
+    ['Abuela', 'la primera de su pueblo en ir a la universidad.'],
+    ['Papá', 'el que tocaba la batería en un grupo de rock.'],
+    ['Tía', 'la que dio la vuelta al mundo con una mochila.'],
+    ['Abuelo', 'el que pintaba barcos en el puerto.'],
+    ['Mamá', 'la que quería ser bailarina.'],
+    ['Tío', 'el que montó su propio taller a los 20.']
+  ];
+  document.getElementById('cinta').innerHTML = PARES.concat(PARES).map(function (p) {
+    return '<span><s>' + p[0] + '</s>' + p[1].replace(/\.$/, '') + '</span>';
+  }).join('');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var et = document.getElementById('etiqueta'), pe = document.getElementById('persona'), k = 0;
+    setInterval(function () {
+      k = (k + 1) % PARES.length;
+      et.classList.remove('anima'); pe.classList.remove('anima'); void et.offsetWidth;
+      et.textContent = PARES[k][0]; pe.textContent = PARES[k][1];
+      et.classList.add('anima'); pe.classList.add('anima');
+    }, 3600);
+  }
+
+  // Configurador de portada
+  var cfg = { rol: 'Abuela', nombre: '', ninos: '', estilo: 'etiqueta' };
+  var ESTILOS = [['etiqueta', 'Etiqueta'], ['tela', 'Tela'], ['noche', 'Estrellas'], ['album', 'Álbum'], ['sello', 'Sello']];
+  var rolBox = document.getElementById('c-rol'), estBox = document.getElementById('c-estilo');
+  ['Mamá', 'Papá', 'Abuela', 'Abuelo', 'Tía', 'Tío', 'Otra persona'].forEach(function (r) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = r; b.setAttribute('aria-pressed', r === cfg.rol);
+    b.onclick = function () { cfg.rol = r; rolBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
+    rolBox.appendChild(b);
+  });
+  ESTILOS.forEach(function (e) {
+    var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', e[0] === cfg.estilo); b.setAttribute('aria-label', 'Estilo ' + e[1]);
+    b.innerHTML = TUSPortadas.portada(e[0], { nombre: 'A', rol: 'Abuela' }) + '<span>' + e[1] + '</span>';
+    b.querySelectorAll('.acuarela').forEach(function (a) { a.classList.add('sin-rotulo'); });
+    b.onclick = function () { cfg.estilo = e[0]; estBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
+    estBox.appendChild(b);
+  });
+  function pinta() {
+    var rol = cfg.rol === 'Otra persona' ? 'Madrina' : cfg.rol;
+    document.getElementById('c-vista').innerHTML = TUSPortadas.portada(cfg.estilo, { nombre: cfg.nombre || 'Carmen', rol: rol, ninos: cfg.ninos || 'Mia y Leo' });
+    var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo });
+    document.getElementById('c-empezar').href = '../b/formulario.html?' + q.toString();
+  }
+  document.getElementById('c-nombre').addEventListener('input', function (e) { cfg.nombre = e.target.value.trim(); pinta(); });
+  document.getElementById('c-ninos').addEventListener('input', function (e) { cfg.ninos = e.target.value.trim(); pinta(); });
+  pinta();
+
+  // Interruptor moderna / clásica (solo para la revisión)
+  document.querySelectorAll('.revision button').forEach(function (b) {
+    b.onclick = function () {
+      document.documentElement.classList.toggle('clasica', b.dataset.t === 'clasica');
+      document.querySelectorAll('.revision button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); });
+    };
+  });
+</script>
+</body>
+</html>

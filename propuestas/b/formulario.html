@@ -1122,6 +1122,18 @@ async function submit() {
 
 document.getElementById('prog').style.width = '0%';
 loadDraft();
+// Vista previa: datos que vienen del configurador de portada de la web
+(function () {
+  var q = new URLSearchParams(location.search);
+  if (!q.get('nombre') && !q.get('rol')) return;
+  var ROL = { 'Mamá': ['Las aventuras de Mamá', 'f'], 'Papá': ['Las aventuras de Papá', 'm'], 'Abuela': ['Las aventuras de la Abuela', 'f'],
+              'Abuelo': ['Las aventuras del Abuelo', 'm'], 'Tía': ['Las aventuras de la Tía', 'f'], 'Tío': ['Las aventuras del Tío', 'm'] };
+  if (q.get('nombre')) document.getElementById('protName').value = q.get('nombre');
+  if (q.get('ninos')) document.getElementById('childNames').value = q.get('ninos');
+  var r = ROL[q.get('rol')];
+  if (r) { document.getElementById('bookType').value = r[0]; setGender(r[1], document.getElementById(r[1] === 'm' ? 'gm' : 'gf')); }
+  else if (q.get('rol')) { document.getElementById('bookType').value = 'Título personalizado'; document.getElementById('customTitleWrap').style.display = 'block'; }
+})();
 updateAll();
 </script>
 </body>
