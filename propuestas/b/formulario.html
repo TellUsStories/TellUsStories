@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tale Us Stories · Cuéntanoslo</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FAF4EA;--coral:#C4622D;--coral-l:#F1E5D3;--navy:#1A1410;--muted:#6E5A4B;--border:#E3D5C1;--white:#FFFFFF;--dorado:#D4A853;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--cream);font-family:var(--texto);color:var(--navy);min-height:100vh;}
+  .prog-track{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:100;}
+  .prog-fill{height:100%;background:var(--coral);transition:width .5s ease;width:0%;}
+  header{text-align:center;padding:44px 24px 0;}
+  .brand{font-family:var(--display);font-size:12px;letter-spacing:6px;color:var(--coral);text-transform:uppercase;margin-bottom:6px;}
+  .step-lbl{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+  .wrap{max-width:680px;margin:0 auto;padding:0 24px 100px;}
+  .screen{display:none;}
+  .screen.active{display:block;animation:up .4s ease forwards;}
+  @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .sh{padding:42px 0 30px;border-bottom:1px solid var(--border);margin-bottom:30px;}
+  .sh-chapter{font-size:10px;letter-spacing:4px;color:var(--coral);text-transform:uppercase;margin-bottom:6px;}
+  .sh-title{font-family:var(--display);font-size:29px;line-height:1.25;color:var(--navy);margin-bottom:10px;}
+  .sh-sub{font-size:14px;color:var(--muted);line-height:1.65;font-weight:300;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:10px;background:var(--coral-l);border:1px solid var(--coral);border-radius:4px;padding:8px 16px;margin-bottom:24px;}
+  .ch-num{font-size:11px;font-weight:700;color:var(--coral);letter-spacing:1px;}
+  .ch-name{font-family:var(--display);font-size:15px;color:var(--navy);}
+  .field{margin-bottom:20px;}
+  .field label{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:6px;}
+  .hint{font-size:12px;color:var(--muted);margin-bottom:7px;font-style:italic;line-height:1.5;}
+  input[type=text],input[type=email],select,textarea{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:4px;background:var(--white);font-family:var(--texto);font-size:16px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
+  input:focus,select:focus,textarea:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(200,84,74,.07);}
+  textarea{resize:vertical;min-height:80px;line-height:1.6;}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A7060'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:500px){.two{grid-template-columns:1fr;}}
+  .sdiv{display:flex;align-items:center;gap:12px;margin:26px 0 20px;}
+  .sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--border);}
+  .sdiv span{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;white-space:nowrap;}
+  .gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px;}
+  .gender-opt{border:2px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;transition:all .2s;background:var(--white);text-align:center;}
+  .gender-opt:hover{border-color:var(--coral);}
+  .gender-opt.selected{border-color:var(--coral);background:var(--coral-l);}
+  .gender-emoji{font-size:30px;margin-bottom:8px;}
+  .gender-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+  .gender-desc{font-size:12px;color:var(--muted);}
+
+  /* PORTADAS */
+  .portada-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;}
+  .portada-card{border:2px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:all .2s;background:var(--white);}
+  .portada-card:hover{border-color:var(--coral);}
+  .portada-card.selected{border-color:var(--coral);box-shadow:0 0 0 3px rgba(200,84,74,.15);}
+  .portada-card img{width:100%;aspect-ratio:3/4;object-fit:contain;background:var(--cream);display:block;}
+  .portada-card-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 0;}
+  .portada-card.selected .portada-card-num{color:var(--coral);}
+  @media(max-width:500px){.portada-grid{grid-template-columns:repeat(2,1fr);}}
+
+  .vc{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:22px;margin-bottom:14px;transition:border-color .2s;}
+  .vc:hover{border-color:rgba(200,84,74,.3);}
+  .vc.done{border-color:var(--coral);background:var(--coral-l);}
+  .vc-q{font-family:var(--display);font-size:17px;color:var(--navy);line-height:1.45;margin-bottom:5px;}
+  .vc-h{font-size:12px;color:var(--muted);margin-bottom:15px;font-style:italic;line-height:1.5;}
+  .vc-ctrls{display:flex;align-items:center;gap:11px;flex-wrap:wrap;}
+  .btn-rec{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;border:2px solid var(--coral);background:var(--white);color:var(--coral);font-family:var(--texto);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+  .btn-rec:hover{background:var(--coral);color:var(--white);}
+  .btn-rec.rec{background:var(--coral);color:var(--white);animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,84,74,.4)}50%{box-shadow:0 0 0 8px rgba(200,84,74,0)}}
+  .rdot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .btn-rec.rec .rdot{animation:blink .8s step-end infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .rtimer{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:34px;}
+  .rbadge{display:none;align-items:center;gap:5px;font-size:11px;color:var(--coral);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+  .rbadge.show{display:flex;}
+  .rbadge::before{content:'✓';}
+  audio.ap{display:none;width:100%;margin-top:10px;height:36px;}
+  audio.ap.show{display:block;}
+  .btn-clr{display:none;font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--texto);}
+  .btn-clr.show{display:inline;}
+  .or-d{display:flex;align-items:center;gap:10px;margin:10px 0 8px;}
+  .or-d::before,.or-d::after{content:'';flex:1;height:1px;background:var(--border);}
+  .or-d span{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .tf{display:none;}
+  .tf.show{display:block;}
+  .btn-tw{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--texto);}
+  .tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+  .tone-opt{border:1.5px solid var(--border);border-radius:6px;padding:14px 16px;cursor:pointer;transition:all .2s;background:var(--white);}
+  .tone-opt:hover{border-color:var(--coral);}
+  .tone-opt.selected{border-color:var(--coral);background:var(--coral-l);}
+  .te{font-size:20px;margin-bottom:5px;}
+  .tt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+  .td{font-size:11px;color:var(--muted);line-height:1.4;}
+  .uzone{border:2px dashed var(--border);border-radius:6px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--white);}
+  .uzone:hover{border-color:var(--coral);background:var(--coral-l);}
+  .uzone-icon{font-size:22px;margin-bottom:6px;}
+  .uzone-txt{font-size:13px;color:var(--muted);}
+  #fileInput{display:none;}
+  .fi{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);}
+  .fi::before{content:'✓';color:var(--coral);font-weight:700;}
+  .sb{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:18px 22px;margin-bottom:14px;}
+  .sb h3{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--coral);margin-bottom:12px;}
+  .sr{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .sr:last-child{border:none;}
+  .sk{color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;min-width:120px;}
+  .sv{color:var(--navy);text-align:right;flex:1;}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:34px;padding-top:22px;border-top:1px solid var(--border);}
+  .btn-back{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--texto);padding:12px 0;transition:color .2s;}
+  .btn-back:hover{color:var(--coral);}
+  .btn-back.h{visibility:hidden;}
+  .btn-next{background:var(--coral);color:var(--white);border:none;padding:13px 30px;border-radius:2px;font-family:var(--texto);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+  .btn-next:hover{background:#b04840;transform:translateY(-1px);box-shadow:0 4px 14px rgba(200,84,74,.28);}
+  .perm{display:none;background:#FFF3CD;border:1px solid #FFD966;border-radius:4px;padding:11px 15px;font-size:13px;color:#7A6000;margin-bottom:12px;}
+  .perm.show{display:block;}
+  .fin{text-align:center;padding:60px 0 40px;}
+  .fin-h{font-size:50px;margin-bottom:22px;animation:hb 1.2s ease infinite;}
+  @keyframes hb{0%,100%{transform:scale(1)}30%{transform:scale(1.15)}60%{transform:scale(1.05)}}
+  .fin-t{font-family:var(--display);font-size:32px;color:var(--navy);margin-bottom:12px;}
+  .fin-s{font-size:15px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 28px;}
+  .fin-box{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:16px 26px;display:inline-block;font-size:14px;color:var(--muted);line-height:1.7;}
+  .fin-box strong{color:var(--coral);}
+
+  /* ===== Estilo B ("La etiqueta") con los colores actuales ===== */
+  .brand{font-weight:800;letter-spacing:3px;color:var(--navy);}
+  .step-lbl{font-family:var(--display);font-weight:500;}
+  .prog-track{height:5px;}
+  .sh-chapter{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:2px;}
+  .sh-title{font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.5px;}
+  .sh-title span{color:var(--coral);}
+  .field label,.sdiv span,.sk,.sb h3,.ch-num,.gender-title,.tt,.portada-card-num,.rbadge,.btn-rec,.btn-back,.btn-next,.btn-clr,.btn-tw{font-family:var(--display);}
+  .chapter-badge{border:none;background:var(--navy);border-radius:100px;padding:8px 16px;}
+  .ch-num{color:var(--dorado);}
+  .ch-name{color:var(--cream);font-weight:500;}
+  input[type=text],input[type=email],select,textarea{border-radius:12px;border-width:2px;}
+  .vc{border-radius:20px;border-width:2px;}
+  .vc-q{font-weight:700;font-size:19px;line-height:1.3;}
+  .vc.done{background:var(--coral-l);border-color:var(--coral);}
+  .gender-opt,.tone-opt,.portada-card{border-radius:16px;}
+  .gender-opt.selected,.tone-opt.selected{background:var(--coral-l);border-color:var(--navy);box-shadow:3px 3px 0 var(--navy);}
+  .portada-card.selected{border-color:var(--navy);box-shadow:3px 3px 0 var(--navy);}
+  .btn-rec{border-radius:100px;font-size:13px;letter-spacing:.5px;text-transform:none;}
+  .btn-next{background:var(--dorado);color:var(--navy);font-weight:800;font-size:15px;letter-spacing:0;text-transform:none;border-radius:14px;padding:14px 26px;box-shadow:4px 4px 0 var(--navy);}
+  .btn-next:hover{background:var(--dorado);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--navy);}
+  .btn-next[onclick="submit()"]{background:var(--coral)!important;color:var(--white);}
+  .btn-back{text-transform:none;letter-spacing:0;font-size:14px;}
+  .uzone{border-radius:16px;}
+  .sb{border-radius:18px;border-width:2px;}
+  .fin-t{font-weight:800;font-size:38px;}
+  .fin-h{color:var(--coral);}
+  .preview{background:var(--navy);color:var(--cream);font-family:var(--display);font-size:13px;text-align:center;padding:8px 12px;}
+</style>
+</head>
+<body>
+
+<div class="preview">Vista previa del nuevo diseño · el envío está desactivado</div>
+<div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+<header>
+  <div class="brand">Tale Us Stories</div>
+  <div class="step-lbl" id="stepLbl">Paso 1 de 7</div>
+</header>
+<div class="wrap">
+
+<div class="screen active" id="s0">
+  <div class="sh">
+    <div class="sh-chapter">Antes de empezar</div>
+    <h1 class="sh-title">No hace falta escribir.<br>Solo contar.</h1>
+    <p class="sh-sub">Te iremos haciendo preguntas siguiendo la vida del protagonista. Graba una nota de voz respondiendo a cada una. Nosotros lo convertimos en el libro.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras.</p>
+  </div>
+  <div class="two">
+    <div class="field">
+      <label>Nombre del protagonista</label>
+      <input type="text" id="protName" placeholder="Ej: María, José, Carlos…" oninput="onNameInput()">
+    </div>
+    <div class="field">
+      <label>Nombre/s de los niños</label>
+      <input type="text" id="childNames" placeholder="Ej: Martina, Pedro y Lucas">
+    </div>
+  </div>
+  <div class="field">
+    <label>El protagonista es…</label>
+    <div class="gender-grid">
+      <div class="gender-opt selected" id="gf" onclick="setGender('f',this)">
+        <div class="gender-emoji">👩</div>
+        <div class="gender-title">Una mujer</div>
+        <div class="gender-desc">Mamá, abuela, tía, amiga…</div>
+      </div>
+      <div class="gender-opt" id="gm" onclick="setGender('m',this)">
+        <div class="gender-emoji">👨</div>
+        <div class="gender-title">Un hombre</div>
+        <div class="gender-desc">Papá, abuelo, tío, amigo…</div>
+      </div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="field">
+      <label>Tipo de libro</label>
+      <select id="bookType" onchange="document.getElementById('customTitleWrap').style.display = this.value === 'Título personalizado' ? 'block' : 'none'">
+        <option value="">Selecciona…</option>
+        <option>Las aventuras de Mamá</option>
+        <option>Las aventuras de Papá</option>
+        <option>Las aventuras del Abuelo</option>
+        <option>Las aventuras de la Abuela</option>
+        <option>Las aventuras del Tío</option>
+        <option>Las aventuras de la Tía</option>
+        <option>Título personalizado</option>
+      </select>
+      <div id="customTitleWrap" style="display:none;margin-top:8px;"><input type="text" id="customTitle" placeholder="Escribe el título. Ej: Las aventuras de la yaya Carmen"></div>
+    </div>
+    <div class="field">
+      <label>Quién hace el encargo</label>
+      <input type="text" id="orderer" placeholder="Ej: Javier, su marido">
+    </div>
+  </div>
+  <div class="field">
+    <label>¿Quién narra el libro?</label>
+    <div class="gender-grid">
+      <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">El propio protagonista</div>
+        <div class="gender-desc">"Cuando yo era pequeñ<span class="G-oa"></span>…"</div>
+      </div>
+      <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
+        <div class="gender-emoji">👨‍👩‍👧</div>
+        <div class="gender-title">Otra persona</div>
+        <div class="gender-desc">"Antes de ser <span class="G-vuestra"></span>…"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELECCIÓN DE PORTADA -->
+  <div class="field">
+    <label>Elige el estilo de portada</label>
+    <div class="hint">Puedes cambiarlo más adelante si lo necesitas.</div>
+    <div class="portada-grid">
+      <div class="portada-card selected" onclick="selPortada(this, '1')" data-portada="1">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_400/v1782979497/ChatGPT_Image_2_jul_2026_10_00_10_fy1ljw.png" alt="Portada con rayas">
+        <div class="portada-card-num">Estilo 1</div>
+      </div>
+      <div class="portada-card" onclick="selPortada(this, '2')" data-portada="2">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_400/v1782980203/Dise%C3%B1o_sin_t%C3%ADtulo_18_sk4mwq.png" alt="Portada cuadrada">
+        <div class="portada-card-num">Estilo 2</div>
+      </div>
+      <div class="portada-card" onclick="selPortada(this, '3')" data-portada="3">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_400/v1782985080/ChatGPT_Image_2_jul_2026_11_37_47_y6im1p.png" alt="Portada aventura">
+        <div class="portada-card-num">Estilo 3</div>
+      </div>
+      <div class="portada-card" onclick="selPortada(this, '4')" data-portada="4">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_400/v1782978858/Dise%C3%B1o_sin_t%C3%ADtulo_17_procbn.png" alt="Portada corona naturaleza">
+        <div class="portada-card-num">Estilo 4</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Formato del libro</label>
+    <div class="gender-grid">
+      <div class="gender-opt formato-opt" id="fb" onclick="setFormato('blanda',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">Tapa blanda · 40 €</div>
+        <div class="gender-desc">Envío incluido</div>
+      </div>
+      <div class="gender-opt formato-opt selected" id="fd" onclick="setFormato('dura',this)">
+        <div class="gender-emoji">📕</div>
+        <div class="gender-title">Tapa dura · 62 €</div>
+        <div class="gender-desc">La más elegida · Envío incluido</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Tu email</label>
+    <input type="email" id="email" placeholder="Aquí te escribiremos sobre tu pedido">
+  </div>
+  <div class="nav">
+    <button class="btn-back h"></button>
+    <button class="btn-next" onclick="startForm()">Empezamos →</button>
+  </div>
+</div>
+
+<div class="screen" id="s1">
+  <div class="sh">
+    <div class="sh-chapter">01 · El protagonista</div>
+    <h1 class="sh-title">Preséntanos<br><span id="txt-presentamos">al protagonista</span>.</h1>
+    <p class="sh-sub">Antes de contar su historia, queremos saber quién es. Su esencia, sus rasgos, lo que <span class="G-lo"></span> hace inconfundible.</p>
+  </div>
+  <div class="perm" id="permBanner">Tu navegador necesita acceso al micrófono. Si prefieres, usa los campos de texto.</div>
+  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 0</span><span class="ch-name">Antes de empezar: quién es</span></div>
+
+  <div class="vc" id="vc0">
+    <div class="vc-q">¿Cómo describirías <span id="txt-describirías">al protagonista</span> en 3 palabras? ¿Qué <span class="G-lo"></span> hace diferente a cualquier otra persona que conozcas?</div>
+    <div class="vc-h">No pienses demasiado. Lo primero que te venga.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb0" onclick="toggleRec(0)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt0">0:00</span>
+      <span class="rbadge" id="bd0">Grabado</span>
+    </div>
+    <audio class="ap" id="ap0"></audio>
+    <button class="btn-clr" id="bc0" onclick="clearRec(0)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf0"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(0)">Prefiero escribir</button>
+  </div>
+
+  <div class="vc" id="vc1">
+    <div class="vc-q">¿Cómo es <span class="G-name"></span> físicamente? Descríbe<span class="G-lo"></span> como si tuvieras que presentársel<span class="G-oa"></span> a alguien que nunca <span class="G-lo"></span> ha visto.</div>
+    <div class="vc-h">Color de pelo, ojos, si lleva gafas, cómo viste, algún rasgo especial.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb1" onclick="toggleRec(1)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt1">0:00</span>
+      <span class="rbadge" id="bd1">Grabado</span>
+    </div>
+    <audio class="ap" id="ap1"></audio>
+    <button class="btn-clr" id="bc1" onclick="clearRec(1)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf1"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(1)">Prefiero escribir</button>
+  </div>
+
+  <div class="field">
+    <label>Una foto de su cara (muy recomendable)</label>
+    <div class="hint">De frente y con buena luz. La usamos para que las ilustraciones se le parezcan de verdad.</div>
+    <div class="uzone" onclick="document.getElementById('fotoCara').click()">
+      <div class="uzone-icon">🙂</div>
+      <div class="uzone-txt" id="fotoCaraTxt">Haz clic para añadir la foto</div>
+    </div>
+    <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="handlePhoto(this,'fotoCaraTxt')">
+  </div>
+
+  <div class="vc" id="vc2">
+    <div class="vc-q">¿Hay alguna frase, muletilla o gesto que solo <span class="G-el"></span> haría? Algo que <span class="G-lo"></span> delate al instante.</div>
+    <div class="vc-h">Ej: "Café y paciencia" · siempre llega tarde · organiza los armarios por colores…</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb2" onclick="toggleRec(2)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt2">0:00</span>
+      <span class="rbadge" id="bd2">Grabado</span>
+    </div>
+    <audio class="ap" id="ap2"></audio>
+    <button class="btn-clr" id="bc2" onclick="clearRec(2)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf2"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(2)">Prefiero escribir</button>
+  </div>
+
+  <div class="sdiv"><span>Datos rápidos</span></div>
+  <div class="two">
+    <div class="field"><label>¿Dónde nació / creció?</label><input type="text" id="birthPlace" placeholder="Ej: Barcelona, un pueblo de Jaén…"></div>
+    <div class="field"><label>¿A qué se dedica?</label><input type="text" id="job" placeholder="Ej: Emprendedora, médico, maestro…"></div>
+  </div>
+  <div class="two">
+    <div class="field"><label>Deporte o hobby principal</label><input type="text" id="sport" placeholder="Ej: Pádel, cocina, música…"></div>
+    <div class="field"><label>Lugares especiales en su vida</label><input type="text" id="places" placeholder="Ej: Formentera, San Francisco…"></div>
+  </div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(0)">← Atrás</button>
+    <button class="btn-next" onclick="go(2)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s2">
+  <div class="sh">
+    <div class="sh-chapter">02 · La infancia</div>
+    <h1 class="sh-title">Cuando <span class="G-name"></span><br>era <span class="G-unna"></span> <span class="G-ninoa"></span>.</h1>
+    <p class="sh-sub">¿Cómo era antes de ser quien es hoy?</p>
+  </div>
+  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 1</span><span class="ch-name">Bebé e infancia</span></div>
+
+  <div class="vc" id="vc3">
+    <div class="vc-q">¿Cómo era <span class="G-name"></span> de bebé? ¿Qué contaban sus padres de <span class="G-el"></span> cuando era muy pequeñ<span class="G-oa"></span>?</div>
+    <div class="vc-h">Si era tranquil<span class="G-oa"></span> o un terremoto, si ya se veía cómo iba a ser de mayor…</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb3" onclick="toggleRec(3)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt3">0:00</span>
+      <span class="rbadge" id="bd3">Grabado</span>
+    </div>
+    <audio class="ap" id="ap3"></audio>
+    <button class="btn-clr" id="bc3" onclick="clearRec(3)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf3"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(3)">Prefiero escribir</button>
+  </div>
+
+  <div class="vc" id="vc4">
+    <div class="vc-q">¿Cómo era de niñ<span class="G-oa"></span> en casa y en el colegio? Cuéntanos una anécdota concreta.</div>
+    <div class="vc-h">Travesuras, miedos, manías, amigos del colegio, lo que más le gustaba hacer.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb4" onclick="toggleRec(4)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt4">0:00</span>
+      <span class="rbadge" id="bd4">Grabado</span>
+    </div>
+    <audio class="ap" id="ap4"></audio>
+    <button class="btn-clr" id="bc4" onclick="clearRec(4)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf4"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(4)">Prefiero escribir</button>
+  </div>
+
+  <div class="sdiv"><span>Datos rápidos de la infancia</span></div>
+  <div class="two">
+    <div class="field"><label>¿Tenía hermanos?</label><input type="text" id="siblings" placeholder="Ej: Un hermano mayor muy diferente"></div>
+    <div class="field"><label>¿Tenía mascota?</label><input type="text" id="pets" placeholder="Ej: Un perro negro llamado Lighty"></div>
+  </div>
+  <div class="field"><label>¿Lugar especial de la infancia?</label><input type="text" id="childhoodPlace" placeholder="Ej: Casa del abuelo en Asturias…"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(1)">← Atrás</button>
+    <button class="btn-next" onclick="go(3)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s3">
+  <div class="sh">
+    <div class="sh-chapter">03 · La juventud</div>
+    <h1 class="sh-title">Cuando <span class="G-name"></span> empezó<br>a volar sol<span class="G-oa"></span>.</h1>
+    <p class="sh-sub">La adolescencia, los estudios, las primeras aventuras grandes.</p>
+  </div>
+  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 2</span><span class="ch-name">Adolescencia y primeras aventuras</span></div>
+
+  <div class="vc" id="vc5">
+    <div class="vc-q">¿Cómo era <span class="G-name"></span> de adolescente? ¿Qué le apasionaba, con quién andaba, qué quería ser de mayor?</div>
+    <div class="vc-h">La adolescencia tiene los momentos más divertidos y los más intensos.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb5" onclick="toggleRec(5)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt5">0:00</span>
+      <span class="rbadge" id="bd5">Grabado</span>
+    </div>
+    <audio class="ap" id="ap5"></audio>
+    <button class="btn-clr" id="bc5" onclick="clearRec(5)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf5"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(5)">Prefiero escribir</button>
+  </div>
+
+  <div class="vc" id="vc6">
+    <div class="vc-q">¿Hubo alguna decisión valiente o aventura grande en su juventud? Algo que <span class="G-name"></span> hizo y que sorprendió a todos.</div>
+    <div class="vc-h">Irse a estudiar fuera, cambiar de carrera, un viaje sol<span class="G-oa"></span>…</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb6" onclick="toggleRec(6)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt6">0:00</span>
+      <span class="rbadge" id="bd6">Grabado</span>
+    </div>
+    <audio class="ap" id="ap6"></audio>
+    <button class="btn-clr" id="bc6" onclick="clearRec(6)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf6"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(6)">Prefiero escribir</button>
+  </div>
+
+  <div class="sdiv"><span>Datos rápidos</span></div>
+  <div class="field"><label>¿Qué estudió o dónde fue al colegio / universidad?</label><input type="text" id="school" placeholder="Ej: ADE en Madrid, FP de cocina…"></div>
+  <div class="field"><label>¿Hubo algún viaje o lugar que le marcó?</label><input type="text" id="travel" placeholder="Ej: Un verano en Londres, Erasmus en Berlín…"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(2)">← Atrás</button>
+    <button class="btn-next" onclick="go(4)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s4">
+  <div class="sh">
+    <div class="sh-chapter">04 · Amor y familia</div>
+    <h1 class="sh-title">Cuando <span class="G-name"></span> encontró<br>su historia.</h1>
+    <p class="sh-sub">Cómo conoció a su pareja, cómo llegaron los niños, cómo empezó la familia.</p>
+  </div>
+  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 3</span><span class="ch-name">El amor y la llegada de la familia</span></div>
+
+  <div class="vc" id="vc7">
+    <div class="vc-q">¿Cómo conoció <span class="G-name"></span> a su pareja? Cuéntanos esa historia.</div>
+    <div class="vc-h">El primer encuentro, la primera cita, algo gracioso o inesperado que pasó.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb7" onclick="toggleRec(7)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt7">0:00</span>
+      <span class="rbadge" id="bd7">Grabado</span>
+    </div>
+    <audio class="ap" id="ap7"></audio>
+    <button class="btn-clr" id="bc7" onclick="clearRec(7)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf7"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(7)">Prefiero escribir</button>
+  </div>
+
+  <div class="vc" id="vc8">
+    <div class="vc-q">¿Cómo fue la llegada de los niños a su vida? ¿Cómo reaccionó <span class="G-name"></span>?</div>
+    <div class="vc-h">El embarazo o la llegada, el primer día en casa, cómo cambió todo.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb8" onclick="toggleRec(8)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt8">0:00</span>
+      <span class="rbadge" id="bd8">Grabado</span>
+    </div>
+    <audio class="ap" id="ap8"></audio>
+    <button class="btn-clr" id="bc8" onclick="clearRec(8)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf8"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(8)">Prefiero escribir</button>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="go(3)">← Atrás</button>
+    <button class="btn-next" onclick="go(5)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s5">
+  <div class="sh">
+    <div class="sh-chapter">05 · Con los niños hoy</div>
+    <h1 class="sh-title"><span class="G-name"></span> y <span id="childNamesH">los niños</span>.</h1>
+    <p class="sh-sub">La relación que existe hoy. Esto es el corazón del libro.</p>
+  </div>
+  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 4</span><span class="ch-name"><span class="G-protag"></span> hoy, con los niños</span></div>
+
+  <div class="vc" id="vc9">
+    <div class="vc-q">¿Cómo son los niños que van a leer el libro? Cuéntanos de cada uno: su personalidad, edad, lo que les gusta.</div>
+    <div class="vc-h">Si son varios, dinos de cada uno por separado.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb9" onclick="toggleRec(9)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt9">0:00</span>
+      <span class="rbadge" id="bd9">Grabado</span>
+    </div>
+    <audio class="ap" id="ap9"></audio>
+    <button class="btn-clr" id="bc9" onclick="clearRec(9)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf9"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(9)">Prefiero escribir</button>
+  </div>
+
+  <div class="vc" id="vc10">
+    <div class="vc-q">¿Cuál es el recuerdo más especial o más gracioso entre <span class="G-name"></span> y los niños?</div>
+    <div class="vc-h">Puede ser algo tierno, algo surrealista o algo que hace reír a carcajadas.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb10" onclick="toggleRec(10)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt10">0:00</span>
+      <span class="rbadge" id="bd10">Grabado</span>
+    </div>
+    <audio class="ap" id="ap10"></audio>
+    <button class="btn-clr" id="bc10" onclick="clearRec(10)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf10"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(10)">Prefiero escribir</button>
+  </div>
+
+  <div class="vc" id="vc11">
+    <div class="vc-q">¿Qué hace <span class="G-name"></span> con los niños que nadie más hace? ¿Hay alguna tradición o ritual que sea solo de ellos?</div>
+    <div class="vc-h">Las tortitas del domingo, leerles con voces de personajes, el juego secreto…</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb11" onclick="toggleRec(11)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt11">0:00</span>
+      <span class="rbadge" id="bd11">Grabado</span>
+    </div>
+    <audio class="ap" id="ap11"></audio>
+    <button class="btn-clr" id="bc11" onclick="clearRec(11)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf11"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(11)">Prefiero escribir</button>
+  </div>
+
+  <div class="sdiv"><span>Datos rápidos</span></div>
+  <div class="field"><label>Edad de cada niño</label><input type="text" id="childAges" placeholder="Ej: Martina 8 años, Pedro 6, Lucas 3"></div>
+  <div class="field"><label>¿Cómo son físicamente los niños?</label><input type="text" id="childLooks" placeholder="Ej: Martina rubia con rizos, Pedro pelo castaño con flequillo…"></div>
+  <div class="field">
+    <label>Una foto de los niños (opcional)</label>
+    <div class="hint">Para que también se parezcan en las ilustraciones.</div>
+    <div class="uzone" onclick="document.getElementById('fotoNinos').click()">
+      <div class="uzone-icon">🧒</div>
+      <div class="uzone-txt" id="fotoNinosTxt">Haz clic para añadir la foto</div>
+    </div>
+    <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="handlePhoto(this,'fotoNinosTxt')">
+  </div>
+  <div class="field"><label>¿Cómo se llaman entre ellos?</label><input type="text" id="nicknames" placeholder="Ej: Los niños lo llaman 'Abuelo Pepe'"></div>
+  <div class="field"><label>¿Hay alguna historia que los niños ya conocen y piden que les cuenten?</label><input type="text" id="knownStory" placeholder="Esa historia que siempre aparece en las cenas familiares…"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(4)">← Atrás</button>
+    <button class="btn-next" onclick="go(6)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s6">
+  <div class="sh">
+    <div class="sh-chapter">06 · El alma del libro</div>
+    <h1 class="sh-title">Las dos preguntas<br>más importantes.</h1>
+    <p class="sh-sub">Estas respuestas son el corazón del libro. No hay respuestas correctas.</p>
+  </div>
+  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 5</span><span class="ch-name">El legado</span></div>
+
+  <div class="vc" id="vc12">
+    <div class="vc-q">¿Qué crees que <span class="G-name"></span> querría que los niños supieran de <span class="G-el"></span> cuando sean mayores?</div>
+    <div class="vc-h">No lo que diría en voz alta. Lo que está en cada cosa que hace.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb12" onclick="toggleRec(12)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt12">0:00</span>
+      <span class="rbadge" id="bd12">Grabado</span>
+    </div>
+    <audio class="ap" id="ap12"></audio>
+    <button class="btn-clr" id="bc12" onclick="clearRec(12)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf12"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(12)">Prefiero escribir</button>
+  </div>
+
+  <div class="vc" id="vc13">
+    <div class="vc-q">¿Hay algo más que debamos saber? Anécdota suelta, frase que quieras que aparezca, dedicatoria…</div>
+    <div class="vc-h">El campo libre. Sin límite. Todo lo que no encajaba en ninguna pregunta.</div>
+    <div class="vc-ctrls">
+      <button class="btn-rec" id="rb13" onclick="toggleRec(13)"><span class="rdot"></span> Grabar</button>
+      <span class="rtimer" id="rt13">0:00</span>
+      <span class="rbadge" id="bd13">Grabado</span>
+    </div>
+    <audio class="ap" id="ap13"></audio>
+    <button class="btn-clr" id="bc13" onclick="clearRec(13)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf13"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(13)">Prefiero escribir</button>
+  </div>
+
+  <div class="sdiv"><span>Producción</span></div>
+  <div class="field">
+    <label>Tono del libro</label>
+    <div class="tone-grid">
+      <div class="tone-opt" onclick="selTone(this)"><div class="te">😄</div><div class="tt">Divertido</div><div class="td">Humor y momentos que hacen reír</div></div>
+      <div class="tone-opt" onclick="selTone(this)"><div class="te">💛</div><div class="tt">Emotivo</div><div class="td">Cálido, que llegue al corazón</div></div>
+      <div class="tone-opt selected" onclick="selTone(this)"><div class="te">✨</div><div class="tt">Equilibrado</div><div class="td">Humor y emoción a partes iguales</div></div>
+      <div class="tone-opt" onclick="selTone(this)"><div class="te">🌍</div><div class="tt">Aventurero</div><div class="td">Que inspire a conocer el mundo</div></div>
+    </div>
+  </div>
+  <div class="field" style="margin-top:22px;">
+    <label>Otras fotos (opcional)</label>
+    <div class="hint">Del protagonista en otras épocas, de la familia o de lugares especiales. Hasta 3 fotos.</div>
+    <div class="uzone" onclick="document.getElementById('fileInput').click()">
+      <div class="uzone-icon">📷</div>
+      <div class="uzone-txt">Haz clic para añadir fotos</div>
+    </div>
+    <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this)">
+    <div id="fileList"></div>
+  </div>
+  <div class="field">
+    <label>¿Hay algo que NO deba aparecer?</label>
+    <textarea id="noShow" placeholder="Temas sensibles, personas que prefieren no incluir…" style="min-height:65px;"></textarea>
+  </div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(5)">← Atrás</button>
+    <button class="btn-next" onclick="go(7)">Revisar todo →</button>
+  </div>
+</div>
+
+<div class="screen" id="s7">
+  <div class="sh">
+    <div class="sh-chapter">07 · Revisión</div>
+    <h1 class="sh-title">Todo listo<br>para enviar.</h1>
+    <p class="sh-sub">Revisa que todo esté correcto. Puedes volver atrás si quieres cambiar algo.</p>
+  </div>
+  <div class="sb">
+    <h3>Datos del pedido</h3>
+    <div class="sr"><span class="sk">Protagonista</span><span class="sv" id="rv-prot">—</span></div>
+    <div class="sr"><span class="sk">Para</span><span class="sv" id="rv-child">—</span></div>
+    <div class="sr"><span class="sk">Tipo</span><span class="sv" id="rv-type">—</span></div>
+    <div class="sr"><span class="sk">Encargado por</span><span class="sv" id="rv-ord">—</span></div>
+    <div class="sr"><span class="sk">Email</span><span class="sv" id="rv-email">—</span></div>
+    <div class="sr"><span class="sk">Portada</span><span class="sv" id="rv-portada">—</span></div>
+    <div class="sr"><span class="sk">Formato</span><span class="sv" id="rv-formato">—</span></div>
+    <div class="sr"><span class="sk">Tono</span><span class="sv" id="rv-tone">—</span></div>
+  </div>
+  <div class="sb">
+    <h3>Estructura del libro</h3>
+    <div id="rv-chapters"></div>
+  </div>
+  <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
+    <h3 style="color:var(--coral);">¿Qué pasa ahora?</h3>
+    <div class="sr"><span class="sk">Ahora</span><span class="sv">Recibimos tu historia y empezamos a escribirla.</span></div>
+    <div class="sr"><span class="sk">Próximos días</span><span class="sv">Ilustramos, maquetamos e imprimimos el libro.</span></div>
+    <div class="sr"><span class="sk">2-3 semanas</span><span class="sv" style="color:var(--coral);font-weight:700;">El libro en tus manos.</span></div>
+  </div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(6)">← Atrás</button>
+    <button class="btn-next" onclick="submit()" style="background:var(--navy);padding:15px 36px;font-size:12px;">Enviar historia ♥</button>
+  </div>
+</div>
+
+<div class="screen" id="sFinal">
+  <div class="fin">
+    <div class="fin-h">♥</div>
+    <h1 class="fin-t">¡Historia recibida!</h1>
+    <p class="fin-s">Gracias por confiar en nosotros con algo tan especial. En <strong>2-3 semanas</strong> tendrás el libro en casa. Si necesitamos algo, te escribiremos a tu email.</p>
+    <div class="fin-box">Un libro único para <strong id="f-child">los niños</strong><br>sobre las aventuras de <strong id="f-prot">el protagonista</strong></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+let cur = 0;
+const TOTAL = 7;
+let gender = 'f';
+let narrator = 'other';
+let selectedPortada = '1';
+let formato = 'dura';
+var FORMATOS = { dura: 'Tapa dura · 62 €', blanda: 'Tapa blanda · 40 €' };
+
+function setFormato(val, el) {
+  formato = val;
+  document.querySelectorAll('.formato-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function selPortada(el, num) {
+  document.querySelectorAll('.portada-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedPortada = num;
+}
+
+function setNarrator(val, el) {
+  narrator = val;
+  document.querySelectorAll('#n1,#n2').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+const G = {
+  el:   ['ella', 'él'],
+  lo:   ['la',   'lo'],
+  unna: ['una',  'un'],
+  ninoa:['niña', 'niño'],
+  oa:   ['a',    'o'],
+  name: ['ella', 'él'],
+  vuestra: ['vuestra mamá', 'vuestro papá'],
+  protag: ['La protagonista', 'El protagonista'],
+};
+
+function g(key) { return G[key][gender === 'f' ? 0 : 1]; }
+
+function nameOrPronoun() {
+  const n = document.getElementById('protName')?.value.trim();
+  return n || g('name');
+}
+
+function updateAll() {
+  const nm = nameOrPronoun();
+  document.querySelectorAll('.G-name').forEach(function(el) { el.textContent = nm; });
+  var artProt = gender === 'f' ? 'a la protagonista' : 'al protagonista';
+  var el1 = document.getElementById('txt-presentamos');
+  if (el1) el1.textContent = artProt;
+  var el2 = document.getElementById('txt-describirías');
+  if (el2) el2.textContent = artProt;
+  document.querySelectorAll('.G-el').forEach(function(el) { el.textContent = g('el'); });
+  document.querySelectorAll('.G-lo').forEach(function(el) { el.textContent = g('lo'); });
+  document.querySelectorAll('.G-unna').forEach(function(el) { el.textContent = g('unna'); });
+  document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
+  document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
+  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = g('vuestra'); });
+  document.querySelectorAll('.G-protag').forEach(function(el) { el.textContent = g('protag'); });
+  var cn = document.getElementById('childNames')?.value.trim() || 'los niños';
+  var cnh = document.getElementById('childNamesH');
+  if (cnh) cnh.textContent = cn;
+}
+
+function setGender(g_val, el) {
+  gender = g_val;
+  document.querySelectorAll('#gf,#gm').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  updateAll();
+}
+
+function onNameInput() { updateAll(); }
+
+// Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
+function startForm() {
+  var falta = [];
+  if (!document.getElementById('protName').value.trim()) falta.push('el nombre del protagonista');
+  if (!document.getElementById('childNames').value.trim()) falta.push('el nombre de los niños');
+  if (!document.getElementById('bookType').value) falta.push('el tipo de libro');
+  else if (document.getElementById('bookType').value === 'Título personalizado' && !document.getElementById('customTitle').value.trim()) falta.push('el título personalizado');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim())) falta.push('un email válido');
+  if (falta.length) { alert('Antes de empezar necesitamos ' + falta.join(', ') + '.'); return; }
+  go(1);
+}
+
+function go(n) {
+  var prevId = cur <= TOTAL ? 's' + cur : 'sFinal';
+  var prevEl = document.getElementById(prevId);
+  if (prevEl) prevEl.classList.remove('active');
+  cur = n;
+  var nextId = n <= TOTAL ? 's' + n : 'sFinal';
+  var nextEl = document.getElementById(nextId);
+  if (nextEl) nextEl.classList.add('active');
+  var stepLbl = document.getElementById('stepLbl');
+  if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Paso ' + (n + 1) + ' de ' + TOTAL) : (n === TOTAL ? 'Revisión' : '¡Listo!');
+  var prog = document.getElementById('prog');
+  if (prog) prog.style.width = Math.min((n / TOTAL) * 100, 100) + '%';
+  updateAll();
+  if (n === TOTAL) buildReview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+var recorders = {}, audioBlobs = {}, timers = {}, recSecs = {}, transcribedTexts = {}, pendingTx = {};
+
+async function blobToBase64(blob) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      var result = reader.result;
+      var base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function transcribeAudio(idx, blob) {
+  var bd = document.getElementById('bd' + idx);
+  if (bd) { bd.textContent = 'Transcribiendo…'; bd.classList.add('show'); }
+  try {
+    var base64 = await blobToBase64(blob);
+    var res = await fetch('/.netlify/functions/transcribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audioBase64: base64, mimeType: blob.type })
+    });
+    var data = await res.json();
+    if (res.ok && data.text) {
+      transcribedTexts[idx] = data.text.trim();
+      if (bd) bd.textContent = 'Grabado ✓';
+      // La transcripción va al cuadro de texto: se puede revisar, corregir y se guarda sola
+      var tfBox = document.getElementById('tf' + idx);
+      var ta = tfBox && tfBox.querySelector('textarea');
+      if (ta) {
+        ta.value = ta.value.trim() ? ta.value.trim() + '\n\n' + transcribedTexts[idx] : transcribedTexts[idx];
+        tfBox.classList.add('show');
+        saveDraft();
+      }
+    } else {
+      txFailed(idx);
+    }
+  } catch (err) {
+    txFailed(idx);
+  }
+}
+
+function txFailed(idx) {
+  var bd = document.getElementById('bd' + idx);
+  if (bd) bd.textContent = 'No se ha podido transcribir: escríbelo abajo o vuelve a grabar';
+  transcribedTexts[idx] = '';
+  var tfBox = document.getElementById('tf' + idx);
+  if (tfBox) tfBox.classList.add('show');
+}
+
+async function toggleRec(idx) {
+  var btn = document.getElementById('rb' + idx);
+  if (recorders[idx] && recorders[idx].state === 'recording') { recorders[idx].stop(); return; }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    var permBanner = document.getElementById('permBanner');
+    if (permBanner) permBanner.classList.remove('show');
+    // Calidad de voz suficiente para transcribir y archivos pequeños (notas largas no superan el límite de Netlify)
+    var mr;
+    try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 32000 }); } catch (e2) { mr = new MediaRecorder(stream); }
+    recorders[idx] = mr;
+    var chunks = [];
+    mr.ondataavailable = function(e) { chunks.push(e.data); };
+    mr.onstop = function() {
+      stream.getTracks().forEach(function(t) { t.stop(); });
+      // El iPhone graba en mp4, no en webm: usar el formato real para que Whisper lo reconozca
+      var blob = new Blob(chunks, { type: (mr.mimeType || 'audio/webm').split(';')[0] });
+      audioBlobs[idx] = blob;
+      var url = URL.createObjectURL(blob);
+      var a = document.getElementById('ap' + idx);
+      a.src = url; a.classList.add('show');
+      document.getElementById('bd' + idx).classList.add('show');
+      document.getElementById('bc' + idx).classList.add('show');
+      document.getElementById('vc' + idx).classList.add('done');
+      btn.classList.remove('rec');
+      btn.innerHTML = '<span class="rdot"></span> Grabar';
+      clearInterval(timers[idx]);
+      pendingTx[idx] = transcribeAudio(idx, blob).finally(function() { delete pendingTx[idx]; });
+    };
+    mr.start();
+    btn.classList.add('rec');
+    btn.innerHTML = '<span class="rdot"></span> Detener';
+    recSecs[idx] = 0;
+    timers[idx] = setInterval(function() {
+      recSecs[idx]++;
+      document.getElementById('rt' + idx).textContent = fmt(recSecs[idx]);
+    }, 1000);
+  } catch(e) {
+    var pb = document.getElementById('permBanner');
+    if (pb) pb.classList.add('show');
+    var tf = document.getElementById('tf' + idx);
+    if (tf) tf.classList.add('show');
+  }
+}
+
+function clearRec(idx) {
+  try { if (recorders[idx]) recorders[idx].stop(); } catch(e) {}
+  audioBlobs[idx] = null;
+  // Quitar del cuadro de texto la transcripción de la grabación que se descarta
+  var ta = document.querySelector('#tf' + idx + ' textarea');
+  if (ta && transcribedTexts[idx]) { ta.value = ta.value.replace(transcribedTexts[idx], '').trim(); saveDraft(); }
+  transcribedTexts[idx] = '';
+  var a = document.getElementById('ap' + idx);
+  a.src = ''; a.classList.remove('show');
+  var bd = document.getElementById('bd' + idx);
+  bd.textContent = 'Grabado';
+  bd.classList.remove('show');
+  document.getElementById('bc' + idx).classList.remove('show');
+  document.getElementById('vc' + idx).classList.remove('done');
+  document.getElementById('rt' + idx).textContent = '0:00';
+  var btn = document.getElementById('rb' + idx);
+  btn.classList.remove('rec');
+  btn.innerHTML = '<span class="rdot"></span> Grabar';
+  clearInterval(timers[idx]);
+}
+
+function toggleTF(idx) {
+  var tf = document.getElementById('tf' + idx);
+  if (tf) tf.classList.toggle('show');
+}
+
+function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+
+function selTone(el) {
+  document.querySelectorAll('.tone-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function handleFiles(input) {
+  var list = document.getElementById('fileList');
+  list.innerHTML = '';
+  Array.from(input.files).slice(0, 3).forEach(function(f) {
+    var d = document.createElement('div');
+    d.className = 'fi';
+    d.textContent = f.name;
+    list.appendChild(d);
+  });
+}
+
+function handlePhoto(input, txtId) {
+  var txt = document.getElementById(txtId);
+  if (txt && input.files[0]) txt.textContent = '✓ ' + input.files[0].name + ' (haz clic para cambiarla)';
+}
+
+// Reduce la foto a 1024 px en JPEG y devuelve el base64 sin prefijo (el envío pesa poco)
+function photoToBase64(file) {
+  return new Promise(function(resolve) {
+    if (!file) return resolve('');
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function() {
+      var scale = Math.min(1, 1024 / Math.max(img.width, img.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.onerror = function() { URL.revokeObjectURL(url); resolve(''); };
+    img.src = url;
+  });
+}
+
+// Guardado automático en este navegador (textos y elecciones; los audios ya quedan transcritos en su cuadro)
+var DRAFT_KEY = 'tus_borrador_v1';
+
+var enviado = false;
+
+function saveDraft() {
+  if (enviado) return; // tras enviar, un clic en la pantalla final no debe recrear el borrador
+  try {
+    var d = { gender: gender, narrator: narrator, portada: selectedPortada, formato: formato, paso: cur <= TOTAL ? cur : 0, fields: {}, tf: {} };
+    document.querySelectorAll('input[type=text][id],input[type=email][id],select[id],textarea[id]').forEach(function(el) { d.fields[el.id] = el.value; });
+    for (var i = 0; i <= 13; i++) {
+      var ta = document.querySelector('#tf' + i + ' textarea');
+      if (ta && ta.value) d.tf[i] = ta.value;
+    }
+    var t = document.querySelector('.tone-opt.selected .tt');
+    d.tone = t ? t.textContent : '';
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+  } catch (e) {}
+}
+
+function loadDraft() {
+  try {
+    var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    if (!d) return;
+    Object.keys(d.fields || {}).forEach(function(id) { var el = document.getElementById(id); if (el) el.value = d.fields[id]; });
+    document.getElementById('customTitleWrap').style.display = document.getElementById('bookType').value === 'Título personalizado' ? 'block' : 'none';
+    Object.keys(d.tf || {}).forEach(function(i) {
+      var box = document.getElementById('tf' + i);
+      var ta = box && box.querySelector('textarea');
+      if (ta) { ta.value = d.tf[i]; box.classList.add('show'); }
+    });
+    if (d.gender) setGender(d.gender, document.getElementById(d.gender === 'm' ? 'gm' : 'gf'));
+    if (d.narrator) setNarrator(d.narrator, document.getElementById(d.narrator === 'protagonist' ? 'n1' : 'n2'));
+    if (d.formato) setFormato(d.formato, document.getElementById(d.formato === 'blanda' ? 'fb' : 'fd'));
+    if (d.portada) { var pc = document.querySelector('.portada-card[data-portada="' + d.portada + '"]'); if (pc) selPortada(pc, d.portada); }
+    if (d.tone) document.querySelectorAll('.tone-opt').forEach(function(o) { if (o.querySelector('.tt').textContent === d.tone) selTone(o); });
+    // Volver al paso en el que se quedó (sin saltar a la revisión)
+    if (d.paso > 0 && d.paso < TOTAL) go(d.paso);
+  } catch (e) {}
+}
+
+document.addEventListener('input', saveDraft);
+document.addEventListener('click', function() { setTimeout(saveDraft, 0); });
+
+var CHAPTERS = [
+  { name: 'Cap. 0 · Quién es', qs: [0, 1, 2] },
+  { name: 'Cap. 1 · Infancia', qs: [3, 4] },
+  { name: 'Cap. 2 · Juventud', qs: [5, 6] },
+  { name: 'Cap. 3 · Amor y familia', qs: [7, 8] },
+  { name: 'Cap. 4 · Con los niños hoy', qs: [9, 10, 11] },
+  { name: 'Cap. 5 · El legado', qs: [12, 13] },
+];
+
+function buildReview() {
+  document.getElementById('rv-prot').textContent  = document.getElementById('protName').value || '—';
+  document.getElementById('rv-child').textContent = document.getElementById('childNames').value || '—';
+  document.getElementById('rv-type').textContent  = document.getElementById('bookType').value || '—';
+  document.getElementById('rv-ord').textContent   = document.getElementById('orderer').value || '—';
+  document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
+  document.getElementById('rv-portada').textContent = 'Estilo ' + selectedPortada;
+  document.getElementById('rv-formato').textContent = FORMATOS[formato];
+  var tEl = document.querySelector('.tone-opt.selected .tt');
+  document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrado';
+  var c = document.getElementById('rv-chapters');
+  c.innerHTML = '';
+  CHAPTERS.forEach(function(ch) {
+    var answered = ch.qs.filter(function(i) {
+      var tf = document.querySelector('#tf' + i + ' textarea');
+      return audioBlobs[i] || (tf && tf.value && tf.value.trim());
+    }).length;
+    var row = document.createElement('div');
+    row.className = 'sr';
+    row.innerHTML = '<span class="sk" style="text-transform:none;letter-spacing:0;font-size:12px;">' + ch.name + '</span><span class="sv">' + answered + '/' + ch.qs.length + ' respondidas ' + (answered === ch.qs.length ? '✓' : '') + '</span>';
+    c.appendChild(row);
+  });
+}
+
+async function submit() {
+  var btn = document.querySelector('.btn-next[onclick="submit()"]');
+
+  // Con muy pocas respuestas el libro sale pobre: avisar antes de enviar
+  var respondidas = 0;
+  for (var q = 0; q <= 13; q++) {
+    var tq = document.querySelector('#tf' + q + ' textarea');
+    if (audioBlobs[q] || pendingTx[q] || (tq && tq.value.trim())) respondidas++;
+  }
+  if (respondidas < 5 && !confirm('Solo has respondido ' + respondidas + ' de 14 preguntas. Cuantos más recuerdos nos cuentes, más especial será el libro. ¿Quieres enviarlo así igualmente?')) return;
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+
+  // No enviar hasta que terminen las notas de voz que aún se están transcribiendo
+  var pend = Object.keys(pendingTx).map(function(k) { return pendingTx[k]; });
+  if (pend.length) {
+    if (btn) btn.textContent = 'Terminando de transcribir…';
+    await Promise.all(pend);
+    if (btn) btn.textContent = 'Enviando…';
+  }
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+  var payload = {
+    protagonistName: document.getElementById('protName').value || '',
+    childName:       document.getElementById('childNames').value || '',
+    gender:          gender === 'f' ? 'mujer' : 'hombre',
+    relacion:        document.getElementById('bookType').value === 'Título personalizado'
+                       ? 'Título personalizado: ' + val('customTitle')
+                       : (document.getElementById('bookType').value || ''),
+    senderName:      document.getElementById('orderer').value || '',
+    senderEmail:     document.getElementById('email').value || '',
+    portadaEstilo:   'Estilo ' + selectedPortada,
+    formato:         FORMATOS[formato],
+    q1_nacimiento:   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '',
+    q1_apodo:        document.getElementById('job') ? document.getElementById('job').value : '',
+    q2_juego:        document.getElementById('sport') ? document.getElementById('sport').value : '',
+    q5_lugar:        document.getElementById('places') ? document.getElementById('places').value : '',
+    tone:            document.querySelector('.tone-opt.selected .tt') ? document.querySelector('.tone-opt.selected .tt').textContent : 'Equilibrado',
+    narrator:        narrator === 'protagonist' ? 'protagonista' : 'otra_persona',
+    // Datos rápidos que antes no se enviaban
+    d_hermanos:          val('siblings'),
+    d_mascota:           val('pets'),
+    d_lugar_infancia:    val('childhoodPlace'),
+    d_estudios:          val('school'),
+    d_viaje:             val('travel'),
+    d_edades:            val('childAges'),
+    d_aspecto_ninos:     val('childLooks'),
+    d_apodos:            val('nicknames'),
+    d_historia_conocida: val('knownStory'),
+    d_no_mostrar:        val('noShow'),
+  };
+
+  // Cada pregunta con su propio campo (antes la 4 y la 11 pisaban el hobby y los lugares)
+  var fieldMap = {0:'q1_nombre',1:'q2_lugar',2:'q2_gesto',3:'q2_recuerdo',4:'q2_infancia',5:'q3_sueno',6:'q3_aventura',7:'q4_pareja',8:'q4_hijos',9:'q5_ninos',10:'q5_actividad',11:'q5_ritual',12:'q6_consejo',13:'q6_deseo'};
+  for (var i = 0; i <= 13; i++) {
+    var tf = document.querySelector('#tf' + i + ' textarea');
+    // El cuadro de texto ya contiene la transcripción (y lo que el cliente haya corregido)
+    var value = (tf && tf.value && tf.value.trim()) ? tf.value.trim() : (transcribedTexts[i] || '').trim();
+    if (value) payload[fieldMap[i]] = value;
+  }
+
+  // Fotos: reducidas en el navegador para que el envío pese poco
+  payload.foto_cara  = await photoToBase64(document.getElementById('fotoCara').files[0]);
+  payload.foto_ninos = await photoToBase64(document.getElementById('fotoNinos').files[0]);
+  payload.fotos_extra = [];
+  var extras = Array.from(document.getElementById('fileInput').files).slice(0, 3);
+  for (var j = 0; j < extras.length; j++) {
+    var b64 = await photoToBase64(extras[j]);
+    if (b64) payload.fotos_extra.push(b64);
+  }
+
+  try {
+    // VISTA PREVIA: no se envía nada a Make
+    var res = { ok: true };
+    if (res.ok) {
+      enviado = true;
+      try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+      document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
+      document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || (gender === 'f' ? 'la protagonista' : 'el protagonista');
+      go(TOTAL + 1);
+    } else {
+      alert('Hubo un error al enviar. Por favor inténtalo de nuevo.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Enviar historia ♥'; }
+    }
+  } catch(err) {
+    alert('Error de conexión. Por favor inténtalo de nuevo.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Enviar historia ♥'; }
+  }
+}
+
+document.getElementById('prog').style.width = '0%';
+loadDraft();
+updateAll();
+</script>
+</body>
+</html>
