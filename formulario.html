@@ -186,12 +186,12 @@
       <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
         <div class="gender-emoji">📖</div>
         <div class="gender-title">El propio protagonista</div>
-        <div class="gender-desc">"Cuando yo era pequeña…"</div>
+        <div class="gender-desc">"Cuando yo era pequeñ<span class="G-oa"></span>…"</div>
       </div>
       <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
         <div class="gender-emoji">👨‍👩‍👧</div>
         <div class="gender-title">Otra persona</div>
-        <div class="gender-desc">"Antes de ser vuestra mamá…"</div>
+        <div class="gender-desc">"Antes de ser <span class="G-vuestra"></span>…"</div>
       </div>
     </div>
   </div>
@@ -250,7 +250,7 @@
   <div class="sh">
     <div class="sh-chapter">01 · El protagonista</div>
     <h1 class="sh-title">Preséntanos<br><span id="txt-presentamos">al protagonista</span>.</h1>
-    <p class="sh-sub">Antes de contar su historia, queremos saber quién es. Su esencia, sus rasgos, lo que lo hace inconfundible.</p>
+    <p class="sh-sub">Antes de contar su historia, queremos saber quién es. Su esencia, sus rasgos, lo que <span class="G-lo"></span> hace inconfundible.</p>
   </div>
   <div class="perm" id="permBanner">Tu navegador necesita acceso al micrófono. Si prefieres, usa los campos de texto.</div>
   <div class="chapter-badge"><span class="ch-num">CAPÍTULO 0</span><span class="ch-name">Antes de empezar: quién es</span></div>
@@ -271,7 +271,7 @@
   </div>
 
   <div class="vc" id="vc1">
-    <div class="vc-q">¿Cómo es <span class="G-name"></span> físicamente? Descríbe<span class="G-lo"></span> como si tuvieras que presentárselo a alguien que nunca <span class="G-lo"></span> ha visto.</div>
+    <div class="vc-q">¿Cómo es <span class="G-name"></span> físicamente? Descríbe<span class="G-lo"></span> como si tuvieras que presentársel<span class="G-oa"></span> a alguien que nunca <span class="G-lo"></span> ha visto.</div>
     <div class="vc-h">Color de pelo, ojos, si lleva gafas, cómo viste, algún rasgo especial.</div>
     <div class="vc-ctrls">
       <button class="btn-rec" id="rb1" onclick="toggleRec(1)"><span class="rdot"></span> Grabar</button>
@@ -472,7 +472,7 @@
     <h1 class="sh-title"><span class="G-name"></span> y <span id="childNamesH">los niños</span>.</h1>
     <p class="sh-sub">La relación que existe hoy. Esto es el corazón del libro.</p>
   </div>
-  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 4</span><span class="ch-name">El protagonista hoy, con los niños</span></div>
+  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 4</span><span class="ch-name"><span class="G-protag"></span> hoy, con los niños</span></div>
 
   <div class="vc" id="vc9">
     <div class="vc-q">¿Cómo son los niños que van a leer el libro? Cuéntanos de cada uno: su personalidad, edad, lo que les gusta.</div>
@@ -685,6 +685,8 @@ const G = {
   ninoa:['niña', 'niño'],
   oa:   ['a',    'o'],
   name: ['ella', 'él'],
+  vuestra: ['vuestra mamá', 'vuestro papá'],
+  protag: ['La protagonista', 'El protagonista'],
 };
 
 function g(key) { return G[key][gender === 'f' ? 0 : 1]; }
@@ -707,6 +709,8 @@ function updateAll() {
   document.querySelectorAll('.G-unna').forEach(function(el) { el.textContent = g('unna'); });
   document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
   document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
+  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = g('vuestra'); });
+  document.querySelectorAll('.G-protag').forEach(function(el) { el.textContent = g('protag'); });
   var cn = document.getElementById('childNames')?.value.trim() || 'los niños';
   var cnh = document.getElementById('childNamesH');
   if (cnh) cnh.textContent = cn;
