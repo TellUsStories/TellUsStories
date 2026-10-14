@@ -28,7 +28,7 @@
   .field{margin-bottom:20px;}
   .field label{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:6px;}
   .hint{font-size:12px;color:var(--muted);margin-bottom:7px;font-style:italic;line-height:1.5;}
-  input[type=text],input[type=email],select,textarea{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:4px;background:var(--white);font-family:'Lato',sans-serif;font-size:14px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
+  input[type=text],input[type=email],select,textarea{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:4px;background:var(--white);font-family:'Lato',sans-serif;font-size:16px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
   input:focus,select:focus,textarea:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(200,84,74,.07);}
   textarea{resize:vertical;min-height:80px;line-height:1.6;}
   select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A7060'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;}
@@ -186,12 +186,12 @@
       <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
         <div class="gender-emoji">📖</div>
         <div class="gender-title">El propio protagonista</div>
-        <div class="gender-desc">"Cuando yo era pequeña…"</div>
+        <div class="gender-desc">"Cuando yo era pequeñ<span class="G-oa"></span>…"</div>
       </div>
       <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
         <div class="gender-emoji">👨‍👩‍👧</div>
         <div class="gender-title">Otra persona</div>
-        <div class="gender-desc">"Antes de ser vuestra mamá…"</div>
+        <div class="gender-desc">"Antes de ser <span class="G-vuestra"></span>…"</div>
       </div>
     </div>
   </div>
@@ -202,19 +202,19 @@
     <div class="hint">Puedes cambiarlo más adelante si lo necesitas.</div>
     <div class="portada-grid">
       <div class="portada-card selected" onclick="selPortada(this, '1')" data-portada="1">
-        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782979497/ChatGPT_Image_2_jul_2026_10_00_10_fy1ljw.png" alt="Portada rallada">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_400/v1782979497/ChatGPT_Image_2_jul_2026_10_00_10_fy1ljw.png" alt="Portada con rayas">
         <div class="portada-card-num">Estilo 1</div>
       </div>
       <div class="portada-card" onclick="selPortada(this, '2')" data-portada="2">
-        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782980203/Dise%C3%B1o_sin_t%C3%ADtulo_18_sk4mwq.png" alt="Portada cuadrada">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_400/v1782980203/Dise%C3%B1o_sin_t%C3%ADtulo_18_sk4mwq.png" alt="Portada cuadrada">
         <div class="portada-card-num">Estilo 2</div>
       </div>
       <div class="portada-card" onclick="selPortada(this, '3')" data-portada="3">
-        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782985080/ChatGPT_Image_2_jul_2026_11_37_47_y6im1p.png" alt="Portada aventura">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_400/v1782985080/ChatGPT_Image_2_jul_2026_11_37_47_y6im1p.png" alt="Portada aventura">
         <div class="portada-card-num">Estilo 3</div>
       </div>
       <div class="portada-card" onclick="selPortada(this, '4')" data-portada="4">
-        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/v1782978858/Dise%C3%B1o_sin_t%C3%ADtulo_17_procbn.png" alt="Portada corona naturaleza">
+        <img src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_400/v1782978858/Dise%C3%B1o_sin_t%C3%ADtulo_17_procbn.png" alt="Portada corona naturaleza">
         <div class="portada-card-num">Estilo 4</div>
       </div>
     </div>
@@ -250,7 +250,7 @@
   <div class="sh">
     <div class="sh-chapter">01 · El protagonista</div>
     <h1 class="sh-title">Preséntanos<br><span id="txt-presentamos">al protagonista</span>.</h1>
-    <p class="sh-sub">Antes de contar su historia, queremos saber quién es. Su esencia, sus rasgos, lo que lo hace inconfundible.</p>
+    <p class="sh-sub">Antes de contar su historia, queremos saber quién es. Su esencia, sus rasgos, lo que <span class="G-lo"></span> hace inconfundible.</p>
   </div>
   <div class="perm" id="permBanner">Tu navegador necesita acceso al micrófono. Si prefieres, usa los campos de texto.</div>
   <div class="chapter-badge"><span class="ch-num">CAPÍTULO 0</span><span class="ch-name">Antes de empezar: quién es</span></div>
@@ -271,7 +271,7 @@
   </div>
 
   <div class="vc" id="vc1">
-    <div class="vc-q">¿Cómo es <span class="G-name"></span> físicamente? Descríbe<span class="G-lo"></span> como si tuvieras que presentárselo a alguien que nunca <span class="G-lo"></span> ha visto.</div>
+    <div class="vc-q">¿Cómo es <span class="G-name"></span> físicamente? Descríbe<span class="G-lo"></span> como si tuvieras que presentársel<span class="G-oa"></span> a alguien que nunca <span class="G-lo"></span> ha visto.</div>
     <div class="vc-h">Color de pelo, ojos, si lleva gafas, cómo viste, algún rasgo especial.</div>
     <div class="vc-ctrls">
       <button class="btn-rec" id="rb1" onclick="toggleRec(1)"><span class="rdot"></span> Grabar</button>
@@ -472,7 +472,7 @@
     <h1 class="sh-title"><span class="G-name"></span> y <span id="childNamesH">los niños</span>.</h1>
     <p class="sh-sub">La relación que existe hoy. Esto es el corazón del libro.</p>
   </div>
-  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 4</span><span class="ch-name">El protagonista hoy, con los niños</span></div>
+  <div class="chapter-badge"><span class="ch-num">CAPÍTULO 4</span><span class="ch-name"><span class="G-protag"></span> hoy, con los niños</span></div>
 
   <div class="vc" id="vc9">
     <div class="vc-q">¿Cómo son los niños que van a leer el libro? Cuéntanos de cada uno: su personalidad, edad, lo que les gusta.</div>
@@ -685,6 +685,8 @@ const G = {
   ninoa:['niña', 'niño'],
   oa:   ['a',    'o'],
   name: ['ella', 'él'],
+  vuestra: ['vuestra mamá', 'vuestro papá'],
+  protag: ['La protagonista', 'El protagonista'],
 };
 
 function g(key) { return G[key][gender === 'f' ? 0 : 1]; }
@@ -707,6 +709,8 @@ function updateAll() {
   document.querySelectorAll('.G-unna').forEach(function(el) { el.textContent = g('unna'); });
   document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
   document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
+  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = g('vuestra'); });
+  document.querySelectorAll('.G-protag').forEach(function(el) { el.textContent = g('protag'); });
   var cn = document.getElementById('childNames')?.value.trim() || 'los niños';
   var cnh = document.getElementById('childNamesH');
   if (cnh) cnh.textContent = cn;
@@ -742,7 +746,7 @@ function go(n) {
   var nextEl = document.getElementById(nextId);
   if (nextEl) nextEl.classList.add('active');
   var stepLbl = document.getElementById('stepLbl');
-  if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Paso ' + (n + 1) + ' de ' + TOTAL) : '¡Listo!';
+  if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Paso ' + (n + 1) + ' de ' + TOTAL) : (n === TOTAL ? 'Revisión' : '¡Listo!');
   var prog = document.getElementById('prog');
   if (prog) prog.style.width = Math.min((n / TOTAL) * 100, 100) + '%';
   updateAll();
@@ -810,13 +814,16 @@ async function toggleRec(idx) {
     var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     var permBanner = document.getElementById('permBanner');
     if (permBanner) permBanner.classList.remove('show');
-    var mr = new MediaRecorder(stream);
+    // Calidad de voz suficiente para transcribir y archivos pequeños (notas largas no superan el límite de Netlify)
+    var mr;
+    try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 32000 }); } catch (e2) { mr = new MediaRecorder(stream); }
     recorders[idx] = mr;
     var chunks = [];
     mr.ondataavailable = function(e) { chunks.push(e.data); };
     mr.onstop = function() {
       stream.getTracks().forEach(function(t) { t.stop(); });
-      var blob = new Blob(chunks, { type: 'audio/webm' });
+      // El iPhone graba en mp4, no en webm: usar el formato real para que Whisper lo reconozca
+      var blob = new Blob(chunks, { type: (mr.mimeType || 'audio/webm').split(';')[0] });
       audioBlobs[idx] = blob;
       var url = URL.createObjectURL(blob);
       var a = document.getElementById('ap' + idx);
@@ -917,9 +924,12 @@ function photoToBase64(file) {
 // Guardado automático en este navegador (textos y elecciones; los audios ya quedan transcritos en su cuadro)
 var DRAFT_KEY = 'tus_borrador_v1';
 
+var enviado = false;
+
 function saveDraft() {
+  if (enviado) return; // tras enviar, un clic en la pantalla final no debe recrear el borrador
   try {
-    var d = { gender: gender, narrator: narrator, portada: selectedPortada, formato: formato, fields: {}, tf: {} };
+    var d = { gender: gender, narrator: narrator, portada: selectedPortada, formato: formato, paso: cur <= TOTAL ? cur : 0, fields: {}, tf: {} };
     document.querySelectorAll('input[type=text][id],input[type=email][id],select[id],textarea[id]').forEach(function(el) { d.fields[el.id] = el.value; });
     for (var i = 0; i <= 13; i++) {
       var ta = document.querySelector('#tf' + i + ' textarea');
@@ -947,6 +957,8 @@ function loadDraft() {
     if (d.formato) setFormato(d.formato, document.getElementById(d.formato === 'blanda' ? 'fb' : 'fd'));
     if (d.portada) { var pc = document.querySelector('.portada-card[data-portada="' + d.portada + '"]'); if (pc) selPortada(pc, d.portada); }
     if (d.tone) document.querySelectorAll('.tone-opt').forEach(function(o) { if (o.querySelector('.tt').textContent === d.tone) selTone(o); });
+    // Volver al paso en el que se quedó (sin saltar a la revisión)
+    if (d.paso > 0 && d.paso < TOTAL) go(d.paso);
   } catch (e) {}
 }
 
@@ -1065,6 +1077,7 @@ async function submit() {
       body: JSON.stringify(payload)
     });
     if (res.ok) {
+      enviado = true;
       try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
       document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
       document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || (gender === 'f' ? 'la protagonista' : 'el protagonista');

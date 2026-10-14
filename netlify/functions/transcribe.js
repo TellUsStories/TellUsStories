@@ -40,7 +40,10 @@ exports.handler = async (event) => {
     console.log("Audio recibido, bytes:", audioBuffer.length);
 
     const boundary = "----NetlifyFormBoundary" + Date.now();
-    const ext = (mimeType && mimeType.includes("webm")) ? "webm" : "mp3";
+    // Extensión según el formato real (el iPhone graba en mp4; Whisper usa la extensión para reconocerlo)
+    const EXTS = { webm: "webm", mp4: "mp4", "x-m4a": "m4a", m4a: "m4a", ogg: "ogg", wav: "wav", mpeg: "mp3" };
+    const sub = ((mimeType || "").split(";")[0].split("/")[1] || "").toLowerCase();
+    const ext = EXTS[sub] || "webm";
 
     const preamble =
       `--${boundary}\r\n` +
