@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-paleta="cris">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,6 +32,36 @@
   html[data-paleta="mostaza"]  { --papel: #FAF4E4; --papel-2: #F0E2C2; --terracota: #AE7F22; --dorado: #E6C374; --suave: #76604A; }
   html[data-paleta="azul"]     { --papel: #F6F3EE; --papel-2: #E1E6E7; --terracota: #4F7389; --dorado: #E3C58E; --suave: #6B6159; }
   html[data-paleta="caramelo"] { --papel: #F8F1E8; --papel-2: #EBDCCB; --terracota: #9C6A45; --dorado: #DDB27A; --suave: #7A5E4C; }
+  /* PALETA DE CRIS: lino, salvia, gris cálido y chocolate, con los colores difuminados como acuarela */
+  html[data-paleta="cris"] { --papel: #F6F1EA; --papel-2: #E4E5D5; --tinta: #4A2C1F; --terracota: #7D7A72; --dorado: #C9CFB4; --suave: #6F6458;
+    --lavado: radial-gradient(120% 140% at 0% 0%, rgba(201, 207, 180, .95), transparent 60%), radial-gradient(110% 130% at 100% 100%, rgba(206, 196, 182, .9), transparent 62%), radial-gradient(90% 90% at 60% 30%, rgba(160, 156, 146, .45), transparent 70%), #E9E6DC;
+    --lavado-osc: radial-gradient(120% 140% at 0% 0%, rgba(110, 82, 66, .9), transparent 60%), radial-gradient(110% 130% at 100% 100%, rgba(96, 104, 86, .75), transparent 62%), #5A3E30; }
+  html[data-paleta="cris"] .boton { box-shadow: 0 12px 26px -14px rgba(74, 44, 31, .55); border-radius: 100px; }
+  html[data-paleta="cris"] .boton:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -14px rgba(74, 44, 31, .6); }
+  html[data-paleta="cris"] .etiqueta::after, html[data-paleta="cris"] .rotulo .etiqueta::after { background: linear-gradient(90deg, transparent, rgba(125, 122, 114, .9) 10%, rgba(125, 122, 114, .9) 90%, transparent); filter: blur(.6px); }
+  html[data-paleta="cris"] .baldosa { background: var(--lavado); }
+  html[data-paleta="cris"] .baldosa:nth-child(2) { background: var(--lavado); color: var(--tinta); box-shadow: inset 0 0 0 2px rgba(125, 122, 114, .25); }
+  html[data-paleta="cris"] .baldosa .n, html[data-paleta="cris"] .baldosa:nth-child(2) .n { color: var(--terracota); }
+  html[data-paleta="cris"] .precio { background: var(--lavado); color: var(--tinta); }
+  html[data-paleta="cris"] .precio h2 { color: var(--tinta); }
+  html[data-paleta="cris"] .precio li::before { color: var(--terracota); }
+  html[data-paleta="cris"] .fmt { background: rgba(255, 255, 255, .7); backdrop-filter: blur(4px); }
+  html[data-paleta="cris"] .banda, html[data-paleta="cris"] footer { background: var(--lavado-osc); }
+  html[data-paleta="cris"] .franja { background: var(--lavado); color: var(--tinta); }
+  html[data-paleta="cris"] .franja h2 { color: var(--tinta); }
+  html[data-paleta="cris"] .franja .eyebrow { color: var(--terracota) !important; }
+  html[data-paleta="cris"] .indice, html[data-paleta="cris"] .indice li { border-color: rgba(74, 44, 31, .15); }
+  html[data-paleta="cris"] .indice .num { color: var(--terracota); }
+  html[data-paleta="cris"] .ocasion { border-color: rgba(74, 44, 31, .25); }
+  html[data-paleta="cris"] .ocasion.especial { background: var(--lavado-osc); }
+  html[data-paleta="cris"] .config { background: var(--lavado); }
+  html[data-paleta="cris"] .foto-marco::before { background: var(--lavado); }
+  html[data-paleta="cris"] .pagina-ej img { box-shadow: 0 20px 40px -20px rgba(74, 44, 31, .45); }
+  html[data-paleta="cris"] .p-tela { --tela: #8B7E70; }
+  html[data-paleta="cris"] .p-tela.verde { --tela: #77816A; }
+  html[data-paleta="cris"] .p-noche { background: radial-gradient(120% 80% at 70% 0%, #6E6A66, #3F3A37 75%); }
+  html[data-paleta="cris"] .chips button, html[data-paleta="cris"] .campo { border-color: rgba(74, 44, 31, .35); }
+
   /* las portadas toman los colores de la paleta */
   html[data-paleta] .portada-b { --terracota: inherit; --dorado: inherit; --tinta: inherit; }
 
@@ -391,7 +421,7 @@
   <button type="button" aria-pressed="true" data-t="moderna">Moderna</button>
   <button type="button" aria-pressed="false" data-t="clasica">Clásica</button>
   <select id="paleta" aria-label="Paleta de colores" style="font:inherit;border:none;background:none;padding:6px;color:var(--tinta)">
-    <option value="">Terracota</option><option value="salvia">Salvia</option><option value="rosa">Rosa empolvado</option>
+    <option value="cris">Paleta de Cris</option><option value="">Terracota</option><option value="salvia">Salvia</option><option value="rosa">Rosa empolvado</option>
     <option value="mostaza">Mostaza</option><option value="azul">Azul empolvado</option><option value="caramelo">Caramelo</option>
   </select>
 </div>
@@ -471,7 +501,7 @@
     var sel = document.getElementById('paleta'), q = new URLSearchParams(location.search).get('paleta');
     function pon(v) { if (v) document.documentElement.setAttribute('data-paleta', v); else document.documentElement.removeAttribute('data-paleta'); sel.value = v || ''; }
     sel.onchange = function () { pon(sel.value); };
-    if (q) pon(q);
+    if (q !== null) pon(q); else sel.value = document.documentElement.getAttribute('data-paleta') || '';
   })();
 
   // Interruptor moderna / clásica (solo para la revisión)
