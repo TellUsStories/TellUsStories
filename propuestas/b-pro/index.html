@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tale Us Stories — Su historia, antes de la etiqueta</title>
+<title>Tale Us Stories — Historias antes de la etiqueta</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Convertimos la historia real de mamá, papá, los abuelos o los tíos en un cuento ilustrado en acuarela de 40 páginas, para que los niños descubran quién era antes de la etiqueta. Desde 40 €, envío incluido.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23C4622D'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
@@ -151,6 +151,8 @@
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chips button { font: 600 15px var(--display); border: 2px solid var(--tinta); background: var(--papel); color: var(--tinta); border-radius: 100px; padding: 8px 16px; cursor: pointer; }
   .chips button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); }
+  .yo { display: flex; align-items: center; gap: 8px; font: 500 15px var(--display); cursor: pointer; margin-top: 4px; }
+  .yo input { width: 20px; height: 20px; accent-color: var(--tinta); }
   .campo { font: 17px var(--texto); padding: 12px 14px; border: 2px solid var(--tinta); border-radius: 12px; background: var(--blanco); color: var(--tinta); width: 100%; max-width: 340px; }
   .estilos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 460px; }
   .estilos button { border: 2px solid transparent; background: none; padding: 3px; border-radius: 10px; cursor: pointer; }
@@ -289,23 +291,23 @@
   <a class="logo" href="#">Tale Us<br>Stories<span></span></a>
   <ul class="menu">
     <li><a href="#creadora">Quiénes somos</a></li>
-    <li><a href="#portada">Su portada</a></li>
+    <li><a href="#portada">La portada</a></li>
     <li><a href="#como">Cómo funciona</a></li>
     <li><a href="#dentro">El libro</a></li>
     <li><a href="#precio">Precio</a></li>
-    <li><a class="pill" href="../b/formulario.html">Crear su libro</a></li>
+    <li><a class="pill" href="../b/formulario.html">Crear el libro</a></li>
   </ul>
 </div></nav>
 
 <header class="wrap hero-g">
   <div>
     <h1>
-      <span class="sr">Antes de ser mamá, papá, abuela, abuelo, tía o tío: su historia en un cuento ilustrado.</span>
+      <span class="sr">Antes de ser mamá, papá, abuela, abuelo, tía o tío: su historia, o la tuya, en un cuento ilustrado.</span>
       <span class="rotulo" aria-hidden="true"><span class="etiqueta" id="etiqueta">Mamá</span><span class="nombre-mano" id="nombre-mano">Elena</span></span>
       <span class="lema">Antes, hubo sueños, miedos y mil aventuras.</span>
     </h1>
-    <p class="hero-texto">Antes de la etiqueta hubo una persona entera. Nos cuentas su historia con notas de voz y la convertimos en un cuento ilustrado en acuarela de 40 páginas, para que los niños la descubran.</p>
-    <div class="ctas"><a class="boton" href="#portada">Crear su libro →</a></div>
+    <p class="hero-texto">Antes de la etiqueta hubo una persona entera. Nos cuentas tu historia, o la de alguien especial, con notas de voz y la convertimos en un cuento ilustrado en acuarela de 40 páginas, para que los niños la descubran.</p>
+    <div class="ctas"><a class="boton" href="#portada">Crear el libro →</a></div>
   </div>
   <div class="pila" id="pila" aria-hidden="true"></div>
 </header>
@@ -332,16 +334,16 @@
 <section class="config" id="portada">
   <div class="wrap">
     <span class="eyebrow">Empieza aquí · 10 segundos</span>
-    <h2>Haz su portada <em>ahora mismo.</em></h2>
+    <h2>Haz la portada <em>ahora mismo.</em></h2>
     <div class="config-grid">
       <div>
-        <div class="paso-c"><span><b>1</b>¿Para quién es?</span><div class="chips" id="c-rol" role="group" aria-label="Para quién es"></div></div>
+        <div class="paso-c"><span><b>1</b>¿Quién es para los niños?</span><div class="chips" id="c-rol" role="group" aria-label="Quién es para los niños"></div><label class="yo"><input type="checkbox" id="c-yo"> Es mi propia historia: la cuento yo</label></div>
         <div class="paso-c"><label for="c-nombre"><b>2</b>¿Cómo se llama?</label><input class="campo" id="c-nombre" placeholder="Ej: Carmen" maxlength="14" autocomplete="off"></div>
         <div class="paso-c"><label for="c-ninos"><b>3</b>¿Para qué niños es?</label><input class="campo" id="c-ninos" placeholder="Ej: Mia y Leo" maxlength="22" autocomplete="off"></div>
         <div class="paso-c"><span><b>4</b>Elige el estilo</span><div class="estilos" id="c-estilo" role="group" aria-label="Estilo de portada"></div></div>
-        <a class="boton" id="c-empezar" href="../b/formulario.html">Empezar su libro →</a>
+        <a class="boton" id="c-empezar" href="../b/formulario.html">Empezar el libro →</a>
       </div>
-      <div class="vista"><div id="c-vista"></div><p class="vista-pie">Así quedará. La ilustración será su retrato en acuarela.</p></div>
+      <div class="vista"><div id="c-vista"></div><p class="vista-pie">Así quedará. La ilustración será el retrato en acuarela.</p></div>
     </div>
   </div>
 </section>
@@ -350,7 +352,7 @@
   <span class="eyebrow">Cómo funciona</span>
   <h2>Tú solo tienes que <em>contarlo.</em></h2>
   <div class="baldosas">
-    <div class="baldosa"><div class="n">1</div><h3>Nos lo cuentas</h3><p>Preguntas guiadas sobre su infancia, sus sueños, el amor y la familia. Respondes con notas de voz, como si se lo contaras a una amiga. Se guarda solo.</p><span class="tiempo">15-20 minutos</span></div>
+    <div class="baldosa"><div class="n">1</div><h3>Nos lo cuentas</h3><p>Preguntas guiadas sobre la infancia, los sueños, el amor y la familia. Respondes con notas de voz, como si se lo contaras a una amiga. Se guarda solo.</p><span class="tiempo">15-20 minutos</span></div>
     <div class="baldosa"><div class="n">2</div><h3>Lo escribimos e ilustramos</h3><p>Convertimos sus recuerdos en un cuento de 40 páginas en acuarela, con sus rasgos reales a partir de una foto.</p><span class="tiempo">5 capítulos</span></div>
     <div class="baldosa"><div class="n">3</div><h3>Lo leéis juntos</h3><p>Impreso en A4, en tapa dura o blanda, y en casa listo para regalar.</p><span class="tiempo">2-3 semanas</span></div>
   </div>
@@ -377,7 +379,7 @@
   <div class="precio">
     <div>
       <h2>Un libro que durará para siempre.</h2>
-      <ul><li>40 páginas ilustradas en acuarela</li><li>Su retrato con rasgos reales</li><li>Escrito a partir de sus recuerdos</li><li>A4 vertical · en casa en 2-3 semanas</li></ul>
+      <ul><li>40 páginas ilustradas en acuarela</li><li>Retrato con rasgos reales</li><li>Escrito a partir de sus recuerdos</li><li>A4 vertical · en casa en 2-3 semanas</li></ul>
     </div>
     <div>
       <div class="formatos">
@@ -385,7 +387,7 @@
         <div class="fmt top"><span class="badge">La más elegida</span><small>Tapa dura</small><b>62 €</b><span>Para toda la vida</span></div>
       </div>
       <p class="nota">Envío incluido en los dos formatos.</p>
-      <a class="boton claro" href="#portada">Crear su libro →</a>
+      <a class="boton claro" href="#portada">Crear el libro →</a>
     </div>
   </div>
 </section>
@@ -412,9 +414,9 @@
     <p class="ayuda">¿Otra duda? Escríbenos por <a href="https://www.instagram.com/tale_us_stories" target="_blank" rel="noopener">Instagram</a>.</p>
   </div>
   <div>
-    <details><summary>¿Para quién puedo hacer el libro?</summary><p>Para cualquier persona especial para unos niños: mamá, papá, los abuelos, un tío o una tía, un padrino… También en memoria de alguien que ya no está.</p></details>
+    <details><summary>¿Para quién puedo hacer el libro?</summary><p>Para cualquier persona especial para unos niños: mamá, papá, los abuelos, un tío o una tía, un padrino… También sobre ti, contando tu propia historia para tus hijos o nietos, o en memoria de alguien que ya no está.</p></details>
     <details><summary>¿Cuánto se tarda en rellenar el formulario?</summary><p>Unos 15-20 minutos. Respondes con notas de voz y lo transcribimos nosotros. Se guarda solo, así que puedes hacerlo a ratos.</p></details>
-    <details><summary>¿Y si no tengo fotos?</summary><p>Lo dibujamos a partir de cómo nos lo describas. Con una foto de su cara se parecerá mucho más.</p></details>
+    <details><summary>¿Y si no tengo fotos?</summary><p>Lo dibujamos a partir de cómo nos lo describas. Con una foto de la cara se parecerá mucho más.</p></details>
     <details><summary>¿Qué diferencia hay entre tapa blanda y tapa dura?</summary><p>El contenido es el mismo: 40 páginas ilustradas en A4. La tapa dura es más resistente y elegante, pensada para guardarla toda la vida.</p></details>
     <details><summary>¿Cuánto tarda en llegar?</summary><p>Entre 2 y 3 semanas desde que nos envías la historia.</p></details>
     <details><summary>¿Qué hacéis con las fotos y los recuerdos?</summary><p>Solo los usamos para crear vuestro libro. Nunca los publicamos ni los usamos para nada más sin vuestro permiso.</p></details>
@@ -423,8 +425,8 @@
 
 <section class="wrap cierre" style="padding-top:0">
   <div class="orla" style="justify-content:center;margin-bottom:18px">❦</div>
-  <h2>Su historia merece <em>ser contada.</em></h2>
-  <div class="ctas"><a class="boton" href="#portada">Crear su libro →</a></div>
+  <h2>Historias que merecen <em>ser contadas.</em></h2>
+  <div class="ctas"><a class="boton" href="#portada">Crear el libro →</a></div>
 </section>
 
 <footer><div class="wrap">
@@ -433,7 +435,7 @@
   <span>Hecho con amor · Barcelona</span>
 </div></footer>
 
-<div class="barra"><div><small>Su libro desde</small><b>40 €</b></div><a href="#portada">Crear su libro</a></div>
+<div class="barra"><div><small>Tu libro desde</small><b>40 €</b></div><a href="#portada">Crear el libro</a></div>
 
 <div class="revision" role="group" aria-label="Estilo de titulares (solo para revisar)">
   <button type="button" aria-pressed="true" data-t="moderna">Moderna</button>
@@ -521,9 +523,12 @@
   function pinta() {
     var rol = cfg.rol === 'Otra persona' ? 'Madrina' : cfg.rol;
     document.getElementById('c-vista').innerHTML = TUSPortadas.portada(cfg.estilo, { nombre: cfg.nombre || 'Carmen', rol: rol, ninos: cfg.ninos || 'Mia y Leo' });
-    var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo });
+    var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo }); if (cfg.yo) q.set('yo', '1');
+    document.getElementById('c-empezar').textContent = cfg.yo ? 'Empezar mi libro →' : 'Empezar el libro →';
+    document.querySelector('label[for="c-nombre"]').innerHTML = '<b>2</b>' + (cfg.yo ? '¿Cómo te llamas?' : '¿Cómo se llama?');
     document.getElementById('c-empezar').href = '../b/formulario.html?' + q.toString();
   }
+  document.getElementById('c-yo').addEventListener('change', function (e) { cfg.yo = e.target.checked; pinta(); });
   document.getElementById('c-nombre').addEventListener('input', function (e) { cfg.nombre = e.target.value.trim(); pinta(); });
   document.getElementById('c-ninos').addEventListener('input', function (e) { cfg.ninos = e.target.value.trim(); pinta(); });
   pinta();

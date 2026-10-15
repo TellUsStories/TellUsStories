@@ -1133,6 +1133,7 @@ loadDraft();
   var r = ROL[q.get('rol')];
   if (r) { document.getElementById('bookType').value = r[0]; setGender(r[1], document.getElementById(r[1] === 'm' ? 'gm' : 'gf')); }
   else if (q.get('rol')) { document.getElementById('bookType').value = 'Título personalizado'; document.getElementById('customTitleWrap').style.display = 'block'; }
+  if (q.get('yo')) setNarrator('protagonist', document.getElementById('n1'));
 })();
 updateAll();
 </script>
