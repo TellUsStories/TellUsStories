@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-paleta="cris">
+<html lang="es" data-paleta="cris" class="js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -165,6 +165,23 @@
   .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
   .foto-marco { position: relative; max-width: 400px; justify-self: center; width: 100%; }
   .foto-marco img { width: 100%; display: block; border-radius: 20px; background: var(--papel-2); aspect-ratio: 4 / 5; object-fit: cover; }
+  /* Retrato que se va dibujando: primero el trazo a lápiz, luego entra la acuarela */
+  .dibujo { cursor: pointer; }
+  .dibujo img { position: absolute; inset: 0; height: 100%; }
+  .dibujo .d-color { position: relative; }
+  .dibujo .d-linea { filter: grayscale(1) contrast(1.9) brightness(1.18) sepia(.35); mix-blend-mode: multiply; }
+  .dibujo .d-pincel { position: absolute; width: 46px; height: 46px; left: 0; top: 0; opacity: 0; pointer-events: none; z-index: 3; }
+  .js .dibujo.listo .d-color { clip-path: circle(0% at 50% 45%); }
+  .js .dibujo.listo .d-linea { clip-path: inset(0 0 100% 0); }
+  .js .dibujo.dibujando .d-linea { animation: traza 2.4s cubic-bezier(.5,.1,.4,1) forwards; }
+  .js .dibujo.dibujando .d-color { animation: pinta 2.2s 2.1s cubic-bezier(.4,.1,.3,1) forwards; }
+  .js .dibujo.dibujando .d-pincel { animation: pincel 2.4s cubic-bezier(.5,.1,.4,1) forwards, fuera .4s 2.4s forwards; }
+  .js .dibujo.hecho .d-linea { opacity: 0; transition: opacity 1.2s; }
+  @keyframes traza { 0% { clip-path: inset(0 0 100% 0); } 100% { clip-path: inset(0 0 0 0); } }
+  @keyframes pinta { 0% { clip-path: circle(0% at 50% 45%); } 100% { clip-path: circle(75% at 50% 45%); } }
+  @keyframes pincel { 0% { opacity: 1; transform: translate(12%, -10%) rotate(0); } 15% { transform: translate(260%, 40%); } 30% { transform: translate(40%, 160%); } 45% { transform: translate(300%, 300%); } 60% { transform: translate(60%, 450%); } 75% { transform: translate(320%, 600%); } 90% { transform: translate(120%, 760%); } 100% { opacity: 1; transform: translate(260%, 820%); } }
+  @keyframes fuera { to { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .js .dibujo.listo .d-color, .js .dibujo.listo .d-linea { clip-path: none; animation: none; } .dibujo .d-linea, .dibujo .d-pincel { display: none; } }
   .foto-marco::before { content: ''; position: absolute; inset: 18px -18px -18px 18px; border-radius: 20px; background: var(--dorado); z-index: -1; }
   .firma { font-family: 'Caveat', cursive; font-weight: 700; font-size: 30px; color: var(--terracota); margin-top: 8px; }
   .texto-largo { display: grid; gap: 16px; margin-top: 22px; }
@@ -294,7 +311,11 @@
 </header>
 
 <section class="wrap dos" id="creadora">
-  <div class="foto-marco"><img loading="lazy" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_800/v1782668692/ChatGPT_Image_28_jun_2026_19_44_41_miuc9q.png" alt="Ilustración de Tale Us Stories"></div>
+  <div class="foto-marco dibujo" id="dibujo" title="Tócalo para verlo dibujarse otra vez">
+    <img class="d-color" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_800/v1782668692/ChatGPT_Image_28_jun_2026_19_44_41_miuc9q.png" alt="Retrato de Cris ilustrado en acuarela, como en los libros">
+    <img class="d-linea" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_800/v1782668692/ChatGPT_Image_28_jun_2026_19_44_41_miuc9q.png" alt="" aria-hidden="true">
+    <svg class="d-pincel" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 34c4-1 7-4 8-8l16-18 4 4-18 16c-4 1-7 4-8 8z" fill="#4A2C1F"/><path d="M30 8l4 4" stroke="#C9CFB4" stroke-width="3"/></svg>
+  </div>
   <div>
     <span class="eyebrow">Quiénes somos</span>
     <h2>Hola, soy <em>Cris.</em></h2>
@@ -463,6 +484,22 @@
       [et, nm].forEach(function (x) { x.classList.remove('salta'); void x.offsetWidth; x.classList.add('salta'); });
       pila.querySelectorAll(':scope > div').forEach(function (d, k) { d.classList.toggle('on', k === i); });
     }, 1600);
+  })();
+
+  // Retrato que se dibuja al llegar a «Quiénes somos» (y otra vez al tocarlo)
+  (function () {
+    var d = document.getElementById('dibujo');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    function dibuja() {
+      d.classList.remove('dibujando', 'hecho'); d.classList.add('listo'); void d.offsetWidth; d.classList.add('dibujando');
+      clearTimeout(d._t); d._t = setTimeout(function () { d.classList.add('hecho'); }, 4400);
+    }
+    d.classList.add('listo');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { dibuja(); io.disconnect(); } }, { threshold: .45 });
+      io.observe(d);
+    } else dibuja();
+    d.addEventListener('click', dibuja);
   })();
 
   // Configurador de portada
