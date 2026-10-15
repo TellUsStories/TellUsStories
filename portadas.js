@@ -58,32 +58,44 @@
       '<rect x="' + (x + 19) + '" y="' + (y + 19) + '" width="' + (w - 38) + '" height="' + (h - 38) + '" fill="none" stroke="' + tinta + '" stroke-width="1.2"/>';
   }
 
-  function rayas(id, nombre, c) {
-    var r = azar(11), s = '', tinta = '#7B7F6F';
-    for (var x = 20; x < W; x += 43) {
-      var w = 12 + r() * 5, pts = [], pts2 = [];
-      for (var y = -20; y <= H + 20; y += 70) { var dx = (r() - .5) * 3; pts.push((x + dx) + ',' + y); pts2.unshift((x + dx + w + (r() - .5) * 2) + ',' + y); }
-      s += '<polygon points="' + pts.concat(pts2).join(' ') + '" fill="' + c.base + '" fill-opacity="' + (.78 + r() * .22).toFixed(2) + '" stroke="' + c.oscuro + '" stroke-opacity=".25" stroke-width="1.5"/>';
+  // Rayas y Mosaico usan las ilustraciones reales en acuarela (terracota). Para otro color se
+  // vuelven a teñir: cada tono de la imagen se lleva al tono equivalente del color elegido.
+  var RAIZ = ((document.currentScript && document.currentScript.src) || '').replace(/[^\/]*$/, '');
+  var IMAGENES = { 1: 'img/portada-rayas.jpg', 2: 'img/portada-mosaico.jpg' };
+  function rgb(h) { var x = parseInt(h.slice(1), 16); return [(x >> 16) & 255, (x >> 8) & 255, x & 255]; }
+  function tinte(id, c) {
+    if (c.id === 'terracota') return '';
+    // Luminosidad de la imagen original → color: rojos (.34), naranjas (.40), rayas (.64), tonos claros (.71), papel (.91)
+    var puntos = [[0, c.oscuro], [.34, mezcla(c.base, c.oscuro, .6)], [.42, mezcla(c.base, c.oscuro, .3)], [.64, mezcla(c.base, c.oscuro, .08)], [.72, mezcla(c.base, c.claro, .5)], [.91, PAPEL], [1, '#ffffff']];
+    var canales = [[], [], []];
+    for (var i = 0; i <= 50; i++) {
+      var v = i / 50, k = 1;
+      while (k < puntos.length - 1 && puntos[k][0] < v) k++;
+      var t = (v - puntos[k - 1][0]) / (puntos[k][0] - puntos[k - 1][0]), a = rgb(puntos[k - 1][1]), b = rgb(puntos[k][1]);
+      for (var ch = 0; ch < 3; ch++) canales[ch].push(((a[ch] + (b[ch] - a[ch]) * Math.min(1, Math.max(0, t))) / 255).toFixed(3));
     }
-    var tam = cabe(nombre, 124, 500, .44);
-    return papel(id) + '<g filter="url(#a' + id + ')">' + s + '</g>' +
-      cartela(150, 400, 532, 312, tinta) +
-      '<text x="416" y="530" text-anchor="middle" font-family="Allura, cursive" font-size="84" fill="' + tinta + '">El universo de</text>' +
-      '<text x="416" y="' + (640 + tam * .1).toFixed(0) + '" text-anchor="middle" font-family="\'Amatic SC\', cursive" font-weight="700" font-size="' + tam + '" letter-spacing="5" fill="' + tinta + '">' + esc(nombre) + '</text>';
+    return '<filter id="k' + id + '" color-interpolation-filters="sRGB">' +
+      '<feColorMatrix type="matrix" values=".2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  0 0 0 1 0"/>' +
+      '<feComponentTransfer><feFuncR type="table" tableValues="' + canales[0].join(' ') + '"/><feFuncG type="table" tableValues="' + canales[1].join(' ') + '"/><feFuncB type="table" tableValues="' + canales[2].join(' ') + '"/></feComponentTransfer>' +
+    '</filter>';
+  }
+  function ilustracion(id, n, c) {
+    return tinte(id, c) + '<image href="' + RAIZ + IMAGENES[n] + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"' + (c.id === 'terracota' ? '' : ' filter="url(#k' + id + ')"') + '/>';
+  }
+
+  function rayas(id, nombre, c) {
+    var tinta = '#7B7F6F', tam = cabe(nombre, 132, 540, .44);
+    return ilustracion(id, 1, c) +
+      cartela(96, 386, 640, 342, tinta) +
+      '<text x="416" y="528" text-anchor="middle" font-family="Allura, cursive" font-size="92" fill="' + tinta + '">El universo de</text>' +
+      '<text x="416" y="' + (640 + tam * .12).toFixed(0) + '" text-anchor="middle" font-family="\'Amatic SC\', cursive" font-weight="700" font-size="' + tam + '" letter-spacing="5" fill="' + tinta + '">' + esc(nombre) + '</text>';
   }
 
   function mosaico(id, nombre, c) {
-    var r = azar(5), s = '', sw = 106, sh = 118, g = 14, x0 = 63, y0 = 67;
-    for (var fila = 0; fila < 8; fila++) for (var col = 0; col < 6; col++) {
-      if (fila > 1 && fila < 6 && col > 0 && col < 5) continue;
-      var x = x0 + col * (sw + g), y = y0 + fila * (sh + g), fuerte = (fila + col) % 2 === 0;
-      s += '<rect x="' + x + '" y="' + y + '" width="' + sw + '" height="' + sh + '" rx="16" fill="' + (fuerte ? c.base : c.claro) + '" stroke="' + c.oscuro + '" stroke-opacity=".2" stroke-width="2"/>';
-      if (fuerte && r() > .35) s += '<rect x="' + x + '" y="' + y + '" width="' + sw + '" height="' + sh + '" rx="16" fill="' + c.oscuro + '" fill-opacity="' + (.15 + r() * .35).toFixed(2) + '"/>';
-    }
-    var tam = cabe(nombre.toUpperCase(), 100, 440, .74);
-    return papel(id) + '<g filter="url(#a' + id + ')">' + s + '</g>' +
-      '<text x="416" y="574" text-anchor="middle" font-family="\'PT Serif\', serif" font-size="66" fill="' + c.oscuro + '">El universo de</text>' +
-      '<text x="416" y="' + (650 + tam * .3).toFixed(0) + '" text-anchor="middle" font-family="\'PT Serif\', serif" font-weight="700" font-size="' + tam + '" letter-spacing="2" fill="' + c.oscuro + '">' + esc(nombre.toUpperCase()) + '</text>';
+    var tam = cabe(nombre.toUpperCase(), 104, 440, .74), tinta = c.id === 'terracota' ? '#BF5138' : c.oscuro;
+    return ilustracion(id, 2, c) +
+      '<text x="416" y="532" text-anchor="middle" font-family="\'PT Serif\', serif" font-size="70" fill="' + tinta + '">El universo de</text>' +
+      '<text x="416" y="' + (606 + tam * .3).toFixed(0) + '" text-anchor="middle" font-family="\'PT Serif\', serif" font-weight="700" font-size="' + tam + '" letter-spacing="2" fill="' + tinta + '">' + esc(nombre.toUpperCase()) + '</text>';
   }
 
   // Medidas de cada mayúscula en Playfair Display (por 1000 px): ancho de la tinta, margen izquierdo, alto y bajada
@@ -130,7 +142,7 @@
     var id = ++uid, c = color(colorId), n = String(nombre || 'Carmen').trim() || 'Carmen';
     var dibujo = { 1: rayas, 2: mosaico, 3: inicial }[estilo] || rayas;
     return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada: El universo de ' + esc(n) + '">' +
-      filtros(id) + dibujo(id, n, c) + grano(id) + '</svg>';
+      filtros(id) + dibujo(id, n, c) + (estilo == 3 ? grano(id) : '') + '</svg>';
   }
 
   window.TUSPortadas = { svg: svg, colores: COLORES, estilos: ESTILOS, color: color };
