@@ -1090,6 +1090,7 @@ async function submit() {
     portadaNombre:   TUSPortadas.estilos[selectedPortada - 1].nombre,
     portadaColor:    TUSPortadas.color(selectedColor).nombre,
     portadaColorHex: TUSPortadas.color(selectedColor).base,
+    portadaColorId:  selectedColor,
     formato:         FORMATOS[formato],
     q1_nacimiento:   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '',
     q1_apodo:        document.getElementById('job') ? document.getElementById('job').value : '',
