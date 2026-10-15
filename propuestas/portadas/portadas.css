@@ -38,7 +38,7 @@
 .sin-rotulo .acuarela::after, .acuarela.sin-rotulo::after { content: none; }
 
 /* 1 · LA ETIQUETA: el rol tachado y el nombre escrito a mano encima */
-.p-etiqueta { background: radial-gradient(120% 90% at 50% 0%, #FBF5EA, #F1E4CF); }
+.p-etiqueta { background: #F7EFE2; }
 .p-etiqueta .acuarela { left: 8%; right: 8%; top: 44%; height: 44%; border-radius: 50%; }
 .p-etiqueta .rol { position: absolute; top: 12%; left: 0; right: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 19cqw; line-height: .9; letter-spacing: -.6cqw; text-transform: uppercase; }
 .p-etiqueta .rol span { position: relative; display: inline-block; }
@@ -65,7 +65,7 @@
 .p-tela .sello-marca { color: var(--dorado); bottom: 11cqw; font-size: 2cqw; }
 
 /* 3 · CONSTELACIÓN: el cielo de su historia, con la inicial dibujada en estrellas */
-.p-noche { background: radial-gradient(120% 80% at 70% 0%, #2E3A66, #151B33 70%); color: #F6EFE3; }
+.p-noche { background: #1F2747; color: #F6EFE3; }
 .p-noche .cielo { position: absolute; inset: 0; background-image:
   radial-gradient(.35cqw .35cqw at 12% 18%, #F3D99A 98%, transparent), radial-gradient(.25cqw .25cqw at 30% 9%, #fff 98%, transparent),
   radial-gradient(.3cqw .3cqw at 82% 14%, #F3D99A 98%, transparent), radial-gradient(.2cqw .2cqw at 68% 30%, #fff 98%, transparent),

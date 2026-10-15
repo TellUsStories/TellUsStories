@@ -38,7 +38,7 @@
     --lavado-osc: #4A2C1F; }
   html[data-paleta="cris"] .boton { box-shadow: 0 12px 26px -14px rgba(74, 44, 31, .55); border-radius: 100px; }
   html[data-paleta="cris"] .boton:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -14px rgba(74, 44, 31, .6); }
-  html[data-paleta="cris"] .etiqueta::after, html[data-paleta="cris"] .rotulo .etiqueta::after { background: linear-gradient(90deg, transparent, rgba(125, 122, 114, .9) 10%, rgba(125, 122, 114, .9) 90%, transparent); filter: blur(.6px); }
+  html[data-paleta="cris"] .etiqueta::after, html[data-paleta="cris"] .rotulo .etiqueta::after { background: #8A877F; }
   html[data-paleta="cris"] .baldosa { background: var(--lavado); }
   html[data-paleta="cris"] .baldosa:nth-child(2) { background: var(--lavado); color: var(--tinta); box-shadow: inset 0 0 0 2px rgba(125, 122, 114, .25); }
   html[data-paleta="cris"] .baldosa .n, html[data-paleta="cris"] .baldosa:nth-child(2) .n { color: var(--terracota); }
@@ -51,7 +51,7 @@
   html[data-paleta="cris"] .franja h2 { color: var(--tinta); }
   html[data-paleta="cris"] .franja .eyebrow { color: var(--terracota) !important; }
   html[data-paleta="cris"] .indice, html[data-paleta="cris"] .indice li { border-color: rgba(74, 44, 31, .15); }
-  html[data-paleta="cris"] .indice .num { color: var(--terracota); }
+  html[data-paleta="cris"] .indice .num { font-family: var(--display); font-weight: 800; font-size: 52px; color: var(--terracota); line-height: .9; }
   html[data-paleta="cris"] .ocasion { border-color: rgba(74, 44, 31, .25); }
   html[data-paleta="cris"] .ocasion.especial { background: var(--lavado-osc); }
   html[data-paleta="cris"] .config { background: var(--lavado); }
@@ -59,7 +59,7 @@
   html[data-paleta="cris"] .pagina-ej img { box-shadow: 0 20px 40px -20px rgba(74, 44, 31, .45); }
   html[data-paleta="cris"] .p-tela { --tela: #8B7E70; }
   html[data-paleta="cris"] .p-tela.verde { --tela: #77816A; }
-  html[data-paleta="cris"] .p-noche { background: radial-gradient(120% 80% at 70% 0%, #6E6A66, #3F3A37 75%); }
+  html[data-paleta="cris"] .p-noche { background: #4A4541; }
   html[data-paleta="cris"] .chips button, html[data-paleta="cris"] .campo { border-color: rgba(74, 44, 31, .35); }
 
   /* las portadas toman los colores de la paleta */
@@ -184,8 +184,8 @@
   .franja { background: var(--tinta); color: var(--papel); }
   .franja h2 { color: var(--papel); }
   .indice { list-style: none; margin-top: 28px; border-top: 1px solid rgba(250, 244, 234, .2); }
-  .indice li { display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid rgba(250, 244, 234, .2); }
-  .indice .num { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 30px; color: var(--dorado); line-height: 1; }
+  .indice li { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(250, 244, 234, .2); }
+  .indice .num { font-family: var(--display); font-weight: 800; font-size: 52px; color: var(--terracota); line-height: .9; }
   .indice b { font-family: var(--display); font-weight: 700; font-size: 19px; display: block; }
   .indice span { font-size: 15px; opacity: .75; }
   .indice .pags { font-family: var(--display); font-size: 13px; opacity: .6; white-space: nowrap; }
@@ -341,11 +341,11 @@
       <span class="eyebrow" style="color:var(--dorado)">El libro por dentro</span>
       <h2>Cinco capítulos, <em>una vida.</em></h2>
       <ol class="indice">
-        <li><span class="num">i</span><div><b>Infancia</b><span>Cómo era de pequeño o pequeña, sus travesuras y sus lugares.</span></div><span class="pags">pág. 3</span></li>
-        <li><span class="num">ii</span><div><b>Juventud</b><span>Sus sueños, sus aventuras y las decisiones valientes.</span></div><span class="pags">pág. 9</span></li>
-        <li><span class="num">iii</span><div><b>Amor y familia</b><span>Cómo empezó todo y la llegada de cada niño.</span></div><span class="pags">pág. 17</span></li>
-        <li><span class="num">iv</span><div><b>Con los niños hoy</b><span>Los planes, los rituales y los recuerdos que comparten.</span></div><span class="pags">pág. 25</span></li>
-        <li><span class="num">v</span><div><b>El legado</b><span>Lo que quiere que sepan cuando sean mayores.</span></div><span class="pags">pág. 33</span></li>
+        <li><span class="num">1</span><div><b>Infancia</b><span>Cómo era de pequeño o pequeña, sus travesuras y sus lugares.</span></div><span class="pags">pág. 3</span></li>
+        <li><span class="num">2</span><div><b>Juventud</b><span>Sus sueños, sus aventuras y las decisiones valientes.</span></div><span class="pags">pág. 9</span></li>
+        <li><span class="num">3</span><div><b>Amor y familia</b><span>Cómo empezó todo y la llegada de cada niño.</span></div><span class="pags">pág. 17</span></li>
+        <li><span class="num">4</span><div><b>Con los niños hoy</b><span>Los planes, los rituales y los recuerdos que comparten.</span></div><span class="pags">pág. 25</span></li>
+        <li><span class="num">5</span><div><b>El legado</b><span>Lo que quiere que sepan cuando sean mayores.</span></div><span class="pags">pág. 33</span></li>
       </ol>
     </div>
     <div class="pagina-ej"><img loading="lazy" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_1000/página_ejemplo_rlllmf" alt="Página interior del libro"></div>
