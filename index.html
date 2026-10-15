@@ -132,8 +132,40 @@
   .indice b { font-family: var(--display); font-weight: 700; font-size: 19px; display: block; }
   .indice span { font-size: 15px; opacity: .78; }
   .indice .pags { font-family: var(--display); font-size: 13px; opacity: .6; white-space: nowrap; }
-  .pagina-ej { min-width: 0; }
-  .pagina-ej img { width: 100%; height: auto; display: block; border-radius: 12px; background: var(--papel-2); box-shadow: 0 20px 40px -20px rgba(0, 0, 0, .5); }
+  /* Libro de ejemplo para hojear: portada → páginas 1 y 2 */
+  .libro { min-width: 0; }
+  .libro-escena { position: relative; width: 100%; aspect-ratio: 1800 / 1350; perspective: 2200px; cursor: pointer; transform: translateX(-25%); transition: transform .9s cubic-bezier(.3, .7, .2, 1); outline: none; }
+  .libro[data-paso="1"] .libro-escena { transform: none; }
+  .libro-der, .libro-hoja { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; }
+  .libro-der { border-radius: 0 6px 6px 0; overflow: hidden; background: var(--papel); box-shadow: 0 22px 40px -22px rgba(0, 0, 0, .6); opacity: 0; transition: opacity .2s .1s; }
+  .libro[data-paso="1"] .libro-der { opacity: 1; }
+  .libro-der::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 14%; background: linear-gradient(to right, rgba(60, 35, 20, .22), transparent); pointer-events: none; }
+  .libro-hoja { transform-origin: left center; transform-style: preserve-3d; transition: transform .9s cubic-bezier(.3, .7, .2, 1); z-index: 2; }
+  .libro[data-paso="1"] .libro-hoja { transform: rotateY(-180deg); }
+  .libro-cara { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+  .libro-cara.frente { border-radius: 2px 8px 8px 2px; box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .65), inset 7px 0 8px -5px rgba(0, 0, 0, .25); background: var(--papel); }
+  .libro-cara.frente svg { display: block; width: 100%; height: 100%; }
+  .libro-cara.dorso { transform: rotateY(180deg); border-radius: 6px 0 0 6px; background: var(--papel); box-shadow: 0 22px 40px -22px rgba(0, 0, 0, .6); }
+  .libro-cara.dorso::after { content: ''; position: absolute; inset: 0 0 0 auto; width: 14%; background: linear-gradient(to left, rgba(60, 35, 20, .22), transparent); pointer-events: none; }
+  .libro img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .libro-escena:focus-visible, .libro-movil:focus-visible { outline: 2px solid var(--boton); outline-offset: 6px; }
+  .libro-movil { display: none; position: relative; width: 100%; max-width: 420px; margin: 0 auto; aspect-ratio: 900 / 1350; cursor: pointer; }
+  .mpag { position: absolute; inset: 0; border-radius: 8px; overflow: hidden; background: var(--papel); box-shadow: 0 20px 40px -20px rgba(0, 0, 0, .55); opacity: 0; transform: translateX(14px) rotate(.6deg); transition: opacity .45s, transform .45s; }
+  .mpag.on { opacity: 1; transform: none; }
+  .mpag svg { display: block; width: 100%; height: 100%; }
+  .libro-ctrl { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 22px; }
+  .libro-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(251, 250, 247, .35); background: transparent; color: var(--claro); font-size: 18px; cursor: pointer; transition: background .2s, opacity .2s; }
+  .libro-btn:hover { background: rgba(251, 250, 247, .12); }
+  .libro-btn:disabled { opacity: .3; cursor: default; }
+  .libro-txt { font-family: var(--display); font-size: 14px; min-width: 190px; text-align: center; opacity: .85; }
+  .libro-pie { text-align: center; font-size: 14px; opacity: .6; margin-top: 10px; }
+  @media (max-width: 860px) {
+    .libro-escena { display: none; }
+    .libro-movil { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .libro-escena, .libro-hoja, .mpag { transition: none; }
+  }
 
   /* PRECIO */
   .precio { background: var(--papel-2); border-radius: 28px; padding: 48px clamp(22px, 5vw, 56px); display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
@@ -297,7 +329,28 @@
         <li><span class="num">5</span><div><b>El legado</b><span>Lo que quiere que sepan cuando sean mayores.</span></div><span class="pags">pág. 33</span></li>
       </ol>
     </div>
-    <div class="pagina-ej"><img loading="lazy" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_1000/página_ejemplo_rlllmf" alt="Página interior del libro"></div>
+    <div class="libro" id="libro" data-paso="0">
+      <!-- Ordenador: libro cerrado con la portada; al pasar, la hoja gira y queda abierto por las páginas 1 y 2 -->
+      <div class="libro-escena" role="button" tabindex="0" aria-label="Pasar página del libro de ejemplo">
+        <div class="libro-der"><img loading="lazy" src="img/libro-pagina-2.jpg" width="900" height="1350" alt="Página 2: Antes de ser mami. Laura de niña, de joven y hoy"></div>
+        <div class="libro-hoja">
+          <div class="libro-cara frente" id="libro-portada" aria-label="Portada: El universo de Laura"></div>
+          <div class="libro-cara dorso"><img loading="lazy" src="img/libro-pagina-1.jpg" width="900" height="1350" alt="Página 1: Para Lucas y Martina. Laura les lee un cuento"></div>
+        </div>
+      </div>
+      <!-- Móvil: una página cada vez -->
+      <div class="libro-movil" role="button" tabindex="0" aria-label="Pasar página del libro de ejemplo">
+        <div class="mpag on" id="libro-portada-m"></div>
+        <div class="mpag"><img loading="lazy" src="img/libro-pagina-1.jpg" width="900" height="1350" alt="Página 1: Para Lucas y Martina"></div>
+        <div class="mpag"><img loading="lazy" src="img/libro-pagina-2.jpg" width="900" height="1350" alt="Página 2: Antes de ser mami"></div>
+      </div>
+      <div class="libro-ctrl">
+        <button type="button" class="libro-btn" data-dir="-1" aria-label="Página anterior">←</button>
+        <span class="libro-txt" aria-live="polite">Portada · pulsa para abrirlo</span>
+        <button type="button" class="libro-btn" data-dir="1" aria-label="Página siguiente">→</button>
+      </div>
+      <p class="libro-pie">Un libro de verdad, hecho con la foto y los recuerdos de Laura.</p>
+    </div>
   </div>
 </section>
 
@@ -372,6 +425,35 @@
 <script>
   // Las tres portadas (rayas, mosaico e inicial) se dibujan en portadas.js con el color elegido
   function portada(estilo, nombre, color) { return '<div class="real">' + TUSPortadas.svg(estilo, nombre, color) + '</div>'; }
+
+  // Libro de ejemplo: en ordenador 2 pasos (cerrado / abierto por las páginas 1 y 2), en móvil 3 (portada, pág. 1, pág. 2)
+  (function () {
+    var libro = document.getElementById('libro'); if (!libro) return;
+    var svg = TUSPortadas.svg(1, 'Laura', 'terracota');
+    document.getElementById('libro-portada').innerHTML = svg;
+    document.getElementById('libro-portada-m').innerHTML = svg;
+    var txt = libro.querySelector('.libro-txt'), btns = libro.querySelectorAll('.libro-btn'), mpags = libro.querySelectorAll('.mpag'), paso = 0;
+    var movil = window.matchMedia('(max-width: 860px)');
+    var TEXTOS = { pc: ['Portada · pulsa para abrirlo', 'Páginas 1 y 2'], movil: ['Portada', 'Página 1', 'Página 2'] };
+    function total() { return movil.matches ? 3 : 2; }
+    function pinta() {
+      if (paso > total() - 1) paso = total() - 1;
+      libro.dataset.paso = movil.matches ? Math.min(paso, 1) : paso;
+      mpags.forEach(function (p, k) { p.classList.toggle('on', k === paso); });
+      txt.textContent = (movil.matches ? TEXTOS.movil : TEXTOS.pc)[paso];
+      btns[0].disabled = paso === 0; btns[1].disabled = paso === total() - 1;
+    }
+    function ir(d) { paso = Math.max(0, Math.min(total() - 1, paso + d)); pinta(); }
+    btns.forEach(function (b) { b.addEventListener('click', function () { ir(+b.dataset.dir); }); });
+    // Pulsar el libro avanza; en la última página vuelve al principio
+    libro.querySelectorAll('.libro-escena, .libro-movil').forEach(function (el) {
+      function toca() { if (paso === total() - 1) { paso = 0; pinta(); } else ir(1); }
+      el.addEventListener('click', toca);
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toca(); } if (e.key === 'ArrowRight') ir(1); if (e.key === 'ArrowLeft') ir(-1); });
+    });
+    movil.addEventListener('change', pinta);
+    pinta();
+  })();
 
   // La etiqueta tachada cambia como un gif; la portada de la derecha cambia con ella
   (function () {
