@@ -182,8 +182,12 @@
   .formatos { display: flex; gap: 14px; }
   .fmt { position: relative; background: rgba(255, 255, 255, .75); border-radius: 18px; padding: 22px 20px 18px; text-align: center; min-width: 140px; }
   .fmt small { font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; display: block; color: var(--suave); }
-  .fmt b { font-family: var(--display); font-weight: 800; font-size: 44px; line-height: 1.1; }
-  .fmt span { font-size: 13px; color: var(--suave); }
+  .fmt { display: block; text-decoration: none; color: var(--tinta); cursor: pointer; transition: transform .15s, box-shadow .15s; }
+  .fmt:hover { transform: translateY(-3px); box-shadow: 0 14px 26px -16px rgba(74, 44, 31, .45); }
+  .fmt b { display: block; font-family: var(--display); font-weight: 800; font-size: 44px; line-height: 1.1; white-space: nowrap; }
+  .fmt > span:not(.badge) { display: block; font-size: 13px; color: var(--suave); line-height: 1.35; }
+  .fmt em { display: inline-block; margin-top: 12px; font: 800 14px var(--display); font-style: normal; background: var(--boton); color: var(--tinta); padding: 8px 16px; border-radius: 100px; }
+  .c-formato { margin-top: 10px; font: 600 14px var(--display); color: var(--suave); }
   .fmt.top { outline: 3px solid var(--boton); outline-offset: 3px; }
   .fmt .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--boton); font-family: var(--display); font-weight: 800; font-size: 11px; white-space: nowrap; padding: 4px 10px; border-radius: 100px; color: var(--tinta); }
   .precio .nota { font-size: 14px; margin: 12px 0 22px; color: var(--suave); }
@@ -232,7 +236,8 @@
     .baldosas { grid-template-columns: 1fr; }
     .ocasiones { grid-template-columns: 1fr 1fr; }
     .precio { grid-template-columns: 1fr; }
-    .fmt { flex: 1; min-width: 0; }
+    .fmt { flex: 1; min-width: 0; padding-inline: 12px; }
+    .fmt b { font-size: 38px; }
     section { padding-block: 60px; }
     .dos { gap: 44px; }
     .dibujo { max-width: 280px; }
@@ -308,6 +313,7 @@
         <div class="paso-c"><span><b>4</b>Elige el estilo</span><div class="estilos" id="c-estilo" role="group" aria-label="Estilo de portada"></div></div>
         <div class="paso-c"><span><b>5</b>Elige el color <span class="color-nombre" id="c-color-nombre"></span></span><div class="colores" id="c-color" role="group" aria-label="Color de la portada"></div></div>
         <a class="boton" id="c-empezar" href="formulario.html">Empezar el libro →</a>
+        <p class="c-formato" id="c-formato" hidden></p>
       </div>
       <div class="vista"><div id="c-vista"></div><p class="vista-pie">Así será la portada de su libro.</p></div>
     </div>
@@ -370,8 +376,8 @@
     </div>
     <div>
       <div class="formatos">
-        <div class="fmt"><small>Tapa blanda</small><b>40 €</b><span>Para leer mucho</span></div>
-        <div class="fmt top"><span class="badge">La más elegida</span><small>Tapa dura</small><b>62 €</b><span>Para toda la vida</span></div>
+        <a class="fmt" href="#portada" data-formato="blanda"><small>Tapa blanda</small><b>40 €</b><span>Para leer mucho</span><em>Elegir →</em></a>
+        <a class="fmt top" href="#portada" data-formato="dura"><span class="badge">La más elegida</span><small>Tapa dura</small><b>62 €</b><span>Para toda la vida</span><em>Elegir →</em></a>
       </div>
       <p class="nota">Envío incluido en los dos formatos.</p>
       <a class="boton claro" href="#portada">Crear el libro →</a>
@@ -576,7 +582,7 @@
 
   // Haz la portada: elige quién es, el nombre y el estilo; el formulario se abre ya relleno
   (function () {
-    var cfg = { rol: 'Abuela', nombre: '', ninos: '', estilo: 1, color: 'terracota', yo: false };
+    var cfg = { rol: 'Abuela', nombre: '', ninos: '', estilo: 1, color: 'terracota', yo: false, formato: '' };
     var rolBox = document.getElementById('c-rol'), estBox = document.getElementById('c-estilo'), colBox = document.getElementById('c-color');
     ['Mamá', 'Papá', 'Abuela', 'Abuelo', 'Tía', 'Tío', 'Otra persona'].forEach(function (r) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = r; b.setAttribute('aria-pressed', r === cfg.rol);
@@ -600,12 +606,21 @@
       document.getElementById('c-vista').innerHTML = portada(cfg.estilo, n, cfg.color);
       estBox.querySelectorAll('button').forEach(function (b) { b.innerHTML = portada(+b.dataset.n, n, cfg.color) + '<span>' + b.dataset.nombre + '</span>'; });
       document.getElementById('c-color-nombre').textContent = '· ' + TUSPortadas.color(cfg.color).nombre;
-      var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo, color: cfg.color }); if (cfg.yo) q.set('yo', '1');
+      var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo, color: cfg.color }); if (cfg.yo) q.set('yo', '1'); if (cfg.formato) q.set('formato', cfg.formato);
       var a = document.getElementById('c-empezar');
       a.href = 'formulario.html?' + q.toString();
       a.textContent = cfg.yo ? 'Empezar mi libro →' : 'Empezar el libro →';
       document.querySelector('label[for="c-nombre"]').innerHTML = '<b>2</b>' + (cfg.yo ? '¿Cómo te llamas?' : '¿Cómo se llama?');
     }
+    // Las tarjetas de precio llevan aquí con el formato ya elegido
+    document.querySelectorAll('.fmt[data-formato]').forEach(function (f) {
+      f.addEventListener('click', function () {
+        cfg.formato = f.dataset.formato; pinta();
+        var n = document.getElementById('c-formato');
+        n.textContent = 'Formato elegido: ' + (cfg.formato === 'dura' ? 'tapa dura · 62 €' : 'tapa blanda · 40 €') + ' (lo puedes cambiar en el formulario)';
+        n.hidden = false;
+      });
+    });
     document.getElementById('c-yo').addEventListener('change', function (e) { cfg.yo = e.target.checked; pinta(); });
     document.getElementById('c-nombre').addEventListener('input', function (e) { cfg.nombre = e.target.value.trim(); pinta(); });
     document.getElementById('c-ninos').addEventListener('input', function (e) { cfg.ninos = e.target.value.trim(); pinta(); });

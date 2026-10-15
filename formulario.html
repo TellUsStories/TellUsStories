@@ -1203,6 +1203,7 @@ loadDraft();
   var cc = document.querySelector('.color-dot[data-color="' + q.get('color') + '"]'); if (cc) selColor(cc, q.get('color'));
   pintaPortadas();
   if (q.get('yo')) setNarrator('protagonist', document.getElementById('n1'));
+  if (q.get('formato') === 'blanda' || q.get('formato') === 'dura') setFormato(q.get('formato'), document.getElementById(q.get('formato') === 'blanda' ? 'fb' : 'fd'));
   saveDraft();
 })();
 updateAll();
