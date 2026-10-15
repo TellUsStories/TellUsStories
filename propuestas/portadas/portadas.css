@@ -51,7 +51,7 @@
   repeating-linear-gradient(45deg, rgba(255, 255, 255, .035) 0 .3cqw, transparent .3cqw .9cqw),
   repeating-linear-gradient(-45deg, rgba(0, 0, 0, .05) 0 .3cqw, transparent .3cqw .9cqw), var(--tela); color: var(--dorado); }
 .p-tela.verde { --tela: #4F5D45; }
-.p-tela.azul { --tela: #2B3A5A; }
+.p-tela.azul { --tela: #6A4532; }
 .p-tela .marco { position: absolute; inset: 5%; border: .5cqw solid var(--dorado); border-radius: 1cqw; }
 .p-tela .marco::before { content: ''; position: absolute; inset: 1.4cqw; border: .25cqw solid var(--dorado); border-radius: .6cqw; }
 .p-tela .ventana { position: absolute; left: 22%; right: 22%; top: 13%; height: 41%; border-radius: 50%; background: var(--papel); border: .7cqw solid var(--dorado); box-shadow: 0 0 0 1.2cqw var(--tela), 0 0 0 1.45cqw var(--dorado); overflow: hidden; }
@@ -65,7 +65,7 @@
 .p-tela .sello-marca { color: var(--dorado); bottom: 11cqw; font-size: 2cqw; }
 
 /* 3 · CONSTELACIÓN: el cielo de su historia, con la inicial dibujada en estrellas */
-.p-noche { background: #1F2747; color: #F6EFE3; }
+.p-noche { background: #6A4532; color: #F6EFE3; }
 .p-noche .cielo { position: absolute; inset: 0; background-image:
   radial-gradient(.35cqw .35cqw at 12% 18%, #F3D99A 98%, transparent), radial-gradient(.25cqw .25cqw at 30% 9%, #fff 98%, transparent),
   radial-gradient(.3cqw .3cqw at 82% 14%, #F3D99A 98%, transparent), radial-gradient(.2cqw .2cqw at 68% 30%, #fff 98%, transparent),
