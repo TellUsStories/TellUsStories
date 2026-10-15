@@ -128,7 +128,9 @@
   .prog-track{height:4px;}
   .sh-chapter{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:2px;}
   .sh-title{font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.5px;}
-  .sh-title span{color:var(--coral);}
+  /* En los títulos solo van en color los nombres; las terminaciones de género (sola/solo, niña/niño…) van como el resto */
+  .sh-title span{color:inherit;}
+  .sh-title .G-name,.sh-title #childNamesH,.sh-title #txt-presentamos{color:var(--coral);}
   .field label,.sdiv span,.sk,.sb h3,.ch-num,.gender-title,.tt,.portada-card-num,.rbadge,.btn-rec,.btn-back,.btn-next,.btn-clr,.btn-tw{font-family:var(--display);}
   .chapter-badge{border:none;background:var(--navy);border-radius:100px;padding:8px 16px;}
   .ch-num{color:var(--boton);}
@@ -149,7 +151,7 @@
   .btn-next[onclick="submit()"]{background:var(--navy)!important;color:var(--cream);}
   .btn-back{text-transform:none;letter-spacing:0;font-size:14px;}
   .perm{background:var(--coral-l);border-color:var(--coral);color:var(--navy);}
-  .fin-t{font-weight:800;font-size:38px;}
+  .fin-t{font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.5px;}
   .fin-h{color:var(--coral);}
   .fin-box strong{color:var(--coral);}
   /* Campo obligatorio sin rellenar */
@@ -492,7 +494,7 @@
 <div class="screen" id="s5">
   <div class="sh">
     <div class="sh-chapter">05 · Con los niños hoy</div>
-    <h1 class="sh-title"><span class="G-name"></span> y <span id="childNamesH">los niños</span>.</h1>
+    <h1 class="sh-title"><span class="G-name"></span> con <span id="childNamesH">los niños</span>.</h1>
     <p class="sh-sub">La relación que existe hoy. Esto es el corazón del libro.</p>
   </div>
   <div class="chapter-badge"><span class="ch-num">CAPÍTULO 4</span><span class="ch-name"><span class="G-protag"></span> hoy, con los niños</span></div>
