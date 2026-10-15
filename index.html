@@ -62,9 +62,9 @@
   .etiqueta::after { content: ''; position: absolute; left: -4%; right: -4%; top: 52%; height: .12em; background: var(--acento); border-radius: 6px; transform: rotate(-4deg); }
   .etiqueta.salta { animation: salta .32s cubic-bezier(.3,1.4,.5,1); }
   @keyframes salta { 0% { opacity: 0; transform: translateY(.18em) scale(.96); filter: blur(2px); } 100% { opacity: 1; transform: none; filter: none; } }
-  .nombre-mano { display: inline-block; font-family: 'Caveat', cursive; font-weight: 700; font-size: .5em; color: var(--acento); margin-left: .18em; transform: rotate(-8deg) translateY(-.35em); }
+  .nombre-mano { display: inline-block; font-family: 'Caveat', cursive; font-weight: 700; font-size: .5em; color: var(--acento); margin-left: .18em; padding-right: .15em; transform: rotate(-8deg) translateY(-.35em); }
   .nombre-mano.salta { animation: escribe .5s .12s cubic-bezier(.3,1.4,.5,1) both; }
-  @keyframes escribe { 0% { opacity: 0; clip-path: inset(0 100% 0 0); } 100% { opacity: 1; clip-path: inset(0 0 0 0); } }
+  @keyframes escribe { 0% { opacity: 0; clip-path: inset(-30% 100% -30% -30%); } 100% { opacity: 1; clip-path: inset(-30% -30% -30% -30%); } }
   .lema { display: block; font-family: var(--display); font-weight: 800; font-size: clamp(27px, 4.2vw, 46px); line-height: 1.1; color: var(--acento); margin-top: 16px; text-wrap: balance; }
   .hero-texto { max-width: 31em; margin-top: 14px; }
   .ctas { display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; margin-top: 26px; }
