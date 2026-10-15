@@ -13,7 +13,7 @@
 <meta property="og:url" content="https://tale-us-stories.netlify.app/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&family=Allura&family=Amatic+SC:wght@700&family=PT+Serif&family=Roboto+Slab:wght@700&family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&family=Allura&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 <style>
   /* Tale Us Stories: blanco roto y tonos de marrón. La etiqueta tachada da paso a la persona. */
   :root {
@@ -74,9 +74,8 @@
   .pila > div.on { opacity: 1; transform: rotate(2deg); }
 
   /* PORTADAS REALES: las mismas plantillas que usa Make (832 x 1176), escaladas con el ancho */
-  .real { container-type: inline-size; position: relative; width: 100%; aspect-ratio: 832 / 1176; background: #F3EADC center / cover no-repeat; border-radius: 1.2cqw 2.4cqw 2.4cqw 1.2cqw; box-shadow: 0 2cqw 5cqw -2cqw rgba(40, 25, 10, .45), inset 2.2cqw 0 1.6cqw -1.6cqw rgba(0, 0, 0, .2); overflow: hidden; }
-  .real-txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; }
-  .real-txt > div { overflow-wrap: anywhere; padding-inline: 4cqw; }
+  .real { display: block; width: 100%; aspect-ratio: 832 / 1176; border-radius: 1.5% 3% 3% 1.5% / 1% 2% 2% 1%; overflow: hidden; box-shadow: 0 14px 30px -14px rgba(40, 25, 10, .45), inset 6px 0 6px -4px rgba(0, 0, 0, .15); }
+  .real svg { display: block; width: 100%; height: 100%; }
 
   /* QUIÉNES SOMOS */
   .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
@@ -108,7 +107,11 @@
   .yo { display: flex; align-items: center; gap: 8px; font: 500 15px var(--display); cursor: pointer; margin-top: 4px; }
   .yo input { width: 20px; height: 20px; accent-color: var(--tinta); }
   .campo { font: 17px var(--texto); padding: 12px 14px; border: 2px solid rgba(74, 44, 31, .35); border-radius: 12px; background: #fff; color: var(--tinta); width: 100%; max-width: 340px; }
-  .estilos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 380px; }
+  .estilos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 330px; }
+  .colores { display: flex; flex-wrap: wrap; gap: 10px; }
+  .colores button { width: 38px; height: 38px; border-radius: 50%; border: 3px solid var(--claro); box-shadow: 0 0 0 2px rgba(74, 44, 31, .2); cursor: pointer; padding: 0; }
+  .colores button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--tinta); }
+  .color-nombre { font: 500 14px var(--display); color: var(--suave); }
   .estilos button { border: 2px solid transparent; background: none; padding: 3px; border-radius: 10px; cursor: pointer; font: 600 11px var(--display); color: var(--suave); display: grid; gap: 4px; }
   .estilos button[aria-pressed="true"] { border-color: var(--tinta); color: var(--tinta); }
   .vista .real { transition: transform .3s; }
@@ -270,6 +273,7 @@
         <div class="paso-c"><label for="c-nombre"><b>2</b>¿Cómo se llama?</label><input class="campo" id="c-nombre" placeholder="Ej: Carmen" maxlength="14" autocomplete="off"></div>
         <div class="paso-c"><label for="c-ninos"><b>3</b>¿Para qué niños es?</label><input class="campo" id="c-ninos" placeholder="Ej: Mia y Leo" maxlength="40" autocomplete="off"></div>
         <div class="paso-c"><span><b>4</b>Elige el estilo</span><div class="estilos" id="c-estilo" role="group" aria-label="Estilo de portada"></div></div>
+        <div class="paso-c"><span><b>5</b>Elige el color <span class="color-nombre" id="c-color-nombre"></span></span><div class="colores" id="c-color" role="group" aria-label="Color de la portada"></div></div>
         <a class="boton" id="c-empezar" href="formulario.html">Empezar el libro →</a>
       </div>
       <div class="vista"><div id="c-vista"></div><p class="vista-pie">Así será la portada de su libro.</p></div>
@@ -371,30 +375,16 @@
 
 <div class="barra"><div><small>Tu libro desde</small><b>40 €</b></div><a href="#portada">Crear el libro</a></div>
 
+<script src="portadas.js"></script>
 <script>
-  // Portadas reales: las mismas plantillas que genera Make (fondo ilustrado + «El universo de» + nombre)
-  var CDN = 'https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_700/';
-  var PORTADAS = {
-    1: { fondo: 'v1782985197/ChatGPT_Image_2_jul_2026_10_01_36_bqjtk3.png', arriba: 7.69,
-         texto: function (n) { return '<div style="font-family:Allura,cursive;font-size:8.65cqw;color:#9EA27E">El universo de</div><div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:11.54cqw;color:#9EA27E;letter-spacing:.36cqw">' + n + '</div>'; } },
-    2: { fondo: 'v1782985378/ChatGPT_Image_2_jul_2026_11_40_59_muq15v.png', arriba: 0,
-         texto: function (n) { return '<div style="font-family:\'PT Serif\',serif;font-size:8.65cqw;color:#C4622D">El universo de</div><div style="font-family:\'Roboto Slab\',serif;font-weight:700;font-size:11.54cqw;color:#C4622D;letter-spacing:.24cqw">' + n.toUpperCase() + '</div>'; } },
-    3: { fondo: 'v1782985397/ChatGPT_Image_2_jul_2026_11_41_26_inarzp.png', arriba: 0,
-         texto: function (n) { return '<div style="font-family:\'Cormorant Garamond\',serif;font-weight:700;font-size:8.65cqw;color:#6E6A35">El universo</div><div style="font-family:Allura,cursive;font-size:8.65cqw;color:#B96A3A">de</div><div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:11.54cqw;color:#6E6A35;letter-spacing:.36cqw">' + n + '</div>'; } },
-    4: { fondo: 'v1782985454/ChatGPT_Image_2_jul_2026_11_44_00_tmykl5.png', arriba: 0,
-         texto: function (n) { return '<div style="font-family:\'Cormorant Garamond\',serif;font-size:8.65cqw;color:#71859A">El universo de</div><div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:11.54cqw;color:#71859A;letter-spacing:.36cqw">' + n + '</div>'; } }
-  };
-  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  function portada(estilo, nombre) {
-    var p = PORTADAS[estilo];
-    return '<div class="real" style="background-image:url(\'' + CDN + p.fondo + '\')"><div class="real-txt" style="padding-top:' + p.arriba + 'cqw"><div>' + p.texto(esc(nombre)) + '</div></div></div>';
-  }
+  // Las tres portadas (rayas, mosaico e inicial) se dibujan en portadas.js con el color elegido
+  function portada(estilo, nombre, color) { return '<div class="real">' + TUSPortadas.svg(estilo, nombre, color) + '</div>'; }
 
   // La etiqueta tachada cambia como un gif; la portada de la derecha cambia con ella
   (function () {
-    var ROTULOS = [['Mamá', 'Elena', 1], ['Papá', 'Javier', 2], ['Abuela', 'Carmen', 3], ['Abuelo', 'Antonio', 4], ['Tía', 'Laura', 1], ['Tío', 'Dani', 3]];
+    var ROTULOS = [['Mamá', 'Elena', 3, 'rosa'], ['Papá', 'Javier', 2, 'azul'], ['Abuela', 'Carmen', 1, 'terracota'], ['Abuelo', 'Antonio', 3, 'salvia'], ['Tía', 'Laura', 2, 'mostaza'], ['Tío', 'Dani', 1, 'lavanda']];
     var et = document.getElementById('etiqueta'), nm = document.getElementById('nombre-mano'), pila = document.getElementById('pila'), i = 0;
-    ROTULOS.forEach(function (r, k) { var d = document.createElement('div'); if (k === 0) d.className = 'on'; d.innerHTML = portada(r[2], r[1]); pila.appendChild(d); });
+    ROTULOS.forEach(function (r, k) { var d = document.createElement('div'); if (k === 0) d.className = 'on'; d.innerHTML = portada(r[2], r[1], r[3]); pila.appendChild(d); });
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     setInterval(function () {
       i = (i + 1) % ROTULOS.length;
@@ -420,22 +410,31 @@
 
   // Haz la portada: elige quién es, el nombre y el estilo; el formulario se abre ya relleno
   (function () {
-    var cfg = { rol: 'Abuela', nombre: '', ninos: '', estilo: 1, yo: false };
-    var rolBox = document.getElementById('c-rol'), estBox = document.getElementById('c-estilo');
+    var cfg = { rol: 'Abuela', nombre: '', ninos: '', estilo: 1, color: 'terracota', yo: false };
+    var rolBox = document.getElementById('c-rol'), estBox = document.getElementById('c-estilo'), colBox = document.getElementById('c-color');
     ['Mamá', 'Papá', 'Abuela', 'Abuelo', 'Tía', 'Tío', 'Otra persona'].forEach(function (r) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = r; b.setAttribute('aria-pressed', r === cfg.rol);
       b.onclick = function () { cfg.rol = r; rolBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
       rolBox.appendChild(b);
     });
-    [1, 2, 3, 4].forEach(function (n) {
-      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', n === cfg.estilo); b.setAttribute('aria-label', 'Estilo ' + n);
-      b.innerHTML = portada(n, 'Carmen') + '<span>Estilo ' + n + '</span>';
-      b.onclick = function () { cfg.estilo = n; estBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
+    TUSPortadas.estilos.forEach(function (e) {
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', e.n === cfg.estilo); b.setAttribute('aria-label', 'Estilo ' + e.nombre);
+      b.dataset.n = e.n; b.dataset.nombre = e.nombre;
+      b.onclick = function () { cfg.estilo = e.n; estBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
       estBox.appendChild(b);
     });
+    TUSPortadas.colores.forEach(function (c) {
+      var b = document.createElement('button'); b.type = 'button'; b.style.background = c.base; b.title = c.nombre;
+      b.setAttribute('aria-label', c.nombre); b.setAttribute('aria-pressed', c.id === cfg.color);
+      b.onclick = function () { cfg.color = c.id; colBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
+      colBox.appendChild(b);
+    });
     function pinta() {
-      document.getElementById('c-vista').innerHTML = portada(cfg.estilo, cfg.nombre || 'Carmen');
-      var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo }); if (cfg.yo) q.set('yo', '1');
+      var n = cfg.nombre || 'Carmen';
+      document.getElementById('c-vista').innerHTML = portada(cfg.estilo, n, cfg.color);
+      estBox.querySelectorAll('button').forEach(function (b) { b.innerHTML = portada(+b.dataset.n, n, cfg.color) + '<span>' + b.dataset.nombre + '</span>'; });
+      document.getElementById('c-color-nombre').textContent = '· ' + TUSPortadas.color(cfg.color).nombre;
+      var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo, color: cfg.color }); if (cfg.yo) q.set('yo', '1');
       var a = document.getElementById('c-empezar');
       a.href = 'formulario.html?' + q.toString();
       a.textContent = cfg.yo ? 'Empezar mi libro →' : 'Empezar el libro →';
