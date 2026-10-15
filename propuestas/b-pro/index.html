@@ -79,23 +79,19 @@
   .hero-portadas:hover .h1 { transform: rotate(-10deg) translateX(-10px); }
   .hero-portadas:hover .h2 { transform: rotate(9deg) translateX(10px); }
 
-  /* CARRUSEL de la portada: una diapositiva por protagonista */
-  .hero-c { padding-block: 24px 64px; }
-  .carrusel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
-  .carrusel::-webkit-scrollbar { display: none; }
-  .slide { flex: 0 0 100%; scroll-snap-align: start; display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; align-items: center; padding-block: 16px; max-width: none; }
-  .slide > div:first-child { max-width: 640px; justify-self: end; width: 100%; }
-  .slide-portada { width: min(100%, 300px); justify-self: start; transform: rotate(3deg); }
-  .slide .etiqueta::after { transform: rotate(-4deg) scaleX(0); }
-  .slide.activa .etiqueta::after { animation: tacha .7s .25s cubic-bezier(.6,.1,.3,1) forwards; }
-  .slide .persona { opacity: 0; }
-  .slide.activa .persona { animation: entra .5s .55s ease forwards; }
-  .hero-pie { margin-top: 8px; }
-  .puntos { display: flex; gap: 8px; margin-bottom: 18px; }
-  .puntos button { width: 34px; height: 8px; border-radius: 8px; border: none; background: var(--papel-2); cursor: pointer; padding: 0; }
-  .puntos button[aria-selected="true"] { background: var(--terracota); }
-  @keyframes tacha { from { transform: rotate(-4deg) scaleX(0); } to { transform: rotate(-4deg) scaleX(1); } }
-  @keyframes entra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  /* PORTADA DE LA WEB: la etiqueta tachada va cambiando como un gif y las portadas acompañan */
+  .hero-g { padding-block: 28px 70px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: center; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .rotulo { display: block; height: .95em; font-size: clamp(60px, 11vw, 136px); line-height: .95; }
+  .rotulo .etiqueta { font-size: 1em; }
+  .rotulo .etiqueta::after { transform: rotate(-4deg); animation: none; }
+  .etiqueta.salta { animation: salta .32s cubic-bezier(.3,1.4,.5,1); }
+  @keyframes salta { 0% { opacity: 0; transform: translateY(.18em) scale(.96); filter: blur(2px); } 100% { opacity: 1; transform: none; filter: none; } }
+  .lema { display: block; font-family: var(--titular); font-weight: var(--peso-titular); font-size: clamp(27px, 4.2vw, 46px); line-height: 1.1; color: var(--terracota); margin-top: 16px; text-wrap: balance; }
+  .pila { position: relative; width: min(100%, 320px); aspect-ratio: 832 / 1176; justify-self: center; }
+  .pila > div { position: absolute; inset: 0; opacity: 0; transform: rotate(6deg) translateY(10px); transition: opacity .35s, transform .45s cubic-bezier(.3,1.3,.5,1); }
+  .pila > div.on { opacity: 1; transform: rotate(2deg); }
+  .pila::before { content: ''; position: absolute; inset: 4% -6% -3% 8%; border-radius: 12px; background: var(--papel-2); transform: rotate(-5deg); }
 
   /* Cinta */
   .banda { background: var(--tinta); color: var(--papel); overflow: hidden; padding-block: 18px; }
@@ -206,10 +202,8 @@
     .menu li:not(:last-child) { display: none; }
     .hero, .dos, .config-grid, .faq-grid { grid-template-columns: 1fr; }
     .hero { padding-block: 12px 56px; gap: 28px; }
-    .slide { grid-template-columns: 1fr; gap: 20px; }
-    .slide > div:first-child { justify-self: start; }
-    .slide-portada { order: -1; width: 54%; max-width: 220px; justify-self: center; }
-    .hero-c { padding-block: 8px 52px; }
+    .hero-g { grid-template-columns: 1fr; gap: 26px; padding-block: 8px 52px; }
+    .pila { order: -1; width: 54%; max-width: 220px; }
     .config-grid { gap: 32px; }
     .vista { max-width: 220px; width: 100%; justify-self: center; order: -1; }
     .baldosas { grid-template-columns: 1fr; }
@@ -226,7 +220,7 @@
     .barra a { background: var(--dorado); color: var(--tinta); text-decoration: none; font: 800 15px var(--display); padding: 12px 20px; border-radius: 12px; white-space: nowrap; }
     .revision { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
   }
-  @media (prefers-reduced-motion: reduce) { .cinta { animation: none; } .slide .etiqueta::after { transform: rotate(-4deg); } .slide .persona { opacity: 1; } .slide.activa .etiqueta::after, .slide.activa .persona { animation: none; } html { scroll-behavior: auto; } }
+  @media (prefers-reduced-motion: reduce) { .cinta { animation: none; } .etiqueta.salta { animation: none; } .pila > div { transition: none; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
@@ -242,31 +236,18 @@
   </ul>
 </div></nav>
 
-<header class="hero-c">
-  <div class="carrusel" id="carrusel" aria-roledescription="carrusel" aria-label="Para quién es el libro">
-    <div class="slide wrap" aria-label="1 de 3">
-      <div><h1 class="etiqueta">Mamá</h1><p class="persona">Antes, fue una niña que soñaba a lo grande.</p></div>
-      <div class="slide-portada" data-portada="noche" data-nombre="Elena" data-rol="Mamá"></div>
-    </div>
-    <div class="slide wrap" aria-label="2 de 3">
-      <div><p class="etiqueta">Abuela</p><p class="persona">Antes, fue una joven con mil aventuras por vivir.</p></div>
-      <div class="slide-portada" data-portada="tela" data-nombre="Carmen" data-rol="Abuela"></div>
-    </div>
-    <div class="slide wrap" aria-label="3 de 3">
-      <div><p class="etiqueta">Papá</p><p class="persona">Antes, fue un chico con sueños, miedos y planes.</p></div>
-      <div class="slide-portada" data-portada="album" data-nombre="Javier" data-rol="Papá"></div>
-    </div>
-  </div>
-  <div class="wrap hero-pie">
-    <div class="puntos" id="puntos" role="tablist" aria-label="Elegir diapositiva">
-      <button type="button" role="tab" aria-selected="true" aria-label="Mamá"></button>
-      <button type="button" role="tab" aria-selected="false" aria-label="Abuela"></button>
-      <button type="button" role="tab" aria-selected="false" aria-label="Papá"></button>
-    </div>
+<header class="wrap hero-g">
+  <div>
+    <h1>
+      <span class="sr">Antes de ser mamá, papá, abuela, abuelo, tía o tío: su historia en un cuento ilustrado.</span>
+      <span class="rotulo" aria-hidden="true"><span class="etiqueta" id="etiqueta">Mamá</span></span>
+      <span class="lema">Antes, hubo sueños, miedos y mil aventuras.</span>
+    </h1>
     <p class="hero-texto">Mamá, papá, abuela, abuelo, tía, tío… Antes de la etiqueta hubo una persona entera. Nos cuentas su historia con notas de voz y la convertimos en un cuento ilustrado en acuarela de 40 páginas, para que los niños la descubran.</p>
     <div class="ctas"><a class="boton" href="#portada">Crear su libro →</a></div>
     <div class="datos"><span>Desde 40 €, envío incluido</span><span>15-20 min con notas de voz</span><span>En casa en 2-3 semanas</span></div>
   </div>
+  <div class="pila" id="pila" aria-hidden="true"></div>
 </header>
 
 <div class="banda" aria-hidden="true"><div class="cinta" id="cinta"></div></div>
@@ -416,17 +397,26 @@
     return '<span><s>' + p[0] + '</s>' + p[1] + '</span>';
   }).join('');
 
-  // Carrusel: avanza solo, se puede deslizar con el dedo o tocar los puntos
+  // La etiqueta tachada cambia como un gif; la portada de la derecha cambia con ella
   (function () {
-    var car = document.getElementById('carrusel'), slides = car.querySelectorAll('.slide'), puntos = document.querySelectorAll('#puntos button'), actual = 0, parado = false;
-    slides.forEach(function (sl) { var c = sl.querySelector('[data-portada]'); c.innerHTML = TUSPortadas.portada(c.dataset.portada, { nombre: c.dataset.nombre, rol: c.dataset.rol, ninos: 'Mia y Leo' }); var a = c.querySelector('.acuarela'); if (a) a.classList.add('sin-rotulo'); });
-    function marca(i) { actual = i; slides.forEach(function (sl, j) { sl.classList.toggle('activa', j === i); }); puntos.forEach(function (p, j) { p.setAttribute('aria-selected', j === i); }); }
-    function ve(i) { car.scrollTo({ left: i * car.clientWidth }); marca(i); }
-    puntos.forEach(function (p, i) { p.onclick = function () { parado = true; ve(i); }; });
-    car.addEventListener('scroll', function () { var i = Math.round(car.scrollLeft / car.clientWidth); if (i !== actual) marca(i); }, { passive: true });
-    car.addEventListener('pointerdown', function () { parado = true; });
-    marca(0);
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(function () { if (!parado) ve((actual + 1) % slides.length); }, 4500);
+    var ROTULOS = [
+      ['Mamá', 'noche', 'Elena', ''], ['Papá', 'album', 'Javier', ''], ['Abuela', 'tela', 'Carmen', ''],
+      ['Abuelo', 'tela', 'Antonio', 'verde'], ['Tía', 'sello', 'Laura', ''], ['Tío', 'etiqueta', 'Dani', '']
+    ];
+    var et = document.getElementById('etiqueta'), pila = document.getElementById('pila'), i = 0;
+    ROTULOS.forEach(function (r, k) {
+      var d = document.createElement('div'); if (k === 0) d.className = 'on';
+      d.innerHTML = TUSPortadas.portada(r[1], { nombre: r[2], rol: r[0], color: r[3], ninos: 'Mia y Leo' });
+      var a = d.querySelector('.acuarela'); if (a) a.classList.add('sin-rotulo');
+      pila.appendChild(d);
+    });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setInterval(function () {
+      i = (i + 1) % ROTULOS.length;
+      et.textContent = ROTULOS[i][0];
+      et.classList.remove('salta'); void et.offsetWidth; et.classList.add('salta');
+      pila.querySelectorAll(':scope > div').forEach(function (d, k) { d.classList.toggle('on', k === i); });
+    }, 1600);
   })();
 
   // Configurador de portada
