@@ -237,6 +237,13 @@
   .ocasion.especial { background: var(--tinta); color: var(--papel); }
   .ocasion.especial span { color: rgba(250, 244, 234, .75); }
 
+  /* BANNER: foto a todo lo ancho, siempre en blanco y negro */
+  .banner { position: relative; padding: 0; margin-bottom: 84px; height: clamp(360px, 52vw, 600px); overflow: hidden; background: #8f8f8f; }
+  .banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); }
+  .banner-texto { position: relative; height: 100%; display: flex; align-items: flex-end; padding-block: 0 48px; }
+  .banner-frase { background: rgba(251, 250, 247, .94); color: var(--tinta); font-family: var(--titular); font-weight: var(--peso-titular); font-size: clamp(24px, 3.4vw, 40px); line-height: 1.12; padding: 22px 26px; border-radius: 16px; max-width: 18em; text-wrap: balance; }
+  .banner-frase em { font-style: normal; color: var(--terracota); }
+
   /* FAQ */
   .faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: start; }
   details { border-bottom: 2px solid var(--papel-2); }
@@ -408,6 +415,13 @@
     <div class="ocasion"><b>Una jubilación</b><span>Toda una vida en un libro</span></div>
     <div class="ocasion"><b>Un nuevo nieto</b><span>Para que conozca a su familia</span></div>
     <div class="ocasion especial"><b>En memoria</b><span>De alguien que ya no está</span></div>
+  </div>
+</section>
+
+<section class="banner" aria-label="Un niño leyendo su libro">
+  <img src="banner-provisional.svg" alt="Un niño leyendo su libro de Tale Us Stories" loading="lazy">
+  <div class="banner-texto wrap">
+    <p class="banner-frase">Hay libros que se leen una vez.<br>Y otros que <em>se quedan para siempre.</em></p>
   </div>
 </section>
 
