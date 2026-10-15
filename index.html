@@ -454,7 +454,8 @@
         '<div class="panel"><h4>' + p.titulo + '</h4><p>' + p.texto + '</p></div></div>';
     });
 
-    var svg = TUSPortadas.svg(1, 'Carla', 'terracota');
+    // La página del libro es algo más alargada que la portada: que la portada la llene entera, sin franjas
+    var svg = TUSPortadas.svg(1, 'Carla', 'terracota').replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ');
     document.getElementById('libro-portada').innerHTML = svg;
     document.getElementById('libro-portada-m').innerHTML = svg;
     var txt = libro.querySelector('.libro-txt'), btns = libro.querySelectorAll('.libro-btn'), mpags = libro.querySelectorAll('.mpag'), paso = 0;
