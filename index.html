@@ -157,6 +157,12 @@
   .ocasion.especial { background: var(--tinta); border-color: var(--tinta); color: var(--claro); }
   .ocasion.especial span { color: rgba(251, 250, 247, .75); }
 
+  /* BANNER */
+  .banner { padding-block: 0 84px; }
+  .banner img { display: block; width: 100%; height: auto; aspect-ratio: 1774 / 887; object-fit: cover; object-position: 100% 50%; }
+  .banner-frase { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 3.6vw, 42px); line-height: 1.12; letter-spacing: -.5px; text-align: center; max-width: 20em; margin: 40px auto 0; text-wrap: balance; }
+  .banner-frase em { font-style: normal; color: var(--acento); }
+
   /* PREGUNTAS */
   .faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: start; }
   details { border-bottom: 2px solid var(--papel-2); }
@@ -191,6 +197,9 @@
     section { padding-block: 60px; }
     .dos { gap: 44px; }
     .dibujo { max-width: 280px; }
+    .banner { padding-bottom: 60px; }
+    .banner img { aspect-ratio: 5 / 4; }
+    .banner-frase { margin-top: 28px; }
     footer { padding-bottom: 110px; }
     .barra { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; align-items: center; justify-content: space-between; gap: 12px; background: var(--tinta); color: var(--claro); padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
     .barra small { display: block; font: 500 12px var(--display); opacity: .7; }
@@ -325,6 +334,11 @@
     <div class="ocasion"><b>Un nuevo nieto</b><span>Para que conozca a su familia</span></div>
     <div class="ocasion especial"><b>En memoria</b><span>De alguien que ya no está</span></div>
   </div>
+</section>
+
+<section class="banner" aria-label="Niños leyendo su libro">
+  <img src="img/banner.jpg" width="1774" height="887" loading="lazy" alt="Una niña y un niño leyendo sus libros «El universo de Sofía» y «El universo de Carmen», y un abuelo regalando «El universo de Mateo»">
+  <p class="banner-frase wrap">Hay libros que se leen una vez.<br>Y otros que <em>se quedan para siempre.</em></p>
 </section>
 
 <section class="wrap faq-grid" id="faq" style="padding-top:0">
