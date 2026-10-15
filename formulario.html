@@ -785,7 +785,8 @@ function onNameInput() { updateAll(); }
 // Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
 function startForm() { go(1); }
 
-// Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual
+// Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual.
+// Las preguntas de voz cuentan como respondidas con la grabación o con el texto escrito.
 function marcaFalta(el, lista, nombre) { el.classList.add('falta'); lista.push(nombre); }
 
 function validarPantalla(n) {
