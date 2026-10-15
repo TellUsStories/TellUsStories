@@ -289,12 +289,9 @@
     </h1>
     <p class="hero-texto">Mamá, papá, abuela, abuelo, tía, tío… Antes de la etiqueta hubo una persona entera. Nos cuentas su historia con notas de voz y la convertimos en un cuento ilustrado en acuarela de 40 páginas, para que los niños la descubran.</p>
     <div class="ctas"><a class="boton" href="#portada">Crear su libro →</a></div>
-    <div class="datos"><span>Desde 40 €, envío incluido</span><span>15-20 min con notas de voz</span><span>En casa en 2-3 semanas</span></div>
   </div>
   <div class="pila" id="pila" aria-hidden="true"></div>
 </header>
-
-<div class="banda" aria-hidden="true"><div class="cinta" id="cinta"></div></div>
 
 <section class="wrap dos" id="creadora">
   <div class="foto-marco"><img loading="lazy" src="https://res.cloudinary.com/ds7vi0p0j/image/upload/f_auto,q_auto,w_800/v1782668692/ChatGPT_Image_28_jun_2026_19_44_41_miuc9q.png" alt="Ilustración de Tale Us Stories"></div>
@@ -443,9 +440,7 @@
     ['Tía', 'una soñadora con mucho que contar'],
     ['Tío', 'un aventurero con historias por descubrir']
   ];
-  document.getElementById('cinta').innerHTML = PARES.concat(PARES).map(function (p) {
-    return '<span><s>' + p[0] + '</s>' + p[1] + '</span>';
-  }).join('');
+
 
   // La etiqueta tachada cambia como un gif; la portada de la derecha cambia con ella
   (function () {
