@@ -26,6 +26,15 @@
     --titular: var(--display);
     --peso-titular: 800;
   }
+  /* PALETAS para comparar: el marrón se mantiene y cambia el color que lo acompaña */
+  html[data-paleta="salvia"]   { --papel: #F6F3EA; --papel-2: #E4E5D5; --terracota: #6B7B57; --dorado: #D8B56B; --suave: #6F6250; }
+  html[data-paleta="rosa"]     { --papel: #FBF5F1; --papel-2: #F2E0D8; --terracota: #B06A5E; --dorado: #E8BFA9; --suave: #7D6156; }
+  html[data-paleta="mostaza"]  { --papel: #FAF4E4; --papel-2: #F0E2C2; --terracota: #AE7F22; --dorado: #E6C374; --suave: #76604A; }
+  html[data-paleta="azul"]     { --papel: #F6F3EE; --papel-2: #E1E6E7; --terracota: #4F7389; --dorado: #E3C58E; --suave: #6B6159; }
+  html[data-paleta="caramelo"] { --papel: #F8F1E8; --papel-2: #EBDCCB; --terracota: #9C6A45; --dorado: #DDB27A; --suave: #7A5E4C; }
+  /* las portadas toman los colores de la paleta */
+  html[data-paleta] .portada-b { --terracota: inherit; --dorado: inherit; --tinta: inherit; }
+
   /* Interruptor de revisión: la misma web con titulares clásicos */
   html.clasica { --titular: 'Cormorant Garamond', Georgia, serif; --peso-titular: 600; }
   html.clasica h2, html.clasica .persona { letter-spacing: 0; }
@@ -381,6 +390,10 @@
 <div class="revision" role="group" aria-label="Estilo de titulares (solo para revisar)">
   <button type="button" aria-pressed="true" data-t="moderna">Moderna</button>
   <button type="button" aria-pressed="false" data-t="clasica">Clásica</button>
+  <select id="paleta" aria-label="Paleta de colores" style="font:inherit;border:none;background:none;padding:6px;color:var(--tinta)">
+    <option value="">Terracota</option><option value="salvia">Salvia</option><option value="rosa">Rosa empolvado</option>
+    <option value="mostaza">Mostaza</option><option value="azul">Azul empolvado</option><option value="caramelo">Caramelo</option>
+  </select>
 </div>
 
 <script src="../portadas/portadas.js"></script>
@@ -452,6 +465,14 @@
   document.getElementById('c-nombre').addEventListener('input', function (e) { cfg.nombre = e.target.value.trim(); pinta(); });
   document.getElementById('c-ninos').addEventListener('input', function (e) { cfg.ninos = e.target.value.trim(); pinta(); });
   pinta();
+
+  // Paleta de colores (solo para la revisión); también por la dirección: ?paleta=salvia
+  (function () {
+    var sel = document.getElementById('paleta'), q = new URLSearchParams(location.search).get('paleta');
+    function pon(v) { if (v) document.documentElement.setAttribute('data-paleta', v); else document.documentElement.removeAttribute('data-paleta'); sel.value = v || ''; }
+    sel.onchange = function () { pon(sel.value); };
+    if (q) pon(q);
+  })();
 
   // Interruptor moderna / clásica (solo para la revisión)
   document.querySelectorAll('.revision button').forEach(function (b) {
