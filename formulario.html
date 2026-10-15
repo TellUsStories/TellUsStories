@@ -152,6 +152,9 @@
   .fin-t{font-weight:800;font-size:38px;}
   .fin-h{color:var(--coral);}
   .fin-box strong{color:var(--coral);}
+  /* Campo obligatorio sin rellenar */
+  input.falta, select.falta, textarea.falta, .vc.falta { border-color: #C0392B !important; box-shadow: 0 0 0 3px rgba(192, 57, 43, .12) !important; }
+  .vc.falta .vc-q::after { content: ' · obligatoria'; color: #C0392B; font-size: .75em; font-style: italic; }
 </style>
 </head>
 <body>
@@ -168,7 +171,7 @@
     <div class="sh-chapter">Antes de empezar</div>
     <h1 class="sh-title">No hace falta escribir.<br>Solo contar.</h1>
     <p class="sh-sub">Te iremos haciendo preguntas siguiendo la vida del protagonista. Graba una nota de voz respondiendo a cada una. Nosotros lo convertimos en el libro.</p>
-    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro; las fotos son opcionales.</p>
   </div>
   <div class="two">
     <div class="field">
@@ -385,8 +388,8 @@
 
   <div class="sdiv"><span>Datos rápidos de la infancia</span></div>
   <div class="two">
-    <div class="field"><label>¿Tenía hermanos?</label><input type="text" id="siblings" placeholder="Ej: Un hermano mayor muy diferente"></div>
-    <div class="field"><label>¿Tenía mascota?</label><input type="text" id="pets" placeholder="Ej: Un perro negro llamado Lighty"></div>
+    <div class="field"><label>¿Tenía hermanos?</label><input type="text" id="siblings" placeholder="Ej: Un hermano mayor muy diferente (si no tenía, escribe «no»)"></div>
+    <div class="field"><label>¿Tenía mascota?</label><input type="text" id="pets" placeholder="Ej: Un perro negro llamado Lighty (si no tenía, escribe «no»)"></div>
   </div>
   <div class="field"><label>¿Lugar especial de la infancia?</label><input type="text" id="childhoodPlace" placeholder="Ej: Casa del abuelo en Asturias…"></div>
   <div class="nav">
@@ -619,7 +622,7 @@
   </div>
   <div class="field">
     <label>¿Hay algo que NO deba aparecer?</label>
-    <textarea id="noShow" placeholder="Temas sensibles, personas que prefieren no incluir…" style="min-height:65px;"></textarea>
+    <textarea id="noShow" placeholder="Temas sensibles, personas que prefieren no incluir… (si no hay nada, escribe «nada»)" style="min-height:65px;"></textarea>
   </div>
   <div class="nav">
     <button class="btn-back" onclick="go(5)">← Atrás</button>
@@ -780,18 +783,42 @@ function setGender(g_val, el) {
 function onNameInput() { updateAll(); }
 
 // Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
-function startForm() {
-  var falta = [];
-  if (!document.getElementById('protName').value.trim()) falta.push('el nombre del protagonista');
-  if (!document.getElementById('childNames').value.trim()) falta.push('el nombre de los niños');
-  if (!document.getElementById('bookType').value) falta.push('el tipo de libro');
-  else if (document.getElementById('bookType').value === 'Título personalizado' && !document.getElementById('customTitle').value.trim()) falta.push('el título personalizado');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim())) falta.push('un email válido');
-  if (falta.length) { alert('Antes de empezar necesitamos ' + falta.join(', ') + '.'); return; }
-  go(1);
+function startForm() { go(1); }
+
+// Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual
+function marcaFalta(el, lista, nombre) { el.classList.add('falta'); lista.push(nombre); }
+
+function validarPantalla(n) {
+  var s = document.getElementById('s' + n), falta = [];
+  if (!s) return falta;
+  s.querySelectorAll('.falta').forEach(function(e) { e.classList.remove('falta'); });
+  // Preguntas con nota de voz: valen la grabación o el texto escrito
+  s.querySelectorAll('.vc').forEach(function(vc) {
+    var i = vc.id.replace('vc', ''), ta = vc.querySelector('textarea');
+    if (!(audioBlobs[i] || pendingTx[i] || (ta && ta.value.trim()))) marcaFalta(vc, falta, '«' + vc.querySelector('.vc-q').textContent.trim().slice(0, 70) + '…»');
+  });
+  // Campos de texto, desplegables y cuadros sueltos (los ocultos no cuentan)
+  s.querySelectorAll('input[type=text], input[type=email], select, textarea[id]').forEach(function(el) {
+    if (!el.offsetParent) return;
+    var ok = el.type === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) : !!el.value.trim();
+    if (!ok) {
+      var lab = el.closest('.field') && el.closest('.field').querySelector('label');
+      marcaFalta(el, falta, el.type === 'email' ? 'un email válido' : (lab ? lab.textContent.trim() : (el.placeholder || 'un campo')));
+    }
+  });
+  return falta;
 }
 
 function go(n) {
+  if (n > cur && cur < TOTAL) {
+    var falta = validarPantalla(cur);
+    if (falta.length) {
+      alert('Para seguir, completa:\n\n• ' + falta.join('\n• '));
+      var primero = document.querySelector('#s' + cur + ' .falta');
+      if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+  }
   var prevId = cur <= TOTAL ? 's' + cur : 'sFinal';
   var prevEl = document.getElementById(prevId);
   if (prevEl) prevEl.classList.remove('active');
@@ -885,6 +912,7 @@ async function toggleRec(idx) {
       document.getElementById('bd' + idx).classList.add('show');
       document.getElementById('bc' + idx).classList.add('show');
       document.getElementById('vc' + idx).classList.add('done');
+      document.getElementById('vc' + idx).classList.remove('falta');
       btn.classList.remove('rec');
       btn.innerHTML = '<span class="rdot"></span> Grabar';
       clearInterval(timers[idx]);
@@ -1019,6 +1047,9 @@ function loadDraft() {
 }
 
 document.addEventListener('input', saveDraft);
+// Al rellenar un campo marcado en rojo, se quita la marca
+document.addEventListener('input', function(e) { var f = e.target.closest && e.target.closest('.falta'); if (f && (e.target.value || '').trim()) f.classList.remove('falta'); });
+document.addEventListener('change', function(e) { if (e.target.classList && e.target.classList.contains('falta') && e.target.value) e.target.classList.remove('falta'); });
 document.addEventListener('click', function() { setTimeout(saveDraft, 0); });
 
 var CHAPTERS = [
