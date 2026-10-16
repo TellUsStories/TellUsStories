@@ -44,7 +44,8 @@
     // Delantera: el dibujo de la web, centrado en la parte visible y un poco más grande (5 mm de margen
     // por si el corte o el doblado se mueven). Debajo, el mismo dibujo ampliado rellena lo que se dobla.
     // Cada cara (delantera y trasera) lleva el mismo dibujo del estilo elegido: en la trasera, sin el título.
-    var ratio = 1176 / 832;
+    var ratio = 1176 / 832, blanda = !m.wraparoundInsideSize;   // tapa blanda: sin cartón ni bisagras
+    var ext = blanda ? 0 : 1;   // en tapa dura las caras y el lomo se solapan 1 mm (cae en la bisagra)
     // Dónde va el dibujo (832 × 1176) en cada cara: centrado y 5 mm más grande que la parte visible.
     // En «Mosaico» el dibujo ya trae su respiro alrededor de las baldosas (portadas.js), así que va
     // justo al tamaño de la cara visible: arriba, abajo y a los lados queda el mismo margen que en la web.
@@ -52,6 +53,17 @@
       var w = A.width + 10, h = w * ratio;
       if (h < A.height + 10) { h = A.height + 10; w = h / ratio; }
       var x = A.left + A.width / 2 - w / 2, y = A.top + A.height / 2 - h / 2;
+      if (blanda && o.estilo == 3) {
+        // Tapa blanda «Inicial»: sin cartón que esconda los bordes, va justo a la medida de la cara
+        // (la letra conserva su margen a los dos lados; el sangrado es papel)
+        w = A.width; h = w * ratio; x = A.left; y = A.top + A.height / 2 - h / 2;
+      } else if (blanda && o.estilo != 2) {
+        // Tapa blanda «Rayas»: el dibujo empieza justo en el borde del lomo y solo se pasa por fuera
+        // (4 mm de sangrado), para que la franja del lomo no corte las rayas
+        w = A.width + SANGRADO; h = w * ratio;
+        x = (A.left + A.width / 2 < S.left) ? A.left - SANGRADO : A.left;
+        y = A.top + A.height / 2 - h / 2;
+      }
       if (o.estilo == 2) { w = A.width; h = A.height; x = A.left; y = A.top; }
       return { w: w, h: h, x: x, y: y, kx: w / 832, ky: h / 1176 };
     }
@@ -77,7 +89,7 @@
 
     // Lomo: franja lisa del color oscuro de la portada con el título en vertical, en blanco (se lee de arriba abajo)
     var lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;letter-spacing:.3mm;color:#fff">El universo de <b>' + esc(nombre) + '</b></div>' : '';
-    var lomo = '<div style="position:absolute;left:' + (S.left - 1) + 'mm;top:0;width:' + (S.width + 2) + 'mm;height:' + H.height + 'mm;background:' + c.oscuro + '">' + lomoTxt + '</div>';
+    var lomo = '<div style="position:absolute;left:' + (S.left - ext) + 'mm;top:0;width:' + (S.width + 2 * ext) + 'mm;height:' + H.height + 'mm;background:' + c.oscuro + '">' + lomoTxt + '</div>';
 
     // Contraportada: el mismo dibujo que delante y, encima, un recuadro de papel con la dedicatoria
     // que escribe quien regala el libro, su firma y el logo de Tale Us Stories en el color de la portada.
@@ -95,7 +107,7 @@
     var LB = colocacion(B);
     var recW = zona[2] * LB.kx, recX = LB.x + zona[0] * LB.kx;
     var recY = LB.y + (zona[1] + zona[3] / 2) * LB.ky, recH = zona[3] * LB.ky;
-    var tras = cara(B, 0, S.left - 1, true) +
+    var tras = cara(B, 0, S.left - ext, true) +
       '<div style="position:absolute;left:' + recX + 'mm;top:' + recY + 'mm;transform:translateY(-50%);width:' + recW + 'mm;min-height:' + recH + 'mm;display:flex;background:' + PAPEL + ';box-sizing:border-box;padding:3.4mm">' +
         '<div style="flex:1;display:flex;box-sizing:border-box;border:.75mm solid ' + tinta + ';padding:1.4mm">' +
           '<div style="flex:1;box-sizing:border-box;border:.3mm solid ' + tinta + ';padding:11mm 11mm 9mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
@@ -122,5 +134,14 @@
     contentFrontSize: { width: 203, height: 285, left: 245, top: 20 }
   };
 
-  window.TUSImprenta = { pagina: pagina, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA };
+  // Tapa blanda 21 × 28, 40 páginas: medidas APROXIMADAS (4 mm de sangrado, lomo ~3,5 mm) solo para la muestra;
+  // las reales también se piden a Gelato. Con un lomo de menos de 5 mm no se pone texto en él.
+  var EJEMPLO_TAPA_BLANDA = {
+    bleedSize: { width: 431.5, height: 288, left: 0, top: 0 },
+    contentBackSize: { width: 210, height: 280, left: 4, top: 4 },
+    spineSize: { width: 3.5, height: 280, left: 214, top: 4 },
+    contentFrontSize: { width: 210, height: 280, left: 217.5, top: 4 }
+  };
+
+  window.TUSImprenta = { pagina: pagina, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA, EJEMPLO_TAPA_BLANDA: EJEMPLO_TAPA_BLANDA };
 })();
