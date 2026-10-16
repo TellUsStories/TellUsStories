@@ -73,13 +73,13 @@
         '<div style="position:absolute;left:' + (cx - x0 - w / 2) + 'mm;top:' + (cy - h / 2) + 'mm;width:' + w + 'mm;height:' + h + 'mm">' + dibujo() + '</div>' +
       '</div>';
     }
-    var del = cara(F, S.left + S.width, H.width, false);
+    // En «Rayas» la delantera empieza donde empieza su dibujo: lo de antes lo cubre la franja rayada del lomo
+    var del = cara(F, (o.estilo != 2 && o.estilo != 3) ? colocacion(F).x + 1 : S.left + S.width, H.width, false);
 
     // Lomo: sigue el diseño de la portada (rayas, baldosas o papel) y lleva el título en vertical,
     // de arriba abajo, sobre una tirita de papel para que se lea bien.
     var tintaLomo = o.estilo == 1 ? '#7B7F6F' : c.oscuro;
-    var lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;background:' + PAPEL + ';padding:' + (S.width * .14).toFixed(2) + 'mm ' + (S.width * .9).toFixed(2) + 'mm;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;line-height:1;letter-spacing:.3mm;color:' + tintaLomo + '">El universo de <b>' + esc(nombre) + '</b></div>' : '';
-    var lomoFondo;
+    var lomoFondo, lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;background:' + PAPEL + ';padding:' + (S.width * .14).toFixed(2) + 'mm ' + (S.width * .9).toFixed(2) + 'mm;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;line-height:1;letter-spacing:.3mm;color:' + tintaLomo + '">El universo de <b>' + esc(nombre) + '</b></div>' : '';
     if (o.estilo == 2) {
       // Columna de baldosas pequeñas con los tonos del mosaico, con el mismo respiro arriba y abajo
       var lado = S.width - 1.6, paso = lado + 1.4, n = Math.floor((H.height - 2 * (S.top + 6)) / paso);
@@ -88,13 +88,19 @@
       lomoFondo = '<div style="position:absolute;left:1mm;top:0;width:' + S.width + 'mm;height:100%">' + baldosas + '</div>';
     } else if (o.estilo == 3) {
       lomoFondo = '';
-    } else {
-      // Las rayas siguen por el lomo: el mismo dibujo de las tapas, usando una franja del lateral
-      // (x ≈ 50 de 832) para que no se cuele el marco del título que trae pintado en el centro
-      var LR = colocacion(B);
-      lomoFondo = '<div style="position:absolute;left:' + ((S.width + 2) / 2 - 50 * LR.kx) + 'mm;top:' + LR.y + 'mm;width:' + LR.w + 'mm;height:' + LR.h + 'mm">' + TUSPortadas.svg(1, nombre, o.color, true) + '</div>';
     }
-    var lomo = '<div style="position:absolute;left:' + (S.left - 1) + 'mm;top:0;width:' + (S.width + 2) + 'mm;height:' + H.height + 'mm;overflow:hidden;background:#F6EFE5">' + lomoFondo + lomoTxt + '</div>';
+    var lomoX0 = S.left - 1, lomoX1 = S.left + S.width + 1;
+    if (o.estilo != 2 && o.estilo != 3) {
+      // Las rayas siguen sin cortes de una tapa a la otra: la franja rayada cubre las bisagras y el lomo,
+      // desde donde acaba el dibujo de detrás hasta donde empieza el de delante. Usa el lateral izquierdo
+      // del dibujo (x 30–100 de 832), que tiene dos rayas y nada del marco del título.
+      var LR = colocacion(B), LF = colocacion(F);
+      lomoX0 = LR.x + LR.w - 1; lomoX1 = LF.x + 1;
+      lomoFondo = '<div style="position:absolute;left:' + (-30 * LR.kx) + 'mm;top:' + LR.y + 'mm;width:' + LR.w + 'mm;height:' + LR.h + 'mm">' + TUSPortadas.svg(1, nombre, o.color, true) + '</div>';
+    }
+    var lomoW = lomoX1 - lomoX0, cLomo = S.left + S.width / 2 - lomoX0;
+    lomoTxt = lomoTxt.replace('left:50%;', 'left:' + cLomo.toFixed(2) + 'mm;');
+    var lomo = '<div style="position:absolute;left:' + lomoX0 + 'mm;top:0;width:' + lomoW + 'mm;height:' + H.height + 'mm;overflow:hidden;background:#F6EFE5">' + lomoFondo + lomoTxt + '</div>';
 
     // Contraportada: el mismo dibujo que delante y, encima, un recuadro de papel con la dedicatoria
     // que escribe quien regala el libro, su firma y el logo de Tale Us Stories en el color de la portada.
