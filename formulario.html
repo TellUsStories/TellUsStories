@@ -159,6 +159,25 @@
   /* Campo obligatorio sin rellenar */
   input.falta, select.falta, textarea.falta, .vc.falta, .uzone.falta { border-color: #C0392B !important; box-shadow: 0 0 0 3px rgba(192, 57, 43, .12) !important; }
   .vc.falta .vc-q::after { content: ' · obligatoria'; color: #C0392B; font-size: .75em; font-style: italic; }
+
+  /* ¿Cómo son? Una tarjeta por persona con botones para elegir (sin escribir) */
+  .asp{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:18px 20px;margin-bottom:12px;}
+  .asp.falta{border-color:#C0392B;box-shadow:0 0 0 3px rgba(192,57,43,.12);}
+  .asp-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+  .asp-t{font-family:var(--display);font-weight:700;font-size:17px;color:var(--navy);}
+  .asp-t small{font-weight:500;font-size:13px;color:var(--muted);}
+  .asp-x{background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;font-family:var(--texto);}
+  .asp-g{margin-bottom:9px;}
+  .asp-gl{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+  .asp-g.falta .asp-gl{color:#C0392B;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:6px 13px;font-family:var(--texto);font-size:14px;color:var(--navy);cursor:pointer;transition:all .15s;}
+  .chip:hover{border-color:var(--coral);}
+  .chip.on{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  .asp input[type=text]{padding:9px 13px;font-size:15px;}
+  .asp-add{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 22px;}
+  .asp-add button{border:1.5px dashed var(--coral);background:none;border-radius:100px;padding:8px 15px;font-family:var(--display);font-weight:700;font-size:13px;color:var(--coral);cursor:pointer;}
+  .asp-add button:hover{background:var(--coral-l);}
 </style>
 </head>
 <body>
@@ -175,7 +194,7 @@
     <div class="sh-chapter">Antes de empezar</div>
     <h1 class="sh-title">No hace falta escribir.<br>Solo contar.</h1>
     <p class="sh-sub">Te iremos haciendo preguntas siguiendo la vida del protagonista. Graba una nota de voz respondiendo a cada una. Nosotros lo convertimos en el libro.</p>
-    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro, y también una foto de su cara para dibujar su personaje; las demás fotos son opcionales.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro; las fotos son opcionales.</p>
   </div>
   <div class="two">
     <div class="field">
@@ -329,9 +348,21 @@
     <button class="btn-tw" onclick="toggleTF(1)">Prefiero escribir</button>
   </div>
 
+  <div class="sdiv"><span>¿Cómo son? Así los dibujaremos</span></div>
+  <div class="hint" style="margin-bottom:14px">Toca lo que más se parezca: con esto dibujamos a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy). No hace falta subir fotos si no quieres.</div>
+  <div id="aspCards"></div>
+  <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia? Añádelas para que también se parezcan:</div>
+  <div class="asp-add">
+    <button type="button" onclick="aspAdd('pareja')">+ Su pareja</button>
+    <button type="button" onclick="aspAdd('madre')">+ Su madre</button>
+    <button type="button" onclick="aspAdd('padre')">+ Su padre</button>
+    <button type="button" onclick="aspAdd('hermano')">+ Un hermano/a</button>
+  </div>
+  <input type="text" id="aspectoFamilia" style="display:none">
+
   <div class="field">
-    <label>Una foto de su cara</label>
-    <div class="hint">De frente y con buena luz. Con ella dibujamos su personaje (de bebé, de niño/a, de joven y hoy) para que se le parezca de verdad en todas las páginas.</div>
+    <label>Una foto de su cara (opcional)</label>
+    <div class="hint">De frente y con buena luz. Si la subes, el dibujo se le parecerá todavía más. Solo la usamos para dibujar su personaje.</div>
     <div class="uzone" onclick="document.getElementById('fotoCara').click()">
       <div class="uzone-icon">🙂</div>
       <div class="uzone-txt" id="fotoCaraTxt">Haz clic para añadir la foto</div>
@@ -567,8 +598,8 @@
   <div class="field"><label>Edad de cada niño</label><input type="text" id="childAges" placeholder="Ej: Martina 8 años, Pedro 6, Lucas 3"></div>
   <div class="field"><label>¿Cómo son físicamente los niños?</label><input type="text" id="childLooks" placeholder="Ej: Martina rubia con rizos, Pedro pelo castaño con flequillo…"></div>
   <div class="field">
-    <label>Una foto de los niños (muy recomendable)</label>
-    <div class="hint">Con ella dibujamos su personaje (de bebés y hoy) para que también se les reconozca en todas las páginas.</div>
+    <label>Una foto de los niños (opcional)</label>
+    <div class="hint">Si la subes, los dibujos se les parecerán todavía más. Solo la usamos para dibujar sus personajes.</div>
     <div class="uzone" onclick="document.getElementById('fotoNinos').click()">
       <div class="uzone-icon">🧒</div>
       <div class="uzone-txt" id="fotoNinosTxt">Haz clic para añadir la foto</div>
@@ -809,8 +840,7 @@ function onNameInput() { updateAll(); }
 // Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
 function startForm() { go(1); }
 
-// Todos los campos son obligatorios (de las fotos, solo la de la cara del protagonista): no se avanza
-// hasta completar la pantalla actual.
+// Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual.
 // Las preguntas de voz cuentan como respondidas con la grabación o con el texto escrito.
 function marcaFalta(el, lista, nombre) { el.classList.add('falta'); lista.push(nombre); }
 
@@ -825,16 +855,15 @@ function validarPantalla(n) {
   });
   // Campos de texto, desplegables y cuadros sueltos (los ocultos no cuentan)
   s.querySelectorAll('input[type=text], input[type=email], select, textarea[id]').forEach(function(el) {
-    if (!el.offsetParent) return;
+    if (!el.offsetParent || el.closest('.asp')) return;   // en ¿Cómo son? los cuadros de texto son opcionales
     var ok = el.type === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) : !!el.value.trim();
     if (!ok) {
       var lab = el.closest('.field') && el.closest('.field').querySelector('label');
       marcaFalta(el, falta, el.type === 'email' ? 'un email válido' : (lab ? lab.textContent.trim() : (el.placeholder || 'un campo')));
     }
   });
-  // La foto de la cara: con ella se dibuja la ficha del personaje que siguen todas las ilustraciones
-  var foto = s.querySelector('#fotoCara');
-  if (foto && !foto.files.length) marcaFalta(foto.previousElementSibling, falta, 'una foto de su cara');
+  // ¿Cómo son?: de la protagonista y de cada niño hace falta al menos pelo, ojos y piel
+  if (s.querySelector('#aspCards')) aspFaltan().forEach(function(t) { falta.push(t); });
   return falta;
 }
 
@@ -1215,6 +1244,8 @@ async function submit() {
     d_viaje:             val('travel'),
     d_edades:            val('childAges'),
     d_aspecto_ninos:     val('childLooks'),
+    // ¿Cómo son? (elegido con botones): una línea por persona, para la ficha de personajes y las ilustraciones
+    aspecto_familia:     aspTexto(),
     d_apodos:            val('nicknames'),
     d_historia_conocida: val('knownStory'),
     d_no_mostrar:        val('noShow'),
@@ -1271,8 +1302,121 @@ async function submit() {
   }
 }
 
+// ---------- ¿Cómo son? ----------
+// Una tarjeta por persona (protagonista, cada niño y, si se añaden, pareja, madre, padre y hermanos) con botones
+// para elegir. Lo elegido se guarda como JSON en #aspectoFamilia (así entra en el borrador) y se envía en texto.
+var ASP_GRUPOS = [
+  { k: 'pelo',  t: 'Pelo',          o: ['Rubio', 'Castaño claro', 'Castaño oscuro', 'Moreno', 'Pelirrojo', 'Canoso', 'Sin pelo'] },
+  { k: 'tipo',  t: 'Tipo de pelo',  o: ['Liso', 'Ondulado', 'Rizado'] },
+  { k: 'largo', t: 'Largo',         o: ['Corto', 'Media melena', 'Largo'] },
+  { k: 'ojos',  t: 'Ojos',          o: ['Marrones', 'Miel', 'Verdes', 'Azules', 'Negros'] },
+  { k: 'piel',  t: 'Piel',          o: ['Muy clara', 'Clara', 'Morena', 'Oscura'] },
+  { k: 'extra', t: 'Además', multi: true, o: ['Gafas', 'Pecas', 'Barba', 'Bigote'] }
+];
+var ASP_OBLIG = ['pelo', 'ojos', 'piel'];
+var ASP_TIT = { prot: 'Protagonista', nino: '', pareja: 'Su pareja', madre: 'Su madre', padre: 'Su padre', hermano: 'Hermano/a' };
+var asp = { prot: {}, ninos: {}, extra: [] };
+
+function aspNinos() {
+  return (document.getElementById('childNames').value || '').split(/\s*,\s*|\s+y\s+|\s+e\s+/i).map(function(s) { return s.trim(); }).filter(Boolean);
+}
+function aspGuarda() { document.getElementById('aspectoFamilia').value = JSON.stringify(asp); saveDraft(); }
+function aspCarga() { try { var v = JSON.parse(document.getElementById('aspectoFamilia').value || 'null'); if (v && v.prot) asp = v; } catch (e) {} }
+
+function aspTarjeta(d, titulo, quitar, conNombre) {
+  var c = document.createElement('div'); c.className = 'asp';
+  var h = '<div class="asp-h"><div class="asp-t">' + titulo + '</div>' + (quitar ? '<button type="button" class="asp-x">Quitar</button>' : '') + '</div>';
+  if (conNombre) h += '<div class="asp-g"><input type="text" class="asp-nombre" placeholder="Su nombre (opcional)"></div>';
+  ASP_GRUPOS.forEach(function(gr) {
+    h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
+      gr.o.map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
+  });
+  h += '<div class="asp-g"><input type="text" class="asp-mas" placeholder="Algo más (opcional). Ej: siempre con coleta, muy alto, un lunar en la mejilla"></div>';
+  c.innerHTML = h;
+  // Estado inicial y clics
+  c.querySelectorAll('.asp-g[data-k]').forEach(function(g) {
+    var k = g.dataset.k, multi = k === 'extra';
+    g.querySelectorAll('.chip').forEach(function(b) {
+      var v = b.textContent;
+      if (multi ? (d.extra || []).indexOf(v) >= 0 : d[k] === v) b.classList.add('on');
+      b.onclick = function() {
+        if (multi) {
+          d.extra = d.extra || [];
+          var i = d.extra.indexOf(v); if (i >= 0) d.extra.splice(i, 1); else d.extra.push(v);
+          b.classList.toggle('on');
+        } else {
+          d[k] = d[k] === v ? '' : v;
+          g.querySelectorAll('.chip').forEach(function(x) { x.classList.toggle('on', x.textContent === d[k]); });
+        }
+        g.classList.remove('falta');
+        if (!c.querySelector('.asp-g.falta')) c.classList.remove('falta');
+        aspGuarda();
+      };
+    });
+  });
+  var mas = c.querySelector('.asp-mas'); mas.value = d.mas || ''; mas.oninput = function() { d.mas = mas.value; aspGuarda(); };
+  var nom = c.querySelector('.asp-nombre'); if (nom) { nom.value = d.nombre || ''; nom.oninput = function() { d.nombre = nom.value; aspGuarda(); }; }
+  if (quitar) c.querySelector('.asp-x').onclick = quitar;
+  return c;
+}
+
+function aspPinta() {
+  var cont = document.getElementById('aspCards'); if (!cont) return;
+  cont.innerHTML = '';
+  var prot = (document.getElementById('protName').value || '').trim();
+  cont.appendChild(aspTarjeta(asp.prot, 'Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : '')));
+  aspNinos().forEach(function(n) {
+    asp.ninos[n] = asp.ninos[n] || {};
+    cont.appendChild(aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>'));
+  });
+  asp.extra.forEach(function(p, i) {
+    cont.appendChild(aspTarjeta(p, ASP_TIT[p.rol], function() { asp.extra.splice(i, 1); aspGuarda(); aspPinta(); }, true));
+  });
+}
+function aspAdd(rol) { asp.extra.push({ rol: rol }); aspGuarda(); aspPinta(); }
+
+// Qué falta (pelo, ojos y piel de la protagonista y de cada niño); marca las tarjetas en rojo
+function aspFaltan() {
+  var falta = [], cards = document.querySelectorAll('#aspCards .asp');
+  var datos = [[(document.getElementById('protName').value || '').trim() || 'el protagonista', asp.prot]].concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}]; }));
+  datos.forEach(function(p, i) {
+    var c = cards[i], sin = ASP_OBLIG.filter(function(k) { return !p[1][k]; });
+    if (!sin.length || !c) return;
+    c.classList.add('falta');
+    sin.forEach(function(k) { var g = c.querySelector('.asp-g[data-k="' + k + '"]'); if (g) g.classList.add('falta'); });
+    falta.push('cómo es ' + p[0] + ' (' + sin.join(', ') + ')');
+  });
+  return falta;
+}
+
+// Texto que se envía: una línea por persona
+function aspTexto() {
+  function linea(d) {
+    var r = [];
+    if (d.pelo) r.push('pelo ' + d.pelo.toLowerCase() + [d.tipo, d.largo].filter(Boolean).map(function(x) { return ', ' + x.toLowerCase(); }).join(''));
+    else if (d.tipo || d.largo) r.push('pelo ' + [d.tipo, d.largo].filter(Boolean).join(', ').toLowerCase());
+    if (d.ojos) r.push('ojos ' + d.ojos.toLowerCase());
+    if (d.piel) r.push('piel ' + d.piel.toLowerCase());
+    if (d.extra && d.extra.length) r.push(d.extra.join(', ').toLowerCase());
+    if (d.mas) r.push(d.mas.trim());
+    return r.join('; ');
+  }
+  var prot = (document.getElementById('protName').value || '').trim(), out = [];
+  out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (linea(asp.prot) || 'sin datos'));
+  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (linea(asp.ninos[n] || {}) || 'sin datos')); });
+  asp.extra.forEach(function(p) {
+    var l = linea(p); if (!l && !p.nombre) return;
+    out.push(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
+  });
+  return out.join('\n');
+}
+document.addEventListener('input', function(e) { if (e.target.id === 'childNames' || e.target.id === 'protName') aspPinta(); });
+
 document.getElementById('prog').style.width = '0%';
 loadDraft();
+aspCarga();
+aspPinta();
+window.addEventListener('load', aspPinta);   // por si los nombres llegan desde la web (más abajo)
 // Datos que llegan desde «Haz la portada» de la web: nombre, niños, quién es, estilo de portada y si es su propia historia
 (function () {
   var q = new URLSearchParams(location.search);
