@@ -102,10 +102,7 @@
   .yo { display: flex; align-items: center; gap: 8px; font: 500 15px var(--display); cursor: pointer; margin-top: 4px; }
   .yo input { width: 20px; height: 20px; accent-color: var(--tinta); }
   .campo { font: 17px var(--texto); padding: 12px 14px; border: 2px solid rgba(74, 44, 31, .35); border-radius: 12px; background: #fff; color: var(--tinta); width: 100%; max-width: 340px; }
-  .estilos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 330px; }
-  .colores { display: flex; flex-wrap: wrap; gap: 10px; }
-  .colores button { width: 38px; height: 38px; border-radius: 50%; border: 3px solid var(--claro); box-shadow: 0 0 0 2px rgba(74, 44, 31, .2); cursor: pointer; padding: 0; }
-  .colores button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--tinta); }
+  .estilos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 400px; }
   .color-nombre { font: 500 14px var(--display); color: var(--suave); }
   .estilos button { border: 2px solid transparent; background: none; padding: 3px; border-radius: 10px; cursor: pointer; font: 600 11px var(--display); color: var(--suave); display: grid; gap: 4px; }
   .estilos button[aria-pressed="true"] { border-color: var(--tinta); color: var(--tinta); }
@@ -310,8 +307,7 @@
         <div class="paso-c"><span><b>1</b>¿Quién es para los niños?</span><div class="chips" id="c-rol" role="group" aria-label="Quién es para los niños"></div><label class="yo"><input type="checkbox" id="c-yo"> Es mi propia historia: la cuento yo</label></div>
         <div class="paso-c"><label for="c-nombre"><b>2</b>¿Cómo se llama?</label><input class="campo" id="c-nombre" placeholder="Ej: Carmen" maxlength="14" autocomplete="off"></div>
         <div class="paso-c"><label for="c-ninos"><b>3</b>¿Para qué niños es?</label><input class="campo" id="c-ninos" placeholder="Ej: Mia y Leo" maxlength="40" autocomplete="off"></div>
-        <div class="paso-c"><span><b>4</b>Elige el estilo</span><div class="estilos" id="c-estilo" role="group" aria-label="Estilo de portada"></div></div>
-        <div class="paso-c"><span><b>5</b>Elige el color <span class="color-nombre" id="c-color-nombre"></span></span><div class="colores" id="c-color" role="group" aria-label="Color de la portada"></div></div>
+        <div class="paso-c"><span><b>4</b>Elige la portada <span class="color-nombre" id="c-estilo-nombre"></span></span><div class="estilos" id="c-estilo" role="group" aria-label="Estilo de portada"></div></div>
         <a class="boton" id="c-empezar" href="formulario.html">Empezar el libro →</a>
         <p class="c-formato" id="c-formato" hidden></p>
       </div>
@@ -437,8 +433,8 @@
 
 <script src="portadas.js"></script>
 <script>
-  // Las tres portadas (rayas, mosaico e inicial) se dibujan en portadas.js con el color elegido
-  function portada(estilo, nombre, color) { return '<div class="real">' + TUSPortadas.svg(estilo, nombre, color) + '</div>'; }
+  // Las ocho portadas (portadas.js): cada diseño con su color fijo y el nombre escrito en la etiqueta
+  function portada(diseno, nombre, calidad) { return '<div class="real">' + TUSPortadas.svg(diseno, nombre, null, { calidad: calidad }) + '</div>'; }
 
   // Libro de ejemplo: en ordenador 2 pasos (cerrado / abierto por las páginas 1 y 2), en móvil 3 (portada, pág. 1, pág. 2)
   (function () {
@@ -461,7 +457,7 @@
     });
 
     // La página del libro es algo más alargada que la portada: que la portada la llene entera, sin franjas
-    var svg = TUSPortadas.svg(1, 'Carla', 'terracota').replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ');
+    var svg = TUSPortadas.svg(1, 'Carla').replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ');
     document.getElementById('libro-portada').innerHTML = svg;
     document.getElementById('libro-portada-m').innerHTML = svg;
     var txt = libro.querySelector('.libro-txt'), btns = libro.querySelectorAll('.libro-btn'), mpags = libro.querySelectorAll('.mpag'), paso = 0;
@@ -498,9 +494,9 @@
 
   // La etiqueta tachada cambia como un gif; la portada de la derecha cambia con ella
   (function () {
-    var ROTULOS = [['Mamá', 'Elena', 3, 'rosa'], ['Papá', 'Javier', 2, 'azul'], ['Abuela', 'Carmen', 1, 'terracota'], ['Abuelo', 'Antonio', 3, 'salvia'], ['Tía', 'Laura', 2, 'mostaza'], ['Tío', 'Dani', 1, 'lavanda']];
+    var ROTULOS = [['Mamá', 'Elena', 5], ['Papá', 'Javier', 4], ['Abuela', 'Carmen', 1], ['Abuelo', 'Antonio', 7], ['Tía', 'Laura', 3], ['Tío', 'Dani', 6]];
     var et = document.getElementById('etiqueta'), nm = document.getElementById('nombre-mano'), pila = document.getElementById('pila'), i = 0;
-    ROTULOS.forEach(function (r, k) { var d = document.createElement('div'); if (k === 0) d.className = 'on'; d.innerHTML = portada(r[2], r[1], r[3]); pila.appendChild(d); });
+    ROTULOS.forEach(function (r, k) { var d = document.createElement('div'); if (k === 0) d.className = 'on'; d.innerHTML = portada(r[2], r[1]); pila.appendChild(d); });
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     setInterval(function () {
       i = (i + 1) % ROTULOS.length;
@@ -582,31 +578,25 @@
 
   // Haz la portada: elige quién es, el nombre y el estilo; el formulario se abre ya relleno
   (function () {
-    var cfg = { rol: 'Abuela', nombre: '', ninos: '', estilo: 1, color: 'terracota', yo: false, formato: '' };
-    var rolBox = document.getElementById('c-rol'), estBox = document.getElementById('c-estilo'), colBox = document.getElementById('c-color');
+    var cfg = { rol: 'Abuela', nombre: '', ninos: '', estilo: 1, yo: false, formato: '' };
+    var rolBox = document.getElementById('c-rol'), estBox = document.getElementById('c-estilo');
     ['Mamá', 'Papá', 'Abuela', 'Abuelo', 'Tía', 'Tío', 'Otra persona'].forEach(function (r) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = r; b.setAttribute('aria-pressed', r === cfg.rol);
       b.onclick = function () { cfg.rol = r; rolBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
       rolBox.appendChild(b);
     });
-    TUSPortadas.estilos.forEach(function (e) {
-      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', e.n === cfg.estilo); b.setAttribute('aria-label', 'Estilo ' + e.nombre);
+    TUSPortadas.disenos.forEach(function (e) {
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', e.n === cfg.estilo); b.setAttribute('aria-label', 'Portada ' + e.nombre);
       b.dataset.n = e.n; b.dataset.nombre = e.nombre;
       b.onclick = function () { cfg.estilo = e.n; estBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
       estBox.appendChild(b);
     });
-    TUSPortadas.colores.forEach(function (c) {
-      var b = document.createElement('button'); b.type = 'button'; b.style.background = c.base; b.title = c.nombre;
-      b.setAttribute('aria-label', c.nombre); b.setAttribute('aria-pressed', c.id === cfg.color);
-      b.onclick = function () { cfg.color = c.id; colBox.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); }); pinta(); };
-      colBox.appendChild(b);
-    });
     function pinta() {
       var n = cfg.nombre || 'Carmen';
-      document.getElementById('c-vista').innerHTML = portada(cfg.estilo, n, cfg.color);
-      estBox.querySelectorAll('button').forEach(function (b) { b.innerHTML = portada(+b.dataset.n, n, cfg.color) + '<span>' + b.dataset.nombre + '</span>'; });
-      document.getElementById('c-color-nombre').textContent = '· ' + TUSPortadas.color(cfg.color).nombre;
-      var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo, color: cfg.color }); if (cfg.yo) q.set('yo', '1'); if (cfg.formato) q.set('formato', cfg.formato);
+      document.getElementById('c-vista').innerHTML = portada(cfg.estilo, n);
+      estBox.querySelectorAll('button').forEach(function (b) { b.innerHTML = portada(+b.dataset.n, n, 'mini') + '<span>' + b.dataset.nombre + '</span>'; });
+      document.getElementById('c-estilo-nombre').textContent = '· ' + TUSPortadas.diseno(cfg.estilo).nombre;
+      var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo }); if (cfg.yo) q.set('yo', '1'); if (cfg.formato) q.set('formato', cfg.formato);
       var a = document.getElementById('c-empezar');
       a.href = 'formulario.html?' + q.toString();
       a.textContent = cfg.yo ? 'Empezar mi libro →' : 'Empezar el libro →';

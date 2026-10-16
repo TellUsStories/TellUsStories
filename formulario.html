@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tale Us Stories · Cuéntanoslo</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Allura&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Allura&family=Dancing+Script&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 <style>
   :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#FFFFFF;--boton:#DCC8B4;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -52,15 +52,12 @@
   .gender-desc{font-size:12px;color:var(--muted);}
 
   /* PORTADAS */
-  .portada-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;max-width:420px;}
+  .portada-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;max-width:520px;}
   .portada-card{border:2px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:all .2s;background:var(--white);}
   .portada-card:hover{border-color:var(--coral);}
   .portada-card.selected{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.15);}
   .portada-card svg{width:100%;aspect-ratio:832/1176;display:block;}
-  .color-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
-  .color-dot{width:36px;height:36px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(74,44,31,.2);cursor:pointer;padding:0;}
-  .color-dot.selected{box-shadow:0 0 0 2px var(--navy);}
-  .portada-card-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 0;}
+  .portada-card-num{font-size:10px;font-weight:700;letter-spacing:.6px;line-height:1.25;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 2px;}
   .portada-card.selected .portada-card-num{color:var(--coral);}
   
 
@@ -243,11 +240,10 @@
 
   <!-- SELECCIÓN DE PORTADA -->
   <div class="field">
-    <label>Elige el estilo de portada</label>
+    <label>Elige la portada</label>
     <div class="hint">Puedes cambiarlo más adelante si lo necesitas.</div>
     <div class="portada-grid" id="portada-grid"></div>
-    <div class="hint" style="margin-top:14px">Color: <b id="color-nombre">Terracota</b></div>
-    <div class="color-grid" id="color-grid" role="group" aria-label="Color de la portada"></div>
+    <div class="hint" style="margin-top:12px">Elegida: <b id="portada-nombre">Vichy rosa</b></div>
   </div>
 
   <div class="field">
@@ -722,7 +718,6 @@ const TOTAL = 7;
 let gender = 'f';
 let narrator = 'other';
 let selectedPortada = '1';
-let selectedColor = 'terracota';
 let formato = 'dura';
 var FORMATOS = { dura: 'Tapa dura · 62 €', blanda: 'Tapa blanda · 43 €' };
 
@@ -732,33 +727,20 @@ function setFormato(val, el) {
   el.classList.add('selected');
 }
 
-// Las tres portadas se dibujan con el nombre y el color elegidos (portadas.js)
+// Las ocho portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
 function pintaPortadas() {
   var n = (document.getElementById('protName') || {}).value || 'Carmen';
   document.querySelectorAll('.portada-card').forEach(function(c) {
-    c.querySelector('.pv').innerHTML = TUSPortadas.svg(+c.dataset.portada, n, selectedColor);
+    c.querySelector('.pv').innerHTML = TUSPortadas.svg(+c.dataset.portada, n, null, { calidad: 'mini' });
   });
 }
-function selColor(el, id) {
-  document.querySelectorAll('.color-dot').forEach(function(c) { c.classList.remove('selected'); });
-  el.classList.add('selected');
-  selectedColor = id;
-  document.getElementById('color-nombre').textContent = TUSPortadas.color(id).nombre;
-  pintaPortadas();
-}
 (function() {
-  var g = document.getElementById('portada-grid'), cg = document.getElementById('color-grid');
-  TUSPortadas.estilos.forEach(function(e) {
+  var g = document.getElementById('portada-grid');
+  TUSPortadas.disenos.forEach(function(e) {
     var d = document.createElement('div'); d.className = 'portada-card' + (e.n === 1 ? ' selected' : ''); d.dataset.portada = e.n;
     d.innerHTML = '<div class="pv"></div><div class="portada-card-num">' + e.nombre + '</div>';
     d.onclick = function() { selPortada(d, String(e.n)); };
     g.appendChild(d);
-  });
-  TUSPortadas.colores.forEach(function(c) {
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'color-dot' + (c.id === selectedColor ? ' selected' : '');
-    b.dataset.color = c.id; b.style.background = c.base; b.title = c.nombre; b.setAttribute('aria-label', c.nombre);
-    b.onclick = function() { selColor(b, c.id); };
-    cg.appendChild(b);
   });
   pintaPortadas();
   document.getElementById('protName').addEventListener('input', pintaPortadas);
@@ -768,6 +750,7 @@ function selPortada(el, num) {
   document.querySelectorAll('.portada-card').forEach(function(c) { c.classList.remove('selected'); });
   el.classList.add('selected');
   selectedPortada = num;
+  var pn = document.getElementById('portada-nombre'); if (pn) pn.textContent = TUSPortadas.diseno(num).nombre;
 }
 
 function setNarrator(val, el) {
@@ -1053,7 +1036,7 @@ var enviado = false;
 function saveDraft() {
   if (enviado) return; // tras enviar, un clic en la pantalla final no debe recrear el borrador
   try {
-    var d = { gender: gender, narrator: narrator, portada: selectedPortada, color: selectedColor, formato: formato, paso: cur <= TOTAL ? cur : 0, fields: {}, tf: {} };
+    var d = { gender: gender, narrator: narrator, portada: selectedPortada, formato: formato, paso: cur <= TOTAL ? cur : 0, fields: {}, tf: {} };
     document.querySelectorAll('input[type=text][id],input[type=email][id],select[id],textarea[id]').forEach(function(el) { d.fields[el.id] = el.value; });
     for (var i = 0; i <= 13; i++) {
       var ta = document.querySelector('#tf' + i + ' textarea');
@@ -1080,7 +1063,6 @@ function loadDraft() {
     if (d.narrator) setNarrator(d.narrator, document.getElementById(d.narrator === 'protagonist' ? 'n1' : 'n2'));
     if (d.formato) setFormato(d.formato, document.getElementById(d.formato === 'blanda' ? 'fb' : 'fd'));
     if (d.portada) { var pc = document.querySelector('.portada-card[data-portada="' + d.portada + '"]'); if (pc) selPortada(pc, d.portada); }
-    if (d.color) { var cc = document.querySelector('.color-dot[data-color="' + d.color + '"]'); if (cc) selColor(cc, d.color); }
     pintaPortadas();
     if (d.tone) document.querySelectorAll('.tone-opt').forEach(function(o) { if (o.querySelector('.tt').textContent === d.tone) selTone(o); });
     // Volver al paso en el que se quedó (sin saltar a la revisión)
@@ -1156,7 +1138,7 @@ function buildReview() {
   document.getElementById('rv-ded').textContent = ev('dedicatoria') ? '«' + ev('dedicatoria') + '» — ' + ev('dedicatoriaFirma') : '—';
   var envio = [ev('envioNombre'), ev('envioDireccion'), (ev('envioCP') + ' ' + ev('envioCiudad')).trim(), ev('envioProvincia'), ev('envioTelefono')].filter(Boolean).join(' · ');
   document.getElementById('rv-envio').textContent = envio || '—';
-  document.getElementById('rv-portada').textContent = TUSPortadas.estilos[selectedPortada - 1].nombre + ' · ' + TUSPortadas.color(selectedColor).nombre;
+  document.getElementById('rv-portada').textContent = TUSPortadas.diseno(selectedPortada).nombre;
   document.getElementById('rv-formato').textContent = FORMATOS[formato];
   var tEl = document.querySelector('.tone-opt.selected .tt');
   document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrado';
@@ -1207,11 +1189,13 @@ async function submit() {
     senderName:      document.getElementById('orderer').value || '',
     senderEmail:     document.getElementById('email').value || '',
     cliente_telefono: val('clienteTelefono'),
-    portadaEstilo:   'Estilo ' + selectedPortada,
-    portadaNombre:   TUSPortadas.estilos[selectedPortada - 1].nombre,
-    portadaColor:    TUSPortadas.color(selectedColor).nombre,
-    portadaColorHex: TUSPortadas.color(selectedColor).base,
-    portadaColorId:  selectedColor,
+    // Portada: en Make todas salen por la ruta «Estilo 1», cuya plantilla elige el diseño con portadaColorId (1–8)
+    portadaEstilo:   'Estilo 1',
+    portadaDiseno:   Number(selectedPortada),
+    portadaNombre:   TUSPortadas.diseno(selectedPortada).nombre,
+    portadaColor:    'Portada ' + selectedPortada + ' · ' + TUSPortadas.diseno(selectedPortada).nombre,
+    portadaColorHex: TUSPortadas.diseno(selectedPortada).lomo,
+    portadaColorId:  String(selectedPortada),
     formato:         FORMATOS[formato],
     q1_nacimiento:   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '',
     q1_apodo:        document.getElementById('job') ? document.getElementById('job').value : '',
@@ -1297,7 +1281,6 @@ loadDraft();
   if (r) { document.getElementById('bookType').value = r[0]; setGender(r[1], document.getElementById(r[1] === 'm' ? 'gm' : 'gf')); }
   else if (q.get('rol')) { document.getElementById('bookType').value = 'Título personalizado'; document.getElementById('customTitleWrap').style.display = 'block'; }
   var pc = document.querySelector('.portada-card[data-portada="' + q.get('portada') + '"]'); if (pc) selPortada(pc, q.get('portada'));
-  var cc = document.querySelector('.color-dot[data-color="' + q.get('color') + '"]'); if (cc) selColor(cc, q.get('color'));
   pintaPortadas();
   if (q.get('yo')) setNarrator('protagonist', document.getElementById('n1'));
   if (q.get('formato') === 'blanda' || q.get('formato') === 'dura') setFormato(q.get('formato'), document.getElementById(q.get('formato') === 'blanda' ? 'fb' : 'fd'));

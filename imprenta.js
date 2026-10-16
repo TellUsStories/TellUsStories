@@ -38,89 +38,65 @@
     return { width: f.left + f.width + m.contentBackSize.left, height: f.top + f.height + m.contentBackSize.top };
   }
 
+  // o = { diseno (1–8; también vale o.estilo), nombre, dedicatoria, firma }
   function portada(m, o) {
-    var H = hoja(m), c = TUSPortadas.color(o.color), F = m.contentFrontSize, B = m.contentBackSize, S = m.spineSize;
-    var nombre = String(o.nombre || '').trim() || 'Carmen';
-    // Delantera: el dibujo de la web, centrado en la parte visible y un poco más grande (5 mm de margen
-    // por si el corte o el doblado se mueven). Debajo, el mismo dibujo ampliado rellena lo que se dobla.
-    // Cada cara (delantera y trasera) lleva el mismo dibujo del estilo elegido: en la trasera, sin el título.
-    var ratio = 1176 / 832, blanda = !m.wraparoundInsideSize;   // tapa blanda: sin cartón ni bisagras
+    var H = hoja(m), F = m.contentFrontSize, B = m.contentBackSize, S = m.spineSize;
+    var d = TUSPortadas.diseno(o.diseno || o.estilo), nombre = String(o.nombre || '').trim() || 'Carmen';
+    var ratio = TUSPortadas.H / TUSPortadas.W, blanda = !m.wraparoundInsideSize;   // tapa blanda: sin cartón ni bisagras
     var ext = blanda ? 0 : 1;   // en tapa dura las caras y el lomo se solapan 1 mm (cae en la bisagra)
-    // Dónde va el dibujo (832 × 1176) en cada cara: centrado y 5 mm más grande que la parte visible.
-    // En «Mosaico» el dibujo ya trae su respiro alrededor de las baldosas (portadas.js), así que va
-    // justo al tamaño de la cara visible: arriba, abajo y a los lados queda el mismo margen que en la web.
+    // Dónde va el dibujo (832 × 1176) en cada cara: centrado y 5 mm más grande que la parte visible,
+    // por si el corte o el doblado se mueven un poco.
     function colocacion(A) {
       var w = A.width + 10, h = w * ratio;
       if (h < A.height + 10) { h = A.height + 10; w = h / ratio; }
-      var x = A.left + A.width / 2 - w / 2, y = A.top + A.height / 2 - h / 2;
-      if (blanda && o.estilo == 3) {
-        // Tapa blanda «Inicial»: sin cartón que esconda los bordes, va justo a la medida de la cara
-        // (la letra conserva su margen a los dos lados; el sangrado es papel)
-        w = A.width; h = w * ratio; x = A.left; y = A.top + A.height / 2 - h / 2;
-      } else if (blanda && o.estilo != 2) {
-        // Tapa blanda «Rayas»: el dibujo empieza justo en el borde del lomo y solo se pasa por fuera
-        // (4 mm de sangrado), para que la franja del lomo no corte las rayas
+      if (blanda) {
+        // Tapa blanda: no hay cartón que esconda nada; la acuarela empieza justo en el borde del lomo
+        // y solo se pasa por fuera (el sangrado), para que la etiqueta quede centrada en la cara
         w = A.width + SANGRADO; h = w * ratio;
-        x = (A.left + A.width / 2 < S.left) ? A.left - SANGRADO : A.left;
-        y = A.top + A.height / 2 - h / 2;
+        return { w: w, h: h, x: (A.left + A.width / 2 < S.left) ? A.left - SANGRADO : A.left, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
       }
-      if (o.estilo == 2) { w = A.width; h = A.height; x = A.left; y = A.top; }
-      return { w: w, h: h, x: x, y: y, kx: w / 832, ky: h / 1176 };
+      return { w: w, h: h, x: A.left + A.width / 2 - w / 2, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
     }
-    function cara(A, x0, x1, fondo) {
-      var L = colocacion(A), w = L.w, h = L.h;
-      var cx = L.x + w / 2, cy = L.y + h / 2;
+    // Una cara (delantera o trasera) de x0 a x1 de la hoja. Debajo, la misma acuarela ampliada y difuminada
+    // rellena lo que se dobla hacia dentro, para que no quede ningún borde blanco.
+    function cara(A, x0, x1, contenido, fondoImg) {
+      var L = colocacion(A), cx = L.x + L.w / 2, cy = L.y + L.h / 2;
       var wF = Math.max(2 * (x1 - cx), 2 * (cx - x0)) + 4, hF = Math.max(wF * ratio, 2 * Math.max(cy, H.height - cy) + 4);
       wF = Math.max(wF, hF / ratio);
-      // En «Mosaico» el dibujo se ajusta a la cara exacta (se estira menos de un 1 %, no se nota)
-      function dibujo() {
-        var s = TUSPortadas.svg(o.estilo || 1, nombre, o.color, fondo);
-        return o.estilo == 2 ? s.replace('<svg ', '<svg preserveAspectRatio="none" ') : s;
-      }
-      // Fondo del mismo papel que el dibujo (#F6EFE5) para que no se note dónde acaba
-      return '<div style="position:absolute;left:' + x0 + 'mm;top:0;width:' + (x1 - x0) + 'mm;height:' + H.height + 'mm;overflow:hidden;background:#F6EFE5">' +
-        // Solo «Rayas» rellena lo que se dobla con el dibujo difuminado; en «Mosaico» e «Inicial»
-        // quedaría una sombra de baldosas o de la letra: ahí basta el papel liso
-        (o.estilo == 2 || o.estilo == 3 ? '' : '<div style="position:absolute;left:' + (cx - x0 - wF / 2) + 'mm;top:' + (cy - hF / 2) + 'mm;width:' + wF + 'mm;height:' + hF + 'mm;filter:blur(1.5mm)">' + dibujo() + '</div>') +
-        '<div style="position:absolute;left:' + (cx - x0 - w / 2) + 'mm;top:' + (cy - h / 2) + 'mm;width:' + w + 'mm;height:' + h + 'mm">' + dibujo() + '</div>' +
+      return '<div style="position:absolute;left:' + x0 + 'mm;top:0;width:' + (x1 - x0) + 'mm;height:' + H.height + 'mm;overflow:hidden;background:' + d.papel + '">' +
+        '<img src="' + fondoImg + '" style="position:absolute;left:' + (cx - x0 - wF / 2) + 'mm;top:' + (cy - hF / 2) + 'mm;width:' + wF + 'mm;height:' + hF + 'mm;filter:blur(1.5mm)">' +
+        '<div style="position:absolute;left:' + (L.x - x0) + 'mm;top:' + L.y + 'mm;width:' + L.w + 'mm;height:' + L.h + 'mm">' + contenido + '</div>' +
       '</div>';
     }
-    var del = cara(F, S.left + S.width, H.width, false);
+    var imgDel = TUSPortadas.imagen(d, 'delante', 'hd'), imgTras = TUSPortadas.imagen(d, 'detras', 'hd');
 
-    // Lomo: franja lisa del color oscuro de la portada con el título en vertical, en blanco (se lee de arriba abajo)
+    // Delantera: la portada de la web (acuarela + «El universo de» y el nombre en la etiqueta)
+    var del = cara(F, S.left + S.width, H.width, TUSPortadas.svg(d.n, nombre, null, { calidad: 'hd' }), imgDel);
+
+    // Lomo: franja lisa del color del diseño con el título en vertical, en blanco (se lee de arriba abajo)
     var lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;letter-spacing:.3mm;color:#fff">El universo de <b>' + esc(nombre) + '</b></div>' : '';
-    var lomo = '<div style="position:absolute;left:' + (S.left - ext) + 'mm;top:0;width:' + (S.width + 2 * ext) + 'mm;height:' + H.height + 'mm;background:' + c.oscuro + '">' + lomoTxt + '</div>';
+    var lomo = '<div style="position:absolute;left:' + (S.left - ext) + 'mm;top:0;width:' + (S.width + 2 * ext) + 'mm;height:' + H.height + 'mm;background:' + d.lomo + '">' + lomoTxt + '</div>';
 
-    // Contraportada: el mismo dibujo que delante y, encima, un recuadro de papel con la dedicatoria
-    // que escribe quien regala el libro, su firma y el logo de Tale Us Stories en el color de la portada.
-    // Abajo a la izquierda Gelato imprime su código: el recuadro queda por encima de esa zona.
-    var ded = String(o.dedicatoria || '').trim(), tam = ded.length > 260 ? 5.4 : ded.length > 170 ? 6.1 : 7;
-    // Misma tinta que el recuadro del título de delante; el logo, en el color de la portada
-    var tinta = o.estilo == 1 ? '#7B7F6F' : (o.estilo == 2 && c.id === 'terracota') ? '#BF5138' : c.oscuro;
-    var logo = '<div style="display:inline-block;text-align:left;font-family:\'Bricolage Grotesque\',\'Arial Black\',sans-serif;font-weight:800;font-size:5.2mm;letter-spacing:.7mm;line-height:1.05;text-transform:uppercase;color:' + c.oscuro + '">Tale Us<br>Stories' +
-      '<span style="display:block;width:9.7mm;height:1.05mm;border-radius:.7mm;background:' + c.base + ';margin-top:1.7mm"></span></div>';
-    // Mismo ancho que el recuadro del título de delante (77 % de la cara) y alto según lo que ocupe la dedicatoria;
-    // centrado un poco por encima de la mitad para dejar libre la zona del código de Gelato.
-    // El recuadro ocupa el mismo sitio que el título de delante (medidas del dibujo de 832 × 1176).
-    // En «Rayas» la acuarela ya trae el marco pintado, así que tiene que quedar justo encima.
-    var zona = { 1: [96, 386, 640, 342], 2: [180, 433, 472, 324], 3: [144, 428, 544, 286] }[o.estilo] || [96, 386, 640, 342];
-    var LB = colocacion(B);
-    var recW = zona[2] * LB.kx, recX = LB.x + zona[0] * LB.kx;
-    var recY = LB.y + (zona[1] + zona[3] / 2) * LB.ky, recH = zona[3] * LB.ky;
-    var tras = cara(B, 0, S.left - ext, true) +
-      '<div style="position:absolute;left:' + recX + 'mm;top:' + recY + 'mm;transform:translateY(-50%);width:' + recW + 'mm;min-height:' + recH + 'mm;display:flex;background:' + PAPEL + ';box-sizing:border-box;padding:3.4mm">' +
-        '<div style="flex:1;display:flex;box-sizing:border-box;border:.75mm solid ' + tinta + ';padding:1.4mm">' +
-          '<div style="flex:1;box-sizing:border-box;border:.3mm solid ' + tinta + ';padding:11mm 11mm 9mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
-            '<p style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:' + tam + 'mm;line-height:1.5;color:' + TINTA + ';margin:0;white-space:pre-line">' + esc(ded) + '</p>' +
-            (o.firma ? '<div style="font-family:\'Dancing Script\',cursive;font-size:8.5mm;color:' + tinta + ';margin-top:4mm">' + esc(o.firma) + '</div>' : '') +
-            '<div style="width:16mm;height:.3mm;background:' + tinta + ';opacity:.5;margin:7mm 0 6mm"></div>' +
-            logo +
-          '</div>' +
-        '</div>' +
+    // Contraportada: la misma acuarela con su etiqueta vacía; dentro, la dedicatoria tal cual la escribió
+    // quien regala el libro, su firma y el logo de Tale Us Stories en las tintas del diseño.
+    var LB = colocacion(B), e = d.detras, k = LB.k;
+    var ex = LB.x + (e[0] + 26) * k, ey = LB.y + (e[1] + 26) * k, ew = (e[2] - 52) * k, eh = (e[3] - 52) * k;
+    var ded = String(o.dedicatoria || '').trim();
+    var logo = '<div style="display:inline-block;text-align:left;font-family:\'Bricolage Grotesque\',\'Arial Black\',sans-serif;font-weight:800;font-size:3.6mm;letter-spacing:.5mm;line-height:1.05;text-transform:uppercase;color:' + d.nombreCol + '">Tale Us<br>Stories' +
+      '<span style="display:block;width:7mm;height:.8mm;border-radius:.5mm;background:' + d.nombreCol + ';margin-top:1.2mm"></span></div>';
+    var texto = '<div class="tus-ded" style="position:absolute;left:' + ex + 'mm;top:' + ey + 'mm;width:' + ew + 'mm;height:' + eh + 'mm;box-sizing:border-box;padding:4mm 7mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden">' +
+        '<p style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:6mm;line-height:1.45;color:' + d.titulo + ';margin:0;white-space:pre-line">' + esc(ded) + '</p>' +
+        '<div style="width:14mm;height:.3mm;background:' + d.titulo + ';opacity:.5;margin:3.5mm 0 2.5mm"></div>' +
+        (o.firma ? '<div style="font-family:\'Dancing Script\',cursive;font-size:6.5mm;line-height:1.2;color:' + d.titulo + ';margin-bottom:3mm">' + esc(o.firma) + '</div>' : '') +
+        logo +
       '</div>';
+    var tras = cara(B, 0, S.left - ext, '<img src="' + imgTras + '" style="display:block;width:100%;height:100%">', imgTras) + texto;
+
+    // Si la dedicatoria es larga, la letra se reduce hasta que todo quepa en la etiqueta (hcti ejecuta el script)
+    var ajuste = '<script>(function(){var c=document.querySelectorAll(".tus-ded");c.forEach(function(b){var p=b.querySelector("p"),t=6;while(b.scrollHeight>b.clientHeight+1&&t>3.4){t-=.2;p.style.fontSize=t.toFixed(1)+"mm";}});})();<\/script>';
 
     return '<style>.tus-portada-abierta svg{display:block;width:100%;height:100%}</style>' +
-      '<div class="tus-portada-abierta" style="position:relative;overflow:hidden;width:' + H.width + 'mm;height:' + H.height + 'mm;background:' + PAPEL + '">' + tras + del + lomo + '</div>';
+      '<div class="tus-portada-abierta" style="position:relative;overflow:hidden;width:' + H.width + 'mm;height:' + H.height + 'mm;background:' + d.papel + '">' + tras + del + lomo + '</div>' + ajuste;
   }
 
   // Medidas de ejemplo (respuesta de Gelato para la tapa dura de 21 × 28). Las reales se piden a la API con el nº de páginas.
