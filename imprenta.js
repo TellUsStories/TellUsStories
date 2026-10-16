@@ -9,7 +9,7 @@
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   // ---------- Página interior (218 × 288 mm con sangrado) ----------
-  // o = { diseno (1–8), img, titulo, texto }. texto puede llevar <span class="hl">…</span> (lo escribe Claude).
+  // o = { diseno (1–8), img, titulo, texto, numero }. texto puede llevar <span class="hl">…</span> (lo escribe Claude).
   // Sin título ni texto = página de solo ilustración.
   // Con diseño: la acuarela de la portada hace de marco y encima va una hoja de papel con la doble línea
   // en la tinta del diseño; arriba el título, una estrella dorada y el texto; la ilustración llena la hoja.
@@ -34,8 +34,14 @@
         '</div>';
     }
     h += '<div style="flex:1;min-height:0;position:relative"><img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;mix-blend-mode:multiply;-webkit-mask-image:linear-gradient(transparent,#000 4%);mask-image:linear-gradient(transparent,#000 4%)"></div></div>';
-    return h + '</div></div>';
+    h += '</div>';
+    // Número de página: una etiqueta redonda de papel centrada abajo, encima del marco de acuarela
+    // (queda a ~8 mm del corte, dentro de la zona segura) y con la tinta del diseño
+    if (numero(o)) h += '<div style="position:absolute;left:50%;bottom:' + (M.y - 5) + 'mm;transform:translateX(-50%);width:10mm;height:10mm;border-radius:50%;background:' + PAPEL + ';border:.35mm solid ' + d.titulo + ';box-shadow:0 .4mm 1mm rgba(40,25,10,.2);display:flex;align-items:center;justify-content:center;font-family:\'Cormorant Garamond\',serif;font-weight:600;font-size:5mm;line-height:1;color:' + d.titulo + ';z-index:3">' + numero(o) + '</div>';
+    return h + '</div>';
   }
+  // El número de página (o.numero), solo si es un número de verdad
+  function numero(o) { var n = parseInt(o.numero, 10); return n > 0 ? n : ''; }
   // Página sin marco (pedidos anteriores a las portadas nuevas)
   function paginaSinMarco(o, conTexto) {
     var color = o.color || '#C4622D';
@@ -48,6 +54,7 @@
           '<p style="font-family:\'Cormorant Garamond\',serif;font-size:7.9mm;line-height:1.55;color:' + TINTA + ';margin:0">' + (o.texto || '') + '</p>' +
         '</div>';
     }
+    if (numero(o)) h += '<div style="position:absolute;left:0;right:0;bottom:' + (SANGRADO + 7) + 'mm;text-align:center;font-family:\'Cormorant Garamond\',serif;font-weight:600;font-size:5mm;line-height:1;color:' + TINTA + '">' + numero(o) + '</div>';
     return h + '</div>';
   }
 
