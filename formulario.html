@@ -175,6 +175,11 @@
   .chip:hover{border-color:var(--coral);}
   .chip.on{background:var(--navy);border-color:var(--navy);color:var(--cream);}
   .asp input[type=text]{padding:9px 13px;font-size:15px;}
+  .asp-foto{margin-bottom:10px;}
+  .uzone.asp-foto{padding:14px;}
+  .asp-foto.ok{background:var(--coral-l);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--navy);}
+  .asp-foto.ok button{background:none;border:none;color:var(--coral);text-decoration:underline;cursor:pointer;font-family:var(--texto);font-size:13px;margin-left:6px;}
+  .asp-o{font-size:12px;color:var(--muted);font-style:italic;margin:2px 0 10px;}
   .asp-add{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 22px;}
   .asp-add button{border:1.5px dashed var(--coral);background:none;border-radius:100px;padding:8px 15px;font-family:var(--display);font-weight:700;font-size:13px;color:var(--coral);cursor:pointer;}
   .asp-add button:hover{background:var(--coral-l);}
@@ -333,9 +338,9 @@
     <button class="btn-tw" onclick="toggleTF(0)">Prefiero escribir</button>
   </div>
 
-  <div class="vc" id="vc1">
+  <div class="vc" id="vc1" data-opcional="1">
     <div class="vc-q">¿Cómo es <span class="G-name"></span> físicamente? Descríbe<span class="G-lo"></span> como si tuvieras que presentársel<span class="G-oa"></span> a alguien que nunca <span class="G-lo"></span> ha visto.</div>
-    <div class="vc-h">Color de pelo, ojos, si lleva gafas, cómo viste, algún rasgo especial.</div>
+    <div class="vc-h">Opcional: cómo viste, cómo se peina, algún rasgo especial. El pelo, los ojos y la piel los eliges más abajo (o subes una foto).</div>
     <div class="vc-ctrls">
       <button class="btn-rec" id="rb1" onclick="toggleRec(1)"><span class="rdot"></span> Grabar</button>
       <span class="rtimer" id="rt1">0:00</span>
@@ -349,8 +354,10 @@
   </div>
 
   <div class="sdiv"><span>¿Cómo son? Así los dibujaremos</span></div>
-  <div class="hint" style="margin-bottom:14px">Toca lo que más se parezca: con esto dibujamos a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy). No hace falta subir fotos si no quieres.</div>
+  <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y te saltas este paso, <b>o toca</b> lo que más se parezca. Las fotos solo se usan para dibujar.</div>
   <div id="aspCards"></div>
+  <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspPinta()">
+  <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspPinta()">
   <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia? Añádelas para que también se parezcan:</div>
   <div class="asp-add">
     <button type="button" onclick="aspAdd('pareja')">+ Su pareja</button>
@@ -359,16 +366,6 @@
     <button type="button" onclick="aspAdd('hermano')">+ Un hermano/a</button>
   </div>
   <input type="text" id="aspectoFamilia" style="display:none">
-
-  <div class="field">
-    <label>Una foto de su cara (opcional)</label>
-    <div class="hint">De frente y con buena luz. Si la subes, el dibujo se le parecerá todavía más. Solo la usamos para dibujar su personaje.</div>
-    <div class="uzone" onclick="document.getElementById('fotoCara').click()">
-      <div class="uzone-icon">🙂</div>
-      <div class="uzone-txt" id="fotoCaraTxt">Haz clic para añadir la foto</div>
-    </div>
-    <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="handlePhoto(this,'fotoCaraTxt')">
-  </div>
 
   <div class="vc" id="vc2">
     <div class="vc-q">¿Hay alguna frase, muletilla o gesto que solo <span class="G-el"></span> haría? Algo que <span class="G-lo"></span> delate al instante.</div>
@@ -596,16 +593,6 @@
 
   <div class="sdiv"><span>Datos rápidos</span></div>
   <div class="field"><label>Edad de cada niño</label><input type="text" id="childAges" placeholder="Ej: Martina 8 años, Pedro 6, Lucas 3"></div>
-  <div class="field"><label>¿Cómo son físicamente los niños?</label><input type="text" id="childLooks" placeholder="Ej: Martina rubia con rizos, Pedro pelo castaño con flequillo…"></div>
-  <div class="field">
-    <label>Una foto de los niños (opcional)</label>
-    <div class="hint">Si la subes, los dibujos se les parecerán todavía más. Solo la usamos para dibujar sus personajes.</div>
-    <div class="uzone" onclick="document.getElementById('fotoNinos').click()">
-      <div class="uzone-icon">🧒</div>
-      <div class="uzone-txt" id="fotoNinosTxt">Haz clic para añadir la foto</div>
-    </div>
-    <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="handlePhoto(this,'fotoNinosTxt')">
-  </div>
   <div class="field"><label>¿Cómo se llaman entre ellos?</label><input type="text" id="nicknames" placeholder="Ej: Los niños lo llaman 'Abuelo Pepe'"></div>
   <div class="field"><label>¿Hay alguna historia que los niños ya conocen y piden que les cuenten?</label><input type="text" id="knownStory" placeholder="Esa historia que siempre aparece en las cenas familiares…"></div>
   <div class="nav">
@@ -850,6 +837,7 @@ function validarPantalla(n) {
   s.querySelectorAll('.falta').forEach(function(e) { e.classList.remove('falta'); });
   // Preguntas con nota de voz: valen la grabación o el texto escrito
   s.querySelectorAll('.vc').forEach(function(vc) {
+    if (vc.dataset.opcional) return;
     var i = vc.id.replace('vc', ''), ta = vc.querySelector('textarea');
     if (!(audioBlobs[i] || pendingTx[i] || (ta && ta.value.trim()))) marcaFalta(vc, falta, '«' + vc.querySelector('.vc-q').textContent.trim().slice(0, 70) + '…»');
   });
@@ -1360,15 +1348,58 @@ function aspTarjeta(d, titulo, quitar, conNombre) {
   return c;
 }
 
+// Foto o botones: con la foto subida no hace falta tocar nada
+function aspFoto(id) { var f = document.getElementById(id); return f && f.files[0]; }
+function aspCajaFoto(id, texto) {
+  var f = aspFoto(id), c = document.createElement('div');
+  if (f) {
+    c.className = 'asp-foto ok';
+    c.innerHTML = '✓ Foto subida: <b></b> <button type="button">Cambiar</button> <button type="button">Quitar</button>';
+    c.querySelector('b').textContent = f.name;
+    var bs = c.querySelectorAll('button');
+    bs[0].onclick = function() { document.getElementById(id).click(); };
+    bs[1].onclick = function() { document.getElementById(id).value = ''; aspPinta(); };
+  } else {
+    c.className = 'uzone asp-foto';
+    c.innerHTML = '<span class="uzone-txt">📷 ' + texto + '</span>';
+    c.onclick = function() { document.getElementById(id).click(); };
+  }
+  return c;
+}
+
 function aspPinta() {
   var cont = document.getElementById('aspCards'); if (!cont) return;
   cont.innerHTML = '';
   var prot = (document.getElementById('protName').value || '').trim();
-  cont.appendChild(aspTarjeta(asp.prot, 'Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : '')));
-  aspNinos().forEach(function(n) {
-    asp.ninos[n] = asp.ninos[n] || {};
-    cont.appendChild(aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>'));
-  });
+  // Protagonista: foto o botones
+  if (aspFoto('fotoCara')) {
+    var cp = document.createElement('div'); cp.className = 'asp';
+    cp.innerHTML = '<div class="asp-h"><div class="asp-t">Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : '') + '</div></div>';
+    cp.appendChild(aspCajaFoto('fotoCara'));
+    cont.appendChild(cp);
+  } else {
+    var tp = aspTarjeta(asp.prot, 'Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : ''));
+    tp.insertBefore(aspCajaFoto('fotoCara', 'Sube una foto de su cara y te saltas este paso'), tp.children[1]);
+    var o = document.createElement('div'); o.className = 'asp-o'; o.textContent = 'o toca lo que más se parezca:';
+    tp.insertBefore(o, tp.children[2]);
+    cont.appendChild(tp);
+  }
+  // Niños: una foto de todos o una tarjeta por niño
+  var ninos = aspNinos();
+  if (ninos.length) {
+    if (aspFoto('fotoNinos')) {
+      var cn = document.createElement('div'); cn.className = 'asp';
+      cn.innerHTML = '<div class="asp-h"><div class="asp-t">Los niños <small>· ' + ninos.join(', ') + '</small></div></div>';
+      cn.appendChild(aspCajaFoto('fotoNinos'));
+      cont.appendChild(cn);
+    } else {
+      cont.appendChild(aspCajaFoto('fotoNinos', '¿Tienes una foto de ' + (ninos.length > 1 ? 'los niños juntos' : ninos[0]) + '? Súbela y te saltas ' + (ninos.length > 1 ? 'sus tarjetas' : 'su tarjeta')));
+      ninos.forEach(function(n) {
+        asp.ninos[n] = asp.ninos[n] || {};
+        cont.appendChild(aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>'));
+      });
+    }
+  }
   asp.extra.forEach(function(p, i) {
     cont.appendChild(aspTarjeta(p, ASP_TIT[p.rol], function() { asp.extra.splice(i, 1); aspGuarda(); aspPinta(); }, true));
   });
@@ -1378,8 +1409,10 @@ function aspAdd(rol) { asp.extra.push({ rol: rol }); aspGuarda(); aspPinta(); }
 // Qué falta (pelo, ojos y piel de la protagonista y de cada niño); marca las tarjetas en rojo
 function aspFaltan() {
   var falta = [], cards = document.querySelectorAll('#aspCards .asp');
-  var datos = [[(document.getElementById('protName').value || '').trim() || 'el protagonista', asp.prot]].concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}]; }));
+  var datos = [[(document.getElementById('protName').value || '').trim() || 'el protagonista', asp.prot, aspFoto('fotoCara')]]
+    .concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}, aspFoto('fotoNinos')]; }));
   datos.forEach(function(p, i) {
+    if (p[2]) return;   // con foto no hace falta rellenar
     var c = cards[i], sin = ASP_OBLIG.filter(function(k) { return !p[1][k]; });
     if (!sin.length || !c) return;
     c.classList.add('falta');
@@ -1402,8 +1435,8 @@ function aspTexto() {
     return r.join('; ');
   }
   var prot = (document.getElementById('protName').value || '').trim(), out = [];
-  out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (linea(asp.prot) || 'sin datos'));
-  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (linea(asp.ninos[n] || {}) || 'sin datos')); });
+  out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (aspFoto('fotoCara') ? 'ver su foto' : (linea(asp.prot) || 'sin datos')));
+  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto('fotoNinos') ? 'ver la foto de los niños' : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
   asp.extra.forEach(function(p) {
     var l = linea(p); if (!l && !p.nombre) return;
     out.push(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
