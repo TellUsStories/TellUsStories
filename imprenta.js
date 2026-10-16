@@ -21,18 +21,19 @@
       '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
       '<img src="' + TUSPortadas.imagen(d, 'delante', 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' +
       '<div style="position:absolute;left:' + M.x + 'mm;right:' + M.x + 'mm;top:' + M.y + 'mm;bottom:' + M.y + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
-        // La ilustración (3:4, fondo papel) llena la hoja; se funde con el papel para que no se note el borde
-        '<img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;mix-blend-mode:multiply">' +
-        '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + ';pointer-events:none"></div>' +
-        '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + ';pointer-events:none"></div>';
+        '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + ';pointer-events:none;z-index:2"></div>' +
+        '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + ';pointer-events:none;z-index:2"></div>' +
+        // La hoja es una columna: arriba el texto (lo que ocupe) y debajo la ilustración, que nunca se mete en el texto.
+        // La ilustración llega con la parte de arriba vacía (así se pide a la IA): se recorta por arriba si hace falta.
+        '<div style="position:absolute;inset:0;display:flex;flex-direction:column">';
     if (conTexto) {
-      // Texto arriba, en la parte que la ilustración deja despejada
-      h += '<div style="position:absolute;left:0;top:0;width:100%;height:40%;box-sizing:border-box;padding:14mm 14mm 2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
+      h += '<div style="flex:none;box-sizing:border-box;padding:16mm 14mm 4mm;text-align:center">' +
           '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:14mm;line-height:1.1;color:' + d.titulo + '">' + esc(o.titulo) + '</div>' +
           '<div style="color:#E3A93C;font-size:6.5mm;line-height:1;margin:3mm 0 4mm">★</div>' +
           '<p style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:6.6mm;line-height:1.5;color:' + d.titulo + ';margin:0">' + (o.texto || '') + '</p>' +
         '</div>';
     }
+    h += '<div style="flex:1;min-height:0;position:relative"><img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;mix-blend-mode:multiply;-webkit-mask-image:linear-gradient(transparent,#000 9%);mask-image:linear-gradient(transparent,#000 9%)"></div></div>';
     return h + '</div></div>';
   }
   // Página sin marco (pedidos anteriores a las portadas nuevas)
