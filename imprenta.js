@@ -93,7 +93,12 @@
         w = A.width + SANGRADO; h = w * ratio;
         return { w: w, h: h, x: (A.left + A.width / 2 < S.left) ? A.left - SANGRADO : A.left, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
       }
-      return { w: w, h: h, x: A.left + A.width / 2 - w / 2, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
+      // Tapa dura: el dibujo de cada tapa se amplía lo justo para llegar hasta el lomo (cubre la bisagra);
+      // así no queda ninguna franja difuminada entre la tapa y el lomo
+      var cx = A.left + A.width / 2, borde = cx < S.left ? S.left : S.left + S.width;
+      var wl = 2 * Math.abs(cx - borde) + 2;
+      if (wl > w) { w = wl; h = w * ratio; }
+      return { w: w, h: h, x: cx - w / 2, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
     }
     // Una cara (delantera o trasera) de x0 a x1 de la hoja. Debajo, la misma acuarela ampliada y difuminada
     // rellena lo que se dobla hacia dentro, para que no quede ningún borde blanco.
@@ -117,18 +122,23 @@
 
     // Contraportada: la misma acuarela con su etiqueta vacía; dentro, la dedicatoria tal cual la escribió
     // quien regala el libro, su firma y el logo de Tale Us Stories en las tintas del diseño.
-    var LB = colocacion(B), e = d.detras, k = LB.k;
+    // Detrás va la misma acuarela que delante (su etiqueta también está vacía): así las líneas del
+    // estampado quedan a la misma altura a los dos lados del lomo y no se «cortan»
+    var LB = colocacion(B), e = d.delante, k = LB.k;
     var ex = LB.x + (e[0] + 26) * k, ey = LB.y + (e[1] + 26) * k, ew = (e[2] - 52) * k, eh = (e[3] - 52) * k;
     var ded = String(o.dedicatoria || '').trim();
     var logo = '<div style="display:inline-block;text-align:left;font-family:\'Bricolage Grotesque\',\'Arial Black\',sans-serif;font-weight:800;font-size:3.6mm;letter-spacing:.5mm;line-height:1.05;text-transform:uppercase;color:' + d.nombreCol + '">Tale Us<br>Stories' +
       '<span style="display:block;width:7mm;height:.8mm;border-radius:.5mm;background:' + d.nombreCol + ';margin-top:1.2mm"></span></div>';
-    var texto = '<div class="tus-ded" style="position:absolute;left:' + ex + 'mm;top:' + ey + 'mm;width:' + ew + 'mm;height:' + eh + 'mm;box-sizing:border-box;padding:4mm 7mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden">' +
-        '<p style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:6mm;line-height:1.45;color:' + d.titulo + ';margin:0;white-space:pre-line">' + esc(ded) + '</p>' +
-        '<div style="width:14mm;height:.3mm;background:' + d.titulo + ';opacity:.5;margin:3.5mm 0 2.5mm"></div>' +
-        (o.firma ? '<div style="font-family:\'Dancing Script\',cursive;font-size:6.5mm;line-height:1.2;color:' + d.titulo + ';margin-bottom:3mm">' + esc(o.firma) + '</div>' : '') +
-        logo +
+    // La dedicatoria y la firma, centradas en el recuadro; el logo, siempre abajo en el centro
+    var texto = '<div class="tus-ded" style="position:absolute;left:' + ex + 'mm;top:' + ey + 'mm;width:' + ew + 'mm;height:' + eh + 'mm;box-sizing:border-box;padding:4mm 7mm 3.5mm;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden">' +
+        '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">' +
+          '<p style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:6mm;line-height:1.45;color:' + d.titulo + ';margin:0;white-space:pre-line">' + esc(ded) + '</p>' +
+          '<div style="width:14mm;height:.3mm;background:' + d.titulo + ';opacity:.5;margin:3.5mm 0 2.5mm"></div>' +
+          (o.firma ? '<div style="font-family:\'Dancing Script\',cursive;font-size:6.5mm;line-height:1.2;color:' + d.titulo + '">' + esc(o.firma) + '</div>' : '') +
+        '</div>' +
+        '<div style="flex:none;margin-top:3mm">' + logo + '</div>' +
       '</div>';
-    var tras = cara(B, 0, S.left - ext, '<img src="' + imgTras + '" style="display:block;width:100%;height:100%">', imgTras) + texto;
+    var tras = cara(B, 0, S.left - ext, '<img src="' + imgDel + '" style="display:block;width:100%;height:100%">', imgDel) + texto;
 
     // Si la dedicatoria es larga, la letra se reduce hasta que todo quepa en la etiqueta (hcti ejecuta el script)
     var ajuste = '<script>(function(){var c=document.querySelectorAll(".tus-ded");c.forEach(function(b){var p=b.querySelector("p"),t=6;while(b.scrollHeight>b.clientHeight+1&&t>3.4){t-=.2;p.style.fontSize=t.toFixed(1)+"mm";}});})();<\/script>';
