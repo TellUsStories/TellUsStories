@@ -94,7 +94,7 @@
       // Tus dos páginas retocadas (ya llevan su texto), colocadas tal cual en el formato de imprenta
       lienzo(TUSImprenta.pagina({ diseno: d.n, numero: 2, img: 'img/libro-ilu-2.jpg', titulo: 'Antes de ser mamá',
         texto: 'Antes de ser vuestra mamá, <span class="hl">Carla</span> fue muchas cosas. Fue una niña que no paraba de reír. Fue una joven que cruzó el océano. Fue siempre ella misma: valiente, curiosa y siempre sonriendo.' }), P.w, P.h, anchoPag, gp) +
-      lienzo(TUSImprenta.pagina({ diseno: d.n, numero: 1, img: 'img/libro-ilu-1.jpg', titulo: 'Para Lucas y Martina',
+      lienzo(TUSImprenta.pagina({ diseno: d.n, numero: 3, sobresale: true, img: 'img/libro-ilu-1.jpg', titulo: 'Para Lucas y Martina',
         texto: 'Lucas y Martina, esta es la historia de vuestra mamá. Una historia llena de aventuras, de sonrisas enormes y de palabras mágicas como «vamos a por ello». Una historia que empieza en Barcelona y os lleva hasta aquí, hasta este momento, en el que estáis juntos. Porque esta historia también es vuestra historia.' }), P.w, P.h, anchoPag, gp);
   }
   ['nombre', 'estilo', 'tapa', 'guias', 'hoja', 'dedicatoria', 'firma'].forEach(function (id) { $(id).addEventListener('input', pinta); });

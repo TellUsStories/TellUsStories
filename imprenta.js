@@ -9,7 +9,7 @@
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   // ---------- Página interior (218 × 288 mm con sangrado) ----------
-  // o = { diseno (1–8), img, titulo, texto, numero }. texto puede llevar <span class="hl">…</span> (lo escribe Claude).
+  // o = { diseno (1–8), img, titulo, texto, numero, sobresale }. texto puede llevar <span class="hl">…</span> (lo escribe Claude).
   // Sin título ni texto = página de solo ilustración.
   // Con diseño: la acuarela de la portada hace de marco y encima va una hoja de papel con la doble línea
   // en la tinta del diseño; arriba el título, una estrella dorada y el texto; la ilustración llena la hoja.
@@ -17,12 +17,18 @@
     var conTexto = !!(o.titulo || o.texto);
     if (!o.diseno) return paginaSinMarco(o, conTexto);
     var d = TUSPortadas.diseno(o.diseno), M = { x: SANGRADO + 11, y: SANGRADO + 11 };   // 11 mm de marco visible
+    // o.sobresale: la ilustración baja por encima del marco hasta el borde de la página (en ~1 de cada 4 páginas).
+    // La hoja llega entonces hasta abajo y la doble línea se desvanece antes de llegar a la ilustración.
+    var sale = !!o.sobresale;
+    var lineas = sale ? '-webkit-mask-image:linear-gradient(#000 50%,transparent 72%);mask-image:linear-gradient(#000 50%,transparent 72%);' : '';
     var h = '<style>.tus-pag .hl{color:inherit;font-weight:500}</style>' +
       '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
       '<img src="' + TUSPortadas.imagen(d, 'delante', 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' +
-      '<div style="position:absolute;left:' + M.x + 'mm;right:' + M.x + 'mm;top:' + M.y + 'mm;bottom:' + M.y + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
-        '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + ';pointer-events:none;z-index:2"></div>' +
-        '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + ';pointer-events:none;z-index:2"></div>' +
+      '<div style="position:absolute;left:' + M.x + 'mm;right:' + M.x + 'mm;top:' + M.y + 'mm;bottom:' + (sale ? 0 : M.y) + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
+        '<div style="position:absolute;inset:0;pointer-events:none;z-index:2;' + lineas + '">' +
+          '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
+          '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + '"></div>' +
+        '</div>' +
         // La hoja es una columna: arriba el texto (lo que ocupe) y debajo la ilustración, que nunca se mete en el texto.
         // La ilustración llega con la parte de arriba vacía (así se pide a la IA): se recorta por arriba si hace falta.
         '<div style="position:absolute;inset:0;display:flex;flex-direction:column">';
@@ -30,10 +36,12 @@
       h += '<div style="flex:none;box-sizing:border-box;padding:13mm 13mm 3mm;text-align:center">' +
           '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:14mm;line-height:1.1;color:' + d.titulo + '">' + esc(o.titulo) + '</div>' +
           '<div style="color:#E3A93C;font-size:6mm;line-height:1;margin:2.5mm 0 3mm">★</div>' +
-          '<p style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:6.1mm;line-height:1.45;color:' + d.titulo + ';margin:0">' + (o.texto || '') + '</p>' +
+          '<p style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:7mm;line-height:1.42;color:' + d.titulo + ';margin:0">' + (o.texto || '') + '</p>' +
         '</div>';
     }
-    h += '<div style="flex:1;min-height:0;position:relative"><img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;mix-blend-mode:multiply;-webkit-mask-image:linear-gradient(transparent,#000 4%);mask-image:linear-gradient(transparent,#000 4%)"></div></div>';
+    h += '<div style="flex:1;min-height:0;position:relative"><img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;-webkit-mask-image:linear-gradient(transparent,#000 22%);mask-image:linear-gradient(transparent,#000 22%)"></div></div>';
+    // (la parte de arriba de la ilustración se funde poco a poco con la hoja: el crema de la IA nunca es
+    // exactamente el del papel y, si empieza de golpe, se nota una franja)
     h += '</div>';
     // Número de página: una etiqueta redonda de papel centrada abajo, encima del marco de acuarela
     // (queda a ~8 mm del corte, dentro de la zona segura) y con la tinta del diseño
