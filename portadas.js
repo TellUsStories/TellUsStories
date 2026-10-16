@@ -13,7 +13,7 @@
     { n: 4, nombre: 'Ajedrez', paleta: 'brick red and soft blue-grey with touches of sage green', estampado: 'a brick red and soft blue-grey watercolour checkerboard', titulo: '#5D5E52', nombreCol: '#8E3827', lomo: '#8E3827', papel: '#EFE6D5', delante: [59, 318, 714, 478], detras: [66, 324, 700, 469] },
     { n: 5, nombre: 'Rayas mandarina', paleta: 'mandarin orange and plum purple with touches of warm pink', estampado: 'wide mandarin orange and plum purple watercolour stripes', titulo: '#703164', nombreCol: '#D65A25', lomo: '#703164', papel: '#F5E3C9', delante: [54, 311, 725, 486], detras: [54, 314, 723, 483] },
     { n: 6, nombre: 'Vichy verde', paleta: 'cornflower sky blue and grass green with touches of sunny yellow', estampado: 'a cornflower blue and grass green watercolour gingham (vichy) check', titulo: '#3B5738', nombreCol: '#3B5736', lomo: '#3B5738', papel: '#F0E8D6', delante: [62, 306, 708, 504], detras: [68, 310, 697, 496] },
-    { n: 7, nombre: 'Rayas verdes', paleta: 'emerald green, deep forest green and pale butter yellow', estampado: 'emerald green, deep forest green and pale butter yellow watercolour stripes', titulo: '#414D28', nombreCol: '#414C28', lomo: '#414D28', papel: '#EFEAD7', delante: [57, 326, 719, 461], detras: [60, 328, 712, 457] },
+    { n: 7, nombre: 'Rayas verdes', paleta: 'emerald green, deep forest green and pale butter yellow', estampado: 'emerald green, deep forest green and pale butter yellow watercolour stripes', titulo: '#414D28', nombreCol: '#414C28', lomo: '#213325', papel: '#EFEAD7', delante: [57, 326, 719, 461], detras: [60, 328, 712, 457] },
     { n: 8, nombre: 'Cuadros', paleta: 'coral salmon, cobalt blue, emerald green and burgundy', estampado: 'a coral salmon, cobalt blue, emerald green and burgundy watercolour checked pattern', titulo: '#72181D', nombreCol: '#781B20', lomo: '#72181D', papel: '#F6E5D0', delante: [60, 319, 712, 473], detras: [63, 322, 705, 471] }
   ];
   var W = 832, H = 1176;
@@ -45,7 +45,8 @@
   function svg(estilo, nombre, alt, op) {
     op = op || {};
     var d = diseno(/\d/.test(String(alt || '')) ? alt : estilo), n = String(nombre || 'Carmen').trim() || 'Carmen';
-    var e = d.delante, x = e[0] + e[2] / 2, nom = n.toUpperCase();
+    // op.espejo: la acuarela va dada la vuelta (imprenta), así que el centro de la etiqueta también se refleja
+    var e = d.delante, x = op.espejo ? W - e[0] - e[2] / 2 : e[0] + e[2] / 2, nom = n.toUpperCase();
     // El texto nunca puede salirse del marco: «El universo de» ocupa siempre el 70 % del ancho de la etiqueta
     // y el nombre, como mucho el 78 % (textLength lo encaja aunque el navegador use una letra más ancha)
     var tamT = Math.round(e[3] * .2), tamN = cabe(nom, Math.round(e[3] * .38), e[2] * .74, .36);
@@ -54,7 +55,8 @@
     // Aire entre «El universo de» y el nombre, para que las tildes (Á, É, Í…) no toquen la línea de arriba
     var yT = Math.round(e[1] + e[3] * .37);
     return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada ' + esc(d.nombre) + ': El universo de ' + esc(n) + '">' +
-      '<image href="' + imagen(d, 'delante', op.calidad) + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>' +
+      // op.sinImagen: solo el texto (la imprenta pone debajo la acuarela por su cuenta)
+      (op.sinImagen ? '' : '<image href="' + imagen(d, 'delante', op.calidad) + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>') +
       '<text x="' + x + '" y="' + yT + '" text-anchor="middle" textLength="' + anchoT + '" lengthAdjust="spacingAndGlyphs" font-family="\'Dancing Script\', cursive" font-weight="400" font-size="' + tamT + '" fill="' + d.titulo + '">El universo de</text>' +
       '<text x="' + x + '" y="' + Math.round(yT + tamN * 1.12) + '" text-anchor="middle" font-family="\'Amatic SC\', cursive" font-weight="700" font-size="' + tamN + '" letter-spacing="2"' + ajusteN + ' fill="' + d.nombreCol + '">' + esc(nom) + '</text>' +
       '</svg>';
