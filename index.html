@@ -147,8 +147,11 @@
   /* Página interior: ilustración abajo y texto arriba, siempre con la misma letra y el mismo color */
   .pag-libro { position: absolute; inset: 0; container-type: inline-size; background: #F9F3E8 center / cover no-repeat; overflow: hidden; }
   /* Con portada elegida: la acuarela de la portada hace de marco y la hoja de papel va encima con doble línea */
-  .pag-libro .hoja { position: absolute; inset: 5.5cqw; overflow: hidden; background: #F9F3E8; box-shadow: 0 .4cqw 1.2cqw rgba(40, 25, 10, .25); }
+  .pag-libro .hoja { position: absolute; inset: 5.5cqw; overflow: hidden; display: flex; flex-direction: column; background: #F9F3E8; box-shadow: 0 .4cqw 1.2cqw rgba(40, 25, 10, .25); }
   .pag-libro .hoja::after { content: ''; position: absolute; inset: 1.3cqw; border: .3cqw solid var(--tinta-pag, #C4622D); outline: .12cqw solid var(--tinta-pag, #C4622D); outline-offset: -.75cqw; pointer-events: none; }
+  .pag-libro .hoja .panel { position: static; height: auto; flex: none; padding: 6cqw 7cqw 1cqw; background: none; }
+  .pag-libro .hoja .panel::after { content: none; }
+  .pag-libro .hoja .ilu { position: relative; inset: auto; flex: 1; min-height: 0; background-size: cover; background-position: center bottom; -webkit-mask-image: linear-gradient(transparent, #000 4%); mask-image: linear-gradient(transparent, #000 4%); }
   .pag-libro .estrella { color: #E3A93C; font-size: 3.4cqw; line-height: 1; margin: -.6cqw 0 1.6cqw; }
   .pag-libro .ilu { position: absolute; inset: 0; background-repeat: no-repeat; background-size: 100% auto; background-position: center bottom; }
   .pag-libro .panel { position: absolute; left: 0; right: 0; top: 0; height: var(--panel, 38%); background: #F9F3E8; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6cqw 8cqw 2cqw; }
@@ -435,7 +438,7 @@
 
 <div class="barra"><div><small>Tu libro desde</small><b>43 €</b></div><a href="#portada">Crear el libro</a></div>
 
-<script src="portadas.js?v=20261016e"></script>
+<script src="portadas.js?v=20261016f"></script>
 <script>
   // Las ocho portadas (portadas.js): cada diseño con su color fijo y el nombre escrito en la etiqueta
   function portada(diseno, nombre, calidad) { return '<div class="real">' + TUSPortadas.svg(diseno, nombre, null, { calidad: calidad }) + '</div>'; }
@@ -457,9 +460,10 @@
     libro.querySelectorAll('[data-pag]').forEach(function (el) {
       var p = PAGINAS[el.dataset.pag];
       // Las páginas llevan el marco de la portada del libro (la misma que se ve delante)
-      el.innerHTML = '<div class="pag-libro" role="img" aria-label="' + p.alt + '" style="--panel:' + p.panel + ';--tinta-pag:' + DIS.titulo + ';background-image:url(\'' + TUSPortadas.imagen(DIS, 'delante') + '\')">' +
-        '<div class="hoja"><div class="ilu" style="background-image:url(\'' + p.img + '\')"></div>' +
-        '<div class="panel"><h4>' + p.titulo + '</h4><div class="estrella">★</div><p>' + p.texto + '</p></div></div></div>';
+      // Texto arriba (lo que ocupe) y la ilustración debajo: nunca se juntan
+      el.innerHTML = '<div class="pag-libro" role="img" aria-label="' + p.alt + '" style="--tinta-pag:' + DIS.titulo + ';background-image:url(\'' + TUSPortadas.imagen(DIS, 'delante') + '\')">' +
+        '<div class="hoja"><div class="panel"><h4>' + p.titulo + '</h4><div class="estrella">★</div><p>' + p.texto + '</p></div>' +
+        '<div class="ilu" style="background-image:url(\'' + p.img + '\')"></div></div></div>';
     });
 
     // La página del libro es algo más alargada que la portada: que la portada la llene entera, sin franjas
