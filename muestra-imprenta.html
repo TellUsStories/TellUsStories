@@ -83,7 +83,7 @@
       { c: 'pliegue', l: m.jointFrontSize.left, t: m.jointFrontSize.top, w: m.jointFrontSize.width, h: m.jointFrontSize.height }
     ] : []), $('hoja').checked ? null : visible);
     // Igual que en hcti: si la dedicatoria no cabe, se reduce la letra
-    document.querySelectorAll('.tus-ded').forEach(function (b) { var p = b.querySelector('p'), t = 6; while (b.scrollHeight > b.clientHeight + 1 && t > 3.4) { t -= .2; p.style.fontSize = t.toFixed(1) + 'mm'; } });
+    document.querySelectorAll('.tus-ded').forEach(function (b) { var p = b.querySelector('p'), t = 7.2; while (b.scrollHeight > b.clientHeight + 1 && t > 4) { t -= .2; p.style.fontSize = t.toFixed(1) + 'mm'; } });
 
     var P = TUSImprenta.PAG, s = TUSImprenta.SANGRADO, gp = [
       { c: 'corte', l: s, t: s, w: P.w - 2 * s, h: P.h - 2 * s },
