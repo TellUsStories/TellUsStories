@@ -29,24 +29,62 @@
           '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
           '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + '"></div>' +
         '</div>' +
-        // La hoja es una columna: arriba el texto (lo que ocupe) y debajo la ilustración, que nunca se mete en el texto.
-        // La ilustración llega con la parte de arriba vacía (así se pide a la IA): se recorta por arriba si hace falta.
+        // La ilustración ocupa todo el ancho de la hoja, apoyada abajo, y NUNCA se recorta: al cargar, encajar()
+        // mira dónde empieza el dibujo de verdad y, si se metería bajo el texto, la reduce lo justo (ver encajar).
+        '<img src="' + esc(o.img) + '" crossorigin="anonymous" onload="TUSImprenta.encajar(this)" onerror="TUSImprenta.encajar(this)" style="position:absolute;left:0;bottom:0;width:100%;display:block">' +
         '<div style="position:absolute;inset:0;display:flex;flex-direction:column">';
     if (conTexto) {
-      h += '<div style="flex:none;box-sizing:border-box;padding:13mm 13mm 3mm;text-align:center">' +
+      h += '<div class="tus-txt" style="flex:none;position:relative;z-index:1;box-sizing:border-box;padding:13mm 13mm 3mm;text-align:center">' +
           '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:14mm;line-height:1.1;color:' + d.titulo + '">' + esc(o.titulo) + '</div>' +
           '<div style="color:#E3A93C;font-size:6mm;line-height:1;margin:2.5mm 0 3mm">★</div>' +
           '<p style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:7mm;line-height:1.42;color:' + d.titulo + ';margin:0">' + (o.texto || '') + '</p>' +
         '</div>';
     }
-    h += '<div style="flex:1;min-height:0;position:relative"><img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;-webkit-mask-image:linear-gradient(transparent,#000 22%);mask-image:linear-gradient(transparent,#000 22%)"></div></div>';
-    // (la parte de arriba de la ilustración se funde poco a poco con la hoja: el crema de la IA nunca es
-    // exactamente el del papel y, si empieza de golpe, se nota una franja)
-    h += '</div>';
+    h += '</div></div>';
     // Número de página: una etiqueta redonda de papel centrada abajo, encima del marco de acuarela
     // (queda a ~8 mm del corte, dentro de la zona segura) y con la tinta del diseño
     if (numero(o)) h += '<div style="position:absolute;left:50%;bottom:' + (M.y - 5) + 'mm;transform:translateX(-50%);width:10mm;height:10mm;border-radius:50%;background:' + PAPEL + ';border:.35mm solid ' + d.titulo + ';box-shadow:0 .4mm 1mm rgba(40,25,10,.2);display:flex;align-items:center;justify-content:center;font-family:\'Cormorant Garamond\',serif;font-weight:600;font-size:5mm;line-height:1;color:' + d.titulo + ';z-index:3">' + numero(o) + '</div>';
     return h + '</div>';
+  }
+  // Coloca la ilustración de una página con marco sin cortar nunca nada:
+  // 1. Lee la imagen (PiAPI permite leerla) y busca la primera fila donde empieza el dibujo, saltándose el
+  //    crema vacío de arriba; ese crema pasa a ser el color de la hoja, así no se nota dónde empieza la imagen.
+  // 2. Si el dibujo quedaría debajo del texto, reduce la imagen lo justo (sigue apoyada abajo y centrada) y
+  //    funde sus lados con la hoja. Si no se puede leer la imagen, la reduce entera por debajo del texto.
+  function encajar(img) {
+    var hoja = img.parentNode, txt = hoja.querySelector('.tus-txt');
+    if (img.dataset.ini == null) {
+      img.dataset.ini = '0';
+      var t = 0;
+      try {
+        var w = 120, hh = Math.round(w * img.naturalHeight / img.naturalWidth), c = document.createElement('canvas');
+        c.width = w; c.height = hh;
+        var x = c.getContext('2d'); x.drawImage(img, 0, 0, w, hh);
+        var px = x.getImageData(0, 0, w, hh).data, fondo = [0, 0, 0], n = 0, y, i;
+        for (y = 0; y < 3; y++) for (i = 0; i < w; i++) { var k = (y * w + i) * 4; fondo[0] += px[k]; fondo[1] += px[k + 1]; fondo[2] += px[k + 2]; n++; }
+        fondo = fondo.map(function (v) { return Math.round(v / n); });
+        for (y = 0; y < hh; y++) {
+          var distintos = 0;
+          for (i = 0; i < w; i++) { var j = (y * w + i) * 4; if (Math.abs(px[j] - fondo[0]) + Math.abs(px[j + 1] - fondo[1]) + Math.abs(px[j + 2] - fondo[2]) > 45) distintos++; }
+          if (distintos > w * 0.04) break;
+        }
+        t = y / hh;
+        hoja.style.background = 'rgb(' + fondo.join(',') + ')';
+      } catch (e) { t = 0; }
+      img.dataset.t = t;
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { encajar(img); });
+    }
+    var t2 = parseFloat(img.dataset.t) || 0, W = hoja.clientWidth, H = hoja.clientHeight;
+    var ih = W * (img.naturalHeight || 4) / (img.naturalWidth || 3);
+    var limite = txt ? txt.offsetTop + txt.offsetHeight + W * 0.015 : 0;     // ~3 mm bajo el texto
+    var s = 1;
+    if (H - ih * (1 - t2) < limite) s = Math.max(0.3, (H - limite) / (ih * (1 - t2)));
+    img.style.width = (W * s) + 'px';
+    img.style.left = ((W - W * s) / 2) + 'px';
+    var arriba = 'linear-gradient(transparent,#000 4%)', lados = 'linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)';
+    var m = s < 1 ? arriba + ',' + lados : arriba;
+    img.style.webkitMaskImage = img.style.maskImage = m;
+    if (s < 1) { img.style.webkitMaskComposite = 'source-in'; img.style.maskComposite = 'intersect'; }
   }
   // El número de página (o.numero), solo si es un número de verdad
   function numero(o) { var n = parseInt(o.numero, 10); return n > 0 ? n : ''; }
@@ -185,5 +223,5 @@
     contentFrontSize: { width: 210, height: 280, left: 217.5, top: 4 }
   };
 
-  window.TUSImprenta = { pagina: pagina, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA, EJEMPLO_TAPA_BLANDA: EJEMPLO_TAPA_BLANDA };
+  window.TUSImprenta = { pagina: pagina, encajar: encajar, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA, EJEMPLO_TAPA_BLANDA: EJEMPLO_TAPA_BLANDA };
 })();
