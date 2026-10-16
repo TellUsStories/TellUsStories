@@ -1,0 +1,109 @@
+/* Portadas propuestas para Tale Us Stories.
+   Cada portada es un bloque A4 (832 x 1176 en Make/hcti) que escala con su ancho:
+   todas las medidas van en cqw (1cqw = 1% del ancho de la portada).
+   La zona .acuarela marca dónde iría la ilustración en acuarela generada para cada libro. */
+
+.portada-b {
+  --papel: #F7EFE2;
+  --tinta: #4A2C1F;
+  --terracota: #C4622D;
+  --dorado: #D4A853;
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 832 / 1176;
+  overflow: hidden;
+  border-radius: 1.2cqw 2.4cqw 2.4cqw 1.2cqw;
+  box-shadow: 0 2cqw 5cqw -2cqw rgba(40, 25, 10, .45), inset 2.2cqw 0 1.6cqw -1.6cqw rgba(0, 0, 0, .25);
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: 'Literata', Georgia, serif;
+}
+.portada-b * { box-sizing: border-box; margin: 0; padding: 0; }
+.portada-b .sello-marca { position: absolute; left: 0; right: 0; bottom: 4.4cqw; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 2.4cqw; letter-spacing: .9cqw; text-transform: uppercase; opacity: .75; }
+
+/* Mancha de acuarela de muestra (en el libro real: la ilustración generada) */
+.acuarela {
+  position: absolute;
+  background:
+    radial-gradient(38% 34% at 42% 40%, rgba(214, 150, 110, .55), transparent 70%),
+    radial-gradient(30% 30% at 62% 58%, rgba(212, 168, 83, .45), transparent 72%),
+    radial-gradient(36% 28% at 38% 70%, rgba(150, 170, 140, .45), transparent 72%),
+    radial-gradient(60% 60% at 50% 50%, rgba(235, 215, 190, .9), transparent 75%);
+  filter: blur(.25cqw);
+  display: grid;
+  place-items: end center;
+}
+.acuarela::after { content: 'ilustración en acuarela'; font: italic 2.1cqw 'Literata', serif; color: rgba(60, 40, 25, .45); padding-bottom: 6%; }
+.sin-rotulo .acuarela::after, .acuarela.sin-rotulo::after { content: none; }
+
+/* 1 · LA ETIQUETA: el rol tachado y el nombre escrito a mano encima */
+.p-etiqueta { background: #F7EFE2; }
+.p-etiqueta .acuarela { left: 8%; right: 8%; top: 44%; height: 44%; border-radius: 50%; }
+.p-etiqueta .rol { position: absolute; top: 12%; left: 0; right: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 19cqw; line-height: .9; letter-spacing: -.6cqw; text-transform: uppercase; }
+.p-etiqueta .rol span { position: relative; display: inline-block; }
+.p-etiqueta .rol span::after { content: ''; position: absolute; left: -5%; right: -5%; top: 50%; height: 2.4cqw; background: var(--terracota); border-radius: 1cqw; transform: rotate(-5deg); }
+.p-etiqueta .nombre { position: absolute; top: 25%; left: 0; right: 0; text-align: center; font-family: 'Caveat', cursive; font-weight: 700; font-size: 17cqw; color: var(--terracota); transform: rotate(-4deg); line-height: 1; }
+.p-etiqueta .para { position: absolute; top: 38.5%; left: 0; right: 0; text-align: center; font-style: italic; font-size: 3.6cqw; }
+
+/* 2 · CLÁSICO DE TELA: encuadernación con marco dorado y ventana ovalada */
+.p-tela { --tela: #A9542B; background:
+  repeating-linear-gradient(45deg, rgba(255, 255, 255, .035) 0 .3cqw, transparent .3cqw .9cqw),
+  repeating-linear-gradient(-45deg, rgba(0, 0, 0, .05) 0 .3cqw, transparent .3cqw .9cqw), var(--tela); color: var(--dorado); }
+.p-tela.verde { --tela: #4F5D45; }
+.p-tela.azul { --tela: #6A4532; }
+.p-tela .marco { position: absolute; inset: 5%; border: .5cqw solid var(--dorado); border-radius: 1cqw; }
+.p-tela .marco::before { content: ''; position: absolute; inset: 1.4cqw; border: .25cqw solid var(--dorado); border-radius: .6cqw; }
+.p-tela .ventana { position: absolute; left: 22%; right: 22%; top: 13%; height: 41%; border-radius: 50%; background: var(--papel); border: .7cqw solid var(--dorado); box-shadow: 0 0 0 1.2cqw var(--tela), 0 0 0 1.45cqw var(--dorado); overflow: hidden; }
+.p-tela .ventana .acuarela { inset: 0; }
+.p-tela .ventana .acuarela::after { font-size: 2.4cqw; }
+.p-tela .titulo { position: absolute; left: 10%; right: 10%; top: 61%; text-align: center; font-family: 'Cormorant Garamond', serif; }
+.p-tela .titulo small { display: block; font-size: 4.2cqw; letter-spacing: 1.2cqw; text-transform: uppercase; font-weight: 600; }
+.p-tela .titulo b { display: block; font-style: italic; font-weight: 600; font-size: 14cqw; line-height: 1.05; margin-top: 1cqw; }
+.p-tela .orla { font-size: 5cqw; line-height: 1; margin-top: 1.4cqw; }
+.p-tela .titulo em { display: block; font-style: normal; font-size: 3.6cqw; letter-spacing: .4cqw; margin-top: 1.2cqw; }
+.p-tela .sello-marca { color: var(--dorado); bottom: 11cqw; font-size: 2cqw; }
+
+/* 3 · CONSTELACIÓN: el cielo de su historia, con la inicial dibujada en estrellas */
+.p-noche { background: #6A4532; color: #F6EFE3; }
+.p-noche .cielo { position: absolute; inset: 0; background-image:
+  radial-gradient(.35cqw .35cqw at 12% 18%, #F3D99A 98%, transparent), radial-gradient(.25cqw .25cqw at 30% 9%, #fff 98%, transparent),
+  radial-gradient(.3cqw .3cqw at 82% 14%, #F3D99A 98%, transparent), radial-gradient(.2cqw .2cqw at 68% 30%, #fff 98%, transparent),
+  radial-gradient(.3cqw .3cqw at 90% 46%, #fff 98%, transparent), radial-gradient(.25cqw .25cqw at 8% 52%, #F3D99A 98%, transparent),
+  radial-gradient(.2cqw .2cqw at 22% 78%, #fff 98%, transparent), radial-gradient(.3cqw .3cqw at 76% 84%, #F3D99A 98%, transparent),
+  radial-gradient(.2cqw .2cqw at 52% 6%, #fff 98%, transparent), radial-gradient(.25cqw .25cqw at 44% 92%, #fff 98%, transparent); }
+.p-noche .inicial { position: absolute; top: 9%; left: 0; right: 0; text-align: center; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 62cqw; line-height: 1; color: transparent; -webkit-text-stroke: .35cqw rgba(243, 217, 154, .85); text-shadow: 0 0 3cqw rgba(243, 217, 154, .35); }
+.p-noche .luna { position: absolute; top: 6%; right: 9%; width: 9cqw; height: 9cqw; border-radius: 50%; box-shadow: -2cqw 1cqw 0 0 #F3D99A; }
+.p-noche .titulo { position: absolute; left: 8%; right: 8%; top: 64%; text-align: center; }
+.p-noche .titulo small { display: block; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500; font-size: 3.6cqw; letter-spacing: .8cqw; text-transform: uppercase; color: #F3D99A; }
+.p-noche .titulo b { display: block; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 13cqw; line-height: 1.05; margin-top: 1.5cqw; }
+.p-noche .titulo em { display: block; font-style: italic; font-size: 3.4cqw; margin-top: 2cqw; opacity: .8; }
+
+/* 4 · ÁLBUM: tres polaroids (de pequeño, de joven, hoy) con cinta */
+.p-album { background:
+  linear-gradient(rgba(196, 98, 45, .06) .2cqw, transparent .2cqw) 0 0 / 100% 5cqw, #F4EBDD; }
+.p-album .foto { position: absolute; width: 38%; aspect-ratio: .86; background: #fff; padding: 2.2cqw 2.2cqw 8cqw; box-shadow: 0 1.4cqw 3cqw -1.2cqw rgba(0, 0, 0, .35); }
+.p-album .foto .acuarela { position: relative; width: 100%; height: 100%; inset: auto; }
+.p-album .foto .acuarela::after { content: none; }
+.p-album .foto span { position: absolute; left: 0; right: 0; bottom: 2.2cqw; text-align: center; font-family: 'Caveat', cursive; font-weight: 700; font-size: 4.4cqw; }
+.p-album .foto::before { content: ''; position: absolute; top: -2cqw; left: 30%; width: 40%; height: 5cqw; background: rgba(212, 168, 83, .55); transform: rotate(-3deg); }
+.p-album .f1 { top: 7%; left: 7%; transform: rotate(-7deg); }
+.p-album .f2 { top: 11%; right: 6%; transform: rotate(6deg); }
+.p-album .f3 { top: 39%; left: 31%; transform: rotate(-2deg); z-index: 2; }
+.p-album .titulo { position: absolute; left: 6%; right: 6%; top: 73%; text-align: center; }
+.p-album .titulo small { display: block; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 3.4cqw; letter-spacing: .7cqw; text-transform: uppercase; color: var(--terracota); }
+.p-album .titulo b { display: block; font-family: 'Caveat', cursive; font-weight: 700; font-size: 14cqw; line-height: 1; margin-top: .8cqw; }
+.p-album .titulo em { display: block; font-style: italic; font-size: 3.4cqw; margin-top: 1.4cqw; }
+
+/* 5 · SELLO: un sello de correos con su retrato y el matasellos de la edición */
+.p-sello { background: #DCE0CF; }
+.p-sello .sello { position: absolute; left: 19%; right: 19%; top: 8%; aspect-ratio: .8; background: #FBF6EC; padding: 3.4cqw; box-shadow: 0 1cqw 2cqw -1cqw rgba(0, 0, 0, .3); }
+.p-sello .sello::before { content: ''; position: absolute; inset: -1cqw; border: 2cqw dotted #DCE0CF; border-radius: .4cqw; pointer-events: none; }
+.p-sello .sello .dentro { position: relative; width: 100%; height: 100%; border: .3cqw solid #4F5D45; }
+.p-sello .sello .acuarela { inset: 0; }
+.p-sello .sello .valor { position: absolute; top: 1.4cqw; right: 2cqw; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 4cqw; color: #4F5D45; }
+.p-sello .matasellos { position: absolute; top: 44%; right: 7%; width: 22cqw; height: 22cqw; border-radius: 50%; border: .5cqw solid rgba(196, 98, 45, .8); color: rgba(196, 98, 45, .9); display: grid; place-items: center; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 2.3cqw; letter-spacing: .3cqw; line-height: 1.3; text-transform: uppercase; transform: rotate(-14deg); }
+.p-sello .titulo { position: absolute; left: 8%; right: 8%; top: 66%; text-align: center; color: #2F3A28; }
+.p-sello .titulo b { display: block; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 9.6cqw; line-height: 1.02; }
+.p-sello .titulo b i { color: var(--terracota); }
+.p-sello .titulo em { display: block; font-style: italic; font-size: 3.4cqw; margin-top: 1.6cqw; }
