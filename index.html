@@ -435,7 +435,7 @@
 
 <div class="barra"><div><small>Tu libro desde</small><b>43 €</b></div><a href="#portada">Crear el libro</a></div>
 
-<script src="portadas.js?v=20261016d"></script>
+<script src="portadas.js?v=20261016e"></script>
 <script>
   // Las ocho portadas (portadas.js): cada diseño con su color fijo y el nombre escrito en la etiqueta
   function portada(diseno, nombre, calidad) { return '<div class="real">' + TUSPortadas.svg(diseno, nombre, null, { calidad: calidad }) + '</div>'; }
@@ -453,7 +453,7 @@
            texto: 'Antes de ser vuestra mami, <span class="hl">Carla</span> fue <span class="hl">muchas cosas</span>. Fue una niña que no paraba de reír. Fue una joven que cruzó el océano. Fue <span class="hl">siempre ella misma</span>: valiente, curiosa y <span class="hl">siempre sonriendo</span>.',
            alt: 'Página 2: Carla de bebé, de niña, de joven y hoy' }
     };
-    var DIS = TUSPortadas.diseno(1);   // Vichy rosa, la portada del libro de ejemplo
+    var DIS = TUSPortadas.diseno(8);   // Cuadros, la portada del libro de ejemplo
     libro.querySelectorAll('[data-pag]').forEach(function (el) {
       var p = PAGINAS[el.dataset.pag];
       // Las páginas llevan el marco de la portada del libro (la misma que se ve delante)
@@ -463,7 +463,7 @@
     });
 
     // La página del libro es algo más alargada que la portada: que la portada la llene entera, sin franjas
-    var svg = TUSPortadas.svg(1, 'Carla').replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ');
+    var svg = TUSPortadas.svg(DIS.n, 'Carla').replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ');
     document.getElementById('libro-portada').innerHTML = svg;
     document.getElementById('libro-portada-m').innerHTML = svg;
     var txt = libro.querySelector('.libro-txt'), btns = libro.querySelectorAll('.libro-btn'), mpags = libro.querySelectorAll('.mpag'), paso = 0;
