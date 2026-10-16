@@ -75,9 +75,26 @@
     }
     var del = cara(F, S.left + S.width, H.width, false);
 
-    // Lomo: color de la portada y, si cabe, el título en vertical (se lee de arriba abajo)
-    var lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;letter-spacing:.3mm;color:#fff">El universo de <b>' + esc(nombre) + '</b></div>' : '';
-    var lomo = '<div style="position:absolute;left:' + (S.left - 1) + 'mm;top:0;width:' + (S.width + 2) + 'mm;height:' + H.height + 'mm;background:' + c.oscuro + '">' + lomoTxt + '</div>';
+    // Lomo: sigue el diseño de la portada (rayas, baldosas o papel) y lleva el título en vertical,
+    // de arriba abajo, sobre una tirita de papel para que se lea bien.
+    var tintaLomo = o.estilo == 1 ? '#7B7F6F' : c.oscuro;
+    var lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;background:' + PAPEL + ';padding:' + (S.width * .14).toFixed(2) + 'mm ' + (S.width * .9).toFixed(2) + 'mm;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;line-height:1;letter-spacing:.3mm;color:' + tintaLomo + '">El universo de <b>' + esc(nombre) + '</b></div>' : '';
+    var lomoFondo;
+    if (o.estilo == 2) {
+      // Columna de baldosas pequeñas con los tonos del mosaico, con el mismo respiro arriba y abajo
+      var lado = S.width - 1.6, paso = lado + 1.4, n = Math.floor((H.height - 2 * (S.top + 6)) / paso);
+      var tonos = [c.oscuro, c.claro, c.base, c.claro], baldosas = '';
+      for (var i = 0; i < n; i++) baldosas += '<div style="position:absolute;left:.8mm;top:' + (S.top + 6 + i * paso + ((H.height - 2 * (S.top + 6)) - n * paso + 1.4) / 2).toFixed(2) + 'mm;width:' + lado.toFixed(2) + 'mm;height:' + lado.toFixed(2) + 'mm;border-radius:' + (lado * .18).toFixed(2) + 'mm;background:' + tonos[i % 4] + ';opacity:.85"></div>';
+      lomoFondo = '<div style="position:absolute;left:1mm;top:0;width:' + S.width + 'mm;height:100%">' + baldosas + '</div>';
+    } else if (o.estilo == 3) {
+      lomoFondo = '';
+    } else {
+      // Las rayas siguen por el lomo: el mismo dibujo de las tapas, usando una franja del lateral
+      // (x ≈ 50 de 832) para que no se cuele el marco del título que trae pintado en el centro
+      var LR = colocacion(B);
+      lomoFondo = '<div style="position:absolute;left:' + ((S.width + 2) / 2 - 50 * LR.kx) + 'mm;top:' + LR.y + 'mm;width:' + LR.w + 'mm;height:' + LR.h + 'mm">' + TUSPortadas.svg(1, nombre, o.color, true) + '</div>';
+    }
+    var lomo = '<div style="position:absolute;left:' + (S.left - 1) + 'mm;top:0;width:' + (S.width + 2) + 'mm;height:' + H.height + 'mm;overflow:hidden;background:#F6EFE5">' + lomoFondo + lomoTxt + '</div>';
 
     // Contraportada: el mismo dibujo que delante y, encima, un recuadro de papel con la dedicatoria
     // que escribe quien regala el libro, su firma y el logo de Tale Us Stories en el color de la portada.

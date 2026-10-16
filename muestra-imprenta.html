@@ -31,13 +31,14 @@
   <label>Nombre <input id="nombre" value="Carla" size="10"></label>
   <label>Portada <select id="estilo"><option value="1">Rayas</option><option value="2">Mosaico</option><option value="3">Inicial</option></select></label>
   <label>Color <select id="color"></select></label>
-  <label><input type="checkbox" id="guias" checked> Ver guías</label>
+  <label><input type="checkbox" id="hoja"> Ver la hoja completa de imprenta (con lo que se dobla hacia dentro)</label>
+  <label><input type="checkbox" id="guias"> Ver guías</label>
   <label style="flex-basis:100%">Dedicatoria<br><textarea id="dedicatoria" rows="3" maxlength="350" style="width:100%;max-width:640px;font-size:14px">Lucas, Martina: este libro es para que nunca olvidéis de dónde venís. Vuestra madre es la persona más valiente que conozco, y vosotros sois su mayor aventura. Os queremos hasta el infinito.</textarea></label>
   <label>Firma <input id="firma" value="Papá" size="24"></label>
 </header>
 
 <section>
-  <h2>Portada abierta (tapa dura): contraportada · lomo · portada</h2>
+  <h2>Portada abierta (tapa dura): contraportada · lomo · portada, tal como se ve en el libro</h2>
   <p class="nota">Medidas de Gelato para la tapa dura de 21 × 28 (46,8 × 32,5 cm con lo que se dobla hacia dentro). El lomo exacto se ajustará solo con el número de páginas real. Delante y detrás llevan el mismo dibujo; detrás va la dedicatoria que escribe quien regala el libro, con su firma y el logo.</p>
   <div id="portada"></div>
   <div class="leyenda"><span><i style="color:#d0021b"></i>Corte / borde del cartón</span><span><i style="color:#00a36c"></i>Bisagras y lomo</span><span><i style="color:#2a7ae2"></i>Zona visible de cada cara</span></div>
@@ -55,11 +56,13 @@
   var $ = function (id) { return document.getElementById(id); };
   TUSPortadas.colores.forEach(function (c) { var o = document.createElement('option'); o.value = c.id; o.textContent = c.nombre; $('color').appendChild(o); });
 
-  function lienzo(html, wmm, hmm, anchoPx, guias) {
-    var mm = anchoPx / wmm;
+  // recorte (opcional): la parte de la hoja que se ve en el libro terminado {left, top, width, height} en mm
+  function lienzo(html, wmm, hmm, anchoPx, guias, recorte) {
+    var r = recorte || { left: 0, top: 0, width: wmm, height: hmm };
+    var mm = anchoPx / r.width;
     var g = guias.map(function (x) { return '<div class="guia ' + x.c + '" style="left:' + x.l + 'mm;top:' + x.t + 'mm;width:' + x.w + 'mm;height:' + x.h + 'mm"></div>'; }).join('');
     var px = mm / (96 / 25.4);   // px que ocupa 1 mm de CSS
-    return '<div style="width:' + anchoPx + 'px;height:' + (hmm * mm) + 'px;overflow:hidden"><div class="lienzo" style="transform:scale(' + px + ')">' + html + ($('guias').checked ? g : '') + '</div></div>';
+    return '<div style="width:' + anchoPx + 'px;height:' + (r.height * mm) + 'px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.18)"><div class="lienzo" style="box-shadow:none;transform:scale(' + px + ') translate(' + (-r.left) + 'mm,' + (-r.top) + 'mm)">' + html + ($('guias').checked ? g : '') + '</div></div>';
   }
 
   function pinta() {
@@ -76,7 +79,7 @@
       { c: 'pliegue', l: m.jointFrontSize.left, t: m.jointFrontSize.top, w: m.jointFrontSize.width, h: m.jointFrontSize.height },
       { c: 'segura', l: m.contentBackSize.left, t: m.contentBackSize.top, w: m.contentBackSize.width, h: m.contentBackSize.height },
       { c: 'segura', l: m.contentFrontSize.left, t: m.contentFrontSize.top, w: m.contentFrontSize.width, h: m.contentFrontSize.height }
-    ]);
+    ], $('hoja').checked ? null : m.wraparoundEdgeSize);
 
     var P = TUSImprenta.PAG, s = TUSImprenta.SANGRADO, gp = [
       { c: 'corte', l: s, t: s, w: P.w - 2 * s, h: P.h - 2 * s },
@@ -88,7 +91,7 @@
       lienzo(TUSImprenta.pagina({ img: 'img/libro-pagina-1.jpg', color: c.oscuro }), P.w, P.h, anchoPag, gp) +
       lienzo(TUSImprenta.pagina({ img: 'img/libro-pagina-2.jpg', color: c.oscuro }), P.w, P.h, anchoPag, gp);
   }
-  ['nombre', 'estilo', 'color', 'guias', 'dedicatoria', 'firma'].forEach(function (id) { $(id).addEventListener('input', pinta); });
+  ['nombre', 'estilo', 'color', 'guias', 'hoja', 'dedicatoria', 'firma'].forEach(function (id) { $(id).addEventListener('input', pinta); });
   window.addEventListener('resize', pinta);
   document.fonts.ready.then(pinta); pinta();
 </script>
