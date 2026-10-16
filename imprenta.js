@@ -44,7 +44,7 @@
     // Delantera: el dibujo de la web, centrado en la parte visible y un poco más grande (5 mm de margen
     // por si el corte o el doblado se mueven). Debajo, el mismo dibujo ampliado rellena lo que se dobla.
     // Cada cara (delantera y trasera) lleva el mismo dibujo del estilo elegido: en la trasera, sin el título.
-    var ratio = 1176 / 832;
+    var ratio = 1176 / 832, SOLAPE = 3.5;
     // Dónde va el dibujo (832 × 1176) en cada cara: centrado y 5 mm más grande que la parte visible.
     // En «Mosaico» el dibujo ya trae su respiro alrededor de las baldosas (portadas.js), así que va
     // justo al tamaño de la cara visible: arriba, abajo y a los lados queda el mismo margen que en la web.
@@ -53,6 +53,15 @@
       if (h < A.height + 10) { h = A.height + 10; w = h / ratio; }
       var x = A.left + A.width / 2 - w / 2, y = A.top + A.height / 2 - h / 2;
       if (o.estilo == 2) { w = A.width; h = A.height; x = A.left; y = A.top; }
+      if (o.estilo != 2 && o.estilo != 3) {
+        // «Rayas»: el dibujo de cada tapa se amplía lo justo para llegar al centro del lomo; así las dos
+        // tapas se tocan allí y las rayas siguen con el mismo ritmo de una tapa a la otra
+        var cxA = A.left + A.width / 2, sc = S.left + S.width / 2;
+        w = Math.max(w, 2 * Math.abs(cxA - sc)); h = w * ratio;
+        // Los bordes del dibujo tienen algo más de papel que el hueco normal entre rayas: cada tapa se
+        // acerca SOLAPE/2 al lomo para que en la unión el hueco sea como los demás (no se nota en la tapa)
+        x = cxA - w / 2 + (cxA < sc ? 1 : -1) * SOLAPE / 2; y = A.top + A.height / 2 - h / 2;
+      }
       return { w: w, h: h, x: x, y: y, kx: w / 832, ky: h / 1176 };
     }
     function cara(A, x0, x1, fondo) {
@@ -73,13 +82,20 @@
         '<div style="position:absolute;left:' + (cx - x0 - w / 2) + 'mm;top:' + (cy - h / 2) + 'mm;width:' + w + 'mm;height:' + h + 'mm">' + dibujo() + '</div>' +
       '</div>';
     }
-    // En «Rayas» la delantera empieza donde empieza su dibujo: lo de antes lo cubre la franja rayada del lomo
-    var del = cara(F, (o.estilo != 2 && o.estilo != 3) ? colocacion(F).x + 1 : S.left + S.width, H.width, false);
+    // En «Rayas» cada tapa llega hasta el centro del lomo (allí se juntan las rayas de las dos)
+    var rayas = o.estilo != 2 && o.estilo != 3, centroLomo = S.left + S.width / 2;
+    var del = cara(F, rayas ? centroLomo - SOLAPE / 2 : S.left + S.width, H.width, false);
 
     // Lomo: sigue el diseño de la portada (rayas, baldosas o papel) y lleva el título en vertical,
     // de arriba abajo, sobre una tirita de papel para que se lea bien.
     var tintaLomo = o.estilo == 1 ? '#7B7F6F' : c.oscuro;
-    var lomoFondo, lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;background:' + PAPEL + ';padding:' + (S.width * .14).toFixed(2) + 'mm ' + (S.width * .9).toFixed(2) + 'mm;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;line-height:1;letter-spacing:.3mm;color:' + tintaLomo + '">El universo de <b>' + esc(nombre) + '</b></div>' : '';
+    // Mismas letras que el título de delante: en «Rayas» Allura + Amatic SC; en los otros, PT Serif.
+    // La banda de papel ocupa todo el ancho del lomo y la letra es lo más grande que cabe.
+    var fl = S.width * .66, pad = Math.max(0, (S.width - fl) / 2);
+    var tituloLomo = (o.estilo != 2 && o.estilo != 3)
+      ? '<span style="font-family:\'Allura\',cursive;font-size:' + (fl * 1.05).toFixed(2) + 'mm">El universo de</span> <span style="font-family:\'Amatic SC\',cursive;font-weight:700;letter-spacing:.4mm">' + esc(nombre) + '</span>'
+      : '<span style="font-family:\'PT Serif\',serif;font-size:' + (fl * .85).toFixed(2) + 'mm">El universo de</span> <b style="font-family:\'PT Serif\',serif;letter-spacing:.2mm">' + esc(nombre.toUpperCase()) + '</b>';
+    var lomoFondo, lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;background:' + PAPEL + ';box-sizing:border-box;height:' + (S.width + 2) + 'mm;padding:' + (pad + 1).toFixed(2) + 'mm 8mm;display:flex;align-items:center;gap:1.6mm;font-size:' + fl.toFixed(2) + 'mm;line-height:1;color:' + tintaLomo + '">' + tituloLomo + '</div>' : '';
     if (o.estilo == 2) {
       // Columna de baldosas pequeñas con los tonos del mosaico, con el mismo respiro arriba y abajo
       var lado = S.width - 1.6, paso = lado + 1.4, n = Math.floor((H.height - 2 * (S.top + 6)) / paso);
@@ -89,18 +105,8 @@
     } else if (o.estilo == 3) {
       lomoFondo = '';
     }
-    var lomoX0 = S.left - 1, lomoX1 = S.left + S.width + 1;
-    if (o.estilo != 2 && o.estilo != 3) {
-      // Las rayas siguen sin cortes de una tapa a la otra: la franja rayada cubre las bisagras y el lomo,
-      // desde donde acaba el dibujo de detrás hasta donde empieza el de delante. Usa el lateral izquierdo
-      // del dibujo (x 30–100 de 832), que tiene dos rayas y nada del marco del título.
-      var LR = colocacion(B), LF = colocacion(F);
-      lomoX0 = LR.x + LR.w - 1; lomoX1 = LF.x + 1;
-      lomoFondo = '<div style="position:absolute;left:' + (-30 * LR.kx) + 'mm;top:' + LR.y + 'mm;width:' + LR.w + 'mm;height:' + LR.h + 'mm">' + TUSPortadas.svg(1, nombre, o.color, true) + '</div>';
-    }
-    var lomoW = lomoX1 - lomoX0, cLomo = S.left + S.width / 2 - lomoX0;
-    lomoTxt = lomoTxt.replace('left:50%;', 'left:' + cLomo.toFixed(2) + 'mm;');
-    var lomo = '<div style="position:absolute;left:' + lomoX0 + 'mm;top:0;width:' + lomoW + 'mm;height:' + H.height + 'mm;overflow:hidden;background:#F6EFE5">' + lomoFondo + lomoTxt + '</div>';
+    // En «Rayas» el lomo no lleva fondo propio: se ven las rayas de las dos tapas, que se juntan en su centro
+    var lomo = '<div style="position:absolute;left:' + (S.left - 1) + 'mm;top:0;width:' + (S.width + 2) + 'mm;height:' + H.height + 'mm;overflow:hidden;' + (rayas ? '' : 'background:#F6EFE5') + '">' + (rayas ? '' : lomoFondo) + lomoTxt + '</div>';
 
     // Contraportada: el mismo dibujo que delante y, encima, un recuadro de papel con la dedicatoria
     // que escribe quien regala el libro, su firma y el logo de Tale Us Stories en el color de la portada.
@@ -118,7 +124,7 @@
     var LB = colocacion(B);
     var recW = zona[2] * LB.kx, recX = LB.x + zona[0] * LB.kx;
     var recY = LB.y + (zona[1] + zona[3] / 2) * LB.ky, recH = zona[3] * LB.ky;
-    var tras = cara(B, 0, S.left - 1, true) +
+    var tras = cara(B, 0, rayas ? centroLomo + SOLAPE / 2 : S.left - 1, true) +
       '<div style="position:absolute;left:' + recX + 'mm;top:' + recY + 'mm;transform:translateY(-50%);width:' + recW + 'mm;min-height:' + recH + 'mm;display:flex;background:' + PAPEL + ';box-sizing:border-box;padding:3.4mm">' +
         '<div style="flex:1;display:flex;box-sizing:border-box;border:.75mm solid ' + tinta + ';padding:1.4mm">' +
           '<div style="flex:1;box-sizing:border-box;border:.3mm solid ' + tinta + ';padding:11mm 11mm 9mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
@@ -131,7 +137,7 @@
       '</div>';
 
     return '<style>.tus-portada-abierta svg{display:block;width:100%;height:100%}</style>' +
-      '<div class="tus-portada-abierta" style="position:relative;overflow:hidden;width:' + H.width + 'mm;height:' + H.height + 'mm;background:' + PAPEL + '">' + tras + lomo + del + '</div>';
+      '<div class="tus-portada-abierta" style="position:relative;overflow:hidden;width:' + H.width + 'mm;height:' + H.height + 'mm;background:' + PAPEL + '">' + tras + del + lomo + '</div>';   // el lomo encima: en «Rayas» las tapas llegan hasta su centro
   }
 
   // Medidas de ejemplo (respuesta de Gelato para la tapa dura de 21 × 28). Las reales se piden a la API con el nº de páginas.
