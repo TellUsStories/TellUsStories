@@ -83,16 +83,19 @@
     return tinte(id, c) + '<image href="' + RAIZ + IMAGENES[n] + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"' + (c.id === 'terracota' ? '' : ' filter="url(#k' + id + ')"') + '/>';
   }
 
-  function rayas(id, nombre, c) {
+  // fondo = true: solo el dibujo, sin el recuadro ni el título (para la contraportada)
+  function rayas(id, nombre, c, fondo) {
     var tinta = '#7B7F6F', tam = cabe(nombre, 132, 540, .44);
+    if (fondo) return ilustracion(id, 1, c);
     return ilustracion(id, 1, c) +
       cartela(96, 386, 640, 342, tinta) +
       '<text x="416" y="528" text-anchor="middle" font-family="Allura, cursive" font-size="92" fill="' + tinta + '">El universo de</text>' +
       '<text x="416" y="' + (640 + tam * .12).toFixed(0) + '" text-anchor="middle" font-family="\'Amatic SC\', cursive" font-weight="700" font-size="' + tam + '" letter-spacing="5" fill="' + tinta + '">' + esc(nombre) + '</text>';
   }
 
-  function mosaico(id, nombre, c) {
+  function mosaico(id, nombre, c, fondo) {
     var tam = cabe(nombre.toUpperCase(), 104, 440, .74), tinta = c.id === 'terracota' ? '#BF5138' : c.oscuro;
+    if (fondo) return ilustracion(id, 2, c);
     return ilustracion(id, 2, c) +
       '<text x="416" y="532" text-anchor="middle" font-family="\'PT Serif\', serif" font-size="70" fill="' + tinta + '">El universo de</text>' +
       '<text x="416" y="' + (606 + tam * .3).toFixed(0) + '" text-anchor="middle" font-family="\'PT Serif\', serif" font-weight="700" font-size="' + tam + '" letter-spacing="2" fill="' + tinta + '">' + esc(nombre.toUpperCase()) + '</text>';
@@ -106,7 +109,7 @@
     return r;
   }
 
-  function inicial(id, nombre, c) {
+  function inicial(id, nombre, c, fondo) {
     // La primera letra del nombre, sin tilde (Á → A) pero respetando la Ñ
     var l = (nombre.trim().charAt(0) || 'C').toUpperCase();
     if (l !== 'Ñ') l = l.normalize('NFD').charAt(0);
@@ -132,17 +135,17 @@
         '<circle cx="-240" cy="1320" r="560" fill="' + osc2 + '"/>' +
         '<circle cx="-660" cy="1500" r="640" fill="' + claro + '" fill-opacity=".55"/>' +
         '<circle cx="1260" cy="420" r="520" fill="' + osc2 + '" fill-opacity=".7"/>' +
-      '</g></g>' +
+      '</g></g>' + (fondo ? '' :
       cartela(144, 428, 544, 286, c.oscuro) +
       '<text x="416" y="548" text-anchor="middle" font-family="\'PT Serif\', serif" font-size="60" fill="' + c.oscuro + '">El universo de</text>' +
-      '<text x="416" y="' + (622 + tamN * .32).toFixed(0) + '" text-anchor="middle" font-family="\'PT Serif\', serif" font-weight="700" font-size="' + tamN + '" letter-spacing="1" fill="' + c.oscuro + '">' + esc(nombre.toUpperCase()) + '</text>';
+      '<text x="416" y="' + (622 + tamN * .32).toFixed(0) + '" text-anchor="middle" font-family="\'PT Serif\', serif" font-weight="700" font-size="' + tamN + '" letter-spacing="1" fill="' + c.oscuro + '">' + esc(nombre.toUpperCase()) + '</text>');
   }
 
-  function svg(estilo, nombre, colorId) {
+  function svg(estilo, nombre, colorId, fondo) {
     var id = ++uid, c = color(colorId), n = String(nombre || 'Carmen').trim() || 'Carmen';
     var dibujo = { 1: rayas, 2: mosaico, 3: inicial }[estilo] || rayas;
     return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada: El universo de ' + esc(n) + '">' +
-      filtros(id) + dibujo(id, n, c) + (estilo == 3 ? grano(id) : '') + '</svg>';
+      filtros(id) + dibujo(id, n, c, fondo) + (estilo == 3 ? grano(id) : '') + '</svg>';
   }
 
   window.TUSPortadas = { svg: svg, colores: COLORES, estilos: ESTILOS, color: color };

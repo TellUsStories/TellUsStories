@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Muestra de imprenta · Tale Us Stories</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Allura&family=Amatic+SC:wght@700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#E9E4DC;font-family:system-ui,sans-serif;color:#3D2B1F}
+  header{padding:18px 24px;background:#fff;border-bottom:1px solid #ddd;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+  header h1{font-size:18px;margin:0 12px 0 0}
+  label{font-size:14px}
+  select,input{font-size:14px;padding:4px 6px}
+  section{padding:24px}
+  h2{font-size:15px;font-weight:600;margin:0 0 10px}
+  .nota{font-size:13px;color:#6b5d50;margin:6px 0 14px;max-width:900px}
+  .lienzo{position:relative;display:inline-block;box-shadow:0 6px 24px rgba(0,0,0,.18);transform-origin:top left}
+  .guia{position:absolute;pointer-events:none;box-sizing:border-box}
+  .corte{border:1px dashed #d0021b}
+  .segura{border:1px dotted #2a7ae2}
+  .pliegue{border:1px dashed #00a36c}
+  .leyenda{font-size:12px;display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+  .leyenda i{display:inline-block;width:18px;border-top:2px dashed;vertical-align:middle;margin-right:5px}
+  .fila{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+</style>
+</head>
+<body>
+<header>
+  <h1>Muestra de imprenta (21 × 28 cm)</h1>
+  <label>Nombre <input id="nombre" value="Carla" size="10"></label>
+  <label>Portada <select id="estilo"><option value="1">Rayas</option><option value="2">Mosaico</option><option value="3">Inicial</option></select></label>
+  <label>Color <select id="color"></select></label>
+  <label><input type="checkbox" id="guias" checked> Ver guías</label>
+  <label style="flex-basis:100%">Dedicatoria<br><textarea id="dedicatoria" rows="3" maxlength="350" style="width:100%;max-width:640px;font-size:14px">Lucas, Martina: este libro es para que nunca olvidéis de dónde venís. Vuestra madre es la persona más valiente que conozco, y vosotros sois su mayor aventura. Os queremos hasta el infinito.</textarea></label>
+  <label>Firma <input id="firma" value="Papá" size="24"></label>
+</header>
+
+<section>
+  <h2>Portada abierta (tapa dura): contraportada · lomo · portada</h2>
+  <p class="nota">Medidas de Gelato para la tapa dura de 21 × 28 (46,8 × 32,5 cm con lo que se dobla hacia dentro). El lomo exacto se ajustará solo con el número de páginas real. Delante y detrás llevan el mismo dibujo; detrás va la dedicatoria que escribe quien regala el libro, con su firma y el logo.</p>
+  <div id="portada"></div>
+  <div class="leyenda"><span><i style="color:#d0021b"></i>Corte / borde del cartón</span><span><i style="color:#00a36c"></i>Bisagras y lomo</span><span><i style="color:#2a7ae2"></i>Zona visible de cada cara</span></div>
+</section>
+
+<section>
+  <h2>Páginas interiores (21,8 × 28,8 cm con sangrado)</h2>
+  <p class="nota">Lo que queda fuera de la línea roja se corta. El texto queda siempre dentro de la línea azul. La ilustración nunca se recorta ni se tapa: va entera. Estas dos son tus páginas actuales (más alargadas, por eso sobra un poco de papel a los lados); con el formato nuevo la IA las hará ya en 3:4 y llenarán la página justa.</p>
+  <div class="fila" id="paginas"></div>
+</section>
+
+<script src="portadas.js"></script>
+<script src="imprenta.js"></script>
+<script>
+  var $ = function (id) { return document.getElementById(id); };
+  TUSPortadas.colores.forEach(function (c) { var o = document.createElement('option'); o.value = c.id; o.textContent = c.nombre; $('color').appendChild(o); });
+
+  function lienzo(html, wmm, hmm, anchoPx, guias) {
+    var mm = anchoPx / wmm;
+    var g = guias.map(function (x) { return '<div class="guia ' + x.c + '" style="left:' + x.l + 'mm;top:' + x.t + 'mm;width:' + x.w + 'mm;height:' + x.h + 'mm"></div>'; }).join('');
+    var px = mm / (96 / 25.4);   // px que ocupa 1 mm de CSS
+    return '<div style="width:' + anchoPx + 'px;height:' + (hmm * mm) + 'px;overflow:hidden"><div class="lienzo" style="transform:scale(' + px + ')">' + html + ($('guias').checked ? g : '') + '</div></div>';
+  }
+
+  function pinta() {
+    var o = { nombre: $('nombre').value, estilo: +$('estilo').value, color: $('color').value };
+    var c = TUSPortadas.color(o.color);
+    var m = TUSImprenta.EJEMPLO_TAPA_DURA, H = TUSImprenta.hoja(m);
+    o.dedicatoria = $('dedicatoria').value;
+    o.firma = $('firma').value;
+    var ancho = Math.min(1100, document.body.clientWidth - 48);
+    $('portada').innerHTML = lienzo(TUSImprenta.portada(m, o), H.width, H.height, ancho, [
+      { c: 'corte', l: m.wraparoundEdgeSize.left, t: m.wraparoundEdgeSize.top, w: m.wraparoundEdgeSize.width, h: m.wraparoundEdgeSize.height },
+      { c: 'pliegue', l: m.jointBackSize.left, t: m.jointBackSize.top, w: m.jointBackSize.width, h: m.jointBackSize.height },
+      { c: 'pliegue', l: m.spineSize.left, t: m.spineSize.top, w: m.spineSize.width, h: m.spineSize.height },
+      { c: 'pliegue', l: m.jointFrontSize.left, t: m.jointFrontSize.top, w: m.jointFrontSize.width, h: m.jointFrontSize.height },
+      { c: 'segura', l: m.contentBackSize.left, t: m.contentBackSize.top, w: m.contentBackSize.width, h: m.contentBackSize.height },
+      { c: 'segura', l: m.contentFrontSize.left, t: m.contentFrontSize.top, w: m.contentFrontSize.width, h: m.contentFrontSize.height }
+    ]);
+
+    var P = TUSImprenta.PAG, s = TUSImprenta.SANGRADO, gp = [
+      { c: 'corte', l: s, t: s, w: P.w - 2 * s, h: P.h - 2 * s },
+      { c: 'segura', l: s + 4, t: s + 4, w: P.w - 2 * s - 8, h: P.h - 2 * s - 8 }
+    ];
+    var anchoPag = Math.min(420, (document.body.clientWidth - 76) / 2);
+    $('paginas').innerHTML =
+      // Tus dos páginas retocadas (ya llevan su texto), colocadas tal cual en el formato de imprenta
+      lienzo(TUSImprenta.pagina({ img: 'img/libro-pagina-1.jpg', color: c.oscuro }), P.w, P.h, anchoPag, gp) +
+      lienzo(TUSImprenta.pagina({ img: 'img/libro-pagina-2.jpg', color: c.oscuro }), P.w, P.h, anchoPag, gp);
+  }
+  ['nombre', 'estilo', 'color', 'guias', 'dedicatoria', 'firma'].forEach(function (id) { $(id).addEventListener('input', pinta); });
+  window.addEventListener('resize', pinta);
+  document.fonts.ready.then(pinta); pinta();
+</script>
+</body>
+</html>

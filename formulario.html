@@ -29,6 +29,11 @@
   .field{margin-bottom:20px;}
   .field label{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:6px;}
   .hint{font-size:12px;color:var(--muted);margin-bottom:7px;font-style:italic;line-height:1.5;}
+  .ded-cont{font-size:12px;color:var(--muted);text-align:right;margin-top:4px;}
+  .ded-ej{display:grid;gap:10px;margin-bottom:12px;}
+  .ded-op{border:1.5px solid var(--border);border-radius:4px;background:var(--white);padding:12px 15px;font-family:var(--texto);font-size:15px;font-style:italic;line-height:1.55;color:var(--navy);}
+  .ded-op button{display:block;margin-top:8px;background:none;border:none;padding:0;font-family:var(--display);font-style:normal;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--coral);cursor:pointer;text-decoration:underline;}
+  .ded-op.elegida{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.07);}
   input[type=text],input[type=email],select,textarea{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:4px;background:var(--white);font-family:var(--texto);font-size:16px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
   input:focus,select:focus,textarea:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.07);}
   textarea{resize:vertical;min-height:80px;line-height:1.6;}
@@ -606,7 +611,7 @@
   </div>
 
   <div class="vc" id="vc13">
-    <div class="vc-q">¿Hay algo más que debamos saber? Anécdota suelta, frase que quieras que aparezca, dedicatoria…</div>
+    <div class="vc-q">¿Hay algo más que debamos saber? Anécdota suelta, frase que quieras que aparezca…</div>
     <div class="vc-h">El campo libre. Sin límite. Todo lo que no encajaba en ninguna pregunta.</div>
     <div class="vc-ctrls">
       <button class="btn-rec" id="rb13" onclick="toggleRec(13)"><span class="rdot"></span> Grabar</button>
@@ -618,6 +623,19 @@
     <div class="or-d"><span>o escribe</span></div>
     <div class="tf" id="tf13"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
     <button class="btn-tw" onclick="toggleTF(13)">Prefiero escribir</button>
+  </div>
+
+  <div class="sdiv"><span>La dedicatoria</span></div>
+  <div class="field">
+    <label>Tu dedicatoria para la contraportada</label>
+    <div class="hint">Irá impresa tal cual, sin cambios, en la contraportada del libro. Puedes elegir uno de estos ejemplos (y retocarlo si quieres) o escribir la tuya.</div>
+    <div class="ded-ej" id="dedEjemplos"></div>
+    <textarea id="dedicatoria" maxlength="350" rows="4" placeholder="Ej: Lucas, Martina: este libro es para que nunca olvidéis de dónde venís…"></textarea>
+    <div class="ded-cont"><span id="dedCont">0</span> / 350</div>
+  </div>
+  <div class="field">
+    <label>¿Cómo la firmas?</label>
+    <input type="text" id="dedicatoriaFirma" maxlength="40" placeholder="Ej: Con todo nuestro amor, papá y la abuela Carmen">
   </div>
 
   <div class="sdiv"><span>Producción</span></div>
@@ -664,6 +682,7 @@
     <div class="sr"><span class="sk">Encargado por</span><span class="sv" id="rv-ord">—</span></div>
     <div class="sr"><span class="sk">Email</span><span class="sv" id="rv-email">—</span></div>
     <div class="sr"><span class="sk">Teléfono</span><span class="sv" id="rv-tel">—</span></div>
+    <div class="sr"><span class="sk">Dedicatoria</span><span class="sv" id="rv-ded">—</span></div>
     <div class="sr"><span class="sk">Envío</span><span class="sv" id="rv-envio">—</span></div>
     <div class="sr"><span class="sk">Portada</span><span class="sv" id="rv-portada">—</span></div>
     <div class="sr"><span class="sk">Formato</span><span class="sv" id="rv-formato">—</span></div>
@@ -1070,6 +1089,48 @@ function loadDraft() {
 }
 
 document.addEventListener('input', saveDraft);
+// Contador de la dedicatoria (máx. 350 caracteres para que quepa bien en la contraportada)
+function cuentaDed() { var d = document.getElementById('dedicatoria'); document.getElementById('dedCont').textContent = d.value.length; }
+document.getElementById('dedicatoria').addEventListener('input', cuentaDed);
+window.addEventListener('load', cuentaDed);   // por si vuelve con el borrador guardado
+
+// Dedicatorias de ejemplo con los nombres del pedido: con un clic pasan al cuadro, donde se pueden retocar
+function ejemplosDedicatoria() {
+  var ninos = (document.getElementById('childNames').value || '').trim();
+  var prot = (document.getElementById('protName').value || '').trim() || g('vuestra');
+  var varios = !ninos || /,|\sy\s|\se\s/.test(ninos);
+  var a = ninos || 'Queridos niños';
+  if (varios) return [
+    a + ': este libro es para que nunca olvidéis de dónde venís. Es la historia de ' + prot + ', y también un poco la vuestra. Os queremos hasta el infinito.',
+    'Para ' + (ninos || 'vosotros') + ', para que cuando seáis mayores podáis volver a estas páginas y recordar lo mucho que os quiere ' + prot + '.',
+    'Hay historias que merecen quedarse para siempre. Esta es la de ' + prot + ', contada para ' + (ninos || 'vosotros') + ' con todo el amor del mundo.'
+  ];
+  return [
+    a + ': este libro es para que nunca olvides de dónde vienes. Es la historia de ' + prot + ', y también un poco la tuya. Te queremos hasta el infinito.',
+    'Para ' + ninos + ', para que cuando seas mayor puedas volver a estas páginas y recordar lo mucho que te quiere ' + prot + '.',
+    'Hay historias que merecen quedarse para siempre. Esta es la de ' + prot + ', contada para ' + ninos + ' con todo el amor del mundo.'
+  ];
+}
+function pintaEjemplosDed() {
+  var cont = document.getElementById('dedEjemplos'), actual = document.getElementById('dedicatoria').value.trim();
+  cont.innerHTML = '';
+  ejemplosDedicatoria().forEach(function (t) {
+    var d = document.createElement('div'), b = document.createElement('button');
+    d.className = 'ded-op' + (actual === t ? ' elegida' : '');
+    d.textContent = '«' + t + '»';
+    b.type = 'button'; b.textContent = actual === t ? '✓ Elegida' : 'Usar esta dedicatoria';
+    b.onclick = function () {
+      var ta = document.getElementById('dedicatoria');
+      ta.value = t; ta.dispatchEvent(new Event('input', { bubbles: true }));
+      pintaEjemplosDed(); ta.focus();
+    };
+    d.appendChild(b); cont.appendChild(d);
+  });
+}
+// Se repintan al cambiar los nombres, el género o la propia dedicatoria
+document.addEventListener('input', function (e) { if (['childNames', 'protName', 'dedicatoria'].indexOf(e.target.id) >= 0) pintaEjemplosDed(); });
+document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#gf,#gm')) pintaEjemplosDed(); });
+window.addEventListener('load', pintaEjemplosDed);
 // Al rellenar un campo marcado en rojo, se quita la marca
 document.addEventListener('input', function(e) { var f = e.target.closest && e.target.closest('.falta'); if (f && (e.target.value || '').trim()) f.classList.remove('falta'); });
 document.addEventListener('change', function(e) { if (e.target.classList && e.target.classList.contains('falta') && e.target.value) e.target.classList.remove('falta'); });
@@ -1092,6 +1153,7 @@ function buildReview() {
   document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
   var ev = function(id){ return document.getElementById(id).value.trim(); };
   document.getElementById('rv-tel').textContent = ev('clienteTelefono') || '—';
+  document.getElementById('rv-ded').textContent = ev('dedicatoria') ? '«' + ev('dedicatoria') + '» — ' + ev('dedicatoriaFirma') : '—';
   var envio = [ev('envioNombre'), ev('envioDireccion'), (ev('envioCP') + ' ' + ev('envioCiudad')).trim(), ev('envioProvincia'), ev('envioTelefono')].filter(Boolean).join(' · ');
   document.getElementById('rv-envio').textContent = envio || '—';
   document.getElementById('rv-portada').textContent = TUSPortadas.estilos[selectedPortada - 1].nombre + ' · ' + TUSPortadas.color(selectedColor).nombre;
@@ -1168,6 +1230,9 @@ async function submit() {
     d_apodos:            val('nicknames'),
     d_historia_conocida: val('knownStory'),
     d_no_mostrar:        val('noShow'),
+    // Dedicatoria de la contraportada (se imprime tal cual)
+    dedicatoria:         val('dedicatoria'),
+    dedicatoria_firma:   val('dedicatoriaFirma'),
     // Dirección de envío (para la imprenta)
     envio_nombre:        val('envioNombre'),
     envio_direccion:     val('envioDireccion'),
