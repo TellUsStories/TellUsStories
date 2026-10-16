@@ -42,12 +42,19 @@
   function portada(m, o) {
     var H = hoja(m), F = m.contentFrontSize, B = m.contentBackSize, S = m.spineSize;
     var d = TUSPortadas.diseno(o.diseno || o.estilo), nombre = String(o.nombre || '').trim() || 'Carmen';
-    var ratio = TUSPortadas.H / TUSPortadas.W;
+    var ratio = TUSPortadas.H / TUSPortadas.W, blanda = !m.wraparoundInsideSize;   // tapa blanda: sin cartón ni bisagras
+    var ext = blanda ? 0 : 1;   // en tapa dura las caras y el lomo se solapan 1 mm (cae en la bisagra)
     // Dónde va el dibujo (832 × 1176) en cada cara: centrado y 5 mm más grande que la parte visible,
     // por si el corte o el doblado se mueven un poco.
     function colocacion(A) {
       var w = A.width + 10, h = w * ratio;
       if (h < A.height + 10) { h = A.height + 10; w = h / ratio; }
+      if (blanda) {
+        // Tapa blanda: no hay cartón que esconda nada; la acuarela empieza justo en el borde del lomo
+        // y solo se pasa por fuera (el sangrado), para que la etiqueta quede centrada en la cara
+        w = A.width + SANGRADO; h = w * ratio;
+        return { w: w, h: h, x: (A.left + A.width / 2 < S.left) ? A.left - SANGRADO : A.left, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
+      }
       return { w: w, h: h, x: A.left + A.width / 2 - w / 2, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
     }
     // Una cara (delantera o trasera) de x0 a x1 de la hoja. Debajo, la misma acuarela ampliada y difuminada
@@ -68,7 +75,7 @@
 
     // Lomo: franja lisa del color del diseño con el título en vertical, en blanco (se lee de arriba abajo)
     var lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;letter-spacing:.3mm;color:#fff">El universo de <b>' + esc(nombre) + '</b></div>' : '';
-    var lomo = '<div style="position:absolute;left:' + (S.left - 1) + 'mm;top:0;width:' + (S.width + 2) + 'mm;height:' + H.height + 'mm;background:' + d.lomo + '">' + lomoTxt + '</div>';
+    var lomo = '<div style="position:absolute;left:' + (S.left - ext) + 'mm;top:0;width:' + (S.width + 2 * ext) + 'mm;height:' + H.height + 'mm;background:' + d.lomo + '">' + lomoTxt + '</div>';
 
     // Contraportada: la misma acuarela con su etiqueta vacía; dentro, la dedicatoria tal cual la escribió
     // quien regala el libro, su firma y el logo de Tale Us Stories en las tintas del diseño.
@@ -83,7 +90,7 @@
         (o.firma ? '<div style="font-family:\'Dancing Script\',cursive;font-size:6.5mm;line-height:1.2;color:' + d.titulo + ';margin-bottom:3mm">' + esc(o.firma) + '</div>' : '') +
         logo +
       '</div>';
-    var tras = cara(B, 0, S.left - 1, '<img src="' + imgTras + '" style="display:block;width:100%;height:100%">', imgTras) + texto;
+    var tras = cara(B, 0, S.left - ext, '<img src="' + imgTras + '" style="display:block;width:100%;height:100%">', imgTras) + texto;
 
     // Si la dedicatoria es larga, la letra se reduce hasta que todo quepa en la etiqueta (hcti ejecuta el script)
     var ajuste = '<script>(function(){var c=document.querySelectorAll(".tus-ded");c.forEach(function(b){var p=b.querySelector("p"),t=6;while(b.scrollHeight>b.clientHeight+1&&t>3.4){t-=.2;p.style.fontSize=t.toFixed(1)+"mm";}});})();<\/script>';
@@ -103,5 +110,14 @@
     contentFrontSize: { width: 203, height: 285, left: 245, top: 20 }
   };
 
-  window.TUSImprenta = { pagina: pagina, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA };
+  // Tapa blanda 21 × 28, 40 páginas: medidas APROXIMADAS (4 mm de sangrado, lomo ~3,5 mm) solo para la muestra;
+  // las reales también se piden a Gelato. Con un lomo de menos de 5 mm no se pone texto en él.
+  var EJEMPLO_TAPA_BLANDA = {
+    bleedSize: { width: 431.5, height: 288, left: 0, top: 0 },
+    contentBackSize: { width: 210, height: 280, left: 4, top: 4 },
+    spineSize: { width: 3.5, height: 280, left: 214, top: 4 },
+    contentFrontSize: { width: 210, height: 280, left: 217.5, top: 4 }
+  };
+
+  window.TUSImprenta = { pagina: pagina, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA, EJEMPLO_TAPA_BLANDA: EJEMPLO_TAPA_BLANDA };
 })();

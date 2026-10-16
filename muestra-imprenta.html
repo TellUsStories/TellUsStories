@@ -30,6 +30,7 @@
   <h1>Muestra de imprenta (21 × 28 cm)</h1>
   <label>Nombre <input id="nombre" value="Carla" size="10"></label>
   <label>Portada <select id="estilo"></select></label>
+  <label>Tapa <select id="tapa"><option value="dura">Dura</option><option value="blanda">Blanda</option></select></label>
   <label><input type="checkbox" id="hoja"> Ver la hoja completa de imprenta (con lo que se dobla hacia dentro)</label>
   <label><input type="checkbox" id="guias"> Ver guías</label>
   <label style="flex-basis:100%">Dedicatoria<br><textarea id="dedicatoria" rows="3" maxlength="350" style="width:100%;max-width:640px;font-size:14px">Lucas, Martina: este libro es para que nunca olvidéis de dónde venís. Vuestra madre es la persona más valiente que conozco, y vosotros sois su mayor aventura. Os queremos hasta el infinito.</textarea></label>
@@ -67,18 +68,20 @@
   function pinta() {
     var o = { nombre: $('nombre').value, diseno: +$('estilo').value };
     var d = TUSPortadas.diseno(o.diseno);
-    var m = TUSImprenta.EJEMPLO_TAPA_DURA, H = TUSImprenta.hoja(m);
+    var dura = $('tapa').value === 'dura', m = dura ? TUSImprenta.EJEMPLO_TAPA_DURA : TUSImprenta.EJEMPLO_TAPA_BLANDA, H = TUSImprenta.hoja(m);
     o.dedicatoria = $('dedicatoria').value;
     o.firma = $('firma').value;
     var ancho = Math.min(1100, document.body.clientWidth - 48);
+    var visible = dura ? m.wraparoundEdgeSize : { left: m.contentBackSize.left, top: m.contentBackSize.top, width: m.contentFrontSize.left + m.contentFrontSize.width - m.contentBackSize.left, height: m.contentBackSize.height };
     $('portada').innerHTML = lienzo(TUSImprenta.portada(m, o), H.width, H.height, ancho, [
-      { c: 'corte', l: m.wraparoundEdgeSize.left, t: m.wraparoundEdgeSize.top, w: m.wraparoundEdgeSize.width, h: m.wraparoundEdgeSize.height },
-      { c: 'pliegue', l: m.jointBackSize.left, t: m.jointBackSize.top, w: m.jointBackSize.width, h: m.jointBackSize.height },
+      { c: 'corte', l: visible.left, t: visible.top, w: visible.width, h: visible.height },
       { c: 'pliegue', l: m.spineSize.left, t: m.spineSize.top, w: m.spineSize.width, h: m.spineSize.height },
-      { c: 'pliegue', l: m.jointFrontSize.left, t: m.jointFrontSize.top, w: m.jointFrontSize.width, h: m.jointFrontSize.height },
       { c: 'segura', l: m.contentBackSize.left, t: m.contentBackSize.top, w: m.contentBackSize.width, h: m.contentBackSize.height },
       { c: 'segura', l: m.contentFrontSize.left, t: m.contentFrontSize.top, w: m.contentFrontSize.width, h: m.contentFrontSize.height }
-    ], $('hoja').checked ? null : m.wraparoundEdgeSize);
+    ].concat(dura ? [
+      { c: 'pliegue', l: m.jointBackSize.left, t: m.jointBackSize.top, w: m.jointBackSize.width, h: m.jointBackSize.height },
+      { c: 'pliegue', l: m.jointFrontSize.left, t: m.jointFrontSize.top, w: m.jointFrontSize.width, h: m.jointFrontSize.height }
+    ] : []), $('hoja').checked ? null : visible);
     // Igual que en hcti: si la dedicatoria no cabe, se reduce la letra
     document.querySelectorAll('.tus-ded').forEach(function (b) { var p = b.querySelector('p'), t = 6; while (b.scrollHeight > b.clientHeight + 1 && t > 3.4) { t -= .2; p.style.fontSize = t.toFixed(1) + 'mm'; } });
 
@@ -92,7 +95,7 @@
       lienzo(TUSImprenta.pagina({ img: 'img/libro-pagina-1.jpg', color: d.nombreCol }), P.w, P.h, anchoPag, gp) +
       lienzo(TUSImprenta.pagina({ img: 'img/libro-pagina-2.jpg', color: d.nombreCol }), P.w, P.h, anchoPag, gp);
   }
-  ['nombre', 'estilo', 'guias', 'hoja', 'dedicatoria', 'firma'].forEach(function (id) { $(id).addEventListener('input', pinta); });
+  ['nombre', 'estilo', 'tapa', 'guias', 'hoja', 'dedicatoria', 'firma'].forEach(function (id) { $(id).addEventListener('input', pinta); });
   window.addEventListener('resize', pinta);
   document.fonts.ready.then(pinta); pinta();
 </script>
