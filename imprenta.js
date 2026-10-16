@@ -47,15 +47,17 @@
     return h + '</div>';
   }
   // Coloca la ilustración de una página con marco sin cortar nunca nada:
-  // 1. Lee la imagen (PiAPI permite leerla) y busca la primera fila donde empieza el dibujo, saltándose el
-  //    crema vacío de arriba; ese crema pasa a ser el color de la hoja, así no se nota dónde empieza la imagen.
-  // 2. Si el dibujo quedaría debajo del texto, reduce la imagen lo justo (sigue apoyada abajo y centrada) y
-  //    funde sus lados con la hoja. Si no se puede leer la imagen, la reduce entera por debajo del texto.
+  // 1. Lee la imagen (PiAPI permite leerla) y busca dónde empieza y dónde acaba el dibujo de verdad, sin
+  //    contar el crema vacío de arriba y de abajo; ese crema pasa a ser el color de la hoja (y del fondo del
+  //    texto), así no se nota dónde empieza la imagen ni asoma nada por detrás de las letras.
+  // 2. Encaja el dibujo en el hueco que queda bajo el texto: lo más grande posible (como mucho a todo el
+  //    ancho), centrado, y si sobra hueco lo reparte arriba y abajo. Si hay que reducirlo, funde sus lados
+  //    con la hoja. Si no se puede leer la imagen, la trata como si el dibujo ocupara toda la imagen.
   function encajar(img) {
     var hoja = img.parentNode, txt = hoja.querySelector('.tus-txt');
     if (img.dataset.ini == null) {
       img.dataset.ini = '0';
-      var t = 0;
+      var t = 0, b = 1;
       try {
         var w = 120, hh = Math.round(w * img.naturalHeight / img.naturalWidth), c = document.createElement('canvas');
         c.width = w; c.height = hh;
@@ -63,25 +65,46 @@
         var px = x.getImageData(0, 0, w, hh).data, fondo = [0, 0, 0], n = 0, y, i;
         for (y = 0; y < 3; y++) for (i = 0; i < w; i++) { var k = (y * w + i) * 4; fondo[0] += px[k]; fondo[1] += px[k + 1]; fondo[2] += px[k + 2]; n++; }
         fondo = fondo.map(function (v) { return Math.round(v / n); });
-        for (y = 0; y < hh; y++) {
+        // Una fila es dibujo si más del 4 % de sus puntos se distinguen del crema (así las estrellitas
+        // sueltas no cuentan)
+        function esDibujo(y) {
           var distintos = 0;
-          for (i = 0; i < w; i++) { var j = (y * w + i) * 4; if (Math.abs(px[j] - fondo[0]) + Math.abs(px[j + 1] - fondo[1]) + Math.abs(px[j + 2] - fondo[2]) > 45) distintos++; }
-          if (distintos > w * 0.04) break;
+          for (var i = 0; i < w; i++) { var j = (y * w + i) * 4; if (Math.abs(px[j] - fondo[0]) + Math.abs(px[j + 1] - fondo[1]) + Math.abs(px[j + 2] - fondo[2]) > 45) distintos++; }
+          return distintos > w * 0.04;
         }
+        // El dibujo empieza donde hay "cuerpo": al menos 8 de las 12 filas siguientes son dibujo (una raya
+        // suelta o unas estrellitas no cuentan, y luego se funden con el papel)
+        var fila = [];
+        for (y = 0; y < hh; y++) fila.push(esDibujo(y) ? 1 : 0);
+        function cuerpo(y0) { var n = 0; for (var k = y0; k < Math.min(hh, y0 + 12); k++) n += fila[k]; return n >= 8; }
+        for (y = 0; y < hh && !cuerpo(y); y++);
+        while (y < hh && !fila[y]) y++;
         t = y / hh;
-        hoja.style.background = 'rgb(' + fondo.join(',') + ')';
-      } catch (e) { t = 0; }
-      img.dataset.t = t;
+        for (y = hh - 1; y > t * hh && !cuerpo(Math.max(0, y - 11)); y--);
+        b = Math.min(1, (y + 1) / hh);
+        var c = 'rgb(' + fondo.join(',') + ')';
+        hoja.style.background = c;
+        // El texto lleva detrás el mismo crema, fundido abajo: nada del dibujo asoma entre las letras
+        if (txt) txt.style.background = 'linear-gradient(' + c + ' calc(100% - 3mm),rgba(' + fondo.join(',') + ',0))';
+      } catch (e) { t = 0; b = 1; }
+      if (b - t < 0.05) { t = 0; b = 1; }
+      img.dataset.t = t; img.dataset.b = b;
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { encajar(img); });
     }
-    var t2 = parseFloat(img.dataset.t) || 0, W = hoja.clientWidth, H = hoja.clientHeight;
+    var t2 = parseFloat(img.dataset.t) || 0, b2 = parseFloat(img.dataset.b) || 1, W = hoja.clientWidth, H = hoja.clientHeight;
     var ih = W * (img.naturalHeight || 4) / (img.naturalWidth || 3);
-    var limite = txt ? txt.offsetTop + txt.offsetHeight + W * 0.015 : 0;     // ~3 mm bajo el texto
-    var s = 1;
-    if (H - ih * (1 - t2) < limite) s = Math.max(0.3, (H - limite) / (ih * (1 - t2)));
+    var limite = txt ? txt.offsetTop + txt.offsetHeight + W * 0.015 : W * 0.04;   // ~3 mm bajo el texto
+    var abajo = H - W * 0.035;                                                      // ~6,5 mm sobre el borde de abajo
+    var alto = (b2 - t2) * ih;                                                       // alto del dibujo a todo el ancho
+    var s = Math.max(0.3, Math.min(1, (abajo - limite) / alto));
+    // El dibujo, centrado en el hueco; si es de los que llegan hasta abajo (escena completa), apoyado abajo
+    var arribaDibujo = b2 > 0.97 ? Math.max(limite, H - alto * s) : limite + ((abajo - limite) - alto * s) / 2;
     img.style.width = (W * s) + 'px';
     img.style.left = ((W - W * s) / 2) + 'px';
-    var arriba = 'linear-gradient(transparent,#000 4%)', lados = 'linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)';
+    img.style.bottom = 'auto';
+    img.style.top = (arribaDibujo - t2 * ih * s) + 'px';
+    // Lo que queda por encima del dibujo (estrellitas, rayas sueltas) se funde con el papel
+    var arriba = 'linear-gradient(transparent ' + Math.max(0, t2 * 100 - 3).toFixed(1) + '%,#000 ' + Math.max(4, t2 * 100).toFixed(1) + '%)', lados = 'linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)';
     var m = s < 1 ? arriba + ',' + lados : arriba;
     img.style.webkitMaskImage = img.style.maskImage = m;
     if (s < 1) { img.style.webkitMaskComposite = 'source-in'; img.style.maskComposite = 'intersect'; }
