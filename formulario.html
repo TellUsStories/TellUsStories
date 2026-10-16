@@ -261,9 +261,15 @@
     </div>
   </div>
 
-  <div class="field">
-    <label>Tu email</label>
-    <input type="email" id="email" placeholder="Aquí te escribiremos sobre tu pedido">
+  <div class="two">
+    <div class="field">
+      <label>Tu email</label>
+      <input type="email" id="email" placeholder="Aquí te escribiremos sobre tu pedido">
+    </div>
+    <div class="field">
+      <label>Tu teléfono</label>
+      <input type="text" id="clienteTelefono" autocomplete="tel" inputmode="tel" placeholder="Por si necesitamos contactarte">
+    </div>
   </div>
 
   <div class="sdiv"><span>¿A dónde enviamos el libro?</span></div>
@@ -657,6 +663,7 @@
     <div class="sr"><span class="sk">Tipo</span><span class="sv" id="rv-type">—</span></div>
     <div class="sr"><span class="sk">Encargado por</span><span class="sv" id="rv-ord">—</span></div>
     <div class="sr"><span class="sk">Email</span><span class="sv" id="rv-email">—</span></div>
+    <div class="sr"><span class="sk">Teléfono</span><span class="sv" id="rv-tel">—</span></div>
     <div class="sr"><span class="sk">Envío</span><span class="sv" id="rv-envio">—</span></div>
     <div class="sr"><span class="sk">Portada</span><span class="sv" id="rv-portada">—</span></div>
     <div class="sr"><span class="sk">Formato</span><span class="sv" id="rv-formato">—</span></div>
@@ -1084,6 +1091,7 @@ function buildReview() {
   document.getElementById('rv-ord').textContent   = document.getElementById('orderer').value || '—';
   document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
   var ev = function(id){ return document.getElementById(id).value.trim(); };
+  document.getElementById('rv-tel').textContent = ev('clienteTelefono') || '—';
   var envio = [ev('envioNombre'), ev('envioDireccion'), (ev('envioCP') + ' ' + ev('envioCiudad')).trim(), ev('envioProvincia'), ev('envioTelefono')].filter(Boolean).join(' · ');
   document.getElementById('rv-envio').textContent = envio || '—';
   document.getElementById('rv-portada').textContent = TUSPortadas.estilos[selectedPortada - 1].nombre + ' · ' + TUSPortadas.color(selectedColor).nombre;
@@ -1136,6 +1144,7 @@ async function submit() {
                        : (document.getElementById('bookType').value || ''),
     senderName:      document.getElementById('orderer').value || '',
     senderEmail:     document.getElementById('email').value || '',
+    cliente_telefono: val('clienteTelefono'),
     portadaEstilo:   'Estilo ' + selectedPortada,
     portadaNombre:   TUSPortadas.estilos[selectedPortada - 1].nombre,
     portadaColor:    TUSPortadas.color(selectedColor).nombre,
