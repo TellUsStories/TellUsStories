@@ -27,13 +27,13 @@
         // La ilustración llega con la parte de arriba vacía (así se pide a la IA): se recorta por arriba si hace falta.
         '<div style="position:absolute;inset:0;display:flex;flex-direction:column">';
     if (conTexto) {
-      h += '<div style="flex:none;box-sizing:border-box;padding:16mm 14mm 4mm;text-align:center">' +
+      h += '<div style="flex:none;box-sizing:border-box;padding:13mm 13mm 3mm;text-align:center">' +
           '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:14mm;line-height:1.1;color:' + d.titulo + '">' + esc(o.titulo) + '</div>' +
-          '<div style="color:#E3A93C;font-size:6.5mm;line-height:1;margin:3mm 0 4mm">★</div>' +
-          '<p style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:6.6mm;line-height:1.5;color:' + d.titulo + ';margin:0">' + (o.texto || '') + '</p>' +
+          '<div style="color:#E3A93C;font-size:6mm;line-height:1;margin:2.5mm 0 3mm">★</div>' +
+          '<p style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:6.1mm;line-height:1.45;color:' + d.titulo + ';margin:0">' + (o.texto || '') + '</p>' +
         '</div>';
     }
-    h += '<div style="flex:1;min-height:0;position:relative"><img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;mix-blend-mode:multiply;-webkit-mask-image:linear-gradient(transparent,#000 9%);mask-image:linear-gradient(transparent,#000 9%)"></div></div>';
+    h += '<div style="flex:1;min-height:0;position:relative"><img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;mix-blend-mode:multiply;-webkit-mask-image:linear-gradient(transparent,#000 4%);mask-image:linear-gradient(transparent,#000 4%)"></div></div>';
     return h + '</div></div>';
   }
   // Página sin marco (pedidos anteriores a las portadas nuevas)
