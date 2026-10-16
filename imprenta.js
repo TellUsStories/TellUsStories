@@ -46,28 +46,21 @@
     // Cada cara (delantera y trasera) lleva el mismo dibujo del estilo elegido: en la trasera, sin el título.
     var ratio = 1176 / 832;
     // Dónde va el dibujo (832 × 1176) en cada cara: centrado y 5 mm más grande que la parte visible.
-    // En «Mosaico» la acuarela deja más papel abajo que arriba: se encaja la cuadrícula de baldosas
-    // (x 20–787, y 52–1095 del dibujo) para que respire igual arriba y abajo (6 mm) y 4 mm a los lados.
-    var MOSAICO = { x0: 20, x1: 787, y0: 52, y1: 1095, mv: 6, mh: 4 };
+    // En «Mosaico» el dibujo ya trae su respiro alrededor de las baldosas (portadas.js), así que va
+    // justo al tamaño de la cara visible: arriba, abajo y a los lados queda el mismo margen que en la web.
     function colocacion(A) {
       var w = A.width + 10, h = w * ratio;
       if (h < A.height + 10) { h = A.height + 10; w = h / ratio; }
       var x = A.left + A.width / 2 - w / 2, y = A.top + A.height / 2 - h / 2;
-      var kx = w / 832, ky = h / 1176;
-      if (o.estilo == 2) {
-        var M = MOSAICO;
-        kx = (A.width - 2 * M.mh) / (M.x1 - M.x0); ky = (A.height - 2 * M.mv) / (M.y1 - M.y0);
-        w = 832 * kx; h = 1176 * ky;
-        x = A.left + M.mh - M.x0 * kx; y = A.top + M.mv - M.y0 * ky;
-      }
-      return { w: w, h: h, x: x, y: y, kx: kx, ky: ky };
+      if (o.estilo == 2) { w = A.width; h = A.height; x = A.left; y = A.top; }
+      return { w: w, h: h, x: x, y: y, kx: w / 832, ky: h / 1176 };
     }
     function cara(A, x0, x1, fondo) {
       var L = colocacion(A), w = L.w, h = L.h;
       var cx = L.x + w / 2, cy = L.y + h / 2;
       var wF = Math.max(2 * (x1 - cx), 2 * (cx - x0)) + 4, hF = Math.max(wF * ratio, 2 * Math.max(cy, H.height - cy) + 4);
       wF = Math.max(wF, hF / ratio);
-      // En «Mosaico» el dibujo se ajusta al hueco exacto (se estira menos de un 3 %, no se nota)
+      // En «Mosaico» el dibujo se ajusta a la cara exacta (se estira menos de un 1 %, no se nota)
       function dibujo() {
         var s = TUSPortadas.svg(o.estilo || 1, nombre, o.color, fondo);
         return o.estilo == 2 ? s.replace('<svg ', '<svg preserveAspectRatio="none" ') : s;
@@ -98,7 +91,7 @@
     // centrado un poco por encima de la mitad para dejar libre la zona del código de Gelato.
     // El recuadro ocupa el mismo sitio que el título de delante (medidas del dibujo de 832 × 1176).
     // En «Rayas» la acuarela ya trae el marco pintado, así que tiene que quedar justo encima.
-    var zona = { 1: [96, 386, 640, 342], 2: [170, 430, 492, 300], 3: [144, 428, 544, 286] }[o.estilo] || [96, 386, 640, 342];
+    var zona = { 1: [96, 386, 640, 342], 2: [180, 433, 472, 324], 3: [144, 428, 544, 286] }[o.estilo] || [96, 386, 640, 342];
     var LB = colocacion(B);
     var recW = zona[2] * LB.kx, recX = LB.x + zona[0] * LB.kx;
     var recY = LB.y + (zona[1] + zona[3] / 2) * LB.ky, recH = zona[3] * LB.ky;

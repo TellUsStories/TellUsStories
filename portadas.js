@@ -79,8 +79,15 @@
       '<feComponentTransfer><feFuncR type="table" tableValues="' + canales[0].join(' ') + '"/><feFuncG type="table" tableValues="' + canales[1].join(' ') + '"/><feFuncB type="table" tableValues="' + canales[2].join(' ') + '"/></feComponentTransfer>' +
     '</filter>';
   }
+  // En «Mosaico» la acuarela deja más papel abajo que arriba: se encaja la cuadrícula de baldosas
+  // (x 20–787, y 52–1095 de la imagen) para que respire igual arriba y abajo (25 = ~6 mm) y 16 (~4 mm) a los lados.
+  var ENCAJE = { 2: (function () {
+    var kx = (W - 32) / 767, ky = (H - 50) / 1043;
+    return { x: 16 - 20 * kx, y: 25 - 52 * ky, w: W * kx, h: H * ky };
+  })() };
   function ilustracion(id, n, c) {
-    return tinte(id, c) + '<image href="' + RAIZ + IMAGENES[n] + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"' + (c.id === 'terracota' ? '' : ' filter="url(#k' + id + ')"') + '/>';
+    var e = ENCAJE[n] || { x: 0, y: 0, w: W, h: H };
+    return tinte(id, c) + '<image href="' + RAIZ + IMAGENES[n] + '" x="' + e.x.toFixed(1) + '" y="' + e.y.toFixed(1) + '" width="' + e.w.toFixed(1) + '" height="' + e.h.toFixed(1) + '" preserveAspectRatio="none"' + (c.id === 'terracota' ? '' : ' filter="url(#k' + id + ')"') + '/>';
   }
 
   // fondo = true: solo el dibujo, sin el recuadro ni el título (para la contraportada)
