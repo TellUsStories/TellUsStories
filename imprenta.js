@@ -9,17 +9,39 @@
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   // ---------- Página interior (218 × 288 mm con sangrado) ----------
-  // texto puede llevar <span class="hl">…</span> (lo escribe Claude). Sin título ni texto = página de solo ilustración.
+  // o = { diseno (1–8), img, titulo, texto }. texto puede llevar <span class="hl">…</span> (lo escribe Claude).
+  // Sin título ni texto = página de solo ilustración.
+  // Con diseño: la acuarela de la portada hace de marco y encima va una hoja de papel con la doble línea
+  // en la tinta del diseño; arriba el título, una estrella dorada y el texto; la ilustración llena la hoja.
   function pagina(o) {
-    var color = o.color || '#C4622D', conTexto = !!(o.titulo || o.texto);
-    // La ilustración va SIEMPRE entera (contain): nunca se recorta ni se tapa. Se pide a la IA en 3:4,
-    // casi la misma proporción que la página, y con el fondo color papel, así que encaja sin bordes.
+    var conTexto = !!(o.titulo || o.texto);
+    if (!o.diseno) return paginaSinMarco(o, conTexto);
+    var d = TUSPortadas.diseno(o.diseno), M = { x: SANGRADO + 11, y: SANGRADO + 11 };   // 11 mm de marco visible
+    var h = '<style>.tus-pag .hl{color:inherit;font-weight:500}</style>' +
+      '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
+      '<img src="' + TUSPortadas.imagen(d, 'delante', 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' +
+      '<div style="position:absolute;left:' + M.x + 'mm;right:' + M.x + 'mm;top:' + M.y + 'mm;bottom:' + M.y + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
+        // La ilustración (3:4, fondo papel) llena la hoja; se funde con el papel para que no se note el borde
+        '<img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;mix-blend-mode:multiply">' +
+        '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + ';pointer-events:none"></div>' +
+        '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + ';pointer-events:none"></div>';
+    if (conTexto) {
+      // Texto arriba, en la parte que la ilustración deja despejada
+      h += '<div style="position:absolute;left:0;top:0;width:100%;height:40%;box-sizing:border-box;padding:14mm 14mm 2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
+          '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:14mm;line-height:1.1;color:' + d.titulo + '">' + esc(o.titulo) + '</div>' +
+          '<div style="color:#E3A93C;font-size:6.5mm;line-height:1;margin:3mm 0 4mm">★</div>' +
+          '<p style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:6.6mm;line-height:1.5;color:' + d.titulo + ';margin:0">' + (o.texto || '') + '</p>' +
+        '</div>';
+    }
+    return h + '</div></div>';
+  }
+  // Página sin marco (pedidos anteriores a las portadas nuevas)
+  function paginaSinMarco(o, conTexto) {
+    var color = o.color || '#C4622D';
     var h = '<style>.tus-pag .hl{color:' + color + ';font-weight:600}</style>' +
       '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + PAPEL + '">' +
       '<img src="' + esc(o.img) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom">';
     if (conTexto) {
-      // El texto va encima, en la parte de arriba que la ilustración deja despejada (sin franjas que tapen el dibujo).
-      // Queda lejos del corte y del lomo.
       h += '<div style="position:absolute;left:0;top:0;width:100%;height:36%;box-sizing:border-box;padding:24mm 20mm 4mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">' +
           '<div style="font-family:\'Dancing Script\',cursive;font-size:15.2mm;line-height:1.1;color:' + color + ';margin-bottom:4mm">' + esc(o.titulo) + '</div>' +
           '<p style="font-family:\'Cormorant Garamond\',serif;font-size:7.9mm;line-height:1.55;color:' + TINTA + ';margin:0">' + (o.texto || '') + '</p>' +

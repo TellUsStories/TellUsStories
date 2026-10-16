@@ -145,13 +145,17 @@
   .libro-cara.dorso { transform: rotateY(180deg); border-radius: 6px 0 0 6px; background: var(--papel); box-shadow: 0 22px 40px -22px rgba(0, 0, 0, .6); }
   .libro-cara.dorso::after { content: ''; position: absolute; inset: 0 0 0 auto; width: 14%; background: linear-gradient(to left, rgba(60, 35, 20, .22), transparent); pointer-events: none; }
   /* Página interior: ilustración abajo y texto arriba, siempre con la misma letra y el mismo color */
-  .pag-libro { position: absolute; inset: 0; container-type: inline-size; background: #F9F3E8; overflow: hidden; }
+  .pag-libro { position: absolute; inset: 0; container-type: inline-size; background: #F9F3E8 center / cover no-repeat; overflow: hidden; }
+  /* Con portada elegida: la acuarela de la portada hace de marco y la hoja de papel va encima con doble línea */
+  .pag-libro .hoja { position: absolute; inset: 5.5cqw; overflow: hidden; background: #F9F3E8; box-shadow: 0 .4cqw 1.2cqw rgba(40, 25, 10, .25); }
+  .pag-libro .hoja::after { content: ''; position: absolute; inset: 1.3cqw; border: .3cqw solid var(--tinta-pag, #C4622D); outline: .12cqw solid var(--tinta-pag, #C4622D); outline-offset: -.75cqw; pointer-events: none; }
+  .pag-libro .estrella { color: #E3A93C; font-size: 3.4cqw; line-height: 1; margin: -.6cqw 0 1.6cqw; }
   .pag-libro .ilu { position: absolute; inset: 0; background-repeat: no-repeat; background-size: 100% auto; background-position: center bottom; }
   .pag-libro .panel { position: absolute; left: 0; right: 0; top: 0; height: var(--panel, 38%); background: #F9F3E8; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6cqw 8cqw 2cqw; }
   .pag-libro .panel::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 5cqw; background: linear-gradient(#F9F3E8, rgba(249, 243, 232, 0)); }
-  .pag-libro h4 { font-family: 'Dancing Script', cursive; font-weight: 500; font-size: 8.4cqw; line-height: 1.1; color: #C4622D; margin-bottom: 2.4cqw; }
-  .pag-libro p { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 3.9cqw; line-height: 1.5; color: #3D2B1F; }
-  .pag-libro .hl { color: #C4622D; font-weight: 600; }
+  .pag-libro h4 { font-family: 'Dancing Script', cursive; font-weight: 500; font-size: 7.6cqw; line-height: 1.1; color: var(--tinta-pag, #C4622D); margin-bottom: 1.6cqw; }
+  .pag-libro p { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 3.5cqw; line-height: 1.5; color: var(--tinta-pag, #3D2B1F); }
+  .pag-libro .hl { color: inherit; }
   .libro-escena:focus-visible, .libro-movil:focus-visible { outline: 2px solid var(--boton); outline-offset: 6px; }
   .libro-movil { display: none; position: relative; width: 100%; max-width: 420px; margin: 0 auto; aspect-ratio: 900 / 1350; cursor: pointer; perspective: 1600px; }
   /* Móvil: las páginas están apiladas como en un libro; al pasar, la de arriba gira sobre el lomo (izquierda) */
@@ -431,7 +435,7 @@
 
 <div class="barra"><div><small>Tu libro desde</small><b>43 €</b></div><a href="#portada">Crear el libro</a></div>
 
-<script src="portadas.js?v=20261016c"></script>
+<script src="portadas.js?v=20261016d"></script>
 <script>
   // Las ocho portadas (portadas.js): cada diseño con su color fijo y el nombre escrito en la etiqueta
   function portada(diseno, nombre, calidad) { return '<div class="real">' + TUSPortadas.svg(diseno, nombre, null, { calidad: calidad }) + '</div>'; }
@@ -442,18 +446,20 @@
     // Páginas 1 y 2: el texto lo pone la web (misma letra y color en las dos); de la imagen solo se ve la ilustración.
     // panel = alto del recuadro de texto, para tapar el texto que trae la imagen original.
     var PAGINAS = {
-      1: { img: 'img/libro-pagina-1.jpg', panel: '40%', titulo: 'Para Lucas y Martina',
+      1: { img: 'img/libro-ilu-1.jpg', panel: '40%', titulo: 'Para Lucas y Martina',
            texto: 'Lucas y Martina, esta es <span class="hl">la historia de vuestra mami</span>. Una historia llena de aventuras, de sonrisas enormes y de palabras mágicas como <span class="hl">«¡vamos a por ello!»</span>. Una historia que empieza en Barcelona y os lleva hasta aquí, <span class="hl">hasta este momento</span>, en el que estáis juntos. Porque esta historia también es <span class="hl">vuestra historia</span>.',
            alt: 'Página 1: Carla lee un cuento a Lucas y Martina' },
-      2: { img: 'img/libro-pagina-2.jpg', panel: '35%', titulo: 'Antes de ser mami',
+      2: { img: 'img/libro-ilu-2.jpg', panel: '35%', titulo: 'Antes de ser mami',
            texto: 'Antes de ser vuestra mami, <span class="hl">Carla</span> fue <span class="hl">muchas cosas</span>. Fue una niña que no paraba de reír. Fue una joven que cruzó el océano. Fue <span class="hl">siempre ella misma</span>: valiente, curiosa y <span class="hl">siempre sonriendo</span>.',
            alt: 'Página 2: Carla de bebé, de niña, de joven y hoy' }
     };
+    var DIS = TUSPortadas.diseno(1);   // Vichy rosa, la portada del libro de ejemplo
     libro.querySelectorAll('[data-pag]').forEach(function (el) {
       var p = PAGINAS[el.dataset.pag];
-      el.innerHTML = '<div class="pag-libro" role="img" aria-label="' + p.alt + '" style="--panel:' + p.panel + '">' +
-        '<div class="ilu" style="background-image:url(\'' + p.img + '\')"></div>' +
-        '<div class="panel"><h4>' + p.titulo + '</h4><p>' + p.texto + '</p></div></div>';
+      // Las páginas llevan el marco de la portada del libro (la misma que se ve delante)
+      el.innerHTML = '<div class="pag-libro" role="img" aria-label="' + p.alt + '" style="--panel:' + p.panel + ';--tinta-pag:' + DIS.titulo + ';background-image:url(\'' + TUSPortadas.imagen(DIS, 'delante') + '\')">' +
+        '<div class="hoja"><div class="ilu" style="background-image:url(\'' + p.img + '\')"></div>' +
+        '<div class="panel"><h4>' + p.titulo + '</h4><div class="estrella">★</div><p>' + p.texto + '</p></div></div></div>';
     });
 
     // La página del libro es algo más alargada que la portada: que la portada la llene entera, sin franjas

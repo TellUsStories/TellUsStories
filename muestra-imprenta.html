@@ -45,13 +45,13 @@
 </section>
 
 <section>
-  <h2>Páginas interiores (21,8 × 28,8 cm con sangrado)</h2>
+  <h2>Páginas interiores (21,8 × 28,8 cm con sangrado), con el marco de la portada elegida</h2>
   <p class="nota">Lo que queda fuera de la línea roja se corta. El texto queda siempre dentro de la línea azul. La ilustración nunca se recorta ni se tapa: va entera. Estas dos son tus páginas actuales (más alargadas, por eso sobra un poco de papel a los lados); con el formato nuevo la IA las hará ya en 3:4 y llenarán la página justa.</p>
   <div class="fila" id="paginas"></div>
 </section>
 
-<script src="portadas.js?v=20261016c"></script>
-<script src="imprenta.js?v=20261016c"></script>
+<script src="portadas.js?v=20261016d"></script>
+<script src="imprenta.js?v=20261016d"></script>
 <script>
   var $ = function (id) { return document.getElementById(id); };
   TUSPortadas.disenos.forEach(function (d) { var o = document.createElement('option'); o.value = d.n; o.textContent = d.n + ' · ' + d.nombre; $('estilo').appendChild(o); });
@@ -92,8 +92,10 @@
     var anchoPag = Math.min(420, (document.body.clientWidth - 76) / 2);
     $('paginas').innerHTML =
       // Tus dos páginas retocadas (ya llevan su texto), colocadas tal cual en el formato de imprenta
-      lienzo(TUSImprenta.pagina({ img: 'img/libro-pagina-1.jpg', color: d.nombreCol }), P.w, P.h, anchoPag, gp) +
-      lienzo(TUSImprenta.pagina({ img: 'img/libro-pagina-2.jpg', color: d.nombreCol }), P.w, P.h, anchoPag, gp);
+      lienzo(TUSImprenta.pagina({ diseno: d.n, img: 'img/libro-ilu-2.jpg', titulo: 'Antes de ser mamá',
+        texto: 'Antes de ser vuestra mamá, <span class="hl">Carla</span> fue muchas cosas. Fue una niña que no paraba de reír. Fue una joven que cruzó el océano. Fue siempre ella misma: valiente, curiosa y siempre sonriendo.' }), P.w, P.h, anchoPag, gp) +
+      lienzo(TUSImprenta.pagina({ diseno: d.n, img: 'img/libro-ilu-1.jpg', titulo: 'Para Lucas y Martina',
+        texto: 'Lucas y Martina, esta es la historia de vuestra mamá. Una historia llena de aventuras, de sonrisas enormes y de palabras mágicas como «vamos a por ello». Una historia que empieza en Barcelona y os lleva hasta aquí, hasta este momento, en el que estáis juntos. Porque esta historia también es vuestra historia.' }), P.w, P.h, anchoPag, gp);
   }
   ['nombre', 'estilo', 'tapa', 'guias', 'hoja', 'dedicatoria', 'firma'].forEach(function (id) { $(id).addEventListener('input', pinta); });
   window.addEventListener('resize', pinta);
