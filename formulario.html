@@ -255,7 +255,7 @@
     <div class="gender-grid">
       <div class="gender-opt formato-opt" id="fb" onclick="setFormato('blanda',this)">
         <div class="gender-emoji">📖</div>
-        <div class="gender-title">Tapa blanda · 40 €</div>
+        <div class="gender-title">Tapa blanda · 43 €</div>
         <div class="gender-desc">Envío incluido</div>
       </div>
       <div class="gender-opt formato-opt selected" id="fd" onclick="setFormato('dura',this)">
@@ -724,7 +724,7 @@ let narrator = 'other';
 let selectedPortada = '1';
 let selectedColor = 'terracota';
 let formato = 'dura';
-var FORMATOS = { dura: 'Tapa dura · 62 €', blanda: 'Tapa blanda · 40 €' };
+var FORMATOS = { dura: 'Tapa dura · 62 €', blanda: 'Tapa blanda · 43 €' };
 
 function setFormato(val, el) {
   formato = val;
@@ -1300,6 +1300,7 @@ loadDraft();
   var cc = document.querySelector('.color-dot[data-color="' + q.get('color') + '"]'); if (cc) selColor(cc, q.get('color'));
   pintaPortadas();
   if (q.get('yo')) setNarrator('protagonist', document.getElementById('n1'));
+  if (q.get('formato') === 'blanda' || q.get('formato') === 'dura') setFormato(q.get('formato'), document.getElementById(q.get('formato') === 'blanda' ? 'fb' : 'fd'));
   saveDraft();
 })();
 updateAll();
