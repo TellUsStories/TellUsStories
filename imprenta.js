@@ -87,16 +87,15 @@
     function colocacion(A) {
       var w = A.width + 10, h = w * ratio;
       if (h < A.height + 10) { h = A.height + 10; w = h / ratio; }
-      if (blanda) {
-        // Tapa blanda: no hay cartón que esconda nada; la acuarela empieza justo en el borde del lomo
-        // y solo se pasa por fuera (el sangrado), para que la etiqueta quede centrada en la cara
-        w = A.width + SANGRADO; h = w * ratio;
-        return { w: w, h: h, x: (A.left + A.width / 2 < S.left) ? A.left - SANGRADO : A.left, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
-      }
-      // Tapa dura: el dibujo de cada tapa se amplía lo justo para llegar hasta el lomo (cubre la bisagra);
-      // así no queda ninguna franja difuminada entre la tapa y el lomo
+      // El borde de la acuarela es irregular (cuadros o rayas a medias): se esconde 6 mm por debajo del lomo,
+      // así junto al lomo se ve estampado normal. En tapa dura el dibujo cubre además la bisagra, sin franjas.
       var cx = A.left + A.width / 2, borde = cx < S.left ? S.left : S.left + S.width;
-      var wl = 2 * Math.abs(cx - borde) + 2;
+      var wl = 2 * Math.abs(cx - borde) + 12;
+      if (blanda) {
+        // Tapa blanda: centrado en la cara (la etiqueta queda centrada) y cubriendo también el sangrado de fuera
+        w = Math.max(wl, A.width + 2 * SANGRADO + 2); h = w * ratio;
+        return { w: w, h: h, x: cx - w / 2, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
+      }
       if (wl > w) { w = wl; h = w * ratio; }
       return { w: w, h: h, x: cx - w / 2, y: A.top + A.height / 2 - h / 2, k: w / TUSPortadas.W };
     }
@@ -132,7 +131,7 @@
     // La dedicatoria y la firma, centradas en el recuadro; el logo, siempre abajo en el centro
     var texto = '<div class="tus-ded" style="position:absolute;left:' + ex + 'mm;top:' + ey + 'mm;width:' + ew + 'mm;height:' + eh + 'mm;box-sizing:border-box;padding:4mm 7mm 3.5mm;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden">' +
         '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">' +
-          '<p style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:6mm;line-height:1.45;color:' + d.titulo + ';margin:0;white-space:pre-line">' + esc(ded) + '</p>' +
+          '<p style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:7.2mm;line-height:1.4;color:' + d.titulo + ';margin:0;white-space:pre-line">' + esc(ded) + '</p>' +
           '<div style="width:14mm;height:.3mm;background:' + d.titulo + ';opacity:.5;margin:3.5mm 0 2.5mm"></div>' +
           (o.firma ? '<div style="font-family:\'Dancing Script\',cursive;font-size:6.5mm;line-height:1.2;color:' + d.titulo + '">' + esc(o.firma) + '</div>' : '') +
         '</div>' +
@@ -141,7 +140,7 @@
     var tras = cara(B, 0, S.left - ext, '<img src="' + imgDel + '" style="display:block;width:100%;height:100%">', imgDel) + texto;
 
     // Si la dedicatoria es larga, la letra se reduce hasta que todo quepa en la etiqueta (hcti ejecuta el script)
-    var ajuste = '<script>(function(){var c=document.querySelectorAll(".tus-ded");c.forEach(function(b){var p=b.querySelector("p"),t=6;while(b.scrollHeight>b.clientHeight+1&&t>3.4){t-=.2;p.style.fontSize=t.toFixed(1)+"mm";}});})();<\/script>';
+    var ajuste = '<script>(function(){var c=document.querySelectorAll(".tus-ded");c.forEach(function(b){var p=b.querySelector("p"),t=7.2;while(b.scrollHeight>b.clientHeight+1&&t>4){t-=.2;p.style.fontSize=t.toFixed(1)+"mm";}});})();<\/script>';
 
     return '<style>.tus-portada-abierta svg{display:block;width:100%;height:100%}</style>' +
       '<div class="tus-portada-abierta" style="position:relative;overflow:hidden;width:' + H.width + 'mm;height:' + H.height + 'mm;background:' + d.papel + '">' + tras + del + lomo + '</div>' + ajuste;
