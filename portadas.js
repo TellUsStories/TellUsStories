@@ -45,11 +45,13 @@
     op = op || {};
     var d = diseno(/\d/.test(String(alt || '')) ? alt : estilo), n = String(nombre || 'Carmen').trim() || 'Carmen';
     var e = d.delante, x = e[0] + e[2] / 2, nom = n.toUpperCase();
-    var tamT = Math.round(e[3] * .23), tamN = cabe(nom, Math.round(e[3] * .44), e[2] * .86, .36);
+    var tamT = Math.round(e[3] * .23), tamN = cabe(nom, Math.round(e[3] * .42), e[2] * .86, .36);
+    // Aire entre «El universo de» y el nombre, para que las tildes (Á, É, Í…) no toquen la línea de arriba
+    var yT = Math.round(e[1] + e[3] * .35);
     return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada ' + esc(d.nombre) + ': El universo de ' + esc(n) + '">' +
       '<image href="' + imagen(d, 'delante', op.calidad) + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>' +
-      '<text x="' + x + '" y="' + Math.round(e[1] + e[3] * .4) + '" text-anchor="middle" font-family="\'Dancing Script\', cursive" font-size="' + tamT + '" fill="' + d.titulo + '">El universo de</text>' +
-      '<text x="' + x + '" y="' + Math.round(e[1] + e[3] * .4 + tamN * .95) + '" text-anchor="middle" font-family="\'Amatic SC\', cursive" font-weight="700" font-size="' + tamN + '" letter-spacing="2" fill="' + d.nombreCol + '">' + esc(nom) + '</text>' +
+      '<text x="' + x + '" y="' + yT + '" text-anchor="middle" font-family="\'Dancing Script\', cursive" font-size="' + tamT + '" fill="' + d.titulo + '">El universo de</text>' +
+      '<text x="' + x + '" y="' + Math.round(yT + tamN * 1.12) + '" text-anchor="middle" font-family="\'Amatic SC\', cursive" font-weight="700" font-size="' + tamN + '" letter-spacing="2" fill="' + d.nombreCol + '">' + esc(nom) + '</text>' +
       '</svg>';
   }
 
