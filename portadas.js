@@ -5,15 +5,16 @@
 (function () {
   // delante / detras = etiqueta de papel [x, y, ancho, alto] en el dibujo de 832 × 1176
   // titulo = tinta de «El universo de»; nombreCol = tinta del nombre; lomo = color liso del lomo
+  // paleta y estampado: se usan en el prompt de las ilustraciones interiores (en inglés, como el resto del prompt)
   var DISENOS = [
-    { n: 1, nombre: 'Vichy rosa', titulo: '#935756', nombreCol: '#915453', lomo: '#935756', papel: '#EEE4D8', delante: [89, 302, 654, 539], detras: [96, 306, 641, 522] },
-    { n: 2, nombre: 'Floral', titulo: '#5F5E46', nombreCol: '#B65749', lomo: '#B65749', papel: '#EEE3D2', delante: [64, 339, 705, 468], detras: [60, 340, 713, 468] },
-    { n: 3, nombre: 'Escocés', titulo: '#BD4756', nombreCol: '#C34958', lomo: '#C34958', papel: '#F4E4D2', delante: [83, 314, 666, 486], detras: [89, 316, 653, 476] },
-    { n: 4, nombre: 'Ajedrez', titulo: '#5D5E52', nombreCol: '#8E3827', lomo: '#8E3827', papel: '#EFE6D5', delante: [59, 318, 714, 478], detras: [66, 324, 700, 469] },
-    { n: 5, nombre: 'Rayas mandarina', titulo: '#703164', nombreCol: '#D65A25', lomo: '#703164', papel: '#F5E3C9', delante: [54, 311, 725, 486], detras: [54, 314, 723, 483] },
-    { n: 6, nombre: 'Vichy verde', titulo: '#3B5738', nombreCol: '#3B5736', lomo: '#3B5738', papel: '#F0E8D6', delante: [62, 306, 708, 504], detras: [68, 310, 697, 496] },
-    { n: 7, nombre: 'Rayas verdes', titulo: '#414D28', nombreCol: '#414C28', lomo: '#414D28', papel: '#EFEAD7', delante: [57, 326, 719, 461], detras: [60, 328, 712, 457] },
-    { n: 8, nombre: 'Cuadros', titulo: '#72181D', nombreCol: '#781B20', lomo: '#72181D', papel: '#F6E5D0', delante: [60, 319, 712, 473], detras: [63, 322, 705, 471] }
+    { n: 1, nombre: 'Vichy rosa', paleta: 'dusty rose, soft raspberry pink and blush pink with touches of sage green', estampado: 'a dusty rose and cream watercolour gingham (vichy) check', titulo: '#935756', nombreCol: '#915453', lomo: '#935756', papel: '#EEE4D8', delante: [89, 302, 654, 539], detras: [96, 306, 641, 522] },
+    { n: 2, nombre: 'Floral', paleta: 'coral red, terracotta and soft olive green', estampado: 'a coral red and olive green watercolour floral damask pattern on cream', titulo: '#5F5E46', nombreCol: '#B65749', lomo: '#B65749', papel: '#EEE3D2', delante: [64, 339, 705, 468], detras: [60, 340, 713, 468] },
+    { n: 3, nombre: 'Escocés', paleta: 'turquoise aqua, raspberry pink and tangerine orange', estampado: 'a turquoise, raspberry pink and tangerine orange watercolour tartan plaid', titulo: '#BD4756', nombreCol: '#C34958', lomo: '#C34958', papel: '#F4E4D2', delante: [83, 314, 666, 486], detras: [89, 316, 653, 476] },
+    { n: 4, nombre: 'Ajedrez', paleta: 'brick red and soft blue-grey with touches of sage green', estampado: 'a brick red and soft blue-grey watercolour checkerboard', titulo: '#5D5E52', nombreCol: '#8E3827', lomo: '#8E3827', papel: '#EFE6D5', delante: [59, 318, 714, 478], detras: [66, 324, 700, 469] },
+    { n: 5, nombre: 'Rayas mandarina', paleta: 'mandarin orange and plum purple with touches of warm pink', estampado: 'wide mandarin orange and plum purple watercolour stripes', titulo: '#703164', nombreCol: '#D65A25', lomo: '#703164', papel: '#F5E3C9', delante: [54, 311, 725, 486], detras: [54, 314, 723, 483] },
+    { n: 6, nombre: 'Vichy verde', paleta: 'cornflower sky blue and grass green with touches of sunny yellow', estampado: 'a cornflower blue and grass green watercolour gingham (vichy) check', titulo: '#3B5738', nombreCol: '#3B5736', lomo: '#3B5738', papel: '#F0E8D6', delante: [62, 306, 708, 504], detras: [68, 310, 697, 496] },
+    { n: 7, nombre: 'Rayas verdes', paleta: 'emerald green, deep forest green and pale butter yellow', estampado: 'emerald green, deep forest green and pale butter yellow watercolour stripes', titulo: '#414D28', nombreCol: '#414C28', lomo: '#414D28', papel: '#EFEAD7', delante: [57, 326, 719, 461], detras: [60, 328, 712, 457] },
+    { n: 8, nombre: 'Cuadros', paleta: 'coral salmon, cobalt blue, emerald green and burgundy', estampado: 'a coral salmon, cobalt blue, emerald green and burgundy watercolour checked pattern', titulo: '#72181D', nombreCol: '#781B20', lomo: '#72181D', papel: '#F6E5D0', delante: [60, 319, 712, 473], detras: [63, 322, 705, 471] }
   ];
   var W = 832, H = 1176;
   // Las imágenes se piden con la ruta completa de la web (así funcionan también desde Make/hcti)
