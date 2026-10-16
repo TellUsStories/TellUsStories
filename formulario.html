@@ -157,7 +157,7 @@
   .fin-h{color:var(--coral);}
   .fin-box strong{color:var(--coral);}
   /* Campo obligatorio sin rellenar */
-  input.falta, select.falta, textarea.falta, .vc.falta { border-color: #C0392B !important; box-shadow: 0 0 0 3px rgba(192, 57, 43, .12) !important; }
+  input.falta, select.falta, textarea.falta, .vc.falta, .uzone.falta { border-color: #C0392B !important; box-shadow: 0 0 0 3px rgba(192, 57, 43, .12) !important; }
   .vc.falta .vc-q::after { content: ' · obligatoria'; color: #C0392B; font-size: .75em; font-style: italic; }
 </style>
 </head>
@@ -175,7 +175,7 @@
     <div class="sh-chapter">Antes de empezar</div>
     <h1 class="sh-title">No hace falta escribir.<br>Solo contar.</h1>
     <p class="sh-sub">Te iremos haciendo preguntas siguiendo la vida del protagonista. Graba una nota de voz respondiendo a cada una. Nosotros lo convertimos en el libro.</p>
-    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro; las fotos son opcionales.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro, y también una foto de su cara para dibujar su personaje; las demás fotos son opcionales.</p>
   </div>
   <div class="two">
     <div class="field">
@@ -330,8 +330,8 @@
   </div>
 
   <div class="field">
-    <label>Una foto de su cara (muy recomendable)</label>
-    <div class="hint">De frente y con buena luz. La usamos para que las ilustraciones se le parezcan de verdad.</div>
+    <label>Una foto de su cara</label>
+    <div class="hint">De frente y con buena luz. Con ella dibujamos su personaje (de bebé, de niño/a, de joven y hoy) para que se le parezca de verdad en todas las páginas.</div>
     <div class="uzone" onclick="document.getElementById('fotoCara').click()">
       <div class="uzone-icon">🙂</div>
       <div class="uzone-txt" id="fotoCaraTxt">Haz clic para añadir la foto</div>
@@ -567,8 +567,8 @@
   <div class="field"><label>Edad de cada niño</label><input type="text" id="childAges" placeholder="Ej: Martina 8 años, Pedro 6, Lucas 3"></div>
   <div class="field"><label>¿Cómo son físicamente los niños?</label><input type="text" id="childLooks" placeholder="Ej: Martina rubia con rizos, Pedro pelo castaño con flequillo…"></div>
   <div class="field">
-    <label>Una foto de los niños (opcional)</label>
-    <div class="hint">Para que también se parezcan en las ilustraciones.</div>
+    <label>Una foto de los niños (muy recomendable)</label>
+    <div class="hint">Con ella dibujamos su personaje (de bebés y hoy) para que también se les reconozca en todas las páginas.</div>
     <div class="uzone" onclick="document.getElementById('fotoNinos').click()">
       <div class="uzone-icon">🧒</div>
       <div class="uzone-txt" id="fotoNinosTxt">Haz clic para añadir la foto</div>
@@ -809,7 +809,8 @@ function onNameInput() { updateAll(); }
 // Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
 function startForm() { go(1); }
 
-// Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual.
+// Todos los campos son obligatorios (de las fotos, solo la de la cara del protagonista): no se avanza
+// hasta completar la pantalla actual.
 // Las preguntas de voz cuentan como respondidas con la grabación o con el texto escrito.
 function marcaFalta(el, lista, nombre) { el.classList.add('falta'); lista.push(nombre); }
 
@@ -831,6 +832,9 @@ function validarPantalla(n) {
       marcaFalta(el, falta, el.type === 'email' ? 'un email válido' : (lab ? lab.textContent.trim() : (el.placeholder || 'un campo')));
     }
   });
+  // La foto de la cara: con ella se dibuja la ficha del personaje que siguen todas las ilustraciones
+  var foto = s.querySelector('#fotoCara');
+  if (foto && !foto.files.length) marcaFalta(foto.previousElementSibling, falta, 'una foto de su cara');
   return falta;
 }
 
