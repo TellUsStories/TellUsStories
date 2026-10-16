@@ -6,14 +6,14 @@
   // delante / detras = etiqueta de papel [x, y, ancho, alto] en el dibujo de 832 × 1176
   // titulo = tinta de «El universo de»; nombreCol = tinta del nombre; lomo = color liso del lomo
   var DISENOS = [
-    { n: 1, nombre: 'Vichy rosa', titulo: '#935756', nombreCol: '#915453', lomo: '#935756', papel: '#EEE4D8', delante: [116, 326, 600, 494], detras: [119, 326, 595, 485] },
-    { n: 2, nombre: 'Floral', titulo: '#5F5E46', nombreCol: '#B65749', lomo: '#B65749', papel: '#EEE3D2', delante: [81, 351, 671, 446], detras: [76, 351, 680, 447] },
-    { n: 3, nombre: 'Escocés', titulo: '#BD4756', nombreCol: '#C34958', lomo: '#C34958', papel: '#F4E4D2', delante: [107, 333, 619, 452], detras: [108, 330, 617, 450] },
-    { n: 4, nombre: 'Ajedrez', titulo: '#5D5E52', nombreCol: '#8E3827', lomo: '#8E3827', papel: '#EFE6D5', delante: [81, 334, 671, 449], detras: [82, 335, 670, 449] },
-    { n: 5, nombre: 'Rayas mandarina', titulo: '#703164', nombreCol: '#D65A25', lomo: '#703164', papel: '#F5E3C9', delante: [77, 328, 679, 455], detras: [76, 330, 681, 455] },
-    { n: 6, nombre: 'Vichy verde', titulo: '#3B5738', nombreCol: '#3B5736', lomo: '#3B5738', papel: '#F0E8D6', delante: [92, 330, 647, 461], detras: [92, 330, 647, 461] },
-    { n: 7, nombre: 'Rayas verdes', titulo: '#414D28', nombreCol: '#414C28', lomo: '#414D28', papel: '#EFEAD7', delante: [77, 340, 678, 435], detras: [77, 340, 678, 435] },
-    { n: 8, nombre: 'Cuadros', titulo: '#72181D', nombreCol: '#781B20', lomo: '#72181D', papel: '#F6E5D0', delante: [78, 333, 676, 449], detras: [79, 333, 673, 449] }
+    { n: 1, nombre: 'Vichy rosa', titulo: '#935756', nombreCol: '#915453', lomo: '#935756', papel: '#EEE4D8', delante: [89, 302, 654, 539], detras: [96, 306, 641, 522] },
+    { n: 2, nombre: 'Floral', titulo: '#5F5E46', nombreCol: '#B65749', lomo: '#B65749', papel: '#EEE3D2', delante: [64, 339, 705, 468], detras: [60, 340, 713, 468] },
+    { n: 3, nombre: 'Escocés', titulo: '#BD4756', nombreCol: '#C34958', lomo: '#C34958', papel: '#F4E4D2', delante: [83, 314, 666, 486], detras: [89, 316, 653, 476] },
+    { n: 4, nombre: 'Ajedrez', titulo: '#5D5E52', nombreCol: '#8E3827', lomo: '#8E3827', papel: '#EFE6D5', delante: [59, 318, 714, 478], detras: [66, 324, 700, 469] },
+    { n: 5, nombre: 'Rayas mandarina', titulo: '#703164', nombreCol: '#D65A25', lomo: '#703164', papel: '#F5E3C9', delante: [54, 311, 725, 486], detras: [54, 314, 723, 483] },
+    { n: 6, nombre: 'Vichy verde', titulo: '#3B5738', nombreCol: '#3B5736', lomo: '#3B5738', papel: '#F0E8D6', delante: [62, 306, 708, 504], detras: [68, 310, 697, 496] },
+    { n: 7, nombre: 'Rayas verdes', titulo: '#414D28', nombreCol: '#414C28', lomo: '#414D28', papel: '#EFEAD7', delante: [57, 326, 719, 461], detras: [60, 328, 712, 457] },
+    { n: 8, nombre: 'Cuadros', titulo: '#72181D', nombreCol: '#781B20', lomo: '#72181D', papel: '#F6E5D0', delante: [60, 319, 712, 473], detras: [63, 322, 705, 471] }
   ];
   var W = 832, H = 1176;
   // Las imágenes se piden con la ruta completa de la web (así funcionan también desde Make/hcti)
