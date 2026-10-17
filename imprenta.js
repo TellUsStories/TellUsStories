@@ -150,7 +150,8 @@
     // La contraportada es entonces el reflejo de la portada, así a los dos lados del lomo se ve lo mismo y
     // las líneas siguen a la misma altura. Solo en los diseños de rayas y cuadros que lo necesitan (5–8);
     // en el resto (1–4) la acuarela va centrada, sin reflejo, con su borde escondido bajo el lomo.
-    var ENCAJE = { 5: ['izq', 22], 6: ['izq', 31], 7: ['izq', 35], 8: ['izq', 4] };
+    // 9 (Rayas salvia): el lomo se centra en una raya verde, así el lomo verde es una raya más del estampado
+    var ENCAJE = { 5: ['izq', 22], 6: ['izq', 31], 7: ['izq', 35], 8: ['izq', 4], 9: ['izq', 30, true] };
     var enc = ENCAJE[d.n], espejoDel = !!enc && enc[0] === 'der', u = enc ? enc[1] : 0;
     var W = TUSPortadas.W;
     // Colocación del dibujo en una cara: el px u de la acuarela cae justo en el lomo (en su borde o en su
