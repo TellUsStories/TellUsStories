@@ -268,18 +268,17 @@
   </div>
   <div class="two">
     <div class="field">
-      <label>Tipo de libro</label>
-      <select id="bookType" onchange="document.getElementById('customTitleWrap').style.display = this.value === 'Título personalizado' ? 'block' : 'none'">
-        <option value="">Selecciona…</option>
-        <option>Las aventuras de Mamá</option>
-        <option>Las aventuras de Papá</option>
-        <option>Las aventuras del Abuelo</option>
-        <option>Las aventuras de la Abuela</option>
-        <option>Las aventuras del Tío</option>
-        <option>Las aventuras de la Tía</option>
-        <option>Título personalizado</option>
+      <label>¿Quién es para los niños?</label>
+      <select id="bookType" onchange="tipoElegido()">
+        <option value="">Elige una opción</option>
+        <option>Mamá</option>
+        <option>Papá</option>
+        <option>Abuela</option>
+        <option>Abuelo</option>
+        <option>Tía</option>
+        <option>Tío</option>
+        <option>Otra persona</option>
       </select>
-      <div id="customTitleWrap" style="display:none;margin-top:8px;"><input type="text" id="customTitle" placeholder="Escribe el título. Ej: Las aventuras de la yaya Carmen"></div>
     </div>
     <div class="field">
       <label>Quién hace el encargo</label>
@@ -352,13 +351,13 @@
   <div class="perm" id="permBanner">Tu navegador necesita acceso al micrófono. Si prefieres, usa los campos de texto.</div>
 
   <div class="two">
-    <div class="field"><label>¿Qué relación tiene con los niños?</label>
+    <div class="field"><label>Los niños del libro son sus…</label>
       <select id="relacionNinos">
-        <option value="">Selecciona…</option>
-        <option>Son sus hijos</option>
-        <option>Son sus nietos</option>
-        <option>Son sus sobrinos</option>
-        <option>Otra relación</option>
+        <option value="">Elige una opción</option>
+        <option value="Son sus hijos">Hijos</option>
+        <option value="Son sus nietos">Nietos</option>
+        <option value="Son sus sobrinos">Sobrinos</option>
+        <option value="Otra relación">Otra relación</option>
       </select>
     </div>
     <div class="field"><label>¿Cómo la llaman los niños?</label><input type="text" id="nicknames" placeholder="Ej: mamá, yaya, la abuela Pepa…"></div>
@@ -580,7 +579,7 @@
     <h3>Datos del pedido</h3>
     <div class="sr"><span class="sk">Protagonista</span><span class="sv" id="rv-prot">—</span></div>
     <div class="sr"><span class="sk">Para</span><span class="sv" id="rv-child">—</span></div>
-    <div class="sr"><span class="sk">Tipo</span><span class="sv" id="rv-type">—</span></div>
+    <div class="sr"><span class="sk">Para los niños es</span><span class="sv" id="rv-type">—</span></div>
     <div class="sr"><span class="sk">Encargado por</span><span class="sv" id="rv-ord">—</span></div>
     <div class="sr"><span class="sk">Email</span><span class="sv" id="rv-email">—</span></div>
     <div class="sr"><span class="sk">Teléfono</span><span class="sv" id="rv-tel">—</span></div>
@@ -740,7 +739,22 @@ function updateAll() {
     ? '💡 Te puede ayudar: cómo conoció a su pareja (si la tiene) · cómo fue tener a sus hijos · y, años después, cómo vivió la llegada de cada nieto · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b>'
     : '💡 Te puede ayudar: cómo conoció a su pareja (si la tiene) · cómo fue la llegada de cada uno de los niños · cómo le cambió la vida · <b>y si te acuerdas de alguna anécdota (la primera cita, el primer día en casa con el bebé…), ¡cuéntala!</b>';
 }
-document.addEventListener('change', function(e) { if (e.target.id === 'relacionNinos') updateAll(); });
+document.addEventListener('change', function(e) { if (e.target.id === 'relacionNinos') updateAll(); if (e.target.id === 'bookType') relacionDesdeTipo(); });
+// Si el tipo de libro ya lo dice (la Abuela, Mamá, el Tío…), «Los niños del libro son sus…» se marca solo (se puede cambiar)
+// Al elegir quién es (Mamá, Abuelo…), también se marca si es mujer u hombre y de quién son los niños
+function tipoElegido() {
+  var t = document.getElementById('bookType').value;
+  if (/^(Mamá|Abuela|Tía)$/.test(t)) setGender('f', document.getElementById('gf'));
+  if (/^(Papá|Abuelo|Tío)$/.test(t)) setGender('m', document.getElementById('gm'));
+  var r = document.getElementById('relacionNinos'); if (r) r.value = '';   // se recalcula con la nueva elección
+  relacionDesdeTipo();
+}
+function relacionDesdeTipo() {
+  var r = document.getElementById('relacionNinos'), t = (document.getElementById('bookType') || {}).value || '';
+  if (!r || r.value) return;
+  r.value = /Abuel/.test(t) ? 'Son sus nietos' : /Mamá|Papá/.test(t) ? 'Son sus hijos' : /Tí[ao]/.test(t) ? 'Son sus sobrinos' : '';
+  updateAll();
+}
 
 function setGender(g_val, el) {
   gender = g_val;
@@ -752,7 +766,7 @@ function setGender(g_val, el) {
 function onNameInput() { updateAll(); }
 
 // Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
-function startForm() { go(1); }
+function startForm() { relacionDesdeTipo(); go(1); }
 
 // Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual.
 // Las preguntas de voz cuentan como respondidas con la grabación o con el texto escrito.
@@ -1017,7 +1031,6 @@ function loadDraft() {
     var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
     if (!d) return;
     Object.keys(d.fields || {}).forEach(function(id) { var el = document.getElementById(id); if (el) el.value = d.fields[id]; });
-    document.getElementById('customTitleWrap').style.display = document.getElementById('bookType').value === 'Título personalizado' ? 'block' : 'none';
     Object.keys(d.tf || {}).forEach(function(i) {
       var box = document.getElementById('tf' + i);
       var ta = box && box.querySelector('textarea');
@@ -1141,9 +1154,7 @@ async function submit() {
     protagonistName: document.getElementById('protName').value || '',
     childName:       document.getElementById('childNames').value || '',
     gender:          gender === 'f' ? 'mujer' : 'hombre',
-    relacion:        document.getElementById('bookType').value === 'Título personalizado'
-                       ? 'Título personalizado: ' + val('customTitle')
-                       : (document.getElementById('bookType').value || ''),
+    relacion:        document.getElementById('bookType').value || '',   // quién es para los niños: Mamá, Abuela, Tío…
     senderName:      document.getElementById('orderer').value || '',
     senderEmail:     document.getElementById('email').value || '',
     cliente_telefono: val('clienteTelefono'),
@@ -1685,13 +1696,12 @@ window.addEventListener('load', aspPinta);   // por si los nombres llegan desde 
 (function () {
   var q = new URLSearchParams(location.search);
   if (!q.get('nombre') && !q.get('rol') && !q.get('portada')) return;
-  var ROL = { 'Mamá': ['Las aventuras de Mamá', 'f'], 'Papá': ['Las aventuras de Papá', 'm'], 'Abuela': ['Las aventuras de la Abuela', 'f'],
-              'Abuelo': ['Las aventuras del Abuelo', 'm'], 'Tía': ['Las aventuras de la Tía', 'f'], 'Tío': ['Las aventuras del Tío', 'm'] };
+  var ROL = { 'Mamá': ['Mamá', 'f'], 'Papá': ['Papá', 'm'], 'Abuela': ['Abuela', 'f'], 'Abuelo': ['Abuelo', 'm'], 'Tía': ['Tía', 'f'], 'Tío': ['Tío', 'm'] };
   if (q.get('nombre')) document.getElementById('protName').value = q.get('nombre');
   if (q.get('ninos')) document.getElementById('childNames').value = q.get('ninos');
   var r = ROL[q.get('rol')];
-  if (r) { document.getElementById('bookType').value = r[0]; setGender(r[1], document.getElementById(r[1] === 'm' ? 'gm' : 'gf')); }
-  else if (q.get('rol')) { document.getElementById('bookType').value = 'Título personalizado'; document.getElementById('customTitleWrap').style.display = 'block'; }
+  if (r) { document.getElementById('bookType').value = r[0]; setGender(r[1], document.getElementById(r[1] === 'm' ? 'gm' : 'gf')); relacionDesdeTipo(); }
+  else if (q.get('rol')) { document.getElementById('bookType').value = 'Otra persona'; }
   var pc = document.querySelector('.portada-card[data-portada="' + q.get('portada') + '"]'); if (pc) selPortada(pc, q.get('portada'));
   pintaPortadas();
   if (q.get('yo')) setNarrator('protagonist', document.getElementById('n1'));
