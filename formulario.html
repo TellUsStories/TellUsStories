@@ -36,7 +36,7 @@
   .ded-op.elegida{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.07);}
   input[type=text],input[type=email],select,textarea{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:4px;background:var(--white);font-family:var(--texto);font-size:16px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
   input:focus,select:focus,textarea:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.07);}
-  textarea{resize:vertical;min-height:80px;line-height:1.6;}
+  textarea{resize:vertical;min-height:110px;line-height:1.6;overflow-y:hidden;}
   select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A7060'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   @media(max-width:500px){.two{grid-template-columns:1fr;}}
@@ -179,6 +179,28 @@
   .uzone.asp-foto{padding:14px;}
   .asp-foto.ok{background:var(--coral-l);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--navy);}
   .asp-foto.ok button{background:none;border:none;color:var(--coral);text-decoration:underline;cursor:pointer;font-family:var(--texto);font-size:13px;margin-left:6px;}
+  /* Ventana para recortar la foto (por si sale más gente) */
+  .rec-fondo{position:fixed;inset:0;background:rgba(40,25,15,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .rec-caja{background:var(--cream);border-radius:20px;padding:18px;width:100%;max-width:560px;max-height:96vh;display:flex;flex-direction:column;gap:12px;}
+  .rec-t{font-family:var(--display);font-weight:700;font-size:18px;color:var(--navy);}
+  .rec-h{font-size:13px;color:var(--muted);line-height:1.5;}
+  .rec-img{height:min(60vh,460px);background:#eee;border-radius:12px;overflow:hidden;}
+  .rec-img img{display:block;max-width:100%;}
+  .rec-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;}
+  .rec-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy);}
+  .rec-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  /* Aviso del principio: cuantos más detalles, más fiel */
+  .aviso-det{margin-top:16px;background:var(--coral-l);border:1.5px solid var(--coral);border-radius:16px;padding:14px 18px;}
+  .aviso-det-t{font-family:var(--display);font-weight:800;font-size:17px;color:var(--navy);margin-bottom:4px;}
+  .aviso-det-s{font-size:14px;color:var(--navy);line-height:1.6;}
+  /* Pago por transferencia (pantalla final) */
+  .pago{max-width:460px;margin:26px auto 0;text-align:left;background:var(--white);border:1.5px solid var(--coral);border-radius:16px;padding:18px 20px;}
+  .pago-t{font-family:var(--display);font-weight:800;font-size:19px;color:var(--navy);margin-bottom:6px;}
+  .pago-s{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:10px;}
+  .pago-f{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border);font-size:14px;}
+  .pago-f span{min-width:72px;font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+  .pago-f b{flex:1;color:var(--navy);word-break:break-all;}
+  .pago-f button{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:5px 11px;font-family:var(--display);font-weight:700;font-size:12px;color:var(--coral);cursor:pointer;}
   .asp-o{font-size:12px;color:var(--muted);font-style:italic;margin:2px 0 10px;}
   .asp-add{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 22px;}
   .asp-add button{border:1.5px dashed var(--coral);background:none;border-radius:100px;padding:8px 15px;font-family:var(--display);font-weight:700;font-size:13px;color:var(--coral);cursor:pointer;}
@@ -199,7 +221,11 @@
     <div class="sh-chapter">Antes de empezar</div>
     <h1 class="sh-title">No hace falta escribir.<br>Solo contar.</h1>
     <p class="sh-sub">Te iremos haciendo preguntas siguiendo la vida del protagonista. Graba una nota de voz respondiendo a cada una. Nosotros lo convertimos en el libro.</p>
-    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro; las fotos son opcionales.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>A tu ritmo.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro; las fotos son opcionales.</p>
+    <div class="aviso-det">
+      <div class="aviso-det-t">✨ La magia está en los detalles</div>
+      <div class="aviso-det-s">Nosotros ponemos la acuarela y las palabras; tú pones los recuerdos. Ese apodo que solo usáis en casa, la canción del coche, la manía de cada mañana, el jersey de siempre… <b>Cuantos más detalles nos regales, más os reconoceréis en cada página.</b></div>
+    </div>
   </div>
   <div class="two">
     <div class="field">
@@ -289,25 +315,14 @@
   <div class="two">
     <div class="field">
       <label>Tu email</label>
-      <input type="email" id="email" placeholder="Aquí te escribiremos sobre tu pedido">
+      <input type="email" id="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="Aquí te escribiremos sobre tu pedido">
     </div>
     <div class="field">
       <label>Tu teléfono</label>
-      <input type="text" id="clienteTelefono" autocomplete="tel" inputmode="tel" placeholder="Por si necesitamos contactarte">
+      <input type="text" id="clienteTelefono" name="tel" autocomplete="tel" inputmode="tel" placeholder="Por si necesitamos contactarte">
     </div>
   </div>
 
-  <div class="sdiv"><span>¿A dónde enviamos el libro?</span></div>
-  <div class="two">
-    <div class="field"><label>Nombre de quien lo recibe</label><input type="text" id="envioNombre" autocomplete="name" placeholder="Ej: Javier García López"></div>
-    <div class="field"><label>Teléfono</label><input type="text" id="envioTelefono" autocomplete="tel" inputmode="tel" placeholder="Para la empresa de mensajería"></div>
-  </div>
-  <div class="field"><label>Dirección</label><input type="text" id="envioDireccion" autocomplete="street-address" placeholder="Calle, número, piso y puerta"></div>
-  <div class="two">
-    <div class="field"><label>Código postal</label><input type="text" id="envioCP" autocomplete="postal-code" inputmode="numeric" placeholder="Ej: 08012"></div>
-    <div class="field"><label>Ciudad</label><input type="text" id="envioCiudad" autocomplete="address-level2" placeholder="Ej: Barcelona"></div>
-  </div>
-  <div class="field"><label>Provincia</label><input type="text" id="envioProvincia" autocomplete="address-level1" placeholder="Ej: Barcelona"></div>
   <div class="nav">
     <button class="btn-back h"></button>
     <button class="btn-next" onclick="startForm()">Empezamos →</button>
@@ -338,7 +353,9 @@
     <button class="btn-tw" onclick="toggleTF(0)">Prefiero escribir</button>
   </div>
 
-  <div class="vc" id="vc1" data-opcional="1">
+  <!-- Pregunta antigua del aspecto: ya la cubre «¿Cómo son?» (foto o botones). Se queda oculta para no
+       descolocar la numeración de las preguntas (la 1 se envía como q2_lugar). -->
+  <div class="vc" id="vc1" data-opcional="1" style="display:none">
     <div class="vc-q">¿Cómo es <span class="G-name"></span> físicamente? Descríbe<span class="G-lo"></span> como si tuvieras que presentársel<span class="G-oa"></span> a alguien que nunca <span class="G-lo"></span> ha visto.</div>
     <div class="vc-h">Opcional: cómo viste, cómo se peina, algún rasgo especial. El pelo, los ojos y la piel los eliges más abajo (o subes una foto).</div>
     <div class="vc-ctrls">
@@ -356,8 +373,8 @@
   <div class="sdiv"><span>¿Cómo son? Así los dibujaremos</span></div>
   <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y te saltas este paso, <b>o toca</b> lo que más se parezca. Las fotos solo se usan para dibujar.</div>
   <div id="aspCards"></div>
-  <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspPinta()">
-  <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspPinta()">
+  <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
+  <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspRecortar(this)">
   <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia? Añádelas para que también se parezcan:</div>
   <div class="asp-add">
     <button type="button" onclick="aspAdd('pareja')">+ Su pareja</button>
@@ -366,6 +383,7 @@
     <button type="button" onclick="aspAdd('hermano')">+ Un hermano/a</button>
   </div>
   <input type="text" id="aspectoFamilia" style="display:none">
+  <div id="aspInputs" style="display:none"></div><!-- un <input type=file> por cada familiar añadido -->
 
   <div class="vc" id="vc2">
     <div class="vc-q">¿Hay alguna frase, muletilla o gesto que solo <span class="G-el"></span> haría? Algo que <span class="G-lo"></span> delate al instante.</div>
@@ -387,10 +405,8 @@
     <div class="field"><label>¿Dónde nació / creció?</label><input type="text" id="birthPlace" placeholder="Ej: Barcelona, un pueblo de Jaén…"></div>
     <div class="field"><label>¿A qué se dedica?</label><input type="text" id="job" placeholder="Ej: Emprendedora, médico, maestro…"></div>
   </div>
-  <div class="two">
-    <div class="field"><label>Deporte o hobby principal</label><input type="text" id="sport" placeholder="Ej: Pádel, cocina, música…"></div>
-    <div class="field"><label>Lugares especiales en su vida</label><input type="text" id="places" placeholder="Ej: Formentera, San Francisco…"></div>
-  </div>
+  <!-- «Lugares especiales en su vida» se quitó: repetía el lugar de la infancia y el viaje que le marcó -->
+  <div class="field"><label>Deporte o hobby principal</label><input type="text" id="sport" placeholder="Ej: Pádel, cocina, música…"></div>
   <div class="nav">
     <button class="btn-back" onclick="go(0)">← Atrás</button>
     <button class="btn-next" onclick="go(2)">Siguiente →</button>
@@ -676,6 +692,19 @@
     <label>¿Hay algo que NO deba aparecer?</label>
     <textarea id="noShow" placeholder="Temas sensibles, personas que prefieren no incluir… (si no hay nada, escribe «nada»)" style="min-height:65px;"></textarea>
   </div>
+
+  <!-- La dirección va al final: pedirla al principio echa para atrás a mucha gente -->
+  <div class="sdiv"><span>¿A dónde enviamos el libro?</span></div>
+  <div class="two">
+    <div class="field"><label>Nombre de quien lo recibe</label><input type="text" id="envioNombre" name="ship-name" autocomplete="shipping name" placeholder="Ej: Javier García López"></div>
+    <div class="field"><label>Teléfono</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="Para la empresa de mensajería"></div>
+  </div>
+  <div class="field"><label>Dirección</label><input type="text" id="envioDireccion" name="ship-address" autocomplete="shipping street-address" placeholder="Calle, número, piso y puerta"></div>
+  <div class="two">
+    <div class="field"><label>Código postal</label><input type="text" id="envioCP" name="ship-zip" autocomplete="shipping postal-code" inputmode="numeric" placeholder="Ej: 08012"></div>
+    <div class="field"><label>Ciudad</label><input type="text" id="envioCiudad" name="ship-city" autocomplete="shipping address-level2" placeholder="Ej: Barcelona"></div>
+  </div>
+  <div class="field"><label>Provincia</label><input type="text" id="envioProvincia" name="ship-state" autocomplete="shipping address-level1" placeholder="Ej: Barcelona"></div>
   <div class="nav">
     <button class="btn-back" onclick="go(5)">← Atrás</button>
     <button class="btn-next" onclick="go(7)">Revisar todo →</button>
@@ -706,9 +735,14 @@
     <h3>Estructura del libro</h3>
     <div id="rv-chapters"></div>
   </div>
+  <div class="sb" id="rv-pago" style="display:none">
+    <h3>Pago</h3>
+    <div class="sr"><span class="sk">Importe</span><span class="sv" id="rv-importe">—</span></div>
+    <div class="sr"><span class="sk">Forma de pago</span><span class="sv">Transferencia bancaria. Al enviar te mostramos los datos para hacerla.</span></div>
+  </div>
   <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
     <h3 style="color:var(--coral);">¿Qué pasa ahora?</h3>
-    <div class="sr"><span class="sk">Ahora</span><span class="sv">Recibimos tu historia y empezamos a escribirla.</span></div>
+    <div class="sr"><span class="sk">Ahora</span><span class="sv" id="rv-ahora">Recibimos tu historia y empezamos a escribirla.</span></div>
     <div class="sr"><span class="sk">Próximos días</span><span class="sv">Ilustramos, maquetamos e imprimimos el libro.</span></div>
     <div class="sr"><span class="sk">2-3 semanas</span><span class="sv" style="color:var(--coral);font-weight:700;">El libro en tus manos.</span></div>
   </div>
@@ -724,6 +758,21 @@
     <h1 class="fin-t">¡Historia recibida!</h1>
     <p class="fin-s">Gracias por confiar en nosotros con algo tan especial. En <strong>2-3 semanas</strong> tendrás el libro en casa. Si necesitamos algo, te escribiremos a tu email.</p>
     <div class="fin-box">Un libro único para <strong id="f-child">los niños</strong><br>sobre las aventuras de <strong id="f-prot">el protagonista</strong></div>
+    <!-- Pago por transferencia (de momento no hay pasarela de pago) -->
+    <div class="pago">
+      <div class="pago-t">Último paso: el pago</div>
+      <p class="pago-s">Para confirmar el pedido, haz una transferencia con estos datos. Empezamos tu libro en cuanto la recibimos.</p>
+      <div class="pago-f"><span>Importe</span><b id="pago-importe">—</b></div>
+      <div class="pago-f"><span>Titular</span><b id="pago-titular">—</b></div>
+      <div class="pago-f"><span>IBAN</span><b id="pago-iban">—</b><button type="button" onclick="copiaPago('pago-iban',this)">Copiar</button></div>
+      <div class="pago-f"><span>Concepto</span><b id="pago-concepto">—</b><button type="button" onclick="copiaPago('pago-concepto',this)">Copiar</button></div>
+      <p class="pago-s" style="margin-top:12px">Haz una captura de esta pantalla para tenerlo a mano. Si tienes cualquier duda, escríbenos a tellusstoriesbooks@gmail.com.</p>
+    </div>
+    <!-- Mientras no estén puestos el titular y el IBAN, se avisa de que los datos llegarán por email -->
+    <div class="pago" id="pago-sin" style="display:none">
+      <div class="pago-t">Último paso: el pago</div>
+      <p class="pago-s">En unas horas te escribiremos a tu email con los datos para hacer la transferencia (<b id="pago-importe2">—</b>). Empezamos tu libro en cuanto la recibimos.</p>
+    </div>
   </div>
 </div>
 
@@ -738,6 +787,19 @@ let narrator = 'other';
 let selectedPortada = '1';
 let formato = 'dura';
 var FORMATOS = { dura: 'Tapa dura · 62 €', blanda: 'Tapa blanda · 43 €' };
+var PRECIOS = { dura: '62 €', blanda: '43 €' };
+// ===== DATOS PARA EL PAGO POR TRANSFERENCIA: rellénalos tú (titular y IBAN de la cuenta donde cobras) =====
+// activo: false = de momento no se enseña nada del pago (ni en la revisión ni al final)
+var PAGO = { activo: false, titular: 'PON AQUÍ EL TITULAR DE LA CUENTA', iban: 'PON AQUÍ TU IBAN' };
+// El concepto de la transferencia: así sabes de qué pedido es cada pago
+function conceptoPago() {
+  var p = (document.getElementById('protName').value || '').trim(), e = (document.getElementById('email').value || '').trim();
+  return 'Libro ' + (p || 'Tale Us') + (e ? ' · ' + e : '');
+}
+function copiaPago(id, b) {
+  var t = document.getElementById(id).textContent;
+  try { navigator.clipboard.writeText(t).then(function() { b.textContent = '¡Copiado!'; setTimeout(function() { b.textContent = 'Copiar'; }, 1500); }); } catch (e) {}
+}
 
 function setFormato(val, el) {
   formato = val;
@@ -878,6 +940,7 @@ function go(n) {
   if (prog) prog.style.width = Math.min((n / TOTAL) * 100, 100) + '%';
   updateAll();
   if (n === TOTAL) buildReview();
+  setTimeout(autoAltoTodos, 30);   // los cuadros de la pantalla nueva, a su altura (p. ej. al volver con el borrador)
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -916,6 +979,7 @@ async function transcribeAudio(idx, blob) {
       if (ta) {
         ta.value = ta.value.trim() ? ta.value.trim() + '\n\n' + transcribedTexts[idx] : transcribedTexts[idx];
         tfBox.classList.add('show');
+        autoAlto(ta);
         saveDraft();
       }
     } else {
@@ -985,7 +1049,7 @@ function clearRec(idx) {
   audioBlobs[idx] = null;
   // Quitar del cuadro de texto la transcripción de la grabación que se descarta
   var ta = document.querySelector('#tf' + idx + ' textarea');
-  if (ta && transcribedTexts[idx]) { ta.value = ta.value.replace(transcribedTexts[idx], '').trim(); saveDraft(); }
+  if (ta && transcribedTexts[idx]) { ta.value = ta.value.replace(transcribedTexts[idx], '').trim(); autoAlto(ta); saveDraft(); }
   transcribedTexts[idx] = '';
   var a = document.getElementById('ap' + idx);
   a.src = ''; a.classList.remove('show');
@@ -1003,8 +1067,18 @@ function clearRec(idx) {
 
 function toggleTF(idx) {
   var tf = document.getElementById('tf' + idx);
-  if (tf) tf.classList.toggle('show');
+  if (tf) { tf.classList.toggle('show'); autoAlto(tf.querySelector('textarea')); }
 }
+
+// Los cuadros de texto crecen con lo que se escribe (o se transcribe): siempre se lee todo sin hacer scroll dentro
+function autoAlto(ta) {
+  if (!ta || !ta.offsetParent) return;
+  ta.style.height = 'auto';
+  ta.style.height = (ta.scrollHeight + 4) + 'px';
+}
+function autoAltoTodos() { document.querySelectorAll('textarea').forEach(autoAlto); }
+document.addEventListener('input', function(e) { if (e.target.tagName === 'TEXTAREA') autoAlto(e.target); });
+window.addEventListener('resize', autoAltoTodos);
 
 function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 
@@ -1140,7 +1214,7 @@ document.addEventListener('change', function(e) { if (e.target.classList && e.ta
 document.addEventListener('click', function() { setTimeout(saveDraft, 0); });
 
 var CHAPTERS = [
-  { name: 'Cap. 0 · Quién es', qs: [0, 1, 2] },
+  { name: 'Cap. 0 · Quién es', qs: [0, 2] },   // la 1 (aspecto) va ahora en «¿Cómo son?»
   { name: 'Cap. 1 · Infancia', qs: [3, 4] },
   { name: 'Cap. 2 · Juventud', qs: [5, 6] },
   { name: 'Cap. 3 · Amor y familia', qs: [7, 8] },
@@ -1161,6 +1235,11 @@ function buildReview() {
   document.getElementById('rv-envio').textContent = envio || '—';
   document.getElementById('rv-portada').textContent = TUSPortadas.diseno(selectedPortada).nombre;
   document.getElementById('rv-formato').textContent = FORMATOS[formato];
+  document.getElementById('rv-importe').textContent = PRECIOS[formato] + ' (envío incluido)';
+  if (PAGO.activo) {
+    document.getElementById('rv-pago').style.display = '';
+    document.getElementById('rv-ahora').textContent = 'Haces la transferencia y empezamos a escribir tu historia en cuanto la recibimos.';
+  }
   var tEl = document.querySelector('.tone-opt.selected .tt');
   document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrado';
   var c = document.getElementById('rv-chapters');
@@ -1261,6 +1340,7 @@ async function submit() {
   // Fotos: reducidas en el navegador para que el envío pese poco
   payload.foto_cara  = await photoToBase64(document.getElementById('fotoCara').files[0]);
   payload.foto_ninos = await photoToBase64(document.getElementById('fotoNinos').files[0]);
+  payload.foto_familia = await aspCollageFamilia();   // pareja, padres y hermanos con foto, en una sola imagen
   payload.fotos_extra = [];
   var extras = Array.from(document.getElementById('fileInput').files).slice(0, 3);
   for (var j = 0; j < extras.length; j++) {
@@ -1277,6 +1357,17 @@ async function submit() {
     if (res.ok) {
       enviado = true;
       try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+      document.getElementById('pago-importe').textContent = PRECIOS[formato];
+      document.getElementById('pago-titular').textContent = PAGO.titular;
+      document.getElementById('pago-iban').textContent = PAGO.iban;
+      document.getElementById('pago-concepto').textContent = conceptoPago();
+      document.getElementById('pago-importe2').textContent = PRECIOS[formato];
+      if (!PAGO.activo) {   // pago desactivado: no se enseña nada
+        document.querySelectorAll('#sFinal .pago').forEach(function(p) { p.style.display = 'none'; });
+      } else if (/^PON /.test(PAGO.iban)) {   // aún sin IBAN: no se enseñan datos a medias
+        document.querySelector('.pago:not(#pago-sin)').style.display = 'none';
+        document.getElementById('pago-sin').style.display = 'block';
+      }
       document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
       document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || (gender === 'f' ? 'la protagonista' : 'el protagonista');
       go(TOTAL + 1);
@@ -1354,17 +1445,64 @@ function aspCajaFoto(id, texto) {
   var f = aspFoto(id), c = document.createElement('div');
   if (f) {
     c.className = 'asp-foto ok';
-    c.innerHTML = '✓ Foto subida: <b></b> <button type="button">Cambiar</button> <button type="button">Quitar</button>';
+    c.innerHTML = '✓ Foto subida: <b></b> <button type="button">Recortar</button> <button type="button">Cambiar</button> <button type="button">Quitar</button>';
     c.querySelector('b').textContent = f.name;
     var bs = c.querySelectorAll('button');
-    bs[0].onclick = function() { document.getElementById(id).click(); };
-    bs[1].onclick = function() { document.getElementById(id).value = ''; aspPinta(); };
+    bs[0].onclick = function() { aspRecortar(document.getElementById(id)); };
+    bs[1].onclick = function() { document.getElementById(id).click(); };
+    bs[2].onclick = function() { document.getElementById(id).value = ''; aspPinta(); };
   } else {
     c.className = 'uzone asp-foto';
     c.innerHTML = '<span class="uzone-txt">📷 ' + texto + '</span>';
     c.onclick = function() { document.getElementById(id).click(); };
   }
   return c;
+}
+
+// Recortar la foto al subirla (por si sale con más gente). Usa Cropper.js, que se carga solo la primera vez.
+// El recorte sustituye al archivo del propio <input>, así el envío no cambia.
+var CROPPER_V = '1.6.2';
+function aspCargaCropper() {
+  if (window.Cropper) return Promise.resolve();
+  return new Promise(function(ok, ko) {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.css';
+    document.head.appendChild(l);
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.js';
+    s.onload = ok; s.onerror = ko; document.head.appendChild(s);
+  });
+}
+function aspRecortar(input) {
+  var f = input.files[0];
+  if (!f) { aspPinta(); return; }
+  aspCargaCropper().then(function() {
+    var url = URL.createObjectURL(f), fondo = document.createElement('div');
+    fondo.className = 'rec-fondo';
+    fondo.innerHTML = '<div class="rec-caja"><div class="rec-t">Recorta la foto</div>' +
+      '<div class="rec-h">Si en la foto sale más gente, mueve y ajusta el recuadro para dejar solo ' +
+      (input.id === 'fotoNinos' ? 'a los niños' : 'su cara') + '.</div>' +
+      '<div class="rec-img"><img alt="Foto para recortar"></div>' +
+      '<div class="rec-bts"><button type="button" data-a="no">Cancelar</button><button type="button" data-a="entera">Usar la foto entera</button><button type="button" class="si" data-a="si">Usar este recorte</button></div></div>';
+    document.body.appendChild(fondo);
+    var img = fondo.querySelector('img'), cr;
+    img.onload = function() { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.8, background: false, movable: false, zoomable: false, rotatable: false }); };
+    img.src = url;
+    function cierra() { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); aspPinta(); }
+    fondo.querySelector('[data-a="no"]').onclick = function() { input.value = ''; cierra(); };
+    fondo.querySelector('[data-a="entera"]').onclick = cierra;
+    fondo.querySelector('[data-a="si"]').onclick = function() {
+      if (!cr) return cierra();
+      cr.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1600, imageSmoothingQuality: 'high' }).toBlob(function(b) {
+        try {
+          var dt = new DataTransfer();
+          dt.items.add(new File([b], f.name.replace(/\.\w+$/, '') + '-recortada.jpg', { type: 'image/jpeg' }));
+          input.files = dt.files;
+        } catch (e) {}   // si el navegador no deja cambiar el archivo, se usa la foto entera
+        cierra();
+      }, 'image/jpeg', 0.92);
+    };
+  }).catch(function() { aspPinta(); });   // sin conexión al recortador: se usa la foto entera
 }
 
 function aspPinta() {
@@ -1400,11 +1538,57 @@ function aspPinta() {
       });
     }
   }
+  // Pareja, padres y hermanos: también foto o botones (cada uno con su propio <input type=file> en #aspInputs)
   asp.extra.forEach(function(p, i) {
-    cont.appendChild(aspTarjeta(p, ASP_TIT[p.rol], function() { asp.extra.splice(i, 1); aspGuarda(); aspPinta(); }, true));
+    p.id = p.id || ('x' + Date.now().toString(36) + i);
+    var fid = aspInputExtra(p.id);
+    var quitar = function() { var f = document.getElementById(fid); if (f) f.remove(); asp.extra.splice(i, 1); aspGuarda(); aspPinta(); };
+    var t = aspTarjeta(p, ASP_TIT[p.rol], quitar, true);
+    var nombre = t.querySelector('.asp-nombre').parentNode;
+    if (aspFoto(fid)) {
+      t.querySelectorAll('.asp-g[data-k], .asp-mas').forEach(function(g) { (g.classList.contains('asp-mas') ? g.parentNode : g).style.display = 'none'; });
+      nombre.after(aspCajaFoto(fid));
+    } else {
+      var o = document.createElement('div'); o.className = 'asp-o'; o.textContent = 'o toca lo que más se parezca:';
+      nombre.after(aspCajaFoto(fid, 'Sube una foto y te saltas este paso'), o);
+    }
+    cont.appendChild(t);
   });
 }
+function aspInputExtra(pid) {
+  var id = 'fotoExtra_' + pid;
+  if (!document.getElementById(id)) {
+    var f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.id = id;
+    f.onchange = function() { aspRecortar(f); };
+    document.getElementById('aspInputs').appendChild(f);
+  }
+  return id;
+}
 function aspAdd(rol) { asp.extra.push({ rol: rol }); aspGuarda(); aspPinta(); }
+
+// Al enviar: las fotos de los familiares se juntan en una sola imagen, cada una con su nombre debajo,
+// para que la ficha de personajes sepa quién es quién
+function aspCollageFamilia() {
+  var conFoto = asp.extra.filter(function(p) { return p.id && aspFoto('fotoExtra_' + p.id); });
+  if (!conFoto.length) return Promise.resolve('');
+  var CEL = 480, ALTO = 560, PIE = 60, cols = Math.min(conFoto.length, 3), filas = Math.ceil(conFoto.length / cols);
+  var cv = document.createElement('canvas'); cv.width = cols * CEL; cv.height = filas * (ALTO + PIE);
+  var x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, cv.width, cv.height);
+  return Promise.all(conFoto.map(function(p, i) {
+    return new Promise(function(ok) {
+      var url = URL.createObjectURL(aspFoto('fotoExtra_' + p.id)), im = new Image();
+      im.onload = function() {
+        var cx = (i % cols) * CEL, cy = Math.floor(i / cols) * (ALTO + PIE), k = Math.min(CEL / im.width, ALTO / im.height);
+        x.drawImage(im, cx + (CEL - im.width * k) / 2, cy + (ALTO - im.height * k) / 2, im.width * k, im.height * k);
+        x.fillStyle = '#222'; x.font = 'bold 30px Arial'; x.textAlign = 'center';
+        x.fillText(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : ''), cx + CEL / 2, cy + ALTO + 42);
+        URL.revokeObjectURL(url); ok();
+      };
+      im.onerror = function() { URL.revokeObjectURL(url); ok(); };
+      im.src = url;
+    });
+  })).then(function() { return cv.toDataURL('image/jpeg', 0.85).split(',')[1]; });
+}
 
 // Qué falta (pelo, ojos y piel de la protagonista y de cada niño); marca las tarjetas en rojo
 function aspFaltan() {
@@ -1438,7 +1622,8 @@ function aspTexto() {
   out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (aspFoto('fotoCara') ? 'ver su foto' : (linea(asp.prot) || 'sin datos')));
   aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto('fotoNinos') ? 'ver la foto de los niños' : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
   asp.extra.forEach(function(p) {
-    var l = linea(p); if (!l && !p.nombre) return;
+    var l = (p.id && aspFoto('fotoExtra_' + p.id)) ? 'ver su foto (en la imagen de la familia)' : linea(p);
+    if (!l && !p.nombre) return;
     out.push(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
   });
   return out.join('\n');
