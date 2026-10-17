@@ -498,6 +498,15 @@
     <div class="tf" id="tf8"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
     <button class="btn-tw" onclick="toggleTF(8)">Prefiero escribir</button>
   </div>
+  <div class="vc" id="vc9" data-opcional="1">
+    <div class="vc-q">¿Se nos ha quedado algo en el tintero?</div>
+    <div class="vc-h">Ese recuerdo que no encajaba en ninguna etapa, una persona muy importante, una costumbre, una frase… Lo que sientas que sin ello el libro no sería del todo suyo. Es opcional: si ya está todo, sigue sin más.</div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb9" onclick="toggleRec(9)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt9">0:00</span><span class="rbadge" id="bd9">Grabado</span></div>
+    <audio class="ap" id="ap9"></audio><button class="btn-clr" id="bc9" onclick="clearRec(9)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf9"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(9)">Prefiero escribir</button>
+  </div>
 
   <div class="sdiv"><span>La dedicatoria</span></div>
   <div class="field">
@@ -1179,8 +1188,8 @@ async function submit() {
 
   // Formulario por etapas: cada nota va al campo que ya usa Make, y las respuestas a las preguntas de la IA
   // se añaden a la nota principal de su etapa. Los resúmenes confirmados van aparte (resumen_<etapa>).
-  var fieldMap = {0:'q2_infancia',1:'q2_recuerdo',2:'q3_sueno',3:'q3_aventura',4:'q4_pareja',5:'q4_hijos',6:'q5_ninos',7:'q5_actividad',8:'q6_consejo'};
-  for (var i = 0; i <= 8; i++) {
+  var fieldMap = {0:'q2_infancia',1:'q2_recuerdo',2:'q3_sueno',3:'q3_aventura',4:'q4_pareja',5:'q4_hijos',6:'q5_ninos',7:'q5_actividad',8:'q6_consejo',9:'q6_deseo'};
+  for (var i = 0; i <= 9; i++) {
     var tf = document.querySelector('#tf' + i + ' textarea');
     // El cuadro de texto ya contiene la transcripción (y lo que el cliente haya corregido)
     var value = (tf && tf.value && tf.value.trim()) ? tf.value.trim() : (transcribedTexts[i] || '').trim();
