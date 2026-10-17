@@ -159,6 +159,30 @@
   /* Campo obligatorio sin rellenar */
   input.falta, select.falta, textarea.falta, .vc.falta, .uzone.falta { border-color: #C0392B !important; box-shadow: 0 0 0 3px rgba(192, 57, 43, .12) !important; }
   .vc.falta .vc-q::after { content: ' · obligatoria'; color: #C0392B; font-size: .75em; font-style: italic; }
+
+  /* ¿Cómo son? Una tarjeta por persona con botones para elegir (sin escribir) */
+  .asp{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:18px 20px;margin-bottom:12px;}
+  .asp.falta{border-color:#C0392B;box-shadow:0 0 0 3px rgba(192,57,43,.12);}
+  .asp-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+  .asp-t{font-family:var(--display);font-weight:700;font-size:17px;color:var(--navy);}
+  .asp-t small{font-weight:500;font-size:13px;color:var(--muted);}
+  .asp-x{background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;font-family:var(--texto);}
+  .asp-g{margin-bottom:9px;}
+  .asp-gl{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+  .asp-g.falta .asp-gl{color:#C0392B;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:6px 13px;font-family:var(--texto);font-size:14px;color:var(--navy);cursor:pointer;transition:all .15s;}
+  .chip:hover{border-color:var(--coral);}
+  .chip.on{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  .asp input[type=text]{padding:9px 13px;font-size:15px;}
+  .asp-foto{margin-bottom:10px;}
+  .uzone.asp-foto{padding:14px;}
+  .asp-foto.ok{background:var(--coral-l);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--navy);}
+  .asp-foto.ok button{background:none;border:none;color:var(--coral);text-decoration:underline;cursor:pointer;font-family:var(--texto);font-size:13px;margin-left:6px;}
+  .asp-o{font-size:12px;color:var(--muted);font-style:italic;margin:2px 0 10px;}
+  .asp-add{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 22px;}
+  .asp-add button{border:1.5px dashed var(--coral);background:none;border-radius:100px;padding:8px 15px;font-family:var(--display);font-weight:700;font-size:13px;color:var(--coral);cursor:pointer;}
+  .asp-add button:hover{background:var(--coral-l);}
 </style>
 </head>
 <body>
@@ -175,7 +199,7 @@
     <div class="sh-chapter">Antes de empezar</div>
     <h1 class="sh-title">No hace falta escribir.<br>Solo contar.</h1>
     <p class="sh-sub">Te iremos haciendo preguntas siguiendo la vida del protagonista. Graba una nota de voz respondiendo a cada una. Nosotros lo convertimos en el libro.</p>
-    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro, y también una foto de su cara para dibujar su personaje; las demás fotos son opcionales.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>Unos 15-20 minutos.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Todas las preguntas son necesarias para escribir el libro; las fotos son opcionales.</p>
   </div>
   <div class="two">
     <div class="field">
@@ -314,9 +338,9 @@
     <button class="btn-tw" onclick="toggleTF(0)">Prefiero escribir</button>
   </div>
 
-  <div class="vc" id="vc1">
+  <div class="vc" id="vc1" data-opcional="1">
     <div class="vc-q">¿Cómo es <span class="G-name"></span> físicamente? Descríbe<span class="G-lo"></span> como si tuvieras que presentársel<span class="G-oa"></span> a alguien que nunca <span class="G-lo"></span> ha visto.</div>
-    <div class="vc-h">Color de pelo, ojos, si lleva gafas, cómo viste, algún rasgo especial.</div>
+    <div class="vc-h">Opcional: cómo viste, cómo se peina, algún rasgo especial. El pelo, los ojos y la piel los eliges más abajo (o subes una foto).</div>
     <div class="vc-ctrls">
       <button class="btn-rec" id="rb1" onclick="toggleRec(1)"><span class="rdot"></span> Grabar</button>
       <span class="rtimer" id="rt1">0:00</span>
@@ -329,15 +353,19 @@
     <button class="btn-tw" onclick="toggleTF(1)">Prefiero escribir</button>
   </div>
 
-  <div class="field">
-    <label>Una foto de su cara</label>
-    <div class="hint">De frente y con buena luz. Con ella dibujamos su personaje (de bebé, de niño/a, de joven y hoy) para que se le parezca de verdad en todas las páginas.</div>
-    <div class="uzone" onclick="document.getElementById('fotoCara').click()">
-      <div class="uzone-icon">🙂</div>
-      <div class="uzone-txt" id="fotoCaraTxt">Haz clic para añadir la foto</div>
-    </div>
-    <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="handlePhoto(this,'fotoCaraTxt')">
+  <div class="sdiv"><span>¿Cómo son? Así los dibujaremos</span></div>
+  <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y te saltas este paso, <b>o toca</b> lo que más se parezca. Las fotos solo se usan para dibujar.</div>
+  <div id="aspCards"></div>
+  <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspPinta()">
+  <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspPinta()">
+  <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia? Añádelas para que también se parezcan:</div>
+  <div class="asp-add">
+    <button type="button" onclick="aspAdd('pareja')">+ Su pareja</button>
+    <button type="button" onclick="aspAdd('madre')">+ Su madre</button>
+    <button type="button" onclick="aspAdd('padre')">+ Su padre</button>
+    <button type="button" onclick="aspAdd('hermano')">+ Un hermano/a</button>
   </div>
+  <input type="text" id="aspectoFamilia" style="display:none">
 
   <div class="vc" id="vc2">
     <div class="vc-q">¿Hay alguna frase, muletilla o gesto que solo <span class="G-el"></span> haría? Algo que <span class="G-lo"></span> delate al instante.</div>
@@ -565,16 +593,6 @@
 
   <div class="sdiv"><span>Datos rápidos</span></div>
   <div class="field"><label>Edad de cada niño</label><input type="text" id="childAges" placeholder="Ej: Martina 8 años, Pedro 6, Lucas 3"></div>
-  <div class="field"><label>¿Cómo son físicamente los niños?</label><input type="text" id="childLooks" placeholder="Ej: Martina rubia con rizos, Pedro pelo castaño con flequillo…"></div>
-  <div class="field">
-    <label>Una foto de los niños (muy recomendable)</label>
-    <div class="hint">Con ella dibujamos su personaje (de bebés y hoy) para que también se les reconozca en todas las páginas.</div>
-    <div class="uzone" onclick="document.getElementById('fotoNinos').click()">
-      <div class="uzone-icon">🧒</div>
-      <div class="uzone-txt" id="fotoNinosTxt">Haz clic para añadir la foto</div>
-    </div>
-    <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="handlePhoto(this,'fotoNinosTxt')">
-  </div>
   <div class="field"><label>¿Cómo se llaman entre ellos?</label><input type="text" id="nicknames" placeholder="Ej: Los niños lo llaman 'Abuelo Pepe'"></div>
   <div class="field"><label>¿Hay alguna historia que los niños ya conocen y piden que les cuenten?</label><input type="text" id="knownStory" placeholder="Esa historia que siempre aparece en las cenas familiares…"></div>
   <div class="nav">
@@ -809,8 +827,7 @@ function onNameInput() { updateAll(); }
 // Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
 function startForm() { go(1); }
 
-// Todos los campos son obligatorios (de las fotos, solo la de la cara del protagonista): no se avanza
-// hasta completar la pantalla actual.
+// Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual.
 // Las preguntas de voz cuentan como respondidas con la grabación o con el texto escrito.
 function marcaFalta(el, lista, nombre) { el.classList.add('falta'); lista.push(nombre); }
 
@@ -820,21 +837,21 @@ function validarPantalla(n) {
   s.querySelectorAll('.falta').forEach(function(e) { e.classList.remove('falta'); });
   // Preguntas con nota de voz: valen la grabación o el texto escrito
   s.querySelectorAll('.vc').forEach(function(vc) {
+    if (vc.dataset.opcional) return;
     var i = vc.id.replace('vc', ''), ta = vc.querySelector('textarea');
     if (!(audioBlobs[i] || pendingTx[i] || (ta && ta.value.trim()))) marcaFalta(vc, falta, '«' + vc.querySelector('.vc-q').textContent.trim().slice(0, 70) + '…»');
   });
   // Campos de texto, desplegables y cuadros sueltos (los ocultos no cuentan)
   s.querySelectorAll('input[type=text], input[type=email], select, textarea[id]').forEach(function(el) {
-    if (!el.offsetParent) return;
+    if (!el.offsetParent || el.closest('.asp')) return;   // en ¿Cómo son? los cuadros de texto son opcionales
     var ok = el.type === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) : !!el.value.trim();
     if (!ok) {
       var lab = el.closest('.field') && el.closest('.field').querySelector('label');
       marcaFalta(el, falta, el.type === 'email' ? 'un email válido' : (lab ? lab.textContent.trim() : (el.placeholder || 'un campo')));
     }
   });
-  // La foto de la cara: con ella se dibuja la ficha del personaje que siguen todas las ilustraciones
-  var foto = s.querySelector('#fotoCara');
-  if (foto && !foto.files.length) marcaFalta(foto.previousElementSibling, falta, 'una foto de su cara');
+  // ¿Cómo son?: de la protagonista y de cada niño hace falta al menos pelo, ojos y piel
+  if (s.querySelector('#aspCards')) aspFaltan().forEach(function(t) { falta.push(t); });
   return falta;
 }
 
@@ -1215,6 +1232,8 @@ async function submit() {
     d_viaje:             val('travel'),
     d_edades:            val('childAges'),
     d_aspecto_ninos:     val('childLooks'),
+    // ¿Cómo son? (elegido con botones): una línea por persona, para la ficha de personajes y las ilustraciones
+    aspecto_familia:     aspTexto(),
     d_apodos:            val('nicknames'),
     d_historia_conocida: val('knownStory'),
     d_no_mostrar:        val('noShow'),
@@ -1271,8 +1290,166 @@ async function submit() {
   }
 }
 
+// ---------- ¿Cómo son? ----------
+// Una tarjeta por persona (protagonista, cada niño y, si se añaden, pareja, madre, padre y hermanos) con botones
+// para elegir. Lo elegido se guarda como JSON en #aspectoFamilia (así entra en el borrador) y se envía en texto.
+var ASP_GRUPOS = [
+  { k: 'pelo',  t: 'Pelo',          o: ['Rubio', 'Castaño claro', 'Castaño oscuro', 'Moreno', 'Pelirrojo', 'Canoso', 'Sin pelo'] },
+  { k: 'tipo',  t: 'Tipo de pelo',  o: ['Liso', 'Ondulado', 'Rizado'] },
+  { k: 'largo', t: 'Largo',         o: ['Corto', 'Media melena', 'Largo'] },
+  { k: 'ojos',  t: 'Ojos',          o: ['Marrones', 'Miel', 'Verdes', 'Azules', 'Negros'] },
+  { k: 'piel',  t: 'Piel',          o: ['Muy clara', 'Clara', 'Morena', 'Oscura'] },
+  { k: 'extra', t: 'Además', multi: true, o: ['Gafas', 'Pecas', 'Barba', 'Bigote'] }
+];
+var ASP_OBLIG = ['pelo', 'ojos', 'piel'];
+var ASP_TIT = { prot: 'Protagonista', nino: '', pareja: 'Su pareja', madre: 'Su madre', padre: 'Su padre', hermano: 'Hermano/a' };
+var asp = { prot: {}, ninos: {}, extra: [] };
+
+function aspNinos() {
+  return (document.getElementById('childNames').value || '').split(/\s*,\s*|\s+y\s+|\s+e\s+/i).map(function(s) { return s.trim(); }).filter(Boolean);
+}
+function aspGuarda() { document.getElementById('aspectoFamilia').value = JSON.stringify(asp); saveDraft(); }
+function aspCarga() { try { var v = JSON.parse(document.getElementById('aspectoFamilia').value || 'null'); if (v && v.prot) asp = v; } catch (e) {} }
+
+function aspTarjeta(d, titulo, quitar, conNombre) {
+  var c = document.createElement('div'); c.className = 'asp';
+  var h = '<div class="asp-h"><div class="asp-t">' + titulo + '</div>' + (quitar ? '<button type="button" class="asp-x">Quitar</button>' : '') + '</div>';
+  if (conNombre) h += '<div class="asp-g"><input type="text" class="asp-nombre" placeholder="Su nombre (opcional)"></div>';
+  ASP_GRUPOS.forEach(function(gr) {
+    h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
+      gr.o.map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
+  });
+  h += '<div class="asp-g"><input type="text" class="asp-mas" placeholder="Algo más (opcional). Ej: siempre con coleta, muy alto, un lunar en la mejilla"></div>';
+  c.innerHTML = h;
+  // Estado inicial y clics
+  c.querySelectorAll('.asp-g[data-k]').forEach(function(g) {
+    var k = g.dataset.k, multi = k === 'extra';
+    g.querySelectorAll('.chip').forEach(function(b) {
+      var v = b.textContent;
+      if (multi ? (d.extra || []).indexOf(v) >= 0 : d[k] === v) b.classList.add('on');
+      b.onclick = function() {
+        if (multi) {
+          d.extra = d.extra || [];
+          var i = d.extra.indexOf(v); if (i >= 0) d.extra.splice(i, 1); else d.extra.push(v);
+          b.classList.toggle('on');
+        } else {
+          d[k] = d[k] === v ? '' : v;
+          g.querySelectorAll('.chip').forEach(function(x) { x.classList.toggle('on', x.textContent === d[k]); });
+        }
+        g.classList.remove('falta');
+        if (!c.querySelector('.asp-g.falta')) c.classList.remove('falta');
+        aspGuarda();
+      };
+    });
+  });
+  var mas = c.querySelector('.asp-mas'); mas.value = d.mas || ''; mas.oninput = function() { d.mas = mas.value; aspGuarda(); };
+  var nom = c.querySelector('.asp-nombre'); if (nom) { nom.value = d.nombre || ''; nom.oninput = function() { d.nombre = nom.value; aspGuarda(); }; }
+  if (quitar) c.querySelector('.asp-x').onclick = quitar;
+  return c;
+}
+
+// Foto o botones: con la foto subida no hace falta tocar nada
+function aspFoto(id) { var f = document.getElementById(id); return f && f.files[0]; }
+function aspCajaFoto(id, texto) {
+  var f = aspFoto(id), c = document.createElement('div');
+  if (f) {
+    c.className = 'asp-foto ok';
+    c.innerHTML = '✓ Foto subida: <b></b> <button type="button">Cambiar</button> <button type="button">Quitar</button>';
+    c.querySelector('b').textContent = f.name;
+    var bs = c.querySelectorAll('button');
+    bs[0].onclick = function() { document.getElementById(id).click(); };
+    bs[1].onclick = function() { document.getElementById(id).value = ''; aspPinta(); };
+  } else {
+    c.className = 'uzone asp-foto';
+    c.innerHTML = '<span class="uzone-txt">📷 ' + texto + '</span>';
+    c.onclick = function() { document.getElementById(id).click(); };
+  }
+  return c;
+}
+
+function aspPinta() {
+  var cont = document.getElementById('aspCards'); if (!cont) return;
+  cont.innerHTML = '';
+  var prot = (document.getElementById('protName').value || '').trim();
+  // Protagonista: foto o botones
+  if (aspFoto('fotoCara')) {
+    var cp = document.createElement('div'); cp.className = 'asp';
+    cp.innerHTML = '<div class="asp-h"><div class="asp-t">Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : '') + '</div></div>';
+    cp.appendChild(aspCajaFoto('fotoCara'));
+    cont.appendChild(cp);
+  } else {
+    var tp = aspTarjeta(asp.prot, 'Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : ''));
+    tp.insertBefore(aspCajaFoto('fotoCara', 'Sube una foto de su cara y te saltas este paso'), tp.children[1]);
+    var o = document.createElement('div'); o.className = 'asp-o'; o.textContent = 'o toca lo que más se parezca:';
+    tp.insertBefore(o, tp.children[2]);
+    cont.appendChild(tp);
+  }
+  // Niños: una foto de todos o una tarjeta por niño
+  var ninos = aspNinos();
+  if (ninos.length) {
+    if (aspFoto('fotoNinos')) {
+      var cn = document.createElement('div'); cn.className = 'asp';
+      cn.innerHTML = '<div class="asp-h"><div class="asp-t">Los niños <small>· ' + ninos.join(', ') + '</small></div></div>';
+      cn.appendChild(aspCajaFoto('fotoNinos'));
+      cont.appendChild(cn);
+    } else {
+      cont.appendChild(aspCajaFoto('fotoNinos', '¿Tienes una foto de ' + (ninos.length > 1 ? 'los niños juntos' : ninos[0]) + '? Súbela y te saltas ' + (ninos.length > 1 ? 'sus tarjetas' : 'su tarjeta')));
+      ninos.forEach(function(n) {
+        asp.ninos[n] = asp.ninos[n] || {};
+        cont.appendChild(aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>'));
+      });
+    }
+  }
+  asp.extra.forEach(function(p, i) {
+    cont.appendChild(aspTarjeta(p, ASP_TIT[p.rol], function() { asp.extra.splice(i, 1); aspGuarda(); aspPinta(); }, true));
+  });
+}
+function aspAdd(rol) { asp.extra.push({ rol: rol }); aspGuarda(); aspPinta(); }
+
+// Qué falta (pelo, ojos y piel de la protagonista y de cada niño); marca las tarjetas en rojo
+function aspFaltan() {
+  var falta = [], cards = document.querySelectorAll('#aspCards .asp');
+  var datos = [[(document.getElementById('protName').value || '').trim() || 'el protagonista', asp.prot, aspFoto('fotoCara')]]
+    .concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}, aspFoto('fotoNinos')]; }));
+  datos.forEach(function(p, i) {
+    if (p[2]) return;   // con foto no hace falta rellenar
+    var c = cards[i], sin = ASP_OBLIG.filter(function(k) { return !p[1][k]; });
+    if (!sin.length || !c) return;
+    c.classList.add('falta');
+    sin.forEach(function(k) { var g = c.querySelector('.asp-g[data-k="' + k + '"]'); if (g) g.classList.add('falta'); });
+    falta.push('cómo es ' + p[0] + ' (' + sin.join(', ') + ')');
+  });
+  return falta;
+}
+
+// Texto que se envía: una línea por persona
+function aspTexto() {
+  function linea(d) {
+    var r = [];
+    if (d.pelo) r.push('pelo ' + d.pelo.toLowerCase() + [d.tipo, d.largo].filter(Boolean).map(function(x) { return ', ' + x.toLowerCase(); }).join(''));
+    else if (d.tipo || d.largo) r.push('pelo ' + [d.tipo, d.largo].filter(Boolean).join(', ').toLowerCase());
+    if (d.ojos) r.push('ojos ' + d.ojos.toLowerCase());
+    if (d.piel) r.push('piel ' + d.piel.toLowerCase());
+    if (d.extra && d.extra.length) r.push(d.extra.join(', ').toLowerCase());
+    if (d.mas) r.push(d.mas.trim());
+    return r.join('; ');
+  }
+  var prot = (document.getElementById('protName').value || '').trim(), out = [];
+  out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (aspFoto('fotoCara') ? 'ver su foto' : (linea(asp.prot) || 'sin datos')));
+  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto('fotoNinos') ? 'ver la foto de los niños' : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
+  asp.extra.forEach(function(p) {
+    var l = linea(p); if (!l && !p.nombre) return;
+    out.push(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
+  });
+  return out.join('\n');
+}
+document.addEventListener('input', function(e) { if (e.target.id === 'childNames' || e.target.id === 'protName') aspPinta(); });
+
 document.getElementById('prog').style.width = '0%';
 loadDraft();
+aspCarga();
+aspPinta();
+window.addEventListener('load', aspPinta);   // por si los nombres llegan desde la web (más abajo)
 // Datos que llegan desde «Haz la portada» de la web: nombre, niños, quién es, estilo de portada y si es su propia historia
 (function () {
   var q = new URLSearchParams(location.search);
