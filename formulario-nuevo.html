@@ -347,7 +347,7 @@
   <div class="sh">
     <div class="sh-chapter">01 · Los personajes</div>
     <h1 class="sh-title">¿Quién es quién<br>en esta historia?</h1>
-    <p class="sh-sub">Primero, los protagonistas del libro y cómo son, para dibujarlos igual en todas las páginas.</p>
+    <p class="sh-sub">Primero, los protagonistas del libro y cómo son.</p>
   </div>
   <div class="perm" id="permBanner">Tu navegador necesita acceso al micrófono. Si prefieres, usa los campos de texto.</div>
 
@@ -442,12 +442,12 @@
 <div class="screen" id="s4">
   <div class="sh">
     <div class="sh-chapter">04 · Amor y familia</div>
-    <h1 class="sh-title">Cuando <span class="G-name"></span> encontró<br>su historia.</h1>
-    <p class="sh-sub">Cómo empezó la familia.</p>
+    <h1 class="sh-title">Cuando la familia<br>de <span class="G-name"></span> creció.</h1>
+    <p class="sh-sub">El amor y la llegada de los niños: una etapa más de su historia.</p>
   </div>
   <div class="vc" id="vc4">
     <div class="vc-q">¿Cómo empezó la familia de <span class="G-name"></span>?</div>
-    <div class="vc-h">💡 Te puede ayudar: cómo conoció a su pareja (si la hay) · la llegada de cada uno de los niños (o, si son nietos, la de sus hijos y después la de cada nieto) · cómo cambió su vida · <b>y si te acuerdas de alguna anécdota (la primera cita, el primer día en casa con el bebé…), ¡cuéntala!</b></div>
+    <div class="vc-h" id="guiaFamilia"></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb4" onclick="toggleRec(4)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt4">0:00</span><span class="rbadge" id="bd4">Grabado</span></div>
     <audio class="ap" id="ap4"></audio><button class="btn-clr" id="bc4" onclick="clearRec(4)">Volver a grabar</button>
     <div class="or-d"><span>o escribe</span></div>
@@ -497,6 +497,15 @@
     <div class="or-d"><span>o escribe</span></div>
     <div class="tf" id="tf8"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
     <button class="btn-tw" onclick="toggleTF(8)">Prefiero escribir</button>
+  </div>
+  <div class="vc" id="vc9" data-opcional="1">
+    <div class="vc-q">¿Se nos ha quedado algo en el tintero?</div>
+    <div class="vc-h">Ese recuerdo que no encajaba en ninguna etapa, una persona muy importante, una costumbre, una frase… Lo que sientas que sin ello el libro no sería del todo suyo. Es opcional: si ya está todo, sigue sin más.</div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb9" onclick="toggleRec(9)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt9">0:00</span><span class="rbadge" id="bd9">Grabado</span></div>
+    <audio class="ap" id="ap9"></audio><button class="btn-clr" id="bc9" onclick="clearRec(9)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf9"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(9)">Prefiero escribir</button>
   </div>
 
   <div class="sdiv"><span>La dedicatoria</span></div>
@@ -628,7 +637,7 @@
 
 </div>
 
-<script src="portadas.js?v=20261016f"></script>
+<script src="portadas.js?v=20261018a"></script>
 <script>
 let cur = 0;
 const TOTAL = 7;
@@ -657,7 +666,7 @@ function setFormato(val, el) {
   el.classList.add('selected');
 }
 
-// Las ocho portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
+// Las portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
 function pintaPortadas() {
   var n = (document.getElementById('protName') || {}).value || 'Carmen';
   document.querySelectorAll('.portada-card').forEach(function(c) {
@@ -725,7 +734,13 @@ function updateAll() {
   var cn = document.getElementById('childNames')?.value.trim() || 'los niños';
   var cnh = document.getElementById('childNamesH');
   if (cnh) cnh.textContent = cn;
+  // Guía de «Amor y familia»: si los niños son sus nietos, se pregunta por sus hijos y luego por los nietos
+  var gf = document.getElementById('guiaFamilia');
+  if (gf) gf.innerHTML = (document.getElementById('relacionNinos') || {}).value === 'Son sus nietos'
+    ? '💡 Te puede ayudar: cómo conoció a su pareja (si la tiene) · cómo fue tener a sus hijos · y, años después, cómo vivió la llegada de cada nieto · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b>'
+    : '💡 Te puede ayudar: cómo conoció a su pareja (si la tiene) · cómo fue la llegada de cada uno de los niños · cómo le cambió la vida · <b>y si te acuerdas de alguna anécdota (la primera cita, el primer día en casa con el bebé…), ¡cuéntala!</b>';
 }
+document.addEventListener('change', function(e) { if (e.target.id === 'relacionNinos') updateAll(); });
 
 function setGender(g_val, el) {
   gender = g_val;
@@ -1173,8 +1188,8 @@ async function submit() {
 
   // Formulario por etapas: cada nota va al campo que ya usa Make, y las respuestas a las preguntas de la IA
   // se añaden a la nota principal de su etapa. Los resúmenes confirmados van aparte (resumen_<etapa>).
-  var fieldMap = {0:'q2_infancia',1:'q2_recuerdo',2:'q3_sueno',3:'q3_aventura',4:'q4_pareja',5:'q4_hijos',6:'q5_ninos',7:'q5_actividad',8:'q6_consejo'};
-  for (var i = 0; i <= 8; i++) {
+  var fieldMap = {0:'q2_infancia',1:'q2_recuerdo',2:'q3_sueno',3:'q3_aventura',4:'q4_pareja',5:'q4_hijos',6:'q5_ninos',7:'q5_actividad',8:'q6_consejo',9:'q6_deseo'};
+  for (var i = 0; i <= 9; i++) {
     var tf = document.querySelector('#tf' + i + ' textarea');
     // El cuadro de texto ya contiene la transcripción (y lo que el cliente haya corregido)
     var value = (tf && tf.value && tf.value.trim()) ? tf.value.trim() : (transcribedTexts[i] || '').trim();

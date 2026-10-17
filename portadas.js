@@ -1,4 +1,4 @@
-// Las ocho portadas de Tale Us Stories (832 × 1176, el tamaño de las de Make).
+// Las portadas de Tale Us Stories (832 × 1176, el tamaño de las de Make).
 // Cada diseño es una acuarela con su color fijo y una etiqueta de papel: la web solo escribe encima
 // «El universo de» y el nombre. La contraportada (imprenta.js) usa la misma acuarela con la dedicatoria.
 // Lo usan la web (index.html), el formulario, la plantilla de Make y la imprenta.
@@ -14,7 +14,10 @@
     { n: 5, nombre: 'Rayas mandarina', paleta: 'mandarin orange and plum purple with touches of warm pink', estampado: 'wide mandarin orange and plum purple watercolour stripes', titulo: '#703164', nombreCol: '#D65A25', lomo: '#703164', papel: '#F5E3C9', delante: [54, 311, 725, 486], detras: [54, 314, 723, 483] },
     { n: 6, nombre: 'Vichy verde', paleta: 'cornflower sky blue and grass green with touches of sunny yellow', estampado: 'a cornflower blue and grass green watercolour gingham (vichy) check', titulo: '#3B5738', nombreCol: '#3B5736', lomo: '#3B5738', papel: '#F0E8D6', delante: [62, 306, 708, 504], detras: [68, 310, 697, 496] },
     { n: 7, nombre: 'Rayas verdes', paleta: 'emerald green, deep forest green and pale butter yellow', estampado: 'emerald green, deep forest green and pale butter yellow watercolour stripes', titulo: '#414D28', nombreCol: '#414C28', lomo: '#213325', papel: '#EFEAD7', delante: [57, 326, 719, 461], detras: [60, 328, 712, 457] },
-    { n: 8, nombre: 'Cuadros', paleta: 'coral salmon, cobalt blue, emerald green and burgundy', estampado: 'a coral salmon, cobalt blue, emerald green and burgundy watercolour checked pattern', titulo: '#72181D', nombreCol: '#781B20', lomo: '#72181D', papel: '#F6E5D0', delante: [60, 319, 712, 473], detras: [63, 322, 705, 471] }
+    { n: 8, nombre: 'Cuadros', paleta: 'coral salmon, cobalt blue, emerald green and burgundy', estampado: 'a coral salmon, cobalt blue, emerald green and burgundy watercolour checked pattern', titulo: '#72181D', nombreCol: '#781B20', lomo: '#72181D', papel: '#F6E5D0', delante: [60, 319, 712, 473], detras: [63, 322, 705, 471] },
+    { n: 9, nombre: 'Rayas salvia', paleta: 'soft sage green, warm linen beige and natural cream', estampado: 'French ticking stripes in sage green and linen beige on natural cream linen', titulo: '#5B7452', nombreCol: '#4F6A47', lomo: '#6E8C66', papel: '#F3EBDA', delante: [60, 330, 712, 440], detras: [60, 330, 712, 440] },
+    { n: 10, nombre: 'Ikat azul', paleta: 'periwinkle blue and olive green on warm cream', estampado: 'a periwinkle blue ikat diamond pattern with small olive green diamonds on cream', titulo: '#5A6B3D', nombreCol: '#55663A', lomo: '#5D74C4', papel: '#F3EBDA', delante: [60, 330, 712, 440], detras: [60, 330, 712, 440] },
+    { n: 11, nombre: 'Rayas coral', paleta: 'soft coral, peach and warm cream with touches of grey-green', estampado: 'thin hand-painted coral watercolour stripes on cream', titulo: '#7A8674', nombreCol: '#6E7A68', lomo: '#E07A5C', papel: '#F5ECE1', delante: [100, 395, 632, 330], detras: [100, 395, 632, 330] }
   ];
   var W = 832, H = 1176;
   // Las imágenes se piden con la ruta completa de la web (así funcionan también desde Make/hcti)
