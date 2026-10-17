@@ -271,7 +271,7 @@
     <li><a href="#como">Cómo funciona</a></li>
     <li><a href="#dentro">El libro</a></li>
     <li><a href="#precio">Precio</a></li>
-    <li><a class="pill" href="formulario.html">Crear el libro</a></li>
+    <li><a class="pill" href="formulario-nuevo.html">Crear el libro</a></li>
   </ul>
 </div></nav>
 
@@ -315,7 +315,7 @@
         <div class="paso-c"><label for="c-nombre"><b>2</b>¿Cómo se llama?</label><input class="campo" id="c-nombre" placeholder="Ej: Carmen" maxlength="14" autocomplete="off"></div>
         <div class="paso-c"><label for="c-ninos"><b>3</b>¿Para qué niños es?</label><input class="campo" id="c-ninos" placeholder="Ej: Mia y Leo" maxlength="40" autocomplete="off"></div>
         <div class="paso-c"><span><b>4</b>Elige la portada <span class="color-nombre" id="c-estilo-nombre"></span></span><div class="estilos" id="c-estilo" role="group" aria-label="Estilo de portada"></div></div>
-        <a class="boton" id="c-empezar" href="formulario.html">Empezar el libro →</a>
+        <a class="boton" id="c-empezar" href="formulario-nuevo.html">Empezar el libro →</a>
         <p class="c-formato" id="c-formato" hidden></p>
       </div>
       <div class="vista"><div id="c-vista"></div><p class="vista-pie">Así será la portada de su libro.</p></div>
@@ -608,7 +608,7 @@
       document.getElementById('c-estilo-nombre').textContent = '· ' + TUSPortadas.diseno(cfg.estilo).nombre;
       var q = new URLSearchParams({ nombre: cfg.nombre, ninos: cfg.ninos, rol: cfg.rol, portada: cfg.estilo }); if (cfg.yo) q.set('yo', '1'); if (cfg.formato) q.set('formato', cfg.formato);
       var a = document.getElementById('c-empezar');
-      a.href = 'formulario.html?' + q.toString();
+      a.href = 'formulario-nuevo.html?' + q.toString();
       a.textContent = cfg.yo ? 'Empezar mi libro →' : 'Empezar el libro →';
       document.querySelector('label[for="c-nombre"]').innerHTML = '<b>2</b>' + (cfg.yo ? '¿Cómo te llamas?' : '¿Cómo se llama?');
     }
