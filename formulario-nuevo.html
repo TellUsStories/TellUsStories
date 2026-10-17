@@ -637,7 +637,7 @@
 
 </div>
 
-<script src="portadas.js?v=20261016f"></script>
+<script src="portadas.js?v=20261018a"></script>
 <script>
 let cur = 0;
 const TOTAL = 7;
@@ -666,7 +666,7 @@ function setFormato(val, el) {
   el.classList.add('selected');
 }
 
-// Las ocho portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
+// Las portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
 function pintaPortadas() {
   var n = (document.getElementById('protName') || {}).value || 'Carmen';
   document.querySelectorAll('.portada-card').forEach(function(c) {
