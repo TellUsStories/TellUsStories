@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tale Us Stories · Cuéntanoslo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Allura&family=Dancing+Script&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#FFFFFF;--boton:#DCC8B4;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--cream);font-family:var(--texto);color:var(--navy);min-height:100vh;}
+  .prog-track{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:100;}
+  .prog-fill{height:100%;background:var(--coral);transition:width .5s ease;width:0%;}
+  header{text-align:center;padding:44px 24px 0;}
+  .brand{font-family:var(--display);font-size:12px;letter-spacing:6px;color:var(--coral);text-transform:uppercase;margin-bottom:6px;}
+  .step-lbl{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+  .wrap{max-width:680px;margin:0 auto;padding:0 24px 100px;}
+  .screen{display:none;}
+  .screen.active{display:block;animation:up .4s ease forwards;}
+  @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .sh{padding:42px 0 30px;border-bottom:1px solid var(--border);margin-bottom:30px;}
+  .sh-chapter{font-size:10px;letter-spacing:4px;color:var(--coral);text-transform:uppercase;margin-bottom:6px;}
+  .sh-title{font-family:var(--display);font-size:29px;line-height:1.25;color:var(--navy);margin-bottom:10px;}
+  .sh-sub{font-size:14px;color:var(--muted);line-height:1.65;font-weight:300;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:10px;background:var(--coral-l);border:1px solid var(--coral);border-radius:4px;padding:8px 16px;margin-bottom:24px;}
+  .ch-num{font-size:11px;font-weight:700;color:var(--coral);letter-spacing:1px;}
+  .ch-name{font-family:var(--display);font-size:15px;color:var(--navy);}
+  .field{margin-bottom:20px;}
+  .field label{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:6px;}
+  .hint{font-size:12px;color:var(--muted);margin-bottom:7px;font-style:italic;line-height:1.5;}
+  .ded-cont{font-size:12px;color:var(--muted);text-align:right;margin-top:4px;}
+  .ded-ej{display:grid;gap:10px;margin-bottom:12px;}
+  .ded-op{border:1.5px solid var(--border);border-radius:4px;background:var(--white);padding:12px 15px;font-family:var(--texto);font-size:15px;font-style:italic;line-height:1.55;color:var(--navy);}
+  .ded-op button{display:block;margin-top:8px;background:none;border:none;padding:0;font-family:var(--display);font-style:normal;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--coral);cursor:pointer;text-decoration:underline;}
+  .ded-op.elegida{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.07);}
+  input[type=text],input[type=email],select,textarea{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:4px;background:var(--white);font-family:var(--texto);font-size:16px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
+  input:focus,select:focus,textarea:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.07);}
+  textarea{resize:vertical;min-height:110px;line-height:1.6;overflow-y:hidden;}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A7060'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:500px){.two{grid-template-columns:1fr;}}
+  .sdiv{display:flex;align-items:center;gap:12px;margin:26px 0 20px;}
+  .sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--border);}
+  .sdiv span{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;white-space:nowrap;}
+  .gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px;}
+  .gender-opt{border:2px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;transition:all .2s;background:var(--white);text-align:center;}
+  .gender-opt:hover{border-color:var(--coral);}
+  .gender-opt.selected{border-color:var(--coral);background:var(--coral-l);}
+  .gender-emoji{font-size:30px;margin-bottom:8px;}
+  .gender-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+  .gender-desc{font-size:12px;color:var(--muted);}
+
+  /* PORTADAS */
+  .portada-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;max-width:520px;}
+  .portada-card{border:2px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:all .2s;background:var(--white);}
+  .portada-card:hover{border-color:var(--coral);}
+  .portada-card.selected{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.15);}
+  .portada-card svg{width:100%;aspect-ratio:832/1176;display:block;}
+  .portada-card-num{font-size:10px;font-weight:700;letter-spacing:.6px;line-height:1.25;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 2px;}
+  .portada-card.selected .portada-card-num{color:var(--coral);}
+  
+
+  .vc{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:22px;margin-bottom:14px;transition:border-color .2s;}
+  .vc:hover{border-color:rgba(140,106,85,.3);}
+  .vc.done{border-color:var(--coral);background:var(--coral-l);}
+  .vc-q{font-family:var(--display);font-size:17px;color:var(--navy);line-height:1.45;margin-bottom:5px;}
+  .vc-h{font-size:12px;color:var(--muted);margin-bottom:15px;font-style:italic;line-height:1.5;}
+  .vc-ctrls{display:flex;align-items:center;gap:11px;flex-wrap:wrap;}
+  .btn-rec{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;border:2px solid var(--coral);background:var(--white);color:var(--coral);font-family:var(--texto);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+  .btn-rec:hover{background:var(--coral);color:var(--white);}
+  .btn-rec.rec{background:var(--coral);color:var(--white);animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(140,106,85,.4)}50%{box-shadow:0 0 0 8px rgba(140,106,85,0)}}
+  .rdot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .btn-rec.rec .rdot{animation:blink .8s step-end infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .rtimer{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:34px;}
+  .rbadge{display:none;align-items:center;gap:5px;font-size:11px;color:var(--coral);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+  .rbadge.show{display:flex;}
+  .rbadge::before{content:'✓';}
+  audio.ap{display:none;width:100%;margin-top:10px;height:36px;}
+  audio.ap.show{display:block;}
+  .btn-clr{display:none;font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--texto);}
+  .btn-clr.show{display:inline;}
+  .or-d{display:flex;align-items:center;gap:10px;margin:10px 0 8px;}
+  .or-d::before,.or-d::after{content:'';flex:1;height:1px;background:var(--border);}
+  .or-d span{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .tf{display:none;}
+  .tf.show{display:block;}
+  .btn-tw{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--texto);}
+  .tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+  .tone-opt{border:1.5px solid var(--border);border-radius:6px;padding:14px 16px;cursor:pointer;transition:all .2s;background:var(--white);}
+  .tone-opt:hover{border-color:var(--coral);}
+  .tone-opt.selected{border-color:var(--coral);background:var(--coral-l);}
+  .te{font-size:20px;margin-bottom:5px;}
+  .tt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+  .td{font-size:11px;color:var(--muted);line-height:1.4;}
+  .uzone{border:2px dashed var(--border);border-radius:6px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--white);}
+  .uzone:hover{border-color:var(--coral);background:var(--coral-l);}
+  .uzone-icon{font-size:22px;margin-bottom:6px;}
+  .uzone-txt{font-size:13px;color:var(--muted);}
+  #fileInput{display:none;}
+  .fi{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);}
+  .fi::before{content:'✓';color:var(--coral);font-weight:700;}
+  .sb{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:18px 22px;margin-bottom:14px;}
+  .sb h3{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--coral);margin-bottom:12px;}
+  .sr{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .sr:last-child{border:none;}
+  .sk{color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;min-width:120px;}
+  .sv{color:var(--navy);text-align:right;flex:1;}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:34px;padding-top:22px;border-top:1px solid var(--border);}
+  .btn-back{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--texto);padding:12px 0;transition:color .2s;}
+  .btn-back:hover{color:var(--coral);}
+  .btn-back.h{visibility:hidden;}
+  .btn-next{background:var(--coral);color:var(--white);border:none;padding:13px 30px;border-radius:2px;font-family:var(--texto);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+  .btn-next:hover{background:#6F5A4C;transform:translateY(-1px);box-shadow:0 4px 14px rgba(140,106,85,.28);}
+  .perm{display:none;background:#FFF3CD;border:1px solid #FFD966;border-radius:4px;padding:11px 15px;font-size:13px;color:#7A6000;margin-bottom:12px;}
+  .perm.show{display:block;}
+  .fin{text-align:center;padding:60px 0 40px;}
+  .fin-h{font-size:50px;margin-bottom:22px;animation:hb 1.2s ease infinite;}
+  @keyframes hb{0%,100%{transform:scale(1)}30%{transform:scale(1.15)}60%{transform:scale(1.05)}}
+  .fin-t{font-family:var(--display);font-size:32px;color:var(--navy);margin-bottom:12px;}
+  .fin-s{font-size:15px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 28px;}
+  .fin-box{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:16px 26px;display:inline-block;font-size:14px;color:var(--muted);line-height:1.7;}
+  .fin-box strong{color:var(--coral);}
+
+  /* ===== Mismo estilo que la web: blanco roto y tonos de marrón ===== */
+  .brand{font-weight:800;letter-spacing:3px;color:var(--navy);text-decoration:none;display:inline-block;}
+  .step-lbl{font-family:var(--display);font-weight:500;}
+  .prog-track{height:4px;}
+  .sh-chapter{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:2px;}
+  .sh-title{font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.5px;}
+  /* En los títulos solo van en color los nombres; las terminaciones de género (sola/solo, niña/niño…) van como el resto */
+  .sh-title span{color:inherit;}
+  .sh-title .G-name,.sh-title #childNamesH,.sh-title #txt-presentamos{color:var(--coral);}
+  .field label,.sdiv span,.sk,.sb h3,.ch-num,.gender-title,.tt,.portada-card-num,.rbadge,.btn-rec,.btn-back,.btn-next,.btn-clr,.btn-tw{font-family:var(--display);}
+  .chapter-badge{border:none;background:var(--navy);border-radius:100px;padding:8px 16px;}
+  .ch-num{color:var(--boton);}
+  .ch-name{color:var(--cream);font-weight:500;}
+  input[type=text],input[type=email],select,textarea{border-radius:12px;}
+  input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(140,106,85,.15);}
+  .vc{border-radius:20px;}
+  .vc:hover{border-color:rgba(140,106,85,.45);}
+  .vc-q{font-weight:700;font-size:19px;line-height:1.3;}
+  .vc.done{background:var(--coral-l);border-color:var(--coral);}
+  .gender-opt,.tone-opt,.portada-card,.uzone,.sb{border-radius:16px;}
+  .gender-opt.selected,.tone-opt.selected{background:var(--coral-l);border-color:var(--navy);}
+  .portada-card.selected{border-color:var(--navy);box-shadow:0 0 0 3px rgba(74,44,31,.12);}
+  .btn-rec{border-radius:100px;font-size:13px;letter-spacing:.5px;text-transform:none;}
+  .btn-rec.rec{animation:none;}
+  .btn-next{background:var(--boton);color:var(--navy);font-weight:800;font-size:15px;letter-spacing:0;text-transform:none;border-radius:100px;padding:14px 28px;box-shadow:0 12px 26px -14px rgba(74,44,31,.55);}
+  .btn-next:hover{background:var(--boton);transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(74,44,31,.6);}
+  .btn-next[onclick="submit()"]{background:var(--navy)!important;color:var(--cream);}
+  .btn-back{text-transform:none;letter-spacing:0;font-size:14px;}
+  .perm{background:var(--coral-l);border-color:var(--coral);color:var(--navy);}
+  .fin-t{font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.5px;}
+  .fin-h{color:var(--coral);}
+  .fin-box strong{color:var(--coral);}
+  /* Campo obligatorio sin rellenar */
+  input.falta, select.falta, textarea.falta, .vc.falta, .uzone.falta { border-color: #C0392B !important; box-shadow: 0 0 0 3px rgba(192, 57, 43, .12) !important; }
+  .vc.falta .vc-q::after { content: ' · obligatoria'; color: #C0392B; font-size: .75em; font-style: italic; }
+
+  /* ¿Cómo son? Una tarjeta por persona con botones para elegir (sin escribir) */
+  .asp{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:18px 20px;margin-bottom:12px;}
+  .asp.falta{border-color:#C0392B;box-shadow:0 0 0 3px rgba(192,57,43,.12);}
+  .asp-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+  .asp-t{font-family:var(--display);font-weight:700;font-size:17px;color:var(--navy);}
+  .asp-t small{font-weight:500;font-size:13px;color:var(--muted);}
+  .asp-x{background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;font-family:var(--texto);}
+  .asp-g{margin-bottom:9px;}
+  .asp-gl{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+  .asp-g.falta .asp-gl{color:#C0392B;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:6px 13px;font-family:var(--texto);font-size:14px;color:var(--navy);cursor:pointer;transition:all .15s;}
+  .chip:hover{border-color:var(--coral);}
+  .chip.on{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  .asp input[type=text]{padding:9px 13px;font-size:15px;}
+  .asp-foto{margin-bottom:10px;}
+  .uzone.asp-foto{padding:14px;}
+  .asp-foto.ok{background:var(--coral-l);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--navy);}
+  .asp-foto.ok button{background:none;border:none;color:var(--coral);text-decoration:underline;cursor:pointer;font-family:var(--texto);font-size:13px;margin-left:6px;}
+  /* Ventana para recortar la foto (por si sale más gente) */
+  .rec-fondo{position:fixed;inset:0;background:rgba(40,25,15,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .rec-caja{background:var(--cream);border-radius:20px;padding:18px;width:100%;max-width:560px;max-height:96vh;display:flex;flex-direction:column;gap:12px;}
+  .rec-t{font-family:var(--display);font-weight:700;font-size:18px;color:var(--navy);}
+  .rec-h{font-size:13px;color:var(--muted);line-height:1.5;}
+  .rec-img{height:min(60vh,460px);background:#eee;border-radius:12px;overflow:hidden;}
+  .rec-img img{display:block;max-width:100%;}
+  .rec-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;}
+  .rec-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy);}
+  .rec-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  /* Aviso del principio: cuantos más detalles, más fiel */
+  .aviso-det{margin-top:16px;background:var(--coral-l);border:1.5px solid var(--coral);border-radius:16px;padding:14px 18px;}
+  .aviso-det-t{font-family:var(--display);font-weight:800;font-size:17px;color:var(--navy);margin-bottom:4px;}
+  .aviso-det-s{font-size:14px;color:var(--navy);line-height:1.6;}
+  /* Pago por transferencia (pantalla final) */
+  .pago{max-width:460px;margin:26px auto 0;text-align:left;background:var(--white);border:1.5px solid var(--coral);border-radius:16px;padding:18px 20px;}
+  .pago-t{font-family:var(--display);font-weight:800;font-size:19px;color:var(--navy);margin-bottom:6px;}
+  .pago-s{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:10px;}
+  .pago-f{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border);font-size:14px;}
+  .pago-f span{min-width:72px;font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+  .pago-f b{flex:1;color:var(--navy);word-break:break-all;}
+  .pago-f button{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:5px 11px;font-family:var(--display);font-weight:700;font-size:12px;color:var(--coral);cursor:pointer;}
+  .asp-o{font-size:12px;color:var(--muted);font-style:italic;margin:2px 0 10px;}
+  .asp-add{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 22px;}
+  .asp-add button{border:1.5px dashed var(--coral);background:none;border-radius:100px;padding:8px 15px;font-family:var(--display);font-weight:700;font-size:13px;color:var(--coral);cursor:pointer;}
+  .asp-add button:hover{background:var(--coral-l);}
+  /* Repaso de la IA al terminar cada etapa (y corrección de la dedicatoria) */
+  .ia{background:var(--white);border:2px solid var(--navy);border-radius:20px;padding:20px 22px;margin:22px 0 6px;}
+  .ia-t{font-family:var(--display);font-weight:800;font-size:19px;color:var(--navy);margin-bottom:4px;}
+  .ia-s{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:12px;}
+  .ia-q{font-family:var(--display);font-weight:700;font-size:16px;color:var(--navy);line-height:1.35;margin:14px 0 6px;}
+  .ia textarea{min-height:70px;}
+  .ia-cargando{display:flex;align-items:center;gap:12px;font-size:15px;color:var(--navy);}
+  .ia-cargando::before{content:'';width:18px;height:18px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--coral);animation:gira 1s linear infinite;flex:none;}
+  @keyframes gira{to{transform:rotate(360deg)}}
+  .ia-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:14px;}
+  .ia-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy);}
+  .ia-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  .ia-ded{font-size:16px;font-style:italic;line-height:1.6;background:var(--cream);border-radius:12px;padding:12px 15px;margin-bottom:6px;}
+  .ia-ded mark{background:#F6DFA8;color:inherit;border-radius:3px;padding:0 2px;font-style:normal;font-weight:700;}
+</style>
+</head>
+<body>
+
+<div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+<header>
+  <a class="brand" href="index.html">Tale Us Stories</a>
+  <div class="step-lbl" id="stepLbl">Paso 1 de 7</div>
+</header>
+<div class="wrap">
+
+<div class="screen active" id="s0">
+  <div class="sh">
+    <div class="sh-chapter">Antes de empezar</div>
+    <h1 class="sh-title">No hace falta escribir.<br>Solo contar.</h1>
+    <p class="sh-sub">Iremos etapa por etapa por la vida del protagonista. En cada una, graba una o dos notas de voz y cuéntanos todo lo que se te ocurra. Al terminar cada etapa te enseñamos lo que hemos entendido, por si quieres corregir algo o falta algún detalle.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>A tu ritmo.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Las anécdotas y las fotos son opcionales.</p>
+    <div class="aviso-det">
+      <div class="aviso-det-t">✨ La magia está en los detalles</div>
+      <div class="aviso-det-s">Nosotros ponemos la acuarela y las palabras; tú pones los recuerdos. Ese apodo que solo usáis en casa, la canción del coche, la manía de cada mañana, el jersey de siempre… <b>Cuantos más detalles nos regales, más os reconoceréis en cada página.</b></div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="field">
+      <label>Nombre del protagonista</label>
+      <input type="text" id="protName" placeholder="Ej: María, José, Carlos…" oninput="onNameInput()">
+    </div>
+    <div class="field">
+      <label>Nombre/s de los niños</label>
+      <input type="text" id="childNames" placeholder="Ej: Martina, Pedro y Lucas">
+    </div>
+  </div>
+  <div class="field">
+    <label>El protagonista es…</label>
+    <div class="gender-grid">
+      <div class="gender-opt selected" id="gf" onclick="setGender('f',this)">
+        <div class="gender-emoji">👩</div>
+        <div class="gender-title">Una mujer</div>
+        <div class="gender-desc">Mamá, abuela, tía, amiga…</div>
+      </div>
+      <div class="gender-opt" id="gm" onclick="setGender('m',this)">
+        <div class="gender-emoji">👨</div>
+        <div class="gender-title">Un hombre</div>
+        <div class="gender-desc">Papá, abuelo, tío, amigo…</div>
+      </div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="field">
+      <label>Tipo de libro</label>
+      <select id="bookType" onchange="document.getElementById('customTitleWrap').style.display = this.value === 'Título personalizado' ? 'block' : 'none'">
+        <option value="">Selecciona…</option>
+        <option>Las aventuras de Mamá</option>
+        <option>Las aventuras de Papá</option>
+        <option>Las aventuras del Abuelo</option>
+        <option>Las aventuras de la Abuela</option>
+        <option>Las aventuras del Tío</option>
+        <option>Las aventuras de la Tía</option>
+        <option>Título personalizado</option>
+      </select>
+      <div id="customTitleWrap" style="display:none;margin-top:8px;"><input type="text" id="customTitle" placeholder="Escribe el título. Ej: Las aventuras de la yaya Carmen"></div>
+    </div>
+    <div class="field">
+      <label>Quién hace el encargo</label>
+      <input type="text" id="orderer" placeholder="Ej: Javier, su marido">
+    </div>
+  </div>
+  <div class="field">
+    <label>¿Quién narra el libro?</label>
+    <div class="gender-grid">
+      <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">El propio protagonista</div>
+        <div class="gender-desc">"Cuando yo era pequeñ<span class="G-oa"></span>…"</div>
+      </div>
+      <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
+        <div class="gender-emoji">👨‍👩‍👧</div>
+        <div class="gender-title">Otra persona</div>
+        <div class="gender-desc">"Antes de ser <span class="G-vuestra"></span>…"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELECCIÓN DE PORTADA -->
+  <div class="field">
+    <label>Elige la portada</label>
+    <div class="hint">Puedes cambiarlo más adelante si lo necesitas.</div>
+    <div class="portada-grid" id="portada-grid"></div>
+    <div class="hint" style="margin-top:12px">Elegida: <b id="portada-nombre">Vichy rosa</b></div>
+  </div>
+
+  <div class="field">
+    <label>Formato del libro</label>
+    <div class="gender-grid">
+      <div class="gender-opt formato-opt" id="fb" onclick="setFormato('blanda',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">Tapa blanda · 43 €</div>
+        <div class="gender-desc">Envío incluido</div>
+      </div>
+      <div class="gender-opt formato-opt selected" id="fd" onclick="setFormato('dura',this)">
+        <div class="gender-emoji">📕</div>
+        <div class="gender-title">Tapa dura · 62 €</div>
+        <div class="gender-desc">La más elegida · Envío incluido</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="field">
+      <label>Tu email</label>
+      <input type="email" id="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="Aquí te escribiremos sobre tu pedido">
+    </div>
+    <div class="field">
+      <label>Tu teléfono</label>
+      <input type="text" id="clienteTelefono" name="tel" autocomplete="tel" inputmode="tel" placeholder="Por si necesitamos contactarte">
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back h"></button>
+    <button class="btn-next" onclick="startForm()">Empezamos →</button>
+  </div>
+</div>
+
+<div class="screen" id="s1">
+  <div class="sh">
+    <div class="sh-chapter">01 · Los personajes</div>
+    <h1 class="sh-title">¿Quién es quién<br>en esta historia?</h1>
+    <p class="sh-sub">Primero, los protagonistas del libro y cómo son, para dibujarlos igual en todas las páginas.</p>
+  </div>
+  <div class="perm" id="permBanner">Tu navegador necesita acceso al micrófono. Si prefieres, usa los campos de texto.</div>
+
+  <div class="two">
+    <div class="field"><label>¿Qué relación tiene con los niños?</label>
+      <select id="relacionNinos">
+        <option value="">Selecciona…</option>
+        <option>Son sus hijos</option>
+        <option>Son sus nietos</option>
+        <option>Son sus sobrinos</option>
+        <option>Otra relación</option>
+      </select>
+    </div>
+    <div class="field"><label>¿Cómo la llaman los niños?</label><input type="text" id="nicknames" placeholder="Ej: mamá, yaya, la abuela Pepa…"></div>
+  </div>
+  <div class="two">
+    <div class="field"><label>¿Qué edad tiene hoy?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ej: 38"></div>
+    <div class="field"><label>Edad de cada niño</label><input type="text" id="childAges" placeholder="Ej: Lucas 7, Martina 5"></div>
+  </div>
+  <div class="field"><label>Descríbela en 3 palabras</label><input type="text" id="tresPalabras" placeholder="Ej: alegre, valiente y curiosa"></div>
+  <div class="two">
+    <div class="field"><label>¿A qué se dedica?</label><input type="text" id="job" placeholder="Ej: arquitecta, maestro, jubilada…"></div>
+    <div class="field"><label>Sus aficiones</label><input type="text" id="sport" placeholder="Ej: el surf y dibujar"></div>
+  </div>
+  <div class="hint" style="margin:-8px 0 18px">Su profesión y sus aficiones aparecerán como detalles en los dibujos.</div>
+
+  <div class="sdiv"><span>¿Cómo son? Así los dibujaremos</span></div>
+  <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y ya no tienes que rellenar nada más de esa persona, <b>o toca</b> lo que más se parezca. Las fotos solo se usan para dibujar.</div>
+  <div id="aspCards"></div>
+  <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
+  <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspRecortar(this)">
+  <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia? Añádelas para que también se parezcan:</div>
+  <div class="asp-add">
+    <button type="button" onclick="aspAdd('pareja')">+ Su pareja</button>
+    <button type="button" onclick="aspAdd('madre')">+ Su madre</button>
+    <button type="button" onclick="aspAdd('padre')">+ Su padre</button>
+    <button type="button" onclick="aspAdd('hermano')">+ Un hermano/a</button>
+  </div>
+  <input type="text" id="aspectoFamilia" style="display:none">
+  <input type="text" id="iaDatos" style="display:none">
+  <div id="aspInputs" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(0)">← Atrás</button>
+    <button class="btn-next" onclick="go(2)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s2">
+  <div class="sh">
+    <div class="sh-chapter">02 · De bebé y de pequeñ<span class="G-oa"></span></div>
+    <h1 class="sh-title">Cuando <span class="G-name"></span><br>era <span class="G-unna"></span> <span class="G-ninoa"></span>.</h1>
+    <p class="sh-sub">Graba una nota de voz y cuéntanos todo lo que se te ocurra, sin prisa, como si se lo contaras a una amiga. Al seguir, te enseñamos lo que hemos entendido y te avisamos si falta algo importante.</p>
+  </div>
+  <div class="vc" id="vc0">
+    <div class="vc-q">¿Cómo era <span class="G-name"></span> de bebé y de pequeñ<span class="G-oa"></span>?</div>
+    <div class="vc-h">💡 Te puede ayudar: dónde nació y creció y cómo era su casa · cómo era de carácter (tímid<span class="G-oa"></span>, trasto, curios<span class="G-oa"></span>…) · sus hermanos, si tenía mascota, un amigo o amiga especial · a qué le gustaba jugar y qué quería ser de mayor · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b></div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb0" onclick="toggleRec(0)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt0">0:00</span><span class="rbadge" id="bd0">Grabado</span></div>
+    <audio class="ap" id="ap0"></audio><button class="btn-clr" id="bc0" onclick="clearRec(0)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf0"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(0)">Prefiero escribir</button>
+  </div>
+  <div class="ia" id="ia2" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(1)">← Atrás</button>
+    <button class="btn-next" onclick="go(3)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s3">
+  <div class="sh">
+    <div class="sh-chapter">03 · La juventud</div>
+    <h1 class="sh-title">Cuando <span class="G-name"></span> empezó<br>a volar sol<span class="G-oa"></span>.</h1>
+    <p class="sh-sub">La adolescencia, los estudios, los sueños y las primeras aventuras.</p>
+  </div>
+  <div class="vc" id="vc2">
+    <div class="vc-q">¿Cómo era <span class="G-name"></span> de adolescente y de joven?</div>
+    <div class="vc-h">💡 Te puede ayudar: qué le apasionaba · sus amigos y su música · qué estudió y su primer trabajo · un viaje o una decisión valiente · cómo llegó a dedicarse a lo que hace hoy · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b></div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb2" onclick="toggleRec(2)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt2">0:00</span><span class="rbadge" id="bd2">Grabado</span></div>
+    <audio class="ap" id="ap2"></audio><button class="btn-clr" id="bc2" onclick="clearRec(2)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf2"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(2)">Prefiero escribir</button>
+  </div>
+  <div class="ia" id="ia3" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(2)">← Atrás</button>
+    <button class="btn-next" onclick="go(4)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s4">
+  <div class="sh">
+    <div class="sh-chapter">04 · Amor y familia</div>
+    <h1 class="sh-title">Cuando <span class="G-name"></span> encontró<br>su historia.</h1>
+    <p class="sh-sub">Cómo empezó la familia.</p>
+  </div>
+  <div class="vc" id="vc4">
+    <div class="vc-q">¿Cómo empezó la familia de <span class="G-name"></span>?</div>
+    <div class="vc-h">💡 Te puede ayudar: cómo conoció a su pareja (si la hay) · la llegada de cada uno de los niños (o, si son nietos, la de sus hijos y después la de cada nieto) · cómo cambió su vida · <b>y si te acuerdas de alguna anécdota (la primera cita, el primer día en casa con el bebé…), ¡cuéntala!</b></div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb4" onclick="toggleRec(4)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt4">0:00</span><span class="rbadge" id="bd4">Grabado</span></div>
+    <audio class="ap" id="ap4"></audio><button class="btn-clr" id="bc4" onclick="clearRec(4)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf4"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(4)">Prefiero escribir</button>
+  </div>
+  <div class="ia" id="ia4" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(3)">← Atrás</button>
+    <button class="btn-next" onclick="go(5)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s5">
+  <div class="sh">
+    <div class="sh-chapter">05 · Con los niños hoy</div>
+    <h1 class="sh-title"><span class="G-name"></span> con <span id="childNamesH">los niños</span>.</h1>
+    <p class="sh-sub">La relación que existe hoy. Esto es el corazón del libro.</p>
+  </div>
+  <div class="vc" id="vc6">
+    <div class="vc-q">¿Cómo es hoy la vida de <span class="G-name"></span> con los niños?</div>
+    <div class="vc-h">💡 Te puede ayudar: cómo es cada niño (carácter y qué le encanta) · qué hacéis juntos · una tradición o ritual solo vuestro · cómo es vuestra casa y si tenéis mascota · <b>y algún recuerdo especial o gracioso con los niños, si se te ocurre</b></div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb6" onclick="toggleRec(6)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt6">0:00</span><span class="rbadge" id="bd6">Grabado</span></div>
+    <audio class="ap" id="ap6"></audio><button class="btn-clr" id="bc6" onclick="clearRec(6)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf6"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(6)">Prefiero escribir</button>
+  </div>
+  <div class="ia" id="ia5" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(4)">← Atrás</button>
+    <button class="btn-next" onclick="go(6)">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="s6">
+  <div class="sh">
+    <div class="sh-chapter">06 · El final del libro</div>
+    <h1 class="sh-title">Lo que querría<br>que supieran.</h1>
+    <p class="sh-sub">El cierre del libro, la dedicatoria y a dónde lo enviamos.</p>
+  </div>
+  <div class="vc" id="vc8">
+    <div class="vc-q">¿Qué crees que <span class="G-name"></span> querría que los niños supieran cuando sean mayores?</div>
+    <div class="vc-h">Un valor, un consejo, lo que está en cada cosa que hace.</div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb8" onclick="toggleRec(8)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt8">0:00</span><span class="rbadge" id="bd8">Grabado</span></div>
+    <audio class="ap" id="ap8"></audio><button class="btn-clr" id="bc8" onclick="clearRec(8)">Volver a grabar</button>
+    <div class="or-d"><span>o escribe</span></div>
+    <div class="tf" id="tf8"><textarea placeholder="Cuéntalo aquí si prefieres escribir…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(8)">Prefiero escribir</button>
+  </div>
+
+  <div class="sdiv"><span>La dedicatoria</span></div>
+  <div class="field">
+    <label>Tu dedicatoria para la contraportada</label>
+    <div class="hint">Irá impresa en la contraportada del libro. Puedes elegir uno de estos ejemplos (y retocarlo si quieres) o escribir la tuya. Al seguir, revisaremos que no tenga faltas.</div>
+    <div class="ded-ej" id="dedEjemplos"></div>
+    <textarea id="dedicatoria" maxlength="350" rows="4" spellcheck="true" lang="es" placeholder="Ej: Lucas, Martina: este libro es para que nunca olvidéis de dónde venís…"></textarea>
+    <div class="ded-cont"><span id="dedCont">0</span> / 350</div>
+  </div>
+  <div class="field">
+    <label>¿Cómo la firmas?</label>
+    <input type="text" id="dedicatoriaFirma" maxlength="40" spellcheck="true" lang="es" placeholder="Ej: Con todo nuestro amor, papá y la abuela Carmen">
+  </div>
+  <div class="ia" id="iaDed" style="display:none"></div>
+
+  <div class="sdiv"><span>Últimos detalles</span></div>
+  <div class="field">
+    <label>Tono del libro</label>
+    <div class="tone-grid">
+      <div class="tone-opt" onclick="selTone(this)"><div class="te">😄</div><div class="tt">Divertido</div><div class="td">Humor y momentos que hacen reír</div></div>
+      <div class="tone-opt" onclick="selTone(this)"><div class="te">💛</div><div class="tt">Emotivo</div><div class="td">Cálido, que llegue al corazón</div></div>
+      <div class="tone-opt selected" onclick="selTone(this)"><div class="te">✨</div><div class="tt">Equilibrado</div><div class="td">Humor y emoción a partes iguales</div></div>
+      <div class="tone-opt" onclick="selTone(this)"><div class="te">🌍</div><div class="tt">Aventurero</div><div class="td">Que inspire a conocer el mundo</div></div>
+    </div>
+  </div>
+  <div class="field" style="margin-top:22px;">
+    <label>¿Hay alguna situación delicada? (opcional)</label>
+    <div class="hint">Alguien que ya no está, una separación… Cuéntanos cómo quieres que lo tratemos (o si prefieres que no aparezca).</div>
+    <textarea id="delicadas" data-opcional="1" placeholder="Ej: el abuelo falleció hace dos años; nos gustaría que apareciera en los recuerdos de la infancia, con cariño." style="min-height:65px;"></textarea>
+  </div>
+  <div class="field">
+    <label>¿Hay algo que NO deba aparecer?</label>
+    <textarea id="noShow" placeholder="Temas sensibles, personas que prefieren no incluir… (si no hay nada, escribe «nada»)" style="min-height:65px;"></textarea>
+  </div>
+  <div class="field">
+    <label>Otras fotos (opcional)</label>
+    <div class="hint">De la protagonista en otras épocas, de la familia o de lugares especiales. Hasta 3 fotos.</div>
+    <div class="uzone" onclick="document.getElementById('fileInput').click()">
+      <div class="uzone-icon">📷</div>
+      <div class="uzone-txt">Haz clic para añadir fotos</div>
+    </div>
+    <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this)">
+    <div id="fileList"></div>
+  </div>
+
+  <!-- La dirección va al final: pedirla al principio echa para atrás a mucha gente -->
+  <div class="sdiv"><span>¿A dónde enviamos el libro?</span></div>
+  <div class="two">
+    <div class="field"><label>Nombre de quien lo recibe</label><input type="text" id="envioNombre" name="ship-name" autocomplete="shipping name" placeholder="Ej: Javier García López"></div>
+    <div class="field"><label>Teléfono</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="Para la empresa de mensajería"></div>
+  </div>
+  <div class="field"><label>Dirección</label><input type="text" id="envioDireccion" name="ship-address" autocomplete="shipping street-address" placeholder="Calle, número, piso y puerta"></div>
+  <div class="two">
+    <div class="field"><label>Código postal</label><input type="text" id="envioCP" name="ship-zip" autocomplete="shipping postal-code" inputmode="numeric" placeholder="Ej: 08012"></div>
+    <div class="field"><label>Ciudad</label><input type="text" id="envioCiudad" name="ship-city" autocomplete="shipping address-level2" placeholder="Ej: Barcelona"></div>
+  </div>
+  <div class="field"><label>Provincia</label><input type="text" id="envioProvincia" name="ship-state" autocomplete="shipping address-level1" placeholder="Ej: Barcelona"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(5)">← Atrás</button>
+    <button class="btn-next" onclick="go(7)">Revisar todo →</button>
+  </div>
+</div>
+
+<div class="screen" id="s7">
+  <div class="sh">
+    <div class="sh-chapter">07 · Revisión</div>
+    <h1 class="sh-title">Todo listo<br>para enviar.</h1>
+    <p class="sh-sub">Revisa que todo esté correcto. Puedes volver atrás si quieres cambiar algo.</p>
+  </div>
+  <div class="sb">
+    <h3>Datos del pedido</h3>
+    <div class="sr"><span class="sk">Protagonista</span><span class="sv" id="rv-prot">—</span></div>
+    <div class="sr"><span class="sk">Para</span><span class="sv" id="rv-child">—</span></div>
+    <div class="sr"><span class="sk">Tipo</span><span class="sv" id="rv-type">—</span></div>
+    <div class="sr"><span class="sk">Encargado por</span><span class="sv" id="rv-ord">—</span></div>
+    <div class="sr"><span class="sk">Email</span><span class="sv" id="rv-email">—</span></div>
+    <div class="sr"><span class="sk">Teléfono</span><span class="sv" id="rv-tel">—</span></div>
+    <div class="sr"><span class="sk">Dedicatoria</span><span class="sv" id="rv-ded">—</span></div>
+    <div class="sr"><span class="sk">Envío</span><span class="sv" id="rv-envio">—</span></div>
+    <div class="sr"><span class="sk">Portada</span><span class="sv" id="rv-portada">—</span></div>
+    <div class="sr"><span class="sk">Formato</span><span class="sv" id="rv-formato">—</span></div>
+    <div class="sr"><span class="sk">Tono</span><span class="sv" id="rv-tone">—</span></div>
+  </div>
+  <div class="sb">
+    <h3>Estructura del libro</h3>
+    <div id="rv-chapters"></div>
+  </div>
+  <div class="sb" id="rv-pago" style="display:none">
+    <h3>Pago</h3>
+    <div class="sr"><span class="sk">Importe</span><span class="sv" id="rv-importe">—</span></div>
+    <div class="sr"><span class="sk">Forma de pago</span><span class="sv">Transferencia bancaria. Al enviar te mostramos los datos para hacerla.</span></div>
+  </div>
+  <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
+    <h3 style="color:var(--coral);">¿Qué pasa ahora?</h3>
+    <div class="sr"><span class="sk">Ahora</span><span class="sv" id="rv-ahora">Recibimos tu historia y empezamos a escribirla.</span></div>
+    <div class="sr"><span class="sk">Próximos días</span><span class="sv">Ilustramos, maquetamos e imprimimos el libro.</span></div>
+    <div class="sr"><span class="sk">2-3 semanas</span><span class="sv" style="color:var(--coral);font-weight:700;">El libro en tus manos.</span></div>
+  </div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(6)">← Atrás</button>
+    <button class="btn-next" onclick="submit()" style="background:var(--navy);padding:15px 36px;font-size:12px;">Enviar historia ♥</button>
+  </div>
+</div>
+
+<div class="screen" id="sFinal">
+  <div class="fin">
+    <div class="fin-h">♥</div>
+    <h1 class="fin-t">¡Historia recibida!</h1>
+    <p class="fin-s">Gracias por confiar en nosotros con algo tan especial. En <strong>2-3 semanas</strong> tendrás el libro en casa. Si necesitamos algo, te escribiremos a tu email.</p>
+    <div class="fin-box">Un libro único para <strong id="f-child">los niños</strong><br>sobre las aventuras de <strong id="f-prot">el protagonista</strong></div>
+    <!-- Pago por transferencia (de momento no hay pasarela de pago) -->
+    <div class="pago">
+      <div class="pago-t">Último paso: el pago</div>
+      <p class="pago-s">Para confirmar el pedido, haz una transferencia con estos datos. Empezamos tu libro en cuanto la recibimos.</p>
+      <div class="pago-f"><span>Importe</span><b id="pago-importe">—</b></div>
+      <div class="pago-f"><span>Titular</span><b id="pago-titular">—</b></div>
+      <div class="pago-f"><span>IBAN</span><b id="pago-iban">—</b><button type="button" onclick="copiaPago('pago-iban',this)">Copiar</button></div>
+      <div class="pago-f"><span>Concepto</span><b id="pago-concepto">—</b><button type="button" onclick="copiaPago('pago-concepto',this)">Copiar</button></div>
+      <p class="pago-s" style="margin-top:12px">Haz una captura de esta pantalla para tenerlo a mano. Si tienes cualquier duda, escríbenos a tellusstoriesbooks@gmail.com.</p>
+    </div>
+    <!-- Mientras no estén puestos el titular y el IBAN, se avisa de que los datos llegarán por email -->
+    <div class="pago" id="pago-sin" style="display:none">
+      <div class="pago-t">Último paso: el pago</div>
+      <p class="pago-s">En unas horas te escribiremos a tu email con los datos para hacer la transferencia (<b id="pago-importe2">—</b>). Empezamos tu libro en cuanto la recibimos.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script src="portadas.js?v=20261016f"></script>
+<script>
+let cur = 0;
+const TOTAL = 7;
+let gender = 'f';
+let narrator = 'other';
+let selectedPortada = '1';
+let formato = 'dura';
+var FORMATOS = { dura: 'Tapa dura · 62 €', blanda: 'Tapa blanda · 43 €' };
+var PRECIOS = { dura: '62 €', blanda: '43 €' };
+// ===== DATOS PARA EL PAGO POR TRANSFERENCIA: rellénalos tú (titular y IBAN de la cuenta donde cobras) =====
+// activo: false = de momento no se enseña nada del pago (ni en la revisión ni al final)
+var PAGO = { activo: false, titular: 'PON AQUÍ EL TITULAR DE LA CUENTA', iban: 'PON AQUÍ TU IBAN' };
+// El concepto de la transferencia: así sabes de qué pedido es cada pago
+function conceptoPago() {
+  var p = (document.getElementById('protName').value || '').trim(), e = (document.getElementById('email').value || '').trim();
+  return 'Libro ' + (p || 'Tale Us') + (e ? ' · ' + e : '');
+}
+function copiaPago(id, b) {
+  var t = document.getElementById(id).textContent;
+  try { navigator.clipboard.writeText(t).then(function() { b.textContent = '¡Copiado!'; setTimeout(function() { b.textContent = 'Copiar'; }, 1500); }); } catch (e) {}
+}
+
+function setFormato(val, el) {
+  formato = val;
+  document.querySelectorAll('.formato-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+// Las ocho portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
+function pintaPortadas() {
+  var n = (document.getElementById('protName') || {}).value || 'Carmen';
+  document.querySelectorAll('.portada-card').forEach(function(c) {
+    c.querySelector('.pv').innerHTML = TUSPortadas.svg(+c.dataset.portada, n, null, { calidad: 'mini' });
+  });
+}
+(function() {
+  var g = document.getElementById('portada-grid');
+  TUSPortadas.disenos.forEach(function(e) {
+    var d = document.createElement('div'); d.className = 'portada-card' + (e.n === 1 ? ' selected' : ''); d.dataset.portada = e.n;
+    d.innerHTML = '<div class="pv"></div><div class="portada-card-num">' + e.nombre + '</div>';
+    d.onclick = function() { selPortada(d, String(e.n)); };
+    g.appendChild(d);
+  });
+  pintaPortadas();
+  document.getElementById('protName').addEventListener('input', pintaPortadas);
+})();
+
+function selPortada(el, num) {
+  document.querySelectorAll('.portada-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedPortada = num;
+  var pn = document.getElementById('portada-nombre'); if (pn) pn.textContent = TUSPortadas.diseno(num).nombre;
+}
+
+function setNarrator(val, el) {
+  narrator = val;
+  document.querySelectorAll('#n1,#n2').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+const G = {
+  el:   ['ella', 'él'],
+  lo:   ['la',   'lo'],
+  unna: ['una',  'un'],
+  ninoa:['niña', 'niño'],
+  oa:   ['a',    'o'],
+  name: ['ella', 'él'],
+  vuestra: ['vuestra mamá', 'vuestro papá'],
+  protag: ['La protagonista', 'El protagonista'],
+};
+
+function g(key) { return G[key][gender === 'f' ? 0 : 1]; }
+
+function nameOrPronoun() {
+  const n = document.getElementById('protName')?.value.trim();
+  return n || g('name');
+}
+
+function updateAll() {
+  const nm = nameOrPronoun();
+  document.querySelectorAll('.G-name').forEach(function(el) { el.textContent = nm; });
+  var artProt = gender === 'f' ? 'a la protagonista' : 'al protagonista';
+  var el1 = document.getElementById('txt-presentamos');
+  if (el1) el1.textContent = artProt;
+  var el2 = document.getElementById('txt-describirías');
+  if (el2) el2.textContent = artProt;
+  document.querySelectorAll('.G-el').forEach(function(el) { el.textContent = g('el'); });
+  document.querySelectorAll('.G-lo').forEach(function(el) { el.textContent = g('lo'); });
+  document.querySelectorAll('.G-unna').forEach(function(el) { el.textContent = g('unna'); });
+  document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
+  document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
+  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = g('vuestra'); });
+  document.querySelectorAll('.G-protag').forEach(function(el) { el.textContent = g('protag'); });
+  var cn = document.getElementById('childNames')?.value.trim() || 'los niños';
+  var cnh = document.getElementById('childNamesH');
+  if (cnh) cnh.textContent = cn;
+}
+
+function setGender(g_val, el) {
+  gender = g_val;
+  document.querySelectorAll('#gf,#gm').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  updateAll();
+}
+
+function onNameInput() { updateAll(); }
+
+// Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
+function startForm() { go(1); }
+
+// Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual.
+// Las preguntas de voz cuentan como respondidas con la grabación o con el texto escrito.
+function marcaFalta(el, lista, nombre) { el.classList.add('falta'); lista.push(nombre); }
+
+function validarPantalla(n) {
+  var s = document.getElementById('s' + n), falta = [];
+  if (!s) return falta;
+  s.querySelectorAll('.falta').forEach(function(e) { e.classList.remove('falta'); });
+  // Preguntas con nota de voz: valen la grabación o el texto escrito
+  s.querySelectorAll('.vc').forEach(function(vc) {
+    if (vc.dataset.opcional) return;
+    var i = vc.id.replace('vc', ''), ta = vc.querySelector('textarea');
+    if (!(audioBlobs[i] || pendingTx[i] || (ta && ta.value.trim()))) marcaFalta(vc, falta, '«' + vc.querySelector('.vc-q').textContent.trim().slice(0, 70) + '…»');
+  });
+  // Campos de texto, desplegables y cuadros sueltos (los ocultos no cuentan)
+  s.querySelectorAll('input[type=text], input[type=email], select, textarea[id]').forEach(function(el) {
+    // en ¿Cómo son?, en el repaso de la IA y en los marcados como opcionales no hace falta escribir
+    if (!el.offsetParent || el.closest('.asp') || el.closest('.ia') || el.dataset.opcional) return;
+    var ok = el.type === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) : !!el.value.trim();
+    if (!ok) {
+      var lab = el.closest('.field') && el.closest('.field').querySelector('label');
+      marcaFalta(el, falta, el.type === 'email' ? 'un email válido' : (lab ? lab.textContent.trim() : (el.placeholder || 'un campo')));
+    }
+  });
+  // ¿Cómo son?: de la protagonista y de cada niño hace falta al menos pelo, ojos y piel
+  if (s.querySelector('#aspCards')) aspFaltan().forEach(function(t) { falta.push(t); });
+  return falta;
+}
+
+function go(n) {
+  if (n > cur && cur < TOTAL) {
+    var falta = validarPantalla(cur);
+    if (falta.length) {
+      alert('Para seguir, completa:\n\n• ' + falta.join('\n• '));
+      var primero = document.querySelector('#s' + cur + ' .falta');
+      if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    // Al terminar una etapa, la IA repasa lo contado; al terminar el final, revisa la dedicatoria
+    if (ETAPAS[cur] && !iaListo(cur)) { iaRevisar(cur, n); return; }
+    if (cur === 6 && !dedListo()) { dedRevisar(n); return; }
+  }
+  var prevId = cur <= TOTAL ? 's' + cur : 'sFinal';
+  var prevEl = document.getElementById(prevId);
+  if (prevEl) prevEl.classList.remove('active');
+  cur = n;
+  var nextId = n <= TOTAL ? 's' + n : 'sFinal';
+  var nextEl = document.getElementById(nextId);
+  if (nextEl) nextEl.classList.add('active');
+  var stepLbl = document.getElementById('stepLbl');
+  if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Paso ' + (n + 1) + ' de ' + TOTAL) : (n === TOTAL ? 'Revisión' : '¡Listo!');
+  var prog = document.getElementById('prog');
+  if (prog) prog.style.width = Math.min((n / TOTAL) * 100, 100) + '%';
+  updateAll();
+  if (n === TOTAL) buildReview();
+  setTimeout(autoAltoTodos, 30);   // los cuadros de la pantalla nueva, a su altura (p. ej. al volver con el borrador)
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+var recorders = {}, audioBlobs = {}, timers = {}, recSecs = {}, transcribedTexts = {}, pendingTx = {};
+
+async function blobToBase64(blob) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      var result = reader.result;
+      var base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function transcribeAudio(idx, blob) {
+  var bd = document.getElementById('bd' + idx);
+  if (bd) { bd.textContent = 'Transcribiendo…'; bd.classList.add('show'); }
+  try {
+    var base64 = await blobToBase64(blob);
+    var res = await fetch('/.netlify/functions/transcribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audioBase64: base64, mimeType: blob.type })
+    });
+    var data = await res.json();
+    if (res.ok && data.text) {
+      transcribedTexts[idx] = data.text.trim();
+      if (bd) bd.textContent = 'Grabado ✓';
+      // La transcripción va al cuadro de texto: se puede revisar, corregir y se guarda sola
+      var tfBox = document.getElementById('tf' + idx);
+      var ta = tfBox && tfBox.querySelector('textarea');
+      if (ta) {
+        ta.value = ta.value.trim() ? ta.value.trim() + '\n\n' + transcribedTexts[idx] : transcribedTexts[idx];
+        tfBox.classList.add('show');
+        autoAlto(ta);
+        saveDraft();
+      }
+    } else {
+      txFailed(idx);
+    }
+  } catch (err) {
+    txFailed(idx);
+  }
+}
+
+function txFailed(idx) {
+  var bd = document.getElementById('bd' + idx);
+  if (bd) bd.textContent = 'No se ha podido transcribir: escríbelo abajo o vuelve a grabar';
+  transcribedTexts[idx] = '';
+  var tfBox = document.getElementById('tf' + idx);
+  if (tfBox) tfBox.classList.add('show');
+}
+
+async function toggleRec(idx) {
+  var btn = document.getElementById('rb' + idx);
+  if (recorders[idx] && recorders[idx].state === 'recording') { recorders[idx].stop(); return; }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    var permBanner = document.getElementById('permBanner');
+    if (permBanner) permBanner.classList.remove('show');
+    // Calidad de voz suficiente para transcribir y archivos pequeños (notas largas no superan el límite de Netlify)
+    var mr;
+    try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 32000 }); } catch (e2) { mr = new MediaRecorder(stream); }
+    recorders[idx] = mr;
+    var chunks = [];
+    mr.ondataavailable = function(e) { chunks.push(e.data); };
+    mr.onstop = function() {
+      stream.getTracks().forEach(function(t) { t.stop(); });
+      // El iPhone graba en mp4, no en webm: usar el formato real para que Whisper lo reconozca
+      var blob = new Blob(chunks, { type: (mr.mimeType || 'audio/webm').split(';')[0] });
+      audioBlobs[idx] = blob;
+      var url = URL.createObjectURL(blob);
+      var a = document.getElementById('ap' + idx);
+      a.src = url; a.classList.add('show');
+      document.getElementById('bd' + idx).classList.add('show');
+      document.getElementById('bc' + idx).classList.add('show');
+      document.getElementById('vc' + idx).classList.add('done');
+      document.getElementById('vc' + idx).classList.remove('falta');
+      btn.classList.remove('rec');
+      btn.innerHTML = '<span class="rdot"></span> Grabar';
+      clearInterval(timers[idx]);
+      pendingTx[idx] = transcribeAudio(idx, blob).finally(function() { delete pendingTx[idx]; });
+    };
+    mr.start();
+    btn.classList.add('rec');
+    btn.innerHTML = '<span class="rdot"></span> Detener';
+    recSecs[idx] = 0;
+    timers[idx] = setInterval(function() {
+      recSecs[idx]++;
+      document.getElementById('rt' + idx).textContent = fmt(recSecs[idx]);
+    }, 1000);
+  } catch(e) {
+    var pb = document.getElementById('permBanner');
+    if (pb) pb.classList.add('show');
+    var tf = document.getElementById('tf' + idx);
+    if (tf) tf.classList.add('show');
+  }
+}
+
+function clearRec(idx) {
+  try { if (recorders[idx]) recorders[idx].stop(); } catch(e) {}
+  audioBlobs[idx] = null;
+  // Quitar del cuadro de texto la transcripción de la grabación que se descarta
+  var ta = document.querySelector('#tf' + idx + ' textarea');
+  if (ta && transcribedTexts[idx]) { ta.value = ta.value.replace(transcribedTexts[idx], '').trim(); autoAlto(ta); saveDraft(); }
+  transcribedTexts[idx] = '';
+  var a = document.getElementById('ap' + idx);
+  a.src = ''; a.classList.remove('show');
+  var bd = document.getElementById('bd' + idx);
+  bd.textContent = 'Grabado';
+  bd.classList.remove('show');
+  document.getElementById('bc' + idx).classList.remove('show');
+  document.getElementById('vc' + idx).classList.remove('done');
+  document.getElementById('rt' + idx).textContent = '0:00';
+  var btn = document.getElementById('rb' + idx);
+  btn.classList.remove('rec');
+  btn.innerHTML = '<span class="rdot"></span> Grabar';
+  clearInterval(timers[idx]);
+}
+
+function toggleTF(idx) {
+  var tf = document.getElementById('tf' + idx);
+  if (tf) { tf.classList.toggle('show'); autoAlto(tf.querySelector('textarea')); }
+}
+
+// Los cuadros de texto crecen con lo que se escribe (o se transcribe): siempre se lee todo sin hacer scroll dentro
+function autoAlto(ta) {
+  if (!ta || !ta.offsetParent) return;
+  ta.style.height = 'auto';
+  ta.style.height = (ta.scrollHeight + 4) + 'px';
+}
+function autoAltoTodos() { document.querySelectorAll('textarea').forEach(autoAlto); }
+document.addEventListener('input', function(e) { if (e.target.tagName === 'TEXTAREA') autoAlto(e.target); });
+window.addEventListener('resize', autoAltoTodos);
+
+function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+
+function selTone(el) {
+  document.querySelectorAll('.tone-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function handleFiles(input) {
+  var list = document.getElementById('fileList');
+  list.innerHTML = '';
+  Array.from(input.files).slice(0, 3).forEach(function(f) {
+    var d = document.createElement('div');
+    d.className = 'fi';
+    d.textContent = f.name;
+    list.appendChild(d);
+  });
+}
+
+function handlePhoto(input, txtId) {
+  var txt = document.getElementById(txtId);
+  if (txt && input.files[0]) txt.textContent = '✓ ' + input.files[0].name + ' (haz clic para cambiarla)';
+}
+
+// Reduce la foto a 1024 px en JPEG y devuelve el base64 sin prefijo (el envío pesa poco)
+function photoToBase64(file) {
+  return new Promise(function(resolve) {
+    if (!file) return resolve('');
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function() {
+      var scale = Math.min(1, 1024 / Math.max(img.width, img.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.onerror = function() { URL.revokeObjectURL(url); resolve(''); };
+    img.src = url;
+  });
+}
+
+// Guardado automático en este navegador (textos y elecciones; los audios ya quedan transcritos en su cuadro)
+var DRAFT_KEY = 'tus_borrador_v2';   // distinto del formulario anterior: las preguntas no son las mismas
+
+var enviado = false;
+
+function saveDraft() {
+  if (enviado) return; // tras enviar, un clic en la pantalla final no debe recrear el borrador
+  try {
+    var d = { gender: gender, narrator: narrator, portada: selectedPortada, formato: formato, paso: cur <= TOTAL ? cur : 0, fields: {}, tf: {} };
+    document.querySelectorAll('input[type=text][id],input[type=email][id],select[id],textarea[id]').forEach(function(el) { d.fields[el.id] = el.value; });
+    for (var i = 0; i <= 13; i++) {
+      var ta = document.querySelector('#tf' + i + ' textarea');
+      if (ta && ta.value) d.tf[i] = ta.value;
+    }
+    var t = document.querySelector('.tone-opt.selected .tt');
+    d.tone = t ? t.textContent : '';
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+  } catch (e) {}
+}
+
+function loadDraft() {
+  try {
+    var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    if (!d) return;
+    Object.keys(d.fields || {}).forEach(function(id) { var el = document.getElementById(id); if (el) el.value = d.fields[id]; });
+    document.getElementById('customTitleWrap').style.display = document.getElementById('bookType').value === 'Título personalizado' ? 'block' : 'none';
+    Object.keys(d.tf || {}).forEach(function(i) {
+      var box = document.getElementById('tf' + i);
+      var ta = box && box.querySelector('textarea');
+      if (ta) { ta.value = d.tf[i]; box.classList.add('show'); }
+    });
+    if (d.gender) setGender(d.gender, document.getElementById(d.gender === 'm' ? 'gm' : 'gf'));
+    if (d.narrator) setNarrator(d.narrator, document.getElementById(d.narrator === 'protagonist' ? 'n1' : 'n2'));
+    if (d.formato) setFormato(d.formato, document.getElementById(d.formato === 'blanda' ? 'fb' : 'fd'));
+    if (d.portada) { var pc = document.querySelector('.portada-card[data-portada="' + d.portada + '"]'); if (pc) selPortada(pc, d.portada); }
+    pintaPortadas();
+    if (d.tone) document.querySelectorAll('.tone-opt').forEach(function(o) { if (o.querySelector('.tt').textContent === d.tone) selTone(o); });
+    // Volver al paso en el que se quedó (sin saltar a la revisión)
+    if (d.paso > 0 && d.paso < TOTAL) go(d.paso);
+  } catch (e) {}
+}
+
+document.addEventListener('input', saveDraft);
+// Contador de la dedicatoria (máx. 350 caracteres para que quepa bien en la contraportada)
+function cuentaDed() { var d = document.getElementById('dedicatoria'); document.getElementById('dedCont').textContent = d.value.length; }
+document.getElementById('dedicatoria').addEventListener('input', cuentaDed);
+window.addEventListener('load', cuentaDed);   // por si vuelve con el borrador guardado
+
+// Dedicatorias de ejemplo con los nombres del pedido: con un clic pasan al cuadro, donde se pueden retocar
+function ejemplosDedicatoria() {
+  var ninos = (document.getElementById('childNames').value || '').trim();
+  var prot = (document.getElementById('protName').value || '').trim() || g('vuestra');
+  var varios = !ninos || /,|\sy\s|\se\s/.test(ninos);
+  var a = ninos || 'Queridos niños';
+  if (varios) return [
+    a + ': este libro es para que nunca olvidéis de dónde venís. Es la historia de ' + prot + ', y también un poco la vuestra. Os queremos hasta el infinito.',
+    'Para ' + (ninos || 'vosotros') + ', para que cuando seáis mayores podáis volver a estas páginas y recordar lo mucho que os quiere ' + prot + '.',
+    'Hay historias que merecen quedarse para siempre. Esta es la de ' + prot + ', contada para ' + (ninos || 'vosotros') + ' con todo el amor del mundo.'
+  ];
+  return [
+    a + ': este libro es para que nunca olvides de dónde vienes. Es la historia de ' + prot + ', y también un poco la tuya. Te queremos hasta el infinito.',
+    'Para ' + ninos + ', para que cuando seas mayor puedas volver a estas páginas y recordar lo mucho que te quiere ' + prot + '.',
+    'Hay historias que merecen quedarse para siempre. Esta es la de ' + prot + ', contada para ' + ninos + ' con todo el amor del mundo.'
+  ];
+}
+function pintaEjemplosDed() {
+  var cont = document.getElementById('dedEjemplos'), actual = document.getElementById('dedicatoria').value.trim();
+  cont.innerHTML = '';
+  ejemplosDedicatoria().forEach(function (t) {
+    var d = document.createElement('div'), b = document.createElement('button');
+    d.className = 'ded-op' + (actual === t ? ' elegida' : '');
+    d.textContent = '«' + t + '»';
+    b.type = 'button'; b.textContent = actual === t ? '✓ Elegida' : 'Usar esta dedicatoria';
+    b.onclick = function () {
+      var ta = document.getElementById('dedicatoria');
+      ta.value = t; ta.dispatchEvent(new Event('input', { bubbles: true }));
+      pintaEjemplosDed(); ta.focus();
+    };
+    d.appendChild(b); cont.appendChild(d);
+  });
+}
+// Se repintan al cambiar los nombres, el género o la propia dedicatoria
+document.addEventListener('input', function (e) { if (['childNames', 'protName', 'dedicatoria'].indexOf(e.target.id) >= 0) pintaEjemplosDed(); });
+document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#gf,#gm')) pintaEjemplosDed(); });
+window.addEventListener('load', pintaEjemplosDed);
+// Al rellenar un campo marcado en rojo, se quita la marca
+document.addEventListener('input', function(e) { var f = e.target.closest && e.target.closest('.falta'); if (f && (e.target.value || '').trim()) f.classList.remove('falta'); });
+document.addEventListener('change', function(e) { if (e.target.classList && e.target.classList.contains('falta') && e.target.value) e.target.classList.remove('falta'); });
+document.addEventListener('click', function() { setTimeout(saveDraft, 0); });
+
+// Etapas: la nota principal y, si la hay, la anécdota
+var CHAPTERS = [
+  { name: 'De bebé y de pequeño/a', q: 0 },
+  { name: 'La juventud', q: 2 },
+  { name: 'Amor y familia', q: 4 },
+  { name: 'Con los niños hoy', q: 6 },
+  { name: 'El final del libro', q: 8 },
+];
+
+function buildReview() {
+  document.getElementById('rv-prot').textContent  = document.getElementById('protName').value || '—';
+  document.getElementById('rv-child').textContent = document.getElementById('childNames').value || '—';
+  document.getElementById('rv-type').textContent  = document.getElementById('bookType').value || '—';
+  document.getElementById('rv-ord').textContent   = document.getElementById('orderer').value || '—';
+  document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
+  var ev = function(id){ return document.getElementById(id).value.trim(); };
+  document.getElementById('rv-tel').textContent = ev('clienteTelefono') || '—';
+  document.getElementById('rv-ded').textContent = ev('dedicatoria') ? '«' + ev('dedicatoria') + '» — ' + ev('dedicatoriaFirma') : '—';
+  var envio = [ev('envioNombre'), ev('envioDireccion'), (ev('envioCP') + ' ' + ev('envioCiudad')).trim(), ev('envioProvincia'), ev('envioTelefono')].filter(Boolean).join(' · ');
+  document.getElementById('rv-envio').textContent = envio || '—';
+  document.getElementById('rv-portada').textContent = TUSPortadas.diseno(selectedPortada).nombre;
+  document.getElementById('rv-formato').textContent = FORMATOS[formato];
+  document.getElementById('rv-importe').textContent = PRECIOS[formato] + ' (envío incluido)';
+  if (PAGO.activo) {
+    document.getElementById('rv-pago').style.display = '';
+    document.getElementById('rv-ahora').textContent = 'Haces la transferencia y empezamos a escribir tu historia en cuanto la recibimos.';
+  }
+  var tEl = document.querySelector('.tone-opt.selected .tt');
+  document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrado';
+  var c = document.getElementById('rv-chapters');
+  c.innerHTML = '';
+  CHAPTERS.forEach(function(ch) {
+    var ok = !!(audioBlobs[ch.q] || txtVc(ch.q)), an = ch.an != null && !!(audioBlobs[ch.an] || txtVc(ch.an));
+    var row = document.createElement('div');
+    row.className = 'sr';
+    row.innerHTML = '<span class="sk" style="text-transform:none;letter-spacing:0;font-size:12px;">' + ch.name + '</span><span class="sv">' + (ok ? '✓ Contado' + (an ? ' · con anécdota' : '') : 'Falta') + '</span>';
+    c.appendChild(row);
+  });
+}
+
+async function submit() {
+  var btn = document.querySelector('.btn-next[onclick="submit()"]');
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+
+  // No enviar hasta que terminen las notas de voz que aún se están transcribiendo
+  var pend = Object.keys(pendingTx).map(function(k) { return pendingTx[k]; });
+  if (pend.length) {
+    if (btn) btn.textContent = 'Terminando de transcribir…';
+    await Promise.all(pend);
+    if (btn) btn.textContent = 'Enviando…';
+  }
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+  var payload = {
+    protagonistName: document.getElementById('protName').value || '',
+    childName:       document.getElementById('childNames').value || '',
+    gender:          gender === 'f' ? 'mujer' : 'hombre',
+    relacion:        document.getElementById('bookType').value === 'Título personalizado'
+                       ? 'Título personalizado: ' + val('customTitle')
+                       : (document.getElementById('bookType').value || ''),
+    senderName:      document.getElementById('orderer').value || '',
+    senderEmail:     document.getElementById('email').value || '',
+    cliente_telefono: val('clienteTelefono'),
+    // Portada: en Make todas salen por la ruta «Estilo 1», cuya plantilla elige el diseño con portadaColorId (1–8)
+    portadaEstilo:   'Estilo 1',
+    portadaDiseno:   Number(selectedPortada),
+    portadaNombre:   TUSPortadas.diseno(selectedPortada).nombre,
+    portadaColor:    'Portada ' + selectedPortada + ' · ' + TUSPortadas.diseno(selectedPortada).nombre,
+    portadaColorHex: TUSPortadas.diseno(selectedPortada).lomo,
+    portadaColorId:  String(selectedPortada),
+    formato:         FORMATOS[formato],
+    q1_nacimiento:   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '',
+    q1_apodo:        document.getElementById('job') ? document.getElementById('job').value : '',
+    q2_juego:        document.getElementById('sport') ? document.getElementById('sport').value : '',
+    q5_lugar:        document.getElementById('places') ? document.getElementById('places').value : '',
+    tone:            document.querySelector('.tone-opt.selected .tt') ? document.querySelector('.tone-opt.selected .tt').textContent : 'Equilibrado',
+    narrator:        narrator === 'protagonist' ? 'protagonista' : 'otra_persona',
+    // Datos rápidos que antes no se enviaban
+    d_hermanos:          val('siblings'),
+    d_mascota:           val('pets'),
+    d_lugar_infancia:    val('childhoodPlace'),
+    d_estudios:          val('school'),
+    d_viaje:             val('travel'),
+    d_edades:            val('childAges'),
+    d_aspecto_ninos:     val('childLooks'),
+    // ¿Cómo son? (elegido con botones): una línea por persona, para la ficha de personajes y las ilustraciones
+    aspecto_familia:     aspTexto(),
+    d_apodos:            val('nicknames'),
+    d_historia_conocida: val('knownStory'),
+    d_no_mostrar:        val('noShow'),
+    // Dedicatoria de la contraportada (se imprime tal cual)
+    dedicatoria:         val('dedicatoria'),
+    dedicatoria_firma:   val('dedicatoriaFirma'),
+    // Dirección de envío (para la imprenta)
+    envio_nombre:        val('envioNombre'),
+    envio_direccion:     val('envioDireccion'),
+    envio_cp:            val('envioCP'),
+    envio_ciudad:        val('envioCiudad'),
+    envio_provincia:     val('envioProvincia'),
+    envio_telefono:      val('envioTelefono'),
+  };
+
+  // Formulario por etapas: cada nota va al campo que ya usa Make, y las respuestas a las preguntas de la IA
+  // se añaden a la nota principal de su etapa. Los resúmenes confirmados van aparte (resumen_<etapa>).
+  var fieldMap = {0:'q2_infancia',1:'q2_recuerdo',2:'q3_sueno',3:'q3_aventura',4:'q4_pareja',5:'q4_hijos',6:'q5_ninos',7:'q5_actividad',8:'q6_consejo'};
+  for (var i = 0; i <= 8; i++) {
+    var tf = document.querySelector('#tf' + i + ' textarea');
+    // El cuadro de texto ya contiene la transcripción (y lo que el cliente haya corregido)
+    var value = (tf && tf.value && tf.value.trim()) ? tf.value.trim() : (transcribedTexts[i] || '').trim();
+    if (value) payload[fieldMap[i]] = value;
+  }
+  Object.keys(ETAPAS).forEach(function(n) {
+    var et = ETAPAS[n], e = ia.etapas[n], resp = iaRespuestas(e), campo = fieldMap[et.vcs[0]];
+    if (resp) payload[campo] = (payload[campo] || '') + '\n\nMás detalles (respuestas a nuestras preguntas):\n' + resp;
+    payload['resumen_' + et.clave] = e && e.resumen ? e.resumen : '';
+  });
+  payload.q1_nombre = val('tresPalabras');            // cómo es en 3 palabras
+  payload.edad_protagonista = val('protAge');
+  payload.relacion_ninos = val('relacionNinos');       // hijos, nietos, sobrinos…
+  payload.situaciones_delicadas = val('delicadas');
+  payload.dedicatoria_corregida = ia.ded && ia.ded.corregida ? 'sí' : 'no';
+  payload.version_formulario = 'etapas';
+
+  // Fotos: reducidas en el navegador para que el envío pese poco
+  payload.foto_cara  = await photoToBase64(document.getElementById('fotoCara').files[0]);
+  payload.foto_ninos = await photoToBase64(document.getElementById('fotoNinos').files[0]);
+  payload.foto_familia = await aspCollageFamilia();   // pareja, padres y hermanos con foto, en una sola imagen
+  payload.fotos_extra = [];
+  var extras = Array.from(document.getElementById('fileInput').files).slice(0, 3);
+  for (var j = 0; j < extras.length; j++) {
+    var b64 = await photoToBase64(extras[j]);
+    if (b64) payload.fotos_extra.push(b64);
+  }
+
+  try {
+    var res = await fetch('https://hook.eu1.make.com/h864auv9w041kwjae8tbijl9ktinkw61', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      enviado = true;
+      try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+      document.getElementById('pago-importe').textContent = PRECIOS[formato];
+      document.getElementById('pago-titular').textContent = PAGO.titular;
+      document.getElementById('pago-iban').textContent = PAGO.iban;
+      document.getElementById('pago-concepto').textContent = conceptoPago();
+      document.getElementById('pago-importe2').textContent = PRECIOS[formato];
+      if (!PAGO.activo) {   // pago desactivado: no se enseña nada
+        document.querySelectorAll('#sFinal .pago').forEach(function(p) { p.style.display = 'none'; });
+      } else if (/^PON /.test(PAGO.iban)) {   // aún sin IBAN: no se enseñan datos a medias
+        document.querySelector('.pago:not(#pago-sin)').style.display = 'none';
+        document.getElementById('pago-sin').style.display = 'block';
+      }
+      document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
+      document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || (gender === 'f' ? 'la protagonista' : 'el protagonista');
+      go(TOTAL + 1);
+    } else {
+      alert('Hubo un error al enviar. Por favor inténtalo de nuevo.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Enviar historia ♥'; }
+    }
+  } catch(err) {
+    alert('Error de conexión. Por favor inténtalo de nuevo.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Enviar historia ♥'; }
+  }
+}
+
+// ---------- Repaso de la IA al terminar cada etapa ----------
+// Al pulsar «Siguiente» en una etapa, /.netlify/functions/ayudante lee lo contado y devuelve un resumen
+// (que la familia puede corregir) y, si falta algo importante, hasta 3 preguntas. Si la función falla,
+// se sigue sin repaso: el formulario nunca se bloquea. El estado va en #iaDatos, así entra en el borrador.
+var ETAPAS = {
+  2: { clave: 'infancia', vcs: [0], nombre: function() { return 'De bebé y de pequeñ' + g('oa'); },
+       imp: ['Dónde nació y dónde creció', 'Cómo era de carácter de pequeño/a', 'Con quién vivía (padres, hermanos) y si tenía mascota', 'A qué le gustaba jugar o algún amigo o amiga especial'] },
+  3: { clave: 'juventud', vcs: [2], nombre: function() { return 'La juventud'; },
+       imp: ['Qué le apasionaba de adolescente o de joven', 'Qué estudió o cuál fue su primer trabajo', 'Cómo llegó a dedicarse a lo que hace hoy'] },
+  4: { clave: 'familia', vcs: [4], nombre: function() { return 'Amor y familia'; },
+       imp: ['Si tiene o tuvo pareja: su nombre y cómo se conocieron (si no hay pareja, no preguntes)', 'Cómo fue la llegada de cada uno de los niños', 'Si los niños son sus nietos o sobrinos: quiénes son sus padres y qué relación tienen con la protagonista'] },
+  5: { clave: 'ninos', vcs: [6], nombre: function() { return 'Con los niños hoy'; },
+       imp: ['Cómo es cada uno de los niños (carácter y qué le encanta)', 'Qué hacen juntos', 'Algo que sea solo suyo: una tradición, una frase, un lugar o un juego'] }
+};
+var ia = { etapas: {}, ded: {} };
+function iaGuarda() { document.getElementById('iaDatos').value = JSON.stringify(ia); saveDraft(); }
+function iaCarga() { try { var v = JSON.parse(document.getElementById('iaDatos').value || 'null'); if (v && v.etapas) ia = v; ia.ded = ia.ded || {}; } catch (e) {} }
+function txtVc(i) { var ta = document.querySelector('#tf' + i + ' textarea'); return ta ? ta.value.trim() : ''; }
+function vId(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function iaFirma(n) { return ETAPAS[n].vcs.map(txtVc).join('\u0001'); }
+function iaListo(n) { var e = ia.etapas[n]; return !!(e && e.ok && e.firma === iaFirma(n)); }
+function iaEsc(t) { return String(t).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+// Preguntas y respuestas de la IA ya contestadas (las de rondas anteriores también)
+function iaRespuestas(e) {
+  if (!e) return '';
+  var r = (e.previas ? [e.previas] : []);
+  (e.preguntas || []).forEach(function(p, i) { var a = ((e.respuestas || [])[i] || '').trim(); if (a) r.push('P: ' + p + '\nR: ' + a); });
+  return r.join('\n\n');
+}
+
+async function iaRevisar(n, destino) {
+  var et = ETAPAS[n], panel = document.getElementById('ia' + n), e = ia.etapas[n];
+  // Ya hay un repaso de este mismo texto: la primera vez se enseña, la segunda («Siguiente» otra vez) vale como «Todo bien»
+  if (e && !e.ok && e.firma === iaFirma(n) && e.resumen) {
+    if (panel.dataset.listo) { iaConfirma(n, destino); return; }
+    iaPintaPanel(n, destino); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+  }
+  panel.style.display = ''; panel.dataset.listo = '';
+  panel.innerHTML = '<div class="ia-cargando">Estamos leyendo lo que nos has contado…</div>';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  var pend = et.vcs.filter(function(i) { return pendingTx[i]; }).map(function(i) { return pendingTx[i]; });
+  if (pend.length) await Promise.all(pend);   // primero, que terminen de transcribirse las notas de voz
+  var firma = iaFirma(n), previas = iaRespuestas(e), r = null;
+  try {
+    var res = await fetch('/.netlify/functions/ayudante', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        accion: 'revisar', etapaNombre: et.nombre(),
+        protagonista: [vId('protName') || 'la protagonista', gender === 'f' ? 'mujer' : 'hombre', vId('protAge') ? vId('protAge') + ' años' : '', vId('relacionNinos'), vId('nicknames') ? 'los niños la llaman ' + vId('nicknames') : ''].filter(Boolean).join(', '),
+        ninos: [vId('childNames'), vId('childAges')].filter(Boolean).join(' · '),
+        texto: txtVc(et.vcs[0]), respuestasPrevias: previas, imprescindibles: et.imp
+      })
+    });
+    if (res.ok) r = await res.json();
+  } catch (err) {}
+  if (!r || typeof r.resumen !== 'string' || !r.resumen.trim()) {
+    // Sin ayuda de la IA: se sigue igual
+    panel.style.display = 'none'; panel.innerHTML = '';
+    ia.etapas[n] = { firma: firma, resumen: '', preguntas: [], respuestas: [], previas: previas, ok: true };
+    iaGuarda(); go(destino); return;
+  }
+  ia.etapas[n] = { firma: firma, resumen: r.resumen.trim(), preguntas: (r.preguntas || []).slice(0, 2), respuestas: [], previas: previas, ok: false };
+  iaGuarda(); iaPintaPanel(n, destino);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function iaPintaPanel(n, destino) {
+  var e = ia.etapas[n], panel = document.getElementById('ia' + n);
+  panel.style.display = '';
+  panel.innerHTML = '<div class="ia-t">✨ Esto es lo que hemos entendido</div>' +
+    '<div class="ia-s">Léelo con calma y corrige o añade lo que quieras aquí mismo: así lo tendremos en cuenta al escribir el libro.</div>' +
+    '<textarea class="ia-resumen"></textarea>' +
+    (e.preguntas.length ? '<div class="ia-t" style="margin-top:20px;font-size:17px">🔎 Nos falta algún dato importante</div>' +
+      '<div class="ia-s">Si lo sabes, cuéntanoslo aquí. Si no, déjalo en blanco y sigue sin problema.</div>' +
+      e.preguntas.map(function(p, i) {
+        return '<div class="ia-q">' + iaEsc(p) + '</div><textarea class="ia-resp" data-i="' + i + '" placeholder="Tu respuesta (opcional)"></textarea>' +
+          '<button type="button" class="btn-tw ia-mic" data-i="' + i + '">🎙️ Prefiero contarlo con una nota de voz</button>';
+      }).join('') : '') +
+    '<div class="ia-bts"><button type="button" class="si">Todo bien, seguir →</button></div>';
+  var rs = panel.querySelector('.ia-resumen');
+  rs.value = e.resumen;
+  rs.oninput = function() { e.resumen = rs.value; iaGuarda(); };
+  panel.querySelectorAll('.ia-resp').forEach(function(ta) {
+    var i = +ta.dataset.i; ta.value = (e.respuestas || [])[i] || '';
+    ta.oninput = function() { e.respuestas[i] = ta.value; iaGuarda(); };
+  });
+  panel.querySelectorAll('.ia-mic').forEach(function(b) { b.onclick = function() { iaGrabar(b, panel.querySelector('.ia-resp[data-i="' + b.dataset.i + '"]')); }; });
+  panel.querySelector('.ia-bts .si').onclick = function() { iaConfirma(n, destino); };
+  panel.dataset.listo = '1';
+  setTimeout(function() { panel.querySelectorAll('textarea').forEach(autoAlto); }, 30);
+}
+
+function iaConfirma(n, destino) {
+  var e = ia.etapas[n]; if (!e) return go(destino);
+  var rs = document.querySelector('#ia' + n + ' .ia-resumen'); if (rs) e.resumen = rs.value.trim();
+  e.ok = true; iaGuarda(); go(destino);
+}
+
+// Nota de voz corta para contestar una pregunta de la IA: se transcribe y se añade al cuadro
+var iaRec = null;
+async function iaGrabar(btn, ta) {
+  if (iaRec && iaRec.state === 'recording') { iaRec.stop(); return; }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true }), chunks = [];
+    try { iaRec = new MediaRecorder(stream, { audioBitsPerSecond: 32000 }); } catch (e2) { iaRec = new MediaRecorder(stream); }
+    var mr = iaRec;
+    mr.ondataavailable = function(ev) { chunks.push(ev.data); };
+    mr.onstop = async function() {
+      stream.getTracks().forEach(function(t) { t.stop(); });
+      btn.textContent = 'Transcribiendo…';
+      var blob = new Blob(chunks, { type: (mr.mimeType || 'audio/webm').split(';')[0] });
+      try {
+        var res = await fetch('/.netlify/functions/transcribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ audioBase64: await blobToBase64(blob), mimeType: blob.type }) });
+        var d = await res.json();
+        if (res.ok && d.text) { ta.value = (ta.value.trim() ? ta.value.trim() + '\n' : '') + d.text.trim(); ta.dispatchEvent(new Event('input', { bubbles: true })); autoAlto(ta); }
+        btn.textContent = res.ok && d.text ? '🎙️ Añadir otra nota de voz' : 'No se ha podido transcribir: escríbelo arriba';
+      } catch (err) { btn.textContent = 'No se ha podido transcribir: escríbelo arriba'; }
+    };
+    mr.start();
+    btn.textContent = '⏹ Detener la grabación';
+  } catch (e) { btn.textContent = 'Sin micrófono: escríbelo arriba'; }
+}
+
+// ---------- Dedicatoria: corregir faltas (sin cambiar las palabras) ----------
+function dedFirma() { return vId('dedicatoria') + '\u0001' + vId('dedicatoriaFirma'); }
+function dedListo() { return ia.ded && ia.ded.firma === dedFirma(); }
+
+// Marca en amarillo las palabras de la versión corregida que no estaban igual en la original
+function marcaCambios(orig, nuevo) {
+  var a = orig.split(/\s+/).filter(Boolean), b = nuevo.split(/\s+/).filter(Boolean), m = [], i, j;
+  for (i = 0; i <= a.length; i++) { m.push([]); for (j = 0; j <= b.length; j++) m[i].push(0); }
+  for (i = a.length - 1; i >= 0; i--) for (j = b.length - 1; j >= 0; j--) m[i][j] = a[i] === b[j] ? m[i + 1][j + 1] + 1 : Math.max(m[i + 1][j], m[i][j + 1]);
+  var out = []; i = 0; j = 0;
+  while (j < b.length) {
+    if (i < a.length && a[i] === b[j]) { out.push(iaEsc(b[j])); i++; j++; }
+    else if (i < a.length && m[i + 1][j] >= m[i][j + 1]) i++;
+    else { out.push('<mark>' + iaEsc(b[j]) + '</mark>'); j++; }
+  }
+  return out.join(' ');
+}
+
+async function dedRevisar(destino) {
+  var panel = document.getElementById('iaDed'), firma = dedFirma();
+  // Segunda vez que pulsa «Revisar todo» con la propuesta a la vista: se queda con la suya
+  if (panel.dataset.listo && panel.dataset.firma === firma) { ia.ded = { firma: firma, corregida: false }; iaGuarda(); panel.style.display = 'none'; go(destino); return; }
+  panel.style.display = ''; panel.dataset.listo = '';
+  panel.innerHTML = '<div class="ia-cargando">Revisando la ortografía de la dedicatoria…</div>';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  var r = null, texto = vId('dedicatoria'), firmaTxt = vId('dedicatoriaFirma');
+  try {
+    var res = await fetch('/.netlify/functions/ayudante', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'dedicatoria', texto: texto, firma: firmaTxt }) });
+    if (res.ok) r = await res.json();
+  } catch (err) {}
+  var nt = r && typeof r.texto === 'string' ? r.texto.trim() : '', nf = r && typeof r.firma === 'string' ? r.firma.trim() : firmaTxt;
+  if (!r || !r.hayCambios || !nt || (nt === texto && nf === firmaTxt)) {
+    // Sin faltas (o sin IA): se sigue tal cual
+    panel.style.display = 'none'; panel.innerHTML = '';
+    ia.ded = { firma: firma, corregida: false }; iaGuarda(); go(destino); return;
+  }
+  panel.innerHTML = '<div class="ia-t">✏️ Hemos repasado tu dedicatoria</div>' +
+    '<div class="ia-s">Como irá impresa en el libro, hemos corregido alguna falta de ortografía o de puntuación (lo marcado en amarillo), sin cambiar tus palabras. Así quedaría:</div>' +
+    '<div class="ia-ded">«' + marcaCambios(texto, nt) + '»' + (nf ? '<br>— ' + marcaCambios(firmaTxt, nf) : '') + '</div>' +
+    '<div class="ia-bts"><button type="button" class="no">Dejar la mía</button><button type="button" class="si">Usar esta</button></div>';
+  panel.dataset.listo = '1'; panel.dataset.firma = firma;
+  panel.querySelector('.no').onclick = function() { ia.ded = { firma: firma, corregida: false }; iaGuarda(); panel.style.display = 'none'; go(destino); };
+  panel.querySelector('.si').onclick = function() {
+    var d = document.getElementById('dedicatoria'), f = document.getElementById('dedicatoriaFirma');
+    d.value = nt; f.value = nf;
+    d.dispatchEvent(new Event('input', { bubbles: true })); cuentaDed();
+    ia.ded = { firma: dedFirma(), corregida: true }; iaGuarda(); panel.style.display = 'none'; go(destino);
+  };
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ---------- ¿Cómo son? ----------
+// Una tarjeta por persona (protagonista, cada niño y, si se añaden, pareja, madre, padre y hermanos) con botones
+// para elegir. Lo elegido se guarda como JSON en #aspectoFamilia (así entra en el borrador) y se envía en texto.
+var ASP_GRUPOS = [
+  { k: 'pelo',  t: 'Pelo',          o: ['Rubio', 'Castaño claro', 'Castaño oscuro', 'Moreno', 'Pelirrojo', 'Canoso', 'Sin pelo'] },
+  { k: 'tipo',  t: 'Tipo de pelo',  o: ['Liso', 'Ondulado', 'Rizado'] },
+  { k: 'largo', t: 'Largo',         o: ['Corto', 'Media melena', 'Largo'] },
+  { k: 'ojos',  t: 'Ojos',          o: ['Marrones', 'Miel', 'Verdes', 'Azules', 'Negros'] },
+  { k: 'piel',  t: 'Piel',          o: ['Muy clara', 'Clara', 'Morena', 'Oscura'] },
+  { k: 'extra', t: 'Además', multi: true, o: ['Gafas', 'Pecas', 'Barba', 'Bigote'] }
+];
+var ASP_OBLIG = ['pelo', 'ojos', 'piel'];
+var ASP_TIT = { prot: 'Protagonista', nino: '', pareja: 'Su pareja', madre: 'Su madre', padre: 'Su padre', hermano: 'Hermano/a' };
+var asp = { prot: {}, ninos: {}, extra: [] };
+
+function aspNinos() {
+  return (document.getElementById('childNames').value || '').split(/\s*,\s*|\s+y\s+|\s+e\s+/i).map(function(s) { return s.trim(); }).filter(Boolean);
+}
+function aspGuarda() { document.getElementById('aspectoFamilia').value = JSON.stringify(asp); saveDraft(); }
+function aspCarga() { try { var v = JSON.parse(document.getElementById('aspectoFamilia').value || 'null'); if (v && v.prot) asp = v; } catch (e) {} }
+
+function aspTarjeta(d, titulo, quitar, conNombre) {
+  var c = document.createElement('div'); c.className = 'asp';
+  var h = '<div class="asp-h"><div class="asp-t">' + titulo + '</div>' + (quitar ? '<button type="button" class="asp-x">Quitar</button>' : '') + '</div>';
+  if (conNombre) h += '<div class="asp-g"><input type="text" class="asp-nombre" placeholder="Su nombre (opcional)"></div>';
+  ASP_GRUPOS.forEach(function(gr) {
+    h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
+      gr.o.map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
+  });
+  h += '<div class="asp-g"><input type="text" class="asp-mas" placeholder="Algo más (opcional). Ej: siempre con coleta, muy alto, un lunar en la mejilla"></div>';
+  c.innerHTML = h;
+  // Estado inicial y clics
+  c.querySelectorAll('.asp-g[data-k]').forEach(function(g) {
+    var k = g.dataset.k, multi = k === 'extra';
+    g.querySelectorAll('.chip').forEach(function(b) {
+      var v = b.textContent;
+      if (multi ? (d.extra || []).indexOf(v) >= 0 : d[k] === v) b.classList.add('on');
+      b.onclick = function() {
+        if (multi) {
+          d.extra = d.extra || [];
+          var i = d.extra.indexOf(v); if (i >= 0) d.extra.splice(i, 1); else d.extra.push(v);
+          b.classList.toggle('on');
+        } else {
+          d[k] = d[k] === v ? '' : v;
+          g.querySelectorAll('.chip').forEach(function(x) { x.classList.toggle('on', x.textContent === d[k]); });
+        }
+        g.classList.remove('falta');
+        if (!c.querySelector('.asp-g.falta')) c.classList.remove('falta');
+        aspGuarda();
+      };
+    });
+  });
+  var mas = c.querySelector('.asp-mas'); mas.value = d.mas || ''; mas.oninput = function() { d.mas = mas.value; aspGuarda(); };
+  var nom = c.querySelector('.asp-nombre'); if (nom) { nom.value = d.nombre || ''; nom.oninput = function() { d.nombre = nom.value; aspGuarda(); }; }
+  if (quitar) c.querySelector('.asp-x').onclick = quitar;
+  return c;
+}
+
+// Foto o botones: con la foto subida no hace falta tocar nada
+function aspFoto(id) { var f = document.getElementById(id); return f && f.files[0]; }
+function aspCajaFoto(id, texto) {
+  var f = aspFoto(id), c = document.createElement('div');
+  if (f) {
+    c.className = 'asp-foto ok';
+    c.innerHTML = '✓ Foto subida: <b></b> <button type="button">Recortar</button> <button type="button">Cambiar</button> <button type="button">Quitar</button>';
+    c.querySelector('b').textContent = f.name;
+    var bs = c.querySelectorAll('button');
+    bs[0].onclick = function() { aspRecortar(document.getElementById(id)); };
+    bs[1].onclick = function() { document.getElementById(id).click(); };
+    bs[2].onclick = function() { document.getElementById(id).value = ''; aspPinta(); };
+  } else {
+    c.className = 'uzone asp-foto';
+    c.innerHTML = '<span class="uzone-txt">📷 ' + texto + '</span>';
+    c.onclick = function() { document.getElementById(id).click(); };
+  }
+  return c;
+}
+
+// Recortar la foto al subirla (por si sale con más gente). Usa Cropper.js, que se carga solo la primera vez.
+// El recorte sustituye al archivo del propio <input>, así el envío no cambia.
+var CROPPER_V = '1.6.2';
+function aspCargaCropper() {
+  if (window.Cropper) return Promise.resolve();
+  return new Promise(function(ok, ko) {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.css';
+    document.head.appendChild(l);
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.js';
+    s.onload = ok; s.onerror = ko; document.head.appendChild(s);
+  });
+}
+function aspRecortar(input) {
+  var f = input.files[0];
+  if (!f) { aspPinta(); return; }
+  aspCargaCropper().then(function() {
+    var url = URL.createObjectURL(f), fondo = document.createElement('div');
+    fondo.className = 'rec-fondo';
+    fondo.innerHTML = '<div class="rec-caja"><div class="rec-t">Recorta la foto</div>' +
+      '<div class="rec-h">Si en la foto sale más gente, mueve y ajusta el recuadro para dejar solo ' +
+      (input.id === 'fotoNinos' ? 'a los niños' : 'su cara') + '.</div>' +
+      '<div class="rec-img"><img alt="Foto para recortar"></div>' +
+      '<div class="rec-bts"><button type="button" data-a="no">Cancelar</button><button type="button" data-a="entera">Usar la foto entera</button><button type="button" class="si" data-a="si">Usar este recorte</button></div></div>';
+    document.body.appendChild(fondo);
+    var img = fondo.querySelector('img'), cr;
+    img.onload = function() { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.8, background: false, movable: false, zoomable: false, rotatable: false }); };
+    img.src = url;
+    function cierra() { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); aspPinta(); }
+    fondo.querySelector('[data-a="no"]').onclick = function() { input.value = ''; cierra(); };
+    fondo.querySelector('[data-a="entera"]').onclick = cierra;
+    fondo.querySelector('[data-a="si"]').onclick = function() {
+      if (!cr) return cierra();
+      cr.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1600, imageSmoothingQuality: 'high' }).toBlob(function(b) {
+        try {
+          var dt = new DataTransfer();
+          dt.items.add(new File([b], f.name.replace(/\.\w+$/, '') + '-recortada.jpg', { type: 'image/jpeg' }));
+          input.files = dt.files;
+        } catch (e) {}   // si el navegador no deja cambiar el archivo, se usa la foto entera
+        cierra();
+      }, 'image/jpeg', 0.92);
+    };
+  }).catch(function() { aspPinta(); });   // sin conexión al recortador: se usa la foto entera
+}
+
+function aspPinta() {
+  var cont = document.getElementById('aspCards'); if (!cont) return;
+  cont.innerHTML = '';
+  var prot = (document.getElementById('protName').value || '').trim();
+  // Protagonista: foto o botones
+  if (aspFoto('fotoCara')) {
+    var cp = document.createElement('div'); cp.className = 'asp';
+    cp.innerHTML = '<div class="asp-h"><div class="asp-t">Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : '') + '</div></div>';
+    cp.appendChild(aspCajaFoto('fotoCara'));
+    cont.appendChild(cp);
+  } else {
+    var tp = aspTarjeta(asp.prot, 'Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : ''));
+    tp.insertBefore(aspCajaFoto('fotoCara', 'Sube una foto de su cara y te saltas este paso'), tp.children[1]);
+    var o = document.createElement('div'); o.className = 'asp-o'; o.textContent = 'o toca lo que más se parezca:';
+    tp.insertBefore(o, tp.children[2]);
+    cont.appendChild(tp);
+  }
+  // Niños: una foto de todos o una tarjeta por niño
+  var ninos = aspNinos();
+  if (ninos.length) {
+    if (aspFoto('fotoNinos')) {
+      var cn = document.createElement('div'); cn.className = 'asp';
+      cn.innerHTML = '<div class="asp-h"><div class="asp-t">Los niños <small>· ' + ninos.join(', ') + '</small></div></div>';
+      cn.appendChild(aspCajaFoto('fotoNinos'));
+      cont.appendChild(cn);
+    } else {
+      cont.appendChild(aspCajaFoto('fotoNinos', '¿Tienes una foto de ' + (ninos.length > 1 ? 'los niños juntos' : ninos[0]) + '? Súbela y te saltas ' + (ninos.length > 1 ? 'sus tarjetas' : 'su tarjeta')));
+      ninos.forEach(function(n) {
+        asp.ninos[n] = asp.ninos[n] || {};
+        cont.appendChild(aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>'));
+      });
+    }
+  }
+  // Pareja, padres y hermanos: también foto o botones (cada uno con su propio <input type=file> en #aspInputs)
+  asp.extra.forEach(function(p, i) {
+    p.id = p.id || ('x' + Date.now().toString(36) + i);
+    var fid = aspInputExtra(p.id);
+    var quitar = function() { var f = document.getElementById(fid); if (f) f.remove(); asp.extra.splice(i, 1); aspGuarda(); aspPinta(); };
+    var t = aspTarjeta(p, ASP_TIT[p.rol], quitar, true);
+    var nombre = t.querySelector('.asp-nombre').parentNode;
+    if (aspFoto(fid)) {
+      t.querySelectorAll('.asp-g[data-k], .asp-mas').forEach(function(g) { (g.classList.contains('asp-mas') ? g.parentNode : g).style.display = 'none'; });
+      nombre.after(aspCajaFoto(fid));
+    } else {
+      var o = document.createElement('div'); o.className = 'asp-o'; o.textContent = 'o toca lo que más se parezca:';
+      nombre.after(aspCajaFoto(fid, 'Sube una foto y te saltas este paso'), o);
+    }
+    cont.appendChild(t);
+  });
+}
+function aspInputExtra(pid) {
+  var id = 'fotoExtra_' + pid;
+  if (!document.getElementById(id)) {
+    var f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.id = id;
+    f.onchange = function() { aspRecortar(f); };
+    document.getElementById('aspInputs').appendChild(f);
+  }
+  return id;
+}
+function aspAdd(rol) { asp.extra.push({ rol: rol }); aspGuarda(); aspPinta(); }
+
+// Al enviar: las fotos de los familiares se juntan en una sola imagen, cada una con su nombre debajo,
+// para que la ficha de personajes sepa quién es quién
+function aspCollageFamilia() {
+  var conFoto = asp.extra.filter(function(p) { return p.id && aspFoto('fotoExtra_' + p.id); });
+  if (!conFoto.length) return Promise.resolve('');
+  var CEL = 480, ALTO = 560, PIE = 60, cols = Math.min(conFoto.length, 3), filas = Math.ceil(conFoto.length / cols);
+  var cv = document.createElement('canvas'); cv.width = cols * CEL; cv.height = filas * (ALTO + PIE);
+  var x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, cv.width, cv.height);
+  return Promise.all(conFoto.map(function(p, i) {
+    return new Promise(function(ok) {
+      var url = URL.createObjectURL(aspFoto('fotoExtra_' + p.id)), im = new Image();
+      im.onload = function() {
+        var cx = (i % cols) * CEL, cy = Math.floor(i / cols) * (ALTO + PIE), k = Math.min(CEL / im.width, ALTO / im.height);
+        x.drawImage(im, cx + (CEL - im.width * k) / 2, cy + (ALTO - im.height * k) / 2, im.width * k, im.height * k);
+        x.fillStyle = '#222'; x.font = 'bold 30px Arial'; x.textAlign = 'center';
+        x.fillText(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : ''), cx + CEL / 2, cy + ALTO + 42);
+        URL.revokeObjectURL(url); ok();
+      };
+      im.onerror = function() { URL.revokeObjectURL(url); ok(); };
+      im.src = url;
+    });
+  })).then(function() { return cv.toDataURL('image/jpeg', 0.85).split(',')[1]; });
+}
+
+// Qué falta (pelo, ojos y piel de la protagonista y de cada niño); marca las tarjetas en rojo
+function aspFaltan() {
+  var falta = [], cards = document.querySelectorAll('#aspCards .asp');
+  var datos = [[(document.getElementById('protName').value || '').trim() || 'el protagonista', asp.prot, aspFoto('fotoCara')]]
+    .concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}, aspFoto('fotoNinos')]; }));
+  datos.forEach(function(p, i) {
+    if (p[2]) return;   // con foto no hace falta rellenar
+    var c = cards[i], sin = ASP_OBLIG.filter(function(k) { return !p[1][k]; });
+    if (!sin.length || !c) return;
+    c.classList.add('falta');
+    sin.forEach(function(k) { var g = c.querySelector('.asp-g[data-k="' + k + '"]'); if (g) g.classList.add('falta'); });
+    falta.push('cómo es ' + p[0] + ' (' + sin.join(', ') + ')');
+  });
+  return falta;
+}
+
+// Texto que se envía: una línea por persona
+function aspTexto() {
+  function linea(d) {
+    var r = [];
+    if (d.pelo) r.push('pelo ' + d.pelo.toLowerCase() + [d.tipo, d.largo].filter(Boolean).map(function(x) { return ', ' + x.toLowerCase(); }).join(''));
+    else if (d.tipo || d.largo) r.push('pelo ' + [d.tipo, d.largo].filter(Boolean).join(', ').toLowerCase());
+    if (d.ojos) r.push('ojos ' + d.ojos.toLowerCase());
+    if (d.piel) r.push('piel ' + d.piel.toLowerCase());
+    if (d.extra && d.extra.length) r.push(d.extra.join(', ').toLowerCase());
+    if (d.mas) r.push(d.mas.trim());
+    return r.join('; ');
+  }
+  var prot = (document.getElementById('protName').value || '').trim(), out = [];
+  out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (aspFoto('fotoCara') ? 'ver su foto' : (linea(asp.prot) || 'sin datos')));
+  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto('fotoNinos') ? 'ver la foto de los niños' : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
+  asp.extra.forEach(function(p) {
+    var l = (p.id && aspFoto('fotoExtra_' + p.id)) ? 'ver su foto (en la imagen de la familia)' : linea(p);
+    if (!l && !p.nombre) return;
+    out.push(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
+  });
+  return out.join('\n');
+}
+document.addEventListener('input', function(e) { if (e.target.id === 'childNames' || e.target.id === 'protName') aspPinta(); });
+
+document.getElementById('prog').style.width = '0%';
+loadDraft();
+aspCarga();
+iaCarga();
+aspPinta();
+window.addEventListener('load', aspPinta);   // por si los nombres llegan desde la web (más abajo)
+// Datos que llegan desde «Haz la portada» de la web: nombre, niños, quién es, estilo de portada y si es su propia historia
+(function () {
+  var q = new URLSearchParams(location.search);
+  if (!q.get('nombre') && !q.get('rol') && !q.get('portada')) return;
+  var ROL = { 'Mamá': ['Las aventuras de Mamá', 'f'], 'Papá': ['Las aventuras de Papá', 'm'], 'Abuela': ['Las aventuras de la Abuela', 'f'],
+              'Abuelo': ['Las aventuras del Abuelo', 'm'], 'Tía': ['Las aventuras de la Tía', 'f'], 'Tío': ['Las aventuras del Tío', 'm'] };
+  if (q.get('nombre')) document.getElementById('protName').value = q.get('nombre');
+  if (q.get('ninos')) document.getElementById('childNames').value = q.get('ninos');
+  var r = ROL[q.get('rol')];
+  if (r) { document.getElementById('bookType').value = r[0]; setGender(r[1], document.getElementById(r[1] === 'm' ? 'gm' : 'gf')); }
+  else if (q.get('rol')) { document.getElementById('bookType').value = 'Título personalizado'; document.getElementById('customTitleWrap').style.display = 'block'; }
+  var pc = document.querySelector('.portada-card[data-portada="' + q.get('portada') + '"]'); if (pc) selPortada(pc, q.get('portada'));
+  pintaPortadas();
+  if (q.get('yo')) setNarrator('protagonist', document.getElementById('n1'));
+  if (q.get('formato') === 'blanda' || q.get('formato') === 'dura') setFormato(q.get('formato'), document.getElementById(q.get('formato') === 'blanda' ? 'fb' : 'fd'));
+  saveDraft();
+})();
+updateAll();
+</script>
+</body>
+</html>
