@@ -55,7 +55,13 @@ ${imprescindibles}
 
 Devuelve:
 1. "preguntas": como mucho 2 preguntas cortas, cálidas y fáciles de contestar, SOLO sobre datos imprescindibles que falten. No preguntes nada que ya esté contado (aunque sea de pasada) ni lo que no aplica (si dicen que no tenía hermanos o que no hay pareja, no lo vuelvas a preguntar). Si en lo contado no hay ningún recuerdo concreto ni anécdota, puedes usar una de las preguntas para pedir algo sencillo y cotidiano de esta etapa (por ejemplo: si tenía algún amigo o amiga especial, su juego favorito, qué quería ser de mayor). Si ya está todo, devuelve la lista vacía: es lo mejor si no falta nada importante. Tutea a la familia y habla en español de España. Usa el nombre de la protagonista.
-2. "resumen": un resumen en español de lo que has entendido de esta etapa, en 3 a 6 líneas que empiecen por «• », con los datos concretos (nombres, lugares, anécdotas), para que la familia compruebe que lo has entendido bien. No inventes nada que no hayan dicho. Si en las respuestas anteriores hay una «CORRECCIÓN DE LA FAMILIA», aplícala: manda sobre lo que se contó antes, y el resumen debe reflejarla.`;
+2. "resumen": un resumen en español de lo que has entendido de esta etapa, en 3 a 6 líneas que empiecen por «• », con los datos concretos (nombres, lugares, anécdotas), para que la familia compruebe que lo has entendido bien. No inventes nada que no hayan dicho. Si en las respuestas anteriores hay una «CORRECCIÓN DE LA FAMILIA», aplícala: manda sobre lo que se contó antes, y el resumen debe reflejarla.${d.resumenAnterior ? `
+
+Este es el resumen que ya le enseñaste a la familia y que ahora quiere corregir:
+<resumen_anterior>
+${corta(d.resumenAnterior)}
+</resumen_anterior>
+Parte de él: copia palabra por palabra las líneas que no cambian, y en las que cambian toca solo lo justo para aplicar la corrección (así la familia ve exactamente qué ha cambiado). En esta ronda no hagas preguntas nuevas: devuelve "preguntas" vacía.` : ""}`;
 }
 
 function promptDedicatoria(d) {
