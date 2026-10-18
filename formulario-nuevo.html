@@ -543,7 +543,7 @@
   <div class="field">
     <label>Otras fotos (opcional)</label>
     <div class="hint">De la protagonista en otras épocas, de la familia o de lugares especiales. Hasta 3 fotos.</div>
-    <div class="uzone" onclick="document.getElementById('fileInput').click()">
+    <div class="uzone" onclick="if (fotosExtra.length < 3) document.getElementById('fileInput').click()">
       <div class="uzone-icon">📷</div>
       <div class="uzone-txt">Haz clic para añadir fotos</div>
     </div>
@@ -862,14 +862,13 @@ async function transcribeAudio(idx, blob) {
     var data = await res.json();
     if (res.ok && data.text) {
       transcribedTexts[idx] = data.text.trim();
-      if (bd) bd.textContent = 'Grabado ✓';
-      // La transcripción va al cuadro de texto: se puede revisar, corregir y se guarda sola
+      if (bd) bd.textContent = 'Grabado';
+      // La transcripción se guarda en el cuadro de texto, pero no se enseña: al seguir, la IA enseña el resumen
+      // (quien quiera verla o escribir más, la tiene en «Prefiero escribir»)
       var tfBox = document.getElementById('tf' + idx);
       var ta = tfBox && tfBox.querySelector('textarea');
       if (ta) {
         ta.value = ta.value.trim() ? ta.value.trim() + '\n\n' + transcribedTexts[idx] : transcribedTexts[idx];
-        tfBox.classList.add('show');
-        autoAlto(ta);
         saveDraft();
       }
     } else {
@@ -977,15 +976,31 @@ function selTone(el) {
   el.classList.add('selected');
 }
 
+// Otras fotos: se van sumando (hasta 3) en vez de sustituirse, y se ve una miniatura de cada una
+var fotosExtra = [];
 function handleFiles(input) {
+  Array.from(input.files || []).forEach(function(f) { if (fotosExtra.length < 3 && /^image\//.test(f.type || 'image/')) fotosExtra.push(f); });
+  input.value = '';   // así se puede volver a elegir otra foto (o la misma)
+  pintaFotosExtra();
+}
+function pintaFotosExtra() {
   var list = document.getElementById('fileList');
   list.innerHTML = '';
-  Array.from(input.files).slice(0, 3).forEach(function(f) {
+  list.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px;margin-top:12px';
+  fotosExtra.forEach(function(f, i) {
     var d = document.createElement('div');
-    d.className = 'fi';
-    d.textContent = f.name;
-    list.appendChild(d);
+    d.style.cssText = 'width:96px;text-align:center;font-size:12px';
+    var img = document.createElement('img');
+    img.src = URL.createObjectURL(f);
+    img.style.cssText = 'width:96px;height:96px;object-fit:cover;border-radius:12px;border:1.5px solid var(--border);display:block';
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = 'Quitar';
+    b.style.cssText = 'background:none;border:none;color:var(--coral);text-decoration:underline;cursor:pointer;font-family:var(--texto);font-size:12px;margin-top:4px';
+    b.onclick = function() { fotosExtra.splice(i, 1); pintaFotosExtra(); };
+    d.appendChild(img); d.appendChild(b); list.appendChild(d);
   });
+  var t = document.querySelector('.uzone[onclick*="fileInput"] .uzone-txt');
+  if (t) t.textContent = fotosExtra.length >= 3 ? 'Ya tienes 3 fotos (quita alguna para cambiarla)' : (fotosExtra.length ? 'Añadir otra foto (' + fotosExtra.length + ' de 3)' : 'Haz clic para añadir fotos');
 }
 
 function handlePhoto(input, txtId) {
@@ -1041,7 +1056,8 @@ function loadDraft() {
     Object.keys(d.tf || {}).forEach(function(i) {
       var box = document.getElementById('tf' + i);
       var ta = box && box.querySelector('textarea');
-      if (ta) { ta.value = d.tf[i]; box.classList.add('show'); }
+      // Lo ya contado se guarda sin enseñarlo: la tarjeta queda marcada como hecha
+      if (ta) { ta.value = d.tf[i]; var vc = document.getElementById('vc' + i), bd = document.getElementById('bd' + i); if (vc) vc.classList.add('done'); if (bd) { bd.textContent = 'Guardado'; bd.classList.add('show'); } }
     });
     if (d.gender) setGender(d.gender, document.getElementById(d.gender === 'm' ? 'gm' : 'gf'));
     if (d.narrator) setNarrator(d.narrator, document.getElementById(d.narrator === 'protagonist' ? 'n1' : 'n2'));
@@ -1237,7 +1253,7 @@ async function submit() {
   payload.foto_ninos = await photoToBase64(document.getElementById('fotoNinos').files[0]);
   payload.foto_familia = await aspCollageFamilia();   // pareja, padres y hermanos con foto, en una sola imagen
   payload.fotos_extra = [];
-  var extras = Array.from(document.getElementById('fileInput').files).slice(0, 3);
+  var extras = fotosExtra.slice(0, 3);
   for (var j = 0; j < extras.length; j++) {
     var b64 = await photoToBase64(extras[j]);
     if (b64) payload.fotos_extra.push(b64);
@@ -1346,25 +1362,46 @@ async function iaRevisar(n, destino) {
 function iaPintaPanel(n, destino) {
   var e = ia.etapas[n], panel = document.getElementById('ia' + n);
   panel.style.display = '';
+  // El resumen se lee como texto; para corregirlo basta con decir qué está mal (por voz o escrito) y la IA lo rehace
   panel.innerHTML = '<div class="ia-t">✨ Esto es lo que hemos entendido</div>' +
-    '<div class="ia-s">Léelo con calma y corrige o añade lo que quieras aquí mismo: así lo tendremos en cuenta al escribir el libro.</div>' +
-    '<textarea class="ia-resumen"></textarea>' +
+    '<div class="ia-resumen-txt"></div>' +
     (e.preguntas.length ? '<div class="ia-t" style="margin-top:20px;font-size:17px">🔎 Nos falta algún dato importante</div>' +
       '<div class="ia-s">Si lo sabes, cuéntanoslo aquí. Si no, déjalo en blanco y sigue sin problema.</div>' +
       e.preguntas.map(function(p, i) {
         return '<div class="ia-q">' + iaEsc(p) + '</div><textarea class="ia-resp" data-i="' + i + '" placeholder="Tu respuesta (opcional)"></textarea>' +
           '<button type="button" class="btn-tw ia-mic" data-i="' + i + '">🎙️ Prefiero contarlo con una nota de voz</button>';
       }).join('') : '') +
-    '<div class="ia-bts"><button type="button" class="si">Todo bien, seguir →</button></div>';
-  var rs = panel.querySelector('.ia-resumen');
-  rs.value = e.resumen;
-  rs.oninput = function() { e.resumen = rs.value; iaGuarda(); };
+    '<div class="ia-t" style="margin-top:22px;font-size:17px">¿Hay algo que no hayamos entendido bien?</div>' +
+    '<div class="ia-corr" style="display:none">' +
+      '<div class="ia-s">Dinos qué hay que cambiar, como si nos lo contaras. Ej: «no era en Barcelona, era en Girona» o «su hermano se llama Marc, no Mario».</div>' +
+      '<button type="button" class="btn-rec ia-corr-mic"><span class="rdot"></span> Grabar la corrección</button>' +
+      '<textarea class="ia-corr-txt" placeholder="…o escríbelo aquí" style="margin-top:10px;min-height:70px"></textarea>' +
+      '<div class="ia-bts" style="justify-content:flex-start"><button type="button" class="si ia-corr-ok">Corregir el resumen</button></div>' +
+    '</div>' +
+    '<div class="ia-bts"><button type="button" class="ia-quiero">Sí, quiero corregir algo</button><button type="button" class="si">Está todo bien, seguir →</button></div>';
+  var rt = panel.querySelector('.ia-resumen-txt');
+  rt.textContent = e.resumen;
+  rt.style.cssText = 'white-space:pre-line;background:var(--cream);border-radius:12px;padding:14px 16px;font-size:15.5px;line-height:1.65;margin-top:8px';
   panel.querySelectorAll('.ia-resp').forEach(function(ta) {
     var i = +ta.dataset.i; ta.value = (e.respuestas || [])[i] || '';
     ta.oninput = function() { e.respuestas[i] = ta.value; iaGuarda(); };
   });
   panel.querySelectorAll('.ia-mic').forEach(function(b) { b.onclick = function() { iaGrabar(b, panel.querySelector('.ia-resp[data-i="' + b.dataset.i + '"]')); }; });
-  panel.querySelector('.ia-bts .si').onclick = function() { iaConfirma(n, destino); };
+  panel.querySelector('.ia-quiero').onclick = function() {
+    panel.querySelector('.ia-corr').style.display = ''; this.style.display = 'none';
+    panel.querySelector('.ia-corr').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  var cm = panel.querySelector('.ia-corr-mic'), ct = panel.querySelector('.ia-corr-txt');
+  cm.onclick = function() { iaGrabar(cm, ct); };
+  panel.querySelector('.ia-corr-ok').onclick = function() {
+    var t = ct.value.trim();
+    if (!t) { alert('Cuéntanos (grabando o escribiendo) qué hay que corregir.'); return; }
+    // La corrección se añade a lo que ya sabemos y la IA vuelve a hacer el resumen
+    e.previas = iaRespuestas(e) + (iaRespuestas(e) ? '\n\n' : '') + 'CORRECCIÓN DE LA FAMILIA (manda sobre lo anterior): ' + t;
+    e.preguntas = []; e.respuestas = []; e.resumen = ''; panel.dataset.listo = '';
+    iaGuarda(); iaRevisar(n, destino);
+  };
+  panel.querySelector('.ia-bts .si:not(.ia-corr-ok)').onclick = function() { iaConfirma(n, destino); };
   panel.dataset.listo = '1';
   setTimeout(function() { panel.querySelectorAll('textarea').forEach(autoAlto); }, 30);
 }
@@ -1556,7 +1593,8 @@ function aspRecortar(input) {
       '<div class="rec-bts"><button type="button" data-a="no">Cancelar</button><button type="button" data-a="entera">Usar la foto entera</button><button type="button" class="si" data-a="si">Usar este recorte</button></div></div>';
     document.body.appendChild(fondo);
     var img = fondo.querySelector('img'), cr;
-    img.onload = function() { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.8, background: false, movable: false, zoomable: false, rotatable: false }); };
+    // checkOrientation: false → el navegador ya endereza las fotos del móvil (EXIF); si Cropper lo vuelve a hacer, salen giradas
+    img.onload = function() { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.8, background: false, movable: false, zoomable: false, rotatable: false, checkOrientation: false }); };
     img.src = url;
     function cierra() { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); aspPinta(); }
     fondo.querySelector('[data-a="no"]').onclick = function() { input.value = ''; cierra(); };
