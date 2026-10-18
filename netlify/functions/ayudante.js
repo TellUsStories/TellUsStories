@@ -80,6 +80,8 @@ async function preguntaAClaude(prompt, esquema) {
     headers: {
       "x-api-key": process.env.ANTHROPIC_API_KEY,
       "anthropic-version": "2023-06-01",
+      // La clave es de organización: hay que decir qué espacio de trabajo usar (el «Default»)
+      "anthropic-workspace-id": process.env.ANTHROPIC_WORKSPACE_ID || "wrkspc_01BRHfCojsgdwHrKUbmpEppn",
       // Si un filtro de seguridad rechazara la petición, se reintenta sola con otro modelo
       "anthropic-beta": "server-side-fallback-2026-07-01",
       "content-type": "application/json",
