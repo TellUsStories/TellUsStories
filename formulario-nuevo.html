@@ -600,9 +600,15 @@
   </div>
   <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
     <h3 style="color:var(--coral);">¿Qué pasa ahora?</h3>
-    <div class="sr"><span class="sk">Ahora</span><span class="sv" id="rv-ahora">Recibimos tu historia y empezamos a escribirla.</span></div>
-    <div class="sr"><span class="sk">Próximos días</span><span class="sv">Ilustramos, maquetamos e imprimimos el libro.</span></div>
+    <div class="sr"><span class="sk">Ahora</span><span class="sv" id="rv-ahora">Recibimos tu historia y te escribimos por email para el pago (Bizum o transferencia).</span></div>
+    <div class="sr"><span class="sk">Al recibir el pago</span><span class="sv">Escribimos, ilustramos e imprimimos el libro.</span></div>
     <div class="sr"><span class="sk">2-3 semanas</span><span class="sv" style="color:var(--coral);font-weight:700;">El libro en tus manos.</span></div>
+  </div>
+  <!-- Privacidad: nota sencilla mientras Tale Us Stories está en pruebas (sin empresa todavía) -->
+  <div class="sb">
+    <h3>Tus datos y tus fotos</h3>
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 12px;">Usamos lo que nos cuentas, tus notas de voz y tus fotos <b>solo para hacer tu libro</b> y enviártelo. No se lo damos a nadie más que a los servicios que lo hacen posible (la escritura e ilustración con inteligencia artificial y la imprenta). Cuando el libro está entregado, borramos las fotos y las grabaciones. Para cualquier duda, o si quieres que borremos tus datos antes, escríbenos a <a href="mailto:tellusstoriesbooks@gmail.com" style="color:var(--coral);">tellusstoriesbooks@gmail.com</a>.</p>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--navy);cursor:pointer;line-height:1.5;"><input type="checkbox" id="aceptoPrivacidad" style="width:20px;height:20px;flex:none;margin-top:1px;accent-color:#4A2C1F;"> He leído cómo usáis mis datos y fotos, y estoy de acuerdo.</label>
   </div>
   <div class="nav">
     <button class="btn-back" onclick="go(6)">← Atrás</button>
@@ -614,8 +620,9 @@
   <div class="fin">
     <div class="fin-h">♥</div>
     <h1 class="fin-t">¡Historia recibida!</h1>
-    <p class="fin-s">Gracias por confiar en nosotros con algo tan especial. En <strong>2-3 semanas</strong> tendrás el libro en casa. Si necesitamos algo, te escribiremos a tu email.</p>
+    <p class="fin-s">Gracias por confiar en nosotros con algo tan especial. Muy pronto te escribiremos a tu email para el pago, y en cuanto lo recibamos empezamos con tu libro: en <strong>2-3 semanas</strong> lo tendrás en casa.</p>
     <div class="fin-box">Un libro único para <strong id="f-child">los niños</strong><br>sobre las aventuras de <strong id="f-prot">el protagonista</strong></div>
+    <p class="fin-s" style="margin-top:22px;font-size:14px;">¿Alguna duda? Escríbenos por <a href="https://wa.me/34636342341" target="_blank" rel="noopener" style="color:var(--coral);">WhatsApp al 636 34 23 41</a>.</p>
     <!-- Pago por transferencia (de momento no hay pasarela de pago) -->
     <div class="pago">
       <div class="pago-t">Último paso: el pago</div>
@@ -1137,6 +1144,12 @@ function buildReview() {
 
 async function submit() {
   var btn = document.querySelector('.btn-next[onclick="submit()"]');
+  var acepto = document.getElementById('aceptoPrivacidad');
+  if (acepto && !acepto.checked) {
+    alert('Para enviar tu historia, marca la casilla de «Tus datos y tus fotos».');
+    acepto.closest('.sb').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
 
   if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
 
@@ -1217,6 +1230,7 @@ async function submit() {
   payload.situaciones_delicadas = val('delicadas');
   payload.dedicatoria_corregida = ia.ded && ia.ded.corregida ? 'sí' : 'no';
   payload.version_formulario = 'etapas';
+  payload.acepta_privacidad = 'sí';   // no se puede enviar sin marcar la casilla
 
   // Fotos: reducidas en el navegador para que el envío pese poco
   payload.foto_cara  = await photoToBase64(document.getElementById('fotoCara').files[0]);
