@@ -40,8 +40,10 @@
     var n = parseInt(String(x == null ? '' : x).replace(/\D/g, ''), 10);
     return DISENOS[(n >= 1 && n <= DISENOS.length ? n : 1) - 1];
   }
+  // Al cambiar el dibujo de una portada, subir su número aquí: hcti y los navegadores guardan copia de las imágenes
+  var VERSION_IMG = { 10: 2 };
   function imagen(d, cara, calidad) {
-    return RAIZ + 'img/portadas/' + d.n + (cara === 'detras' ? '-tras' : '') + (calidad ? '-' + calidad : '') + '.jpg';
+    return RAIZ + 'img/portadas/' + d.n + (cara === 'detras' ? '-tras' : '') + (calidad ? '-' + calidad : '') + '.jpg' + (VERSION_IMG[d.n] ? '?v=' + VERSION_IMG[d.n] : '');
   }
 
   // svg(diseño, nombre, [diseñoDeMake], [opciones]): la portada delantera con el título.

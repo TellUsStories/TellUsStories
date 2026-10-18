@@ -179,7 +179,9 @@ function guardarTexto() {
 function volverADibujar() {
   if (!confirm('Se va a dibujar esta página de nuevo. Gasta unos céntimos de créditos y tarda 2 o 3 minutos. ¿Seguimos?')) return;
   var p = paginas[actual], v = p.value || '', escena = trozo(v, 'ILUSTRACION:'), cambios = $('fDibujo').value.trim();
-  var ilustracion = escena + (cambios ? ' CHANGES REQUESTED BY THE FAMILY (written in Spanish, apply them carefully and keep everything else): ' + cambios.replace(/\s*\n\s*/g, ' ') : '');
+  // Lo que pide la familia va delante y como obligatorio; se quitan las peticiones de antes para que no se acumulen
+  escena = escena.split(' CHANGES REQUESTED BY THE FAMILY')[0].replace(/^\s*MANDATORY CHANGES[\s\S]*?BASE SCENE:\s*/, '');
+  var ilustracion = cambios ? 'MANDATORY CHANGES REQUESTED BY THE FAMILY, THE MOST IMPORTANT INSTRUCTION FOR THIS PAGE (written in Spanish; translate them carefully, names of people stay as they are; the new image MUST clearly show these changes, even if the base scene below says otherwise): ' + cambios.replace(/\s*\n\s*/g, ' ') + ' BASE SCENE: ' + escena : escena;
   var conTexto = $('bloqueTexto').style.display !== 'none';
   $('btnTexto').disabled = true; $('btnDibujo').disabled = true;
   $('estado').textContent = 'Enviando…';
