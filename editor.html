@@ -71,12 +71,14 @@
       </div>
 
       <hr class="sep">
-      <label for="fDibujo">¿Qué quieres cambiar del dibujo? (opcional)</label>
-      <p class="ayuda">Escríbelo como se lo dirías a un ilustrador. Ej: «que lleve gafas», «que salga el perro en el sofá», «que la niña tenga el pelo más largo». Al volver a dibujar se usa también el texto de arriba.</p>
+      <label for="fDibujo">¿Qué quieres cambiar del dibujo?</label>
+      <p class="ayuda">Escríbelo como se lo dirías a un ilustrador. Ej: «que el abuelo sea calvo», «quita al niño de la izquierda», «que la niña tenga el pelo más largo».</p>
       <textarea id="fDibujo" style="min-height:80px"></textarea>
       <div class="botones">
-        <button class="suave" id="btnDibujo" onclick="volverADibujar()">Volver a dibujar esta página</button>
+        <button class="principal" id="btnRetoque" onclick="retocar()">✨ Retocar solo lo que pido</button>
+        <button class="suave" id="btnDibujo" onclick="volverADibujar()">Dibujar de nuevo toda la página</button>
       </div>
+      <p class="ayuda" style="margin-top:8px"><b>Retocar</b> cambia solo lo que escribes y deja igual la escena, los personajes y el estilo. <b>Dibujar de nuevo</b> crea una escena distinta: úsalo solo si quieres cambiarlo todo.</p>
       <div class="estado" id="estado"></div>
     </div>
   </div>
@@ -144,9 +146,9 @@ function abrir(i) {
   $('fDibujo').value = '';
   $('estado').textContent = '';
   // ¿Sigue disponible el dibujo original? Si no, solo se puede volver a dibujar
-  $('btnTexto').disabled = true; $('avisoImg').style.display = 'none';
+  $('btnTexto').disabled = true; $('btnRetoque').disabled = true; $('avisoImg').style.display = 'none';
   var prueba = new Image();
-  prueba.onload = function () { if (actual === i) $('btnTexto').disabled = false; };
+  prueba.onload = function () { if (actual === i) { $('btnTexto').disabled = false; $('btnRetoque').disabled = false; } };
   prueba.onerror = function () { if (actual === i) { $('avisoImg').style.display = ''; } };
   prueba.src = p.img || 'about:blank';
   $('panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -174,6 +176,26 @@ function guardarTexto() {
     })
     .catch(function () { $('estado').innerHTML = '⚠️ No se ha podido guardar (sin conexión).'; })
     .finally(function () { $('btnTexto').disabled = false; $('btnDibujo').disabled = false; });
+}
+
+// Retoque: la IA recibe el dibujo actual y cambia solo lo pedido (misma escena, personajes y estilo)
+function retocar() {
+  var p = paginas[actual], cambios = $('fDibujo').value.trim();
+  if (!cambios) { alert('Escribe primero qué quieres cambiar del dibujo.'); $('fDibujo').focus(); return; }
+  if (!confirm('Se va a retocar el dibujo de esta página cambiando solo lo que has escrito. Gasta unos céntimos y tarda unos 2 minutos. ¿Seguimos?')) return;
+  var conTexto = $('bloqueTexto').style.display !== 'none';
+  $('btnTexto').disabled = true; $('btnDibujo').disabled = true; $('btnRetoque').disabled = true;
+  $('estado').textContent = 'Enviando…';
+  enviar({ modo: 'retoque', pagina: p.pagina, cambios: cambios.replace(/\s*\n\s*/g, ' '), titulo: conTexto ? aPagina($('fTitulo').value) : '', texto: conTexto ? aPagina($('fTexto').value) : '' })
+    .then(function (r) {
+      if (r && r.ok) {
+        $('estado').innerHTML = '✨ Se está retocando el dibujo. En unos 2 minutos pulsa <button onclick="location.reload()" style="padding:6px 12px;font-size:13px">Actualizar</button> para verlo.';
+      } else {
+        $('estado').innerHTML = '⚠️ No se ha podido enviar. Vuelve a intentarlo en un momento.';
+      }
+    })
+    .catch(function () { $('estado').innerHTML = '⚠️ No se ha podido enviar (sin conexión).'; })
+    .finally(function () { $('btnTexto').disabled = false; $('btnDibujo').disabled = false; $('btnRetoque').disabled = false; });
 }
 
 function volverADibujar() {
