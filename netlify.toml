@@ -5,6 +5,13 @@
 [functions]
   node_bundler = "esbuild"
 
+# El formulario antiguo ya no se usa: quien entre por su dirección va al formulario por etapas
+[[redirects]]
+  from = "/formulario.html"
+  to = "/formulario-nuevo.html"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
