@@ -218,6 +218,9 @@
   .ia-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy);}
   .ia-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream);}
   .ia-ded{font-size:16px;font-style:italic;line-height:1.6;background:var(--cream);border-radius:12px;padding:12px 15px;margin-bottom:6px;}
+  .ia-cambio{background:#F9E1D6;color:#B4472C;border-radius:3px;padding:0 2px;font-weight:700;}
+  .ia-leyenda{font-size:13px;color:var(--muted);margin:8px 0 0;}
+  .ia-leyenda span{background:#F9E1D6;color:#B4472C;border-radius:3px;padding:0 4px;font-weight:700;}
   .ia-ded mark{background:#F6DFA8;color:inherit;border-radius:3px;padding:0 2px;font-style:normal;font-weight:700;}
 </style>
 </head>
@@ -1343,18 +1346,25 @@ async function iaRevisar(n, destino) {
         accion: 'revisar', etapaNombre: et.nombre(),
         protagonista: [vId('protName') || 'la protagonista', gender === 'f' ? 'mujer' : 'hombre', vId('protAge') ? vId('protAge') + ' años' : '', vId('relacionNinos'), vId('nicknames') ? 'los niños la llaman ' + vId('nicknames') : ''].filter(Boolean).join(', '),
         ninos: [vId('childNames'), vId('childAges')].filter(Boolean).join(' · '),
-        texto: txtVc(et.vcs[0]), respuestasPrevias: previas, imprescindibles: et.imp
+        texto: txtVc(et.vcs[0]), respuestasPrevias: previas, imprescindibles: et.imp,
+        resumenAnterior: e && e.nCorr ? (e.antes || '') : ''
       })
     });
     if (res.ok) r = await res.json();
   } catch (err) {}
+  var nCorr = e && e.nCorr ? e.nCorr : 0, antes = nCorr ? (e.antes || '') : '';
   if (!r || typeof r.resumen !== 'string' || !r.resumen.trim()) {
+    if (nCorr && antes) {
+      // Falla la IA al corregir: se deja el resumen anterior para que la familia lo cambie a mano
+      ia.etapas[n] = { firma: firma, resumen: antes, preguntas: [], respuestas: [], previas: previas, ok: false, nCorr: nCorr, manual: true };
+      iaGuarda(); iaPintaPanel(n, destino); return;
+    }
     // Sin ayuda de la IA: se sigue igual
     panel.style.display = 'none'; panel.innerHTML = '';
     ia.etapas[n] = { firma: firma, resumen: '', preguntas: [], respuestas: [], previas: previas, ok: true };
     iaGuarda(); go(destino); return;
   }
-  ia.etapas[n] = { firma: firma, resumen: r.resumen.trim(), preguntas: (r.preguntas || []).slice(0, 2), respuestas: [], previas: previas, ok: false };
+  ia.etapas[n] = { firma: firma, resumen: r.resumen.trim(), preguntas: (r.preguntas || []).slice(0, 2), respuestas: [], previas: previas, ok: false, nCorr: nCorr, antes: antes };
   iaGuarda(); iaPintaPanel(n, destino);
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -1363,25 +1373,43 @@ function iaPintaPanel(n, destino) {
   var e = ia.etapas[n], panel = document.getElementById('ia' + n);
   panel.style.display = '';
   // El resumen se lee como texto; para corregirlo basta con decir qué está mal (por voz o escrito) y la IA lo rehace
-  panel.innerHTML = '<div class="ia-t">✨ Esto es lo que hemos entendido</div>' +
-    '<div class="ia-resumen-txt"></div>' +
+  var corregido = e.nCorr && e.antes && !e.manual;
+  panel.innerHTML = '<div class="ia-t">' + (e.manual ? '✏️ Escribe el resumen como debe ser' : corregido ? '✨ Hemos corregido el resumen' : '✨ Esto es lo que hemos entendido') + '</div>' +
+    (e.manual ? '<div class="ia-s">Cambia lo que haga falta directamente en el texto.</div><textarea class="ia-resumen" style="min-height:150px;font-size:15.5px;line-height:1.65"></textarea>'
+      : '<div class="ia-resumen-txt"></div>' + (corregido ? '<div class="ia-leyenda"><span>En color</span> lo que hemos cambiado.</div>' : '')) +
     (e.preguntas.length ? '<div class="ia-t" style="margin-top:20px;font-size:17px">🔎 Nos falta algún dato importante</div>' +
       '<div class="ia-s">Si lo sabes, cuéntanoslo aquí. Si no, déjalo en blanco y sigue sin problema.</div>' +
       e.preguntas.map(function(p, i) {
         return '<div class="ia-q">' + iaEsc(p) + '</div><textarea class="ia-resp" data-i="' + i + '" placeholder="Tu respuesta (opcional)"></textarea>' +
           '<button type="button" class="btn-tw ia-mic" data-i="' + i + '">🎙️ Prefiero contarlo con una nota de voz</button>';
       }).join('') : '') +
-    '<div class="ia-t" style="margin-top:22px;font-size:17px">¿Hay algo que no hayamos entendido bien?</div>' +
+    (e.manual ? '<div class="ia-bts"><button type="button" class="si">Guardar y seguir →</button></div>' :
+    '<div class="ia-t" style="margin-top:22px;font-size:17px">' + (corregido ? '¿Ahora está todo bien?' : '¿Hay algo que no hayamos entendido bien?') + '</div>' +
     '<div class="ia-corr" style="display:none">' +
       '<div class="ia-s">Dinos qué hay que cambiar, como si nos lo contaras. Ej: «no era en Barcelona, era en Girona» o «su hermano se llama Marc, no Mario».</div>' +
       '<button type="button" class="btn-rec ia-corr-mic"><span class="rdot"></span> Grabar la corrección</button>' +
       '<textarea class="ia-corr-txt" placeholder="…o escríbelo aquí" style="margin-top:10px;min-height:70px"></textarea>' +
-      '<div class="ia-bts" style="justify-content:flex-start"><button type="button" class="si ia-corr-ok">Corregir el resumen</button></div>' +
+      '<div class="ia-bts" style="justify-content:flex-start"><button type="button" class="si ia-corr-ok">Corregir el resumen</button>' +
+        (e.nCorr ? '<button type="button" class="ia-manual">✏️ Prefiero escribirlo yo</button>' : '') + '</div>' +
     '</div>' +
-    '<div class="ia-bts"><button type="button" class="ia-quiero">Sí, quiero corregir algo</button><button type="button" class="si">Está todo bien, seguir →</button></div>';
+    '<div class="ia-bts"><button type="button" class="ia-quiero">' + (corregido ? 'Todavía no está bien' : 'Sí, quiero corregir algo') + '</button><button type="button" class="si">Está todo bien, seguir →</button></div>');
   var rt = panel.querySelector('.ia-resumen-txt');
-  rt.textContent = e.resumen;
-  rt.style.cssText = 'white-space:pre-line;background:var(--cream);border-radius:12px;padding:14px 16px;font-size:15.5px;line-height:1.65;margin-top:8px';
+  if (rt) {
+    if (corregido) rt.innerHTML = iaMarcaCambios(e.antes, e.resumen); else rt.textContent = e.resumen;
+    rt.style.cssText = 'white-space:pre-line;background:var(--cream);border-radius:12px;padding:14px 16px;font-size:15.5px;line-height:1.65;margin-top:8px';
+  }
+  var rm = panel.querySelector('textarea.ia-resumen');
+  if (rm) {
+    rm.value = e.resumen;
+    rm.oninput = function() { e.resumen = rm.value; iaGuarda(); };
+    panel.querySelector('.ia-bts .si').onclick = function() {
+      if (!rm.value.trim()) { alert('Escribe el resumen antes de seguir.'); return; }
+      iaConfirma(n, destino);
+    };
+    panel.dataset.listo = '1';
+    setTimeout(function() { autoAlto(rm); }, 30);
+    return;
+  }
   panel.querySelectorAll('.ia-resp').forEach(function(ta) {
     var i = +ta.dataset.i; ta.value = (e.respuestas || [])[i] || '';
     ta.oninput = function() { e.respuestas[i] = ta.value; iaGuarda(); };
@@ -1398,12 +1426,55 @@ function iaPintaPanel(n, destino) {
     if (!t) { alert('Cuéntanos (grabando o escribiendo) qué hay que corregir.'); return; }
     // La corrección se añade a lo que ya sabemos y la IA vuelve a hacer el resumen
     e.previas = iaRespuestas(e) + (iaRespuestas(e) ? '\n\n' : '') + 'CORRECCIÓN DE LA FAMILIA (manda sobre lo anterior): ' + t;
+    e.antes = e.resumen; e.nCorr = (e.nCorr || 0) + 1;
     e.preguntas = []; e.respuestas = []; e.resumen = ''; panel.dataset.listo = '';
     iaGuarda(); iaRevisar(n, destino);
   };
+  var bm = panel.querySelector('.ia-manual');
+  if (bm) bm.onclick = function() { e.manual = true; iaGuarda(); iaPintaPanel(n, destino); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   panel.querySelector('.ia-bts .si:not(.ia-corr-ok)').onclick = function() { iaConfirma(n, destino); };
   panel.dataset.listo = '1';
   setTimeout(function() { panel.querySelectorAll('textarea').forEach(autoAlto); }, 30);
+}
+
+// Resumen corregido con lo que ha cambiado en color: cada línea nueva se compara, palabra a palabra,
+// con la línea del resumen anterior que más se le parece
+function iaMarcaCambios(antes, ahora) {
+  function pals(l) { return l.split(/(\s+)/); }
+  function norm(w) { return w.toLowerCase().replace(/[.,;:!?¡¿«»"()]/g, ''); }
+  var viejas = String(antes || '').split('\n');
+  return String(ahora).split('\n').map(function(l) {
+    var nw = pals(l), mejor = null, punt = 0;
+    viejas.forEach(function(v) {
+      var vs = {}; pals(v).forEach(function(w) { if (w.trim()) vs[norm(w)] = 1; });
+      var c = 0, t = 0; nw.forEach(function(w) { if (w.trim()) { t++; if (vs[norm(w)]) c++; } });
+      var p = t ? c / t : 0; if (p > punt) { punt = p; mejor = v; }
+    });
+    if (punt === 1 && mejor.trim() === l.trim()) return iaEsc(l);
+    if (!mejor || punt < 0.3) return l.trim() ? '<span class="ia-cambio">' + iaEsc(l) + '</span>' : '';
+    // Palabras comunes en orden (LCS) se quedan igual; el resto, en color
+    var a = pals(mejor).filter(function(w) { return w.trim(); }).map(norm);
+    var idx = [], bn = [];
+    nw.forEach(function(w, p) { if (w.trim()) { idx.push(p); bn.push(norm(w)); } });
+    var m = a.length, k = bn.length, L = [], i, j;
+    for (i = 0; i <= m; i++) L.push(new Array(k + 1).fill(0));
+    for (i = m - 1; i >= 0; i--) for (j = k - 1; j >= 0; j--)
+      L[i][j] = a[i] === bn[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    var igual = {}; i = 0; j = 0;
+    while (i < m && j < k) {
+      if (a[i] === bn[j]) { igual[idx[j]] = 1; i++; j++; }
+      else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++;
+    }
+    var out = '', abierto = false;
+    nw.forEach(function(w, p) {
+      if (!w.trim()) { out += w; return; }
+      if (!igual[p] && !abierto) { out += '<span class="ia-cambio">'; abierto = true; }
+      if (igual[p] && abierto) { out = out.replace(/(\s*)$/, '</span>$1'); abierto = false; }
+      out += iaEsc(w);
+    });
+    if (abierto) out += '</span>';
+    return out;
+  }).join('\n');
 }
 
 function iaConfirma(n, destino) {
