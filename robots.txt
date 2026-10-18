@@ -3,5 +3,6 @@ Allow: /
 Disallow: /formulario.html
 Disallow: /muestra-imprenta.html
 Disallow: /prueba-paginas.html
+Disallow: /editor.html
 
 Sitemap: https://tale-us-stories.netlify.app/sitemap.xml
