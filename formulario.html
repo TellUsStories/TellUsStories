@@ -200,6 +200,7 @@
   .pago-f{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border);font-size:14px;}
   .pago-f span{min-width:72px;font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
   .pago-f b{flex:1;color:var(--navy);word-break:break-all;}
+  .pago-btn{display:block;text-align:center;background:var(--navy);color:var(--cream);text-decoration:none;border-radius:100px;padding:15px 20px;font-family:var(--display);font-weight:800;font-size:16px;margin-top:6px;}
   .pago-f button{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:5px 11px;font-family:var(--display);font-weight:700;font-size:12px;color:var(--coral);cursor:pointer;}
   .asp-o{font-size:12px;color:var(--muted);font-style:italic;margin:2px 0 10px;}
   .asp-add{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 22px;}
@@ -738,7 +739,7 @@
   <div class="sb" id="rv-pago" style="display:none">
     <h3>Pago</h3>
     <div class="sr"><span class="sk">Importe</span><span class="sv" id="rv-importe">—</span></div>
-    <div class="sr"><span class="sk">Forma de pago</span><span class="sv">Transferencia bancaria. Al enviar te mostramos los datos para hacerla.</span></div>
+    <div class="sr"><span class="sk">Forma de pago</span><span class="sv">Tarjeta, pago seguro con Stripe. Al enviar te llevamos a pagar.</span></div>
   </div>
   <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
     <h3 style="color:var(--coral);">¿Qué pasa ahora?</h3>
@@ -746,6 +747,10 @@
     <div class="sr"><span class="sk">Próximos días</span><span class="sv">Ilustramos, maquetamos e imprimimos el libro.</span></div>
     <div class="sr"><span class="sk">2-3 semanas</span><span class="sv" style="color:var(--coral);font-weight:700;">El libro en tus manos.</span></div>
   </div>
+  <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55;color:var(--muted);margin:18px 0 4px;cursor:pointer">
+    <input type="checkbox" id="aceptoLegal" style="margin-top:3px;flex-shrink:0">
+    <span>He leído y acepto las <a href="legal.html#condiciones" target="_blank" rel="noopener" style="color:var(--coral)">condiciones de venta</a> y la <a href="legal.html#privacidad" target="_blank" rel="noopener" style="color:var(--coral)">política de privacidad</a>. Entiendo que, al ser un libro hecho a medida, no tiene derecho de desistimiento, y confirmo que tengo permiso para enviar las fotos y los datos de las personas que aparecen.</span>
+  </label>
   <div class="nav">
     <button class="btn-back" onclick="go(6)">← Atrás</button>
     <button class="btn-next" onclick="submit()" style="background:var(--navy);padding:15px 36px;font-size:12px;">Enviar historia ♥</button>
@@ -758,8 +763,15 @@
     <h1 class="fin-t">¡Historia recibida!</h1>
     <p class="fin-s">Gracias por confiar en nosotros con algo tan especial. En <strong>2-3 semanas</strong> tendrás el libro en casa. Si necesitamos algo, te escribiremos a tu email.</p>
     <div class="fin-box">Un libro único para <strong id="f-child">los niños</strong><br>sobre las aventuras de <strong id="f-prot">el protagonista</strong></div>
-    <!-- Pago por transferencia (de momento no hay pasarela de pago) -->
-    <div class="pago">
+    <!-- Pago con tarjeta (Stripe): el botón lleva al enlace de pago del formato elegido -->
+    <div class="pago" id="pago-tarjeta">
+      <div class="pago-t">Último paso: el pago</div>
+      <p class="pago-s">Paga con tarjeta de forma segura (Stripe). Empezamos tu libro en cuanto recibimos el pago.</p>
+      <a class="pago-btn" id="pago-enlace" href="#" target="_self">Pagar <span id="pago-importe3">—</span> con tarjeta →</a>
+      <p class="pago-s" style="margin-top:12px">Si tienes cualquier duda, escríbenos a tellusstoriesbooks@gmail.com.</p>
+    </div>
+    <!-- Pago por transferencia (ya no se usa: ahora se paga con tarjeta) -->
+    <div class="pago" id="pago-transferencia" style="display:none">
       <div class="pago-t">Último paso: el pago</div>
       <p class="pago-s">Para confirmar el pedido, haz una transferencia con estos datos. Empezamos tu libro en cuanto la recibimos.</p>
       <div class="pago-f"><span>Importe</span><b id="pago-importe">—</b></div>
@@ -791,6 +803,13 @@ var PRECIOS = { dura: '63 €', blanda: '45 €' };
 // ===== DATOS PARA EL PAGO POR TRANSFERENCIA: rellénalos tú (titular y IBAN de la cuenta donde cobras) =====
 // activo: false = de momento no se enseña nada del pago (ni en la revisión ni al final)
 var PAGO = { activo: false, titular: 'PON AQUÍ EL TITULAR DE LA CUENTA', iban: 'PON AQUÍ TU IBAN' };
+// ===== PAGO CON TARJETA (Stripe): enlaces de pago de cada formato =====
+var STRIPE = { dura: 'https://buy.stripe.com/3cIaEY2sC4bT4D6fjD3Nm00', blanda: 'https://buy.stripe.com/5kQdRad7ggYF4D6efz3Nm01' };
+// Enlace de pago con el email del cliente ya puesto (así el pago se cruza con su pedido en la hoja)
+function enlacePago() {
+  var e = (document.getElementById('email').value || '').trim();
+  return STRIPE[formato] + (e ? '?prefilled_email=' + encodeURIComponent(e) : '');
+}
 // El concepto de la transferencia: así sabes de qué pedido es cada pago
 function conceptoPago() {
   var p = (document.getElementById('protName').value || '').trim(), e = (document.getElementById('email').value || '').trim();
@@ -1236,10 +1255,8 @@ function buildReview() {
   document.getElementById('rv-portada').textContent = TUSPortadas.diseno(selectedPortada).nombre;
   document.getElementById('rv-formato').textContent = FORMATOS[formato];
   document.getElementById('rv-importe').textContent = PRECIOS[formato] + ' (envío incluido)';
-  if (PAGO.activo) {
-    document.getElementById('rv-pago').style.display = '';
-    document.getElementById('rv-ahora').textContent = 'Haces la transferencia y empezamos a escribir tu historia en cuanto la recibimos.';
-  }
+  document.getElementById('rv-pago').style.display = '';
+  document.getElementById('rv-ahora').textContent = 'Pagas con tarjeta y empezamos a escribir tu historia en cuanto recibimos el pago.';
   var tEl = document.querySelector('.tone-opt.selected .tt');
   document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrado';
   var c = document.getElementById('rv-chapters');
@@ -1258,6 +1275,7 @@ function buildReview() {
 
 async function submit() {
   var btn = document.querySelector('.btn-next[onclick="submit()"]');
+  if (!document.getElementById('aceptoLegal').checked) { alert('Para enviar el pedido, marca la casilla de aceptar las condiciones de venta y la política de privacidad.'); return; }
 
   // Con muy pocas respuestas el libro sale pobre: avisar antes de enviar
   var respondidas = 0;
@@ -1362,12 +1380,9 @@ async function submit() {
       document.getElementById('pago-iban').textContent = PAGO.iban;
       document.getElementById('pago-concepto').textContent = conceptoPago();
       document.getElementById('pago-importe2').textContent = PRECIOS[formato];
-      if (!PAGO.activo) {   // pago desactivado: no se enseña nada
-        document.querySelectorAll('#sFinal .pago').forEach(function(p) { p.style.display = 'none'; });
-      } else if (/^PON /.test(PAGO.iban)) {   // aún sin IBAN: no se enseñan datos a medias
-        document.querySelector('.pago:not(#pago-sin)').style.display = 'none';
-        document.getElementById('pago-sin').style.display = 'block';
-      }
+      // Pago con tarjeta: botón al enlace de Stripe del formato elegido
+      document.getElementById('pago-importe3').textContent = PRECIOS[formato];
+      document.getElementById('pago-enlace').href = enlacePago();
       document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
       document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || (gender === 'f' ? 'la protagonista' : 'el protagonista');
       go(TOTAL + 1);
