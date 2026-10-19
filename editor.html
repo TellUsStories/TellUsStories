@@ -54,7 +54,7 @@
 </head>
 <body>
 <header>
-  <div class="marca">Tale Us Stories</div>
+  <div class="marca">Tale Us Stories · <a id="volverPedidos" style="color:inherit">← Mis pedidos</a></div>
   <h1>Editor de páginas</h1>
   <p class="sub">Elige una página, cambia lo que quieras y guárdalo. La página nueva sustituye a la anterior, también en el libro que va a la imprenta.</p>
 </header>
@@ -138,6 +138,7 @@ var LEER = 'https://hook.eu1.make.com/asb6r9yzv6u8llpn7seg5pdmq39lglx4';
 var REHACER = 'https://hook.eu1.make.com/xhrexhkho2dyohmxrkfd9mif8i3paer6';
 var q = new URLSearchParams(location.search), CARPETA = q.get('carpeta') || '', CLAVE = q.get('clave') || '';
 var paginas = [], actual = null;
+document.getElementById('volverPedidos').href = 'pedidos.html?clave=' + encodeURIComponent(CLAVE);
 
 function $(id) { return document.getElementById(id); }
 function aviso(t, esError) { var m = $('mensaje'); m.innerHTML = t; m.className = 'aviso' + (esError ? ' error' : ''); m.style.display = t ? '' : 'none'; }

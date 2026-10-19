@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Mis pedidos · Tale Us Stories</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400&display=swap" rel="stylesheet">
+<style>
+  /* Página privada de Cris: todos los pedidos (de la hoja de pedidos) con acceso al editor y a la carpeta de Drive de cada uno */
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#fff;--boton:#DCC8B4;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--navy);font-family:var(--texto);min-height:100vh}
+  header{padding:28px 24px 10px;max-width:1100px;margin:0 auto}
+  .marca{font-family:var(--display);font-weight:800;letter-spacing:3px;font-size:13px;text-transform:uppercase}
+  h1{font-family:var(--display);font-weight:800;font-size:30px;margin:10px 0 4px}
+  .sub{color:var(--muted);font-size:14px;line-height:1.6}
+  main{max-width:1100px;margin:0 auto;padding:10px 24px 80px}
+  .aviso{background:var(--coral-l);border:1.5px solid var(--coral);border-radius:14px;padding:14px 18px;font-size:14px;line-height:1.6;margin:16px 0}
+  .error{background:#FCECEA;border-color:#C0392B}
+  .buscar{width:100%;max-width:360px;border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;font-family:var(--texto);font-size:15px;color:var(--navy);background:var(--white);margin-top:8px}
+  .lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:18px}
+  .pedido{background:var(--white);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+  .pedido .foto{aspect-ratio:218/288;background:#f3eee6;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;font-style:italic;text-align:center;padding:10px}
+  .pedido .foto img{width:100%;height:100%;object-fit:cover;display:block}
+  .pedido .datos{padding:14px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .pedido h2{font-family:var(--display);font-weight:800;font-size:19px}
+  .pedido p{font-size:13px;color:var(--muted);line-height:1.5}
+  .estado{display:inline-block;align-self:flex-start;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.5px;text-transform:uppercase;background:var(--coral-l);border-radius:100px;padding:4px 10px;margin-top:4px}
+  .botones{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .botones a{border-radius:100px;padding:10px 16px;font-family:var(--display);font-weight:700;font-size:13px;text-decoration:none;border:1.5px solid var(--border);color:var(--navy);background:var(--white)}
+  .botones a.principal{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+  .botones a.apagado{opacity:.45;pointer-events:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="marca">Tale Us Stories</div>
+  <h1>Mis pedidos</h1>
+  <p class="sub">Todos los libros, del más nuevo al más antiguo. Entra en el editor para revisar o cambiar las páginas, o abre su carpeta de Drive.</p>
+  <input class="buscar" id="buscar" type="search" placeholder="Buscar por nombre o fecha…" oninput="pintar()">
+</header>
+<main>
+  <div id="mensaje" class="aviso">Cargando los pedidos…</div>
+  <div class="lista" id="lista"></div>
+</main>
+
+<script>
+// Webhooks de Make: lista de pedidos (lee la hoja de pedidos) y páginas guardadas de un libro (para la miniatura)
+var LISTA = 'https://hook.eu1.make.com/9crm4fjr848su91hizbvgoyypkvxag7p';
+var LEER = 'https://hook.eu1.make.com/asb6r9yzv6u8llpn7seg5pdmq39lglx4';
+var CLAVE = new URLSearchParams(location.search).get('clave') || '';
+var pedidos = [], miniaturas = {};
+
+function $(id) { return document.getElementById(id); }
+function aviso(t, esError) { var m = $('mensaje'); m.innerHTML = t; m.className = 'aviso' + (esError ? ' error' : ''); m.style.display = t ? '' : 'none'; }
+
+function cargar() {
+  if (!CLAVE) { aviso('Este enlace no está completo: le falta la clave.', true); return; }
+  fetch(LISTA + '?clave=' + encodeURIComponent(CLAVE))
+    .then(function (r) { return r.text(); })
+    .then(function (t) {
+      var d; try { d = JSON.parse(t); } catch (e) { d = null; }
+      if (!d || !Array.isArray(d.values)) { aviso('No se han podido leer los pedidos. Comprueba que el enlace es el correcto.', true); return; }
+      // Columnas de la hoja: A fecha, B estado, C protagonista, D niños, E formato, F encargado por, O portada, P enlace carpeta, T id carpeta
+      pedidos = d.values.filter(function (f) { return f && (f[19] || f[15]); }).map(function (f) {
+        var carpeta = (f[19] || '').trim() || ((f[15] || '').match(/folders\/([\w-]+)/) || [])[1] || '';
+        return { fecha: f[0] || '', estado: (f[1] || '').trim(), prota: f[2] || '', ninos: f[3] || '', formato: f[4] || '', por: f[5] || '', portada: f[14] || '', enlace: f[15] || '', carpeta: carpeta };
+      }).reverse();
+      aviso(pedidos.length ? '' : 'Todavía no hay pedidos.');
+      pintar();
+    })
+    .catch(function () { aviso('No se han podido cargar los pedidos. Comprueba la conexión y vuelve a intentarlo.', true); });
+}
+
+function pintar() {
+  var q = ($('buscar').value || '').toLowerCase(), l = $('lista'); l.innerHTML = '';
+  pedidos.filter(function (p) { return !q || (p.prota + ' ' + p.ninos + ' ' + p.por + ' ' + p.fecha).toLowerCase().indexOf(q) >= 0; })
+    .forEach(function (p) {
+      var c = document.createElement('div'); c.className = 'pedido';
+      c.innerHTML = '<div class="foto">Buscando páginas…</div><div class="datos"><h2></h2><p class="ninos"></p><p class="mas"></p><span class="estado"></span>' +
+        '<div class="botones"><a class="principal editor" target="_blank" rel="noopener">✏️ Abrir en el editor</a><a class="drive" target="_blank" rel="noopener">📁 Carpeta de Drive</a></div></div>';
+      c.querySelector('h2').textContent = p.prota || 'Sin nombre';
+      c.querySelector('.ninos').textContent = p.ninos ? 'Para ' + p.ninos : '';
+      c.querySelector('.mas').textContent = [p.fecha, p.formato, p.por ? 'Lo encarga: ' + p.por : ''].filter(Boolean).join(' · ');
+      c.querySelector('.estado').textContent = p.estado || 'sin estado';
+      c.querySelector('.editor').href = 'editor.html?carpeta=' + encodeURIComponent(p.carpeta) + '&clave=' + encodeURIComponent(CLAVE);
+      var drive = c.querySelector('.drive');
+      if (p.enlace) drive.href = p.enlace; else if (p.carpeta) drive.href = 'https://drive.google.com/drive/folders/' + p.carpeta; else drive.className += ' apagado';
+      l.appendChild(c);
+      miniatura(p, c);
+    });
+}
+
+// Miniatura: la página 1 guardada del libro (se pide una sola vez por libro)
+function miniatura(p, c) {
+  var foto = c.querySelector('.foto'), editor = c.querySelector('.editor');
+  var poner = function (u) {
+    if (u) { foto.innerHTML = '<img alt="" loading="lazy">'; foto.querySelector('img').src = u; }
+    else { foto.textContent = 'Este pedido no tiene páginas en el editor.'; editor.className += ' apagado'; }
+  };
+  if (!p.carpeta) { poner(''); return; }
+  if (!miniaturas[p.carpeta]) {
+    miniaturas[p.carpeta] = fetch(LEER + '?carpeta=' + encodeURIComponent(p.carpeta) + '&clave=' + encodeURIComponent(CLAVE))
+      .then(function (r) { return r.text(); })
+      .then(function (t) {
+        var pags; try { pags = JSON.parse(t); } catch (e) { pags = []; }
+        if (!Array.isArray(pags) || !pags.length) return '';
+        pags.sort(function (a, b) { return parseInt(a.pagina, 10) - parseInt(b.pagina, 10); });
+        return pags[0].url || '';
+      })
+      .catch(function () { return ''; });
+  }
+  miniaturas[p.carpeta].then(poner);
+}
+
+cargar();
+</script>
+</body>
+</html>
