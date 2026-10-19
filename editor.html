@@ -60,7 +60,10 @@
 </header>
 <main>
   <div id="mensaje" class="aviso">Cargando las páginas del libro…</div>
-  <div class="botones" id="barraOrden" style="display:none;margin-top:0"><button class="suave" onclick="abrirOrden()">↕️ Cambiar el orden de las páginas</button></div>
+  <div class="botones" id="barraOrden" style="display:none;margin-top:0">
+    <button class="suave" onclick="abrirOrden()">↕️ Cambiar el orden de las páginas</button>
+    <button class="principal" onclick="validarLibro()">✅ Validar el libro y montar el PDF</button>
+  </div>
   <div class="orden" id="orden">
     <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Orden de las páginas</h2>
     <p class="ayuda" style="margin-top:6px">Arrastra cada página al sitio donde la quieras: las demás se apartan solas. Al guardar, las páginas se colocan en su sitio nuevo y el número de página se cambia solo (no se vuelve a dibujar nada).</p>
@@ -295,6 +298,15 @@ function eliminarPagina() {
     })
     .then(function () { est.innerHTML = '✅ Página eliminada. Recargando…'; setTimeout(function () { location.reload(); }, 2500); })
     .catch(function () { est.innerHTML = '⚠️ No se ha podido completar. Recarga la página y comprueba cómo ha quedado antes de repetirlo.'; });
+}
+
+// Validar: el libro queda aprobado en la hoja de pedidos, se monta el PDF de imprenta (te llega por email)
+// y se prepara el borrador en Gelato (no se imprime ni se cobra hasta que lo confirmas allí)
+var APROBAR = 'https://hook.eu1.make.com/pluuvg2ioadx8cn866p6tnrugnxa17dc';
+function validarLibro() {
+  if (paginas.length !== 26) { alert('El libro tiene ' + paginas.length + ' páginas. El montaje del PDF está preparado para 26: avisa antes de validarlo.'); return; }
+  if (!confirm('¿Validar el libro tal como está ahora? Se marcará como aprobado en la hoja de pedidos y se montará el PDF para imprimir (te llega por email en unos minutos).')) return;
+  window.open(APROBAR + '?id=' + encodeURIComponent(CARPETA) + '&accion=aprobar', '_blank');
 }
 
 // Flechas para ir pasando páginas sin volver a la rejilla (también con las teclas ← →)
