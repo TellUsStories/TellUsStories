@@ -39,6 +39,7 @@
   <h1>Mis pedidos</h1>
   <p class="sub">Todos los libros, del más nuevo al más antiguo. Entra en el editor para revisar o cambiar las páginas, o abre su carpeta de Drive.</p>
   <input class="buscar" id="buscar" type="search" placeholder="Buscar por nombre o fecha…" oninput="pintar()">
+  <label class="sub" style="display:block;margin-top:10px"><input type="checkbox" id="verArchivados" onchange="pintar()"> Ver también los pedidos archivados</label>
 </header>
 <main>
   <div id="mensaje" class="aviso">Cargando los pedidos…</div>
@@ -74,8 +75,8 @@ function cargar() {
 }
 
 function pintar() {
-  var q = ($('buscar').value || '').toLowerCase(), l = $('lista'); l.innerHTML = '';
-  pedidos.filter(function (p) { return !q || (p.prota + ' ' + p.ninos + ' ' + p.por + ' ' + p.fecha).toLowerCase().indexOf(q) >= 0; })
+  var q = ($('buscar').value || '').toLowerCase(), l = $('lista'), verArch = $('verArchivados').checked; l.innerHTML = '';
+  pedidos.filter(function (p) { return (verArch || p.estado.toLowerCase() !== 'archivado') && (!q || (p.prota + ' ' + p.ninos + ' ' + p.por + ' ' + p.fecha).toLowerCase().indexOf(q) >= 0); })
     .forEach(function (p) {
       var c = document.createElement('div'); c.className = 'pedido';
       c.innerHTML = '<div class="foto">Buscando páginas…</div><div class="datos"><h2></h2><p class="ninos"></p><p class="mas"></p><span class="estado"></span>' +
