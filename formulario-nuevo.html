@@ -600,11 +600,11 @@
   <div class="sb" id="rv-pago" style="display:none">
     <h3>Pago</h3>
     <div class="sr"><span class="sk">Importe</span><span class="sv" id="rv-importe">—</span></div>
-    <div class="sr"><span class="sk">Forma de pago</span><span class="sv">Tarjeta, pago seguro con Stripe. Al enviar te llevamos a pagar.</span></div>
+    <div class="sr"><span class="sk">Forma de pago</span><span class="sv">Tarjeta, pago seguro con Stripe. Es el último paso: tu historia nos llega en cuanto pagas.</span></div>
   </div>
   <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
     <h3 style="color:var(--coral);">¿Qué pasa ahora?</h3>
-    <div class="sr"><span class="sk">Ahora</span><span class="sv" id="rv-ahora">Envías tu historia y pagas con tarjeta.</span></div>
+    <div class="sr"><span class="sk">Ahora</span><span class="sv" id="rv-ahora">Pagas con tarjeta y tu historia nos llega.</span></div>
     <div class="sr"><span class="sk">Al recibir el pago</span><span class="sv">Escribimos, ilustramos e imprimimos el libro.</span></div>
     <div class="sr"><span class="sk">2-3 semanas</span><span class="sv" style="color:var(--coral);font-weight:700;">El libro en tus manos.</span></div>
   </div>
@@ -616,7 +616,7 @@
   </div>
   <div class="nav">
     <button class="btn-back" onclick="go(6)">← Atrás</button>
-    <button class="btn-next" onclick="submit()" style="background:var(--navy);padding:15px 36px;font-size:12px;">Enviar historia ♥</button>
+    <button class="btn-next" onclick="submit()" style="background:var(--navy);padding:15px 36px;font-size:12px;">Ir a pagar ♥</button>
   </div>
 </div>
 
@@ -668,10 +668,12 @@ var PRECIOS = { dura: '63 €', blanda: '45 €' };
 var PAGO = { activo: false, titular: 'PON AQUÍ EL TITULAR DE LA CUENTA', iban: 'PON AQUÍ TU IBAN' };
 // ===== PAGO CON TARJETA (Stripe): enlaces de pago de cada formato =====
 var STRIPE = { dura: 'https://buy.stripe.com/3cIaEY2sC4bT4D6fjD3Nm00', blanda: 'https://buy.stripe.com/5kQdRad7ggYF4D6efz3Nm01' };
-// Enlace de pago con el email del cliente ya puesto (así el pago se cruza con su pedido en la hoja)
-function enlacePago() {
+// Donde se guarda la historia hasta que el cliente paga (Make: «Formulario → guardar historia hasta que pague»)
+var GUARDAR = 'https://hook.eu1.make.com/k3ru6hcymtkupq46hflxu9qmzloafpes';
+// Enlace de pago con el código del pedido (para recoger su historia al pagar) y el email del cliente ya puesto
+function enlacePago(pedido) {
   var e = (document.getElementById('email').value || '').trim();
-  return STRIPE[formato] + (e ? '?prefilled_email=' + encodeURIComponent(e) : '');
+  return STRIPE[formato] + '?client_reference_id=' + encodeURIComponent(pedido) + (e ? '&prefilled_email=' + encodeURIComponent(e) : '');
 }
 // El concepto de la transferencia: así sabes de qué pedido es cada pago
 function conceptoPago() {
@@ -1273,33 +1275,26 @@ async function submit() {
     if (b64) payload.fotos_extra.push(b64);
   }
 
+  // Primero se paga: la historia se guarda aparte y solo empieza el libro cuando Stripe confirma el pago
+  var pedido = 'TUS' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
   try {
-    var res = await fetch('https://hook.eu1.make.com/h864auv9w041kwjae8tbijl9ktinkw61', {
+    var res = await fetch(GUARDAR, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ pedido: pedido, datos: JSON.stringify(payload) })
     });
     if (res.ok) {
       enviado = true;
       try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
-      document.getElementById('pago-importe').textContent = PRECIOS[formato];
-      document.getElementById('pago-titular').textContent = PAGO.titular;
-      document.getElementById('pago-iban').textContent = PAGO.iban;
-      document.getElementById('pago-concepto').textContent = conceptoPago();
-      document.getElementById('pago-importe2').textContent = PRECIOS[formato];
-      // Pago con tarjeta: botón al enlace de Stripe del formato elegido
-      document.getElementById('pago-importe3').textContent = PRECIOS[formato];
-      document.getElementById('pago-enlace').href = enlacePago();
-      document.getElementById('f-child').textContent = document.getElementById('childNames').value || 'los niños';
-      document.getElementById('f-prot').textContent  = document.getElementById('protName').value  || (gender === 'f' ? 'la protagonista' : 'el protagonista');
-      go(TOTAL + 1);
+      if (btn) btn.textContent = 'Te llevamos a pagar…';
+      location.href = enlacePago(pedido);
     } else {
-      alert('Hubo un error al enviar. Por favor inténtalo de nuevo.');
-      if (btn) { btn.disabled = false; btn.textContent = 'Enviar historia ♥'; }
+      alert('Hubo un error al guardar tu historia. Por favor inténtalo de nuevo.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Ir a pagar ♥'; }
     }
   } catch(err) {
     alert('Error de conexión. Por favor inténtalo de nuevo.');
-    if (btn) { btn.disabled = false; btn.textContent = 'Enviar historia ♥'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Ir a pagar ♥'; }
   }
 }
 
