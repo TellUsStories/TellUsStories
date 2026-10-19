@@ -38,6 +38,17 @@
   button:disabled{opacity:.5;cursor:wait}
   .estado{margin-top:14px;font-size:14px;line-height:1.6}
   .sep{border:none;border-top:1px solid var(--border);margin:22px 0 4px}
+  .orden{display:none;margin-top:18px;background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:20px}
+  .orden.visible{display:block}
+  .fila{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+  .fila img{width:52px;aspect-ratio:218/288;object-fit:cover;border-radius:6px;border:1px solid var(--border);flex:none}
+  .fila .num{font-family:var(--display);font-weight:800;font-size:15px;width:34px;flex:none;text-align:center}
+  .fila .tit{flex:1;font-size:14px;line-height:1.4}
+  .fila .tit small{display:block;color:var(--muted);font-size:12px}
+  .fila.movida{background:#FFF6E9}
+  .fila button{padding:7px 12px;font-size:14px}
+  .pasar{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .pasar button{padding:9px 16px}
 </style>
 </head>
 <body>
@@ -48,12 +59,45 @@
 </header>
 <main>
   <div id="mensaje" class="aviso">Cargando las páginas del libro…</div>
+  <div class="botones" id="barraOrden" style="display:none;margin-top:0"><button class="suave" onclick="abrirOrden()">↕️ Cambiar el orden de las páginas</button></div>
+  <div class="orden" id="orden">
+    <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Orden de las páginas</h2>
+    <p class="ayuda" style="margin-top:6px">Sube o baja cada página con las flechas. Al guardar, las páginas se colocan en su sitio nuevo y el número de página se cambia solo (no se vuelve a dibujar nada).</p>
+    <div id="listaOrden"></div>
+    <div class="botones">
+      <button class="principal" id="btnOrden" onclick="guardarOrden()">Guardar el orden nuevo</button>
+      <button onclick="cerrarOrden()">Cancelar</button>
+    </div>
+    <div class="estado" id="estadoOrden"></div>
+  </div>
   <div class="rejilla" id="rejilla"></div>
 
   <div class="panel" id="panel">
     <div>
+      <div class="pasar">
+        <button id="btnAnt" onclick="pasar(-1)" title="Página anterior">‹ Anterior</button>
+        <button id="btnSig" onclick="pasar(1)" title="Página siguiente">Siguiente ›</button>
+      </div>
       <img id="vista" alt="Página seleccionada">
       <p class="ayuda" style="margin-top:8px" id="vistaInfo"></p>
+      <div class="botones" style="margin-top:10px">
+        <button onclick="descargar('dibujo')">⬇️ Descargar el dibujo</button>
+        <button onclick="descargar('pagina')">⬇️ Descargar la página</button>
+      </div>
+      <p class="ayuda" style="margin-top:8px">«El dibujo» es la ilustración sola, sin texto. «La página» es la página entera, con texto, marco y número.</p>
+      <label style="margin-top:14px">Sustituir por una imagen mía</label>
+      <div class="botones" style="margin-top:0">
+        <button class="principal" onclick="elegirArchivo('completa')">⬆️ Subir la página completa</button>
+        <button onclick="elegirArchivo('dibujo')">⬆️ Subir solo el dibujo</button>
+        <input type="file" id="fSubir" accept="image/*" style="display:none" onchange="archivoElegido(this)">
+      </div>
+      <p class="ayuda" style="margin-top:8px"><b>Página completa</b>: la imagen sustituye a toda la página tal cual (por ejemplo, una página retocada en ChatGPT). <b>Solo el dibujo</b>: se pone tu dibujo con el marco, el texto y el número de siempre.</p>
+      <label style="margin-top:14px">Páginas del libro</label>
+      <div class="botones" style="margin-top:0">
+        <button onclick="elegirArchivo('nueva')">➕ Añadir una página nueva detrás de esta</button>
+        <button onclick="eliminarPagina()">🗑️ Eliminar esta página</button>
+      </div>
+      <div class="estado" id="estadoSubir"></div>
     </div>
     <div>
       <h2 style="font-family:var(--display);font-weight:800;font-size:22px" id="titPanel">Página</h2>
@@ -70,6 +114,8 @@
         <p class="ayuda" id="avisoImg" style="display:none;margin-top:8px">El dibujo original ya no está disponible para reutilizarlo: para cambiar el texto de esta página hay que volver a dibujarla.</p>
       </div>
 
+      <p class="aviso" id="avisoCompleta" style="display:none;margin-top:14px">Esta página es una imagen completa que has subido tú. Para cambiarla, sube otra con «Subir la página completa».</p>
+      <div id="bloqueDibujo">
       <hr class="sep">
       <label for="fDibujo">¿Qué quieres cambiar del dibujo?</label>
       <p class="ayuda">Escríbelo como se lo dirías a un ilustrador. Ej: «que el abuelo sea calvo», «quita al niño de la izquierda», «que la niña tenga el pelo más largo».</p>
@@ -79,6 +125,7 @@
         <button class="suave" id="btnDibujo" onclick="volverADibujar()">Dibujar de nuevo toda la página</button>
       </div>
       <p class="ayuda" style="margin-top:8px"><b>Retocar</b> cambia solo lo que escribes y deja igual la escena, los personajes y el estilo. <b>Dibujar de nuevo</b> crea una escena distinta: úsalo solo si quieres cambiarlo todo.</p>
+      </div>
       <div class="estado" id="estado"></div>
     </div>
   </div>
@@ -113,8 +160,10 @@ function cargar() {
     .then(function (t) {
       try { paginas = JSON.parse(t); } catch (e) { paginas = []; }
       if (!Array.isArray(paginas) || !paginas.length) { aviso('No hay páginas guardadas para este libro. Solo se pueden editar los libros generados a partir de ahora (o el enlace no es correcto).', true); return; }
+      paginas.forEach(function (p) { p.pagina = parseInt(p.pagina, 10); });
       paginas.sort(function (a, b) { return a.pagina - b.pagina; });
       aviso('Toca una página para editarla. Hay ' + paginas.length + ' páginas.');
+      $('barraOrden').style.display = '';
       pintarRejilla();
     })
     .catch(function () { aviso('No se han podido cargar las páginas. Comprueba la conexión y vuelve a intentarlo.', true); });
@@ -136,23 +185,127 @@ function abrir(i) {
   pintarRejilla();
   $('panel').classList.add('visible');
   $('titPanel').textContent = 'Página ' + p.pagina;
+  // Mientras carga la página nueva, la anterior se ve apagada para no confundirlas
+  $('vista').style.opacity = '.25';
+  $('vista').onload = function () { this.style.opacity = '1'; };
   $('vista').src = p.url + (p.v ? '?v=' + p.v : '');
   var titulo = trozo(v, 'TITULO:', 'TEXTO:'), texto = trozo(v, 'TEXTO:', 'ILUSTRACION:');
-  var soloDibujo = !titulo && !texto;
+  var soloDibujo = !titulo && !texto, completa = v.indexOf('(página completa') >= 0;
   $('bloqueTexto').style.display = soloDibujo ? 'none' : '';
-  $('vistaInfo').textContent = soloDibujo ? 'Esta es una página de solo ilustración (sin texto).' : '';
+  $('bloqueDibujo').style.display = completa ? 'none' : '';
+  $('avisoCompleta').style.display = completa ? '' : 'none';
+  $('vistaInfo').textContent = completa ? '' : soloDibujo ? 'Esta es una página de solo ilustración (sin texto).' : '';
   $('fTitulo').value = aEditable(titulo);
   $('fTexto').value = aEditable(texto);
   $('fDibujo').value = '';
-  $('estado').textContent = '';
+  $('estado').textContent = ''; $('estadoSubir').textContent = '';
   // ¿Sigue disponible el dibujo original? Si no, solo se puede volver a dibujar
   $('btnTexto').disabled = true; $('btnRetoque').disabled = true; $('avisoImg').style.display = 'none';
   var prueba = new Image();
   prueba.onload = function () { if (actual === i) { $('btnTexto').disabled = false; $('btnRetoque').disabled = false; } };
   prueba.onerror = function () { if (actual === i) { $('avisoImg').style.display = ''; } };
   prueba.src = p.img || 'about:blank';
+  $('btnAnt').disabled = i === 0; $('btnSig').disabled = i === paginas.length - 1;
   $('panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+// Descargar el dibujo solo (para retocarlo fuera) o la página entera
+function descargar(que) {
+  var p = paginas[actual], u = que === 'dibujo' ? p.img : p.url;
+  if (!u) { alert('Esta página no tiene ' + (que === 'dibujo' ? 'el dibujo' : 'la imagen') + ' disponible.'); return; }
+  var nombre = 'pagina_' + p.pagina + (que === 'dibujo' ? '_dibujo' : '') + '.png';
+  fetch(u).then(function (r) { if (!r.ok) throw 0; return r.blob(); }).then(function (b) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = nombre;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+  }).catch(function () { window.open(u, '_blank'); });
+}
+
+// Subir una imagen propia (página completa, solo el dibujo o una página nueva). Se reduce en el navegador
+// y Make la guarda; con «solo el dibujo» Make monta la página con el marco, el texto y el número.
+var queSubir = 'completa';
+function elegirArchivo(que) { queSubir = que; $('fSubir').click(); }
+function archivoElegido(input) {
+  var f = input.files && input.files[0]; input.value = '';
+  if (!f) return;
+  var p = paginas[actual], n = paginas.length, est = $('estadoSubir');
+  var aviso = queSubir === 'nueva'
+    ? 'Se va a añadir esta imagen como página nueva detrás de la página ' + p.pagina + ' (las siguientes pasan un número adelante). El libro tendrá ' + (n + 1) + ' páginas. ¿Seguimos?'
+    : queSubir === 'completa'
+      ? 'Esta imagen va a sustituir a TODA la página ' + p.pagina + ' tal cual. La página anterior se guarda en Drive por si acaso. ¿Seguimos?'
+      : 'Esta imagen va a ser el dibujo de la página ' + p.pagina + ', con el marco, el texto y el número de siempre. La página anterior se guarda en Drive. ¿Seguimos?';
+  if (!confirm(aviso)) return;
+  est.textContent = 'Preparando la imagen…';
+  aDatos(f).then(function (datos) {
+    var destino = p.pagina, antes = Promise.resolve();
+    if (queSubir === 'nueva') {
+      // Se corren un número las páginas de detrás (o se copia la última si se añade al final) y la nueva ocupa el hueco
+      destino = p.pagina + 1;
+      var pares = [];
+      for (var k = n; k >= destino; k--) pares.push(k + ':' + (k + 1));
+      if (!pares.length) pares.push(n + ':' + (n + 1));
+      est.textContent = 'Haciendo sitio para la página nueva…';
+      antes = moverPaginas(pares.join(','));
+    }
+    return antes.then(function () {
+      est.textContent = 'Subiendo la imagen… (unos segundos)';
+      var v = p.value || '';
+      return enviar({ modo: 'subir', completa: queSubir === 'dibujo' ? '0' : '1', pagina: destino, imagen: datos,
+        titulo: queSubir === 'dibujo' ? trozo(v, 'TITULO:', 'TEXTO:') : '', texto: queSubir === 'dibujo' ? trozo(v, 'TEXTO:', 'ILUSTRACION:') : '',
+        ilustracion: queSubir === 'dibujo' ? trozo(v, 'ILUSTRACION:') : '' });
+    });
+  }).then(function (r) {
+    if (!r || !r.ok || !r.url) throw 0;
+    est.innerHTML = '✅ Hecho. Recargando…';
+    setTimeout(function () { location.reload(); }, 1500);
+  }).catch(function () { est.innerHTML = '⚠️ No se ha podido completar. Recarga la página y comprueba cómo ha quedado antes de repetirlo.'; });
+}
+function aDatos(f) {
+  return new Promise(function (ok, mal) {
+    var lector = new FileReader();
+    lector.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        var w = Math.min(2472, im.naturalWidth), h = Math.round(w * im.naturalHeight / im.naturalWidth);
+        var c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(im, 0, 0, w, h);
+        ok(c.toDataURL('image/jpeg', 0.9));
+      };
+      im.onerror = function () { $('estadoSubir').innerHTML = '⚠️ Ese archivo no parece una imagen.'; mal(); };
+      im.src = lector.result;
+    };
+    lector.readAsDataURL(f);
+  });
+}
+function moverPaginas(pares) {
+  return pedirOrden('1', pares).then(function (r) { if (!r || !r.ok) throw 0; return pedirOrden('2', pares); })
+    .then(function (r) { if (!r || !r.ok) throw 0; });
+}
+function eliminarPagina() {
+  var p = paginas[actual], n = paginas.length, est = $('estadoSubir');
+  if (!confirm('¿Eliminar la página ' + p.pagina + '? Las de detrás pasan un número atrás y el libro tendrá ' + (n - 1) + ' páginas. La imagen sigue guardada en Drive.')) return;
+  var pares = [];
+  for (var k = p.pagina + 1; k <= n; k++) pares.push(k + ':' + (k - 1));
+  est.textContent = 'Eliminando la página…';
+  (pares.length ? moverPaginas(pares.join(',')) : Promise.resolve())
+    .then(function () {
+      var b = new URLSearchParams({ clave: CLAVE, carpeta: CARPETA, fase: 'borrar', borrar: String(n) });
+      return fetch(ORDENAR, { method: 'POST', body: b }).then(function (r) { return r.text(); });
+    })
+    .then(function () { est.innerHTML = '✅ Página eliminada. Recargando…'; setTimeout(function () { location.reload(); }, 2500); })
+    .catch(function () { est.innerHTML = '⚠️ No se ha podido completar. Recarga la página y comprueba cómo ha quedado antes de repetirlo.'; });
+}
+
+// Flechas para ir pasando páginas sin volver a la rejilla (también con las teclas ← →)
+function pasar(d) {
+  var j = actual + d;
+  if (actual === null || j < 0 || j >= paginas.length) return;
+  abrir(j);
+}
+document.addEventListener('keydown', function (e) {
+  if (actual === null || /INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (e.key === 'ArrowLeft') pasar(-1);
+  if (e.key === 'ArrowRight') pasar(1);
+});
 
 function enviar(datos) {
   var b = new URLSearchParams(datos); b.set('clave', CLAVE); b.set('carpeta', CARPETA);
@@ -178,6 +331,51 @@ function guardarTexto() {
     .finally(function () { $('btnTexto').disabled = false; $('btnDibujo').disabled = false; });
 }
 
+// ---------- Cambiar el orden: se mueven las páginas ya hechas y Make repinta solo el número ----------
+var ORDENAR = 'https://hook.eu1.make.com/uu8cgcnhtro4ctp0ldha6dunvxcxbm8o';
+var nuevoOrden = [];
+function abrirOrden() {
+  nuevoOrden = paginas.slice();
+  $('panel').classList.remove('visible');
+  $('orden').classList.add('visible'); $('estadoOrden').textContent = '';
+  pintarOrden();
+  $('orden').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function cerrarOrden() { $('orden').classList.remove('visible'); }
+function pintarOrden() {
+  var l = $('listaOrden'); l.innerHTML = '';
+  nuevoOrden.forEach(function (p, i) {
+    var t = aEditable(trozo(p.value || '', 'TITULO:', 'TEXTO:')) || 'Solo ilustración';
+    var f = document.createElement('div'); f.className = 'fila' + (p.pagina !== i + 1 ? ' movida' : '');
+    f.innerHTML = '<span class="num">' + (i + 1) + '</span><img alt=""><span class="tit"></span><button title="Subir">▲</button><button title="Bajar">▼</button>';
+    f.querySelector('img').src = p.url + (p.v ? '?v=' + p.v : '');
+    f.querySelector('.tit').innerHTML = '<b></b><small></small>';
+    f.querySelector('.tit b').textContent = t;
+    f.querySelector('.tit small').textContent = p.pagina !== i + 1 ? 'Antes era la página ' + p.pagina : '';
+    var bs = f.querySelectorAll('button');
+    bs[0].disabled = i === 0; bs[1].disabled = i === nuevoOrden.length - 1;
+    bs[0].onclick = function () { mover(i, -1); }; bs[1].onclick = function () { mover(i, 1); };
+    l.appendChild(f);
+  });
+}
+function mover(i, d) { var j = i + d, x = nuevoOrden[i]; nuevoOrden[i] = nuevoOrden[j]; nuevoOrden[j] = x; pintarOrden(); }
+function pedirOrden(fase, pares) {
+  var b = new URLSearchParams({ clave: CLAVE, carpeta: CARPETA, fase: fase, pares: pares });
+  return fetch(ORDENAR, { method: 'POST', body: b }).then(function (r) { return r.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { return { ok: false }; } });
+}
+function guardarOrden() {
+  var pares = [];
+  nuevoOrden.forEach(function (p, i) { if (p.pagina !== i + 1) pares.push(p.pagina + ':' + (i + 1)); });
+  if (!pares.length) { $('estadoOrden').textContent = 'No has cambiado nada de sitio.'; return; }
+  if (!confirm('Se van a mover ' + pares.length + ' páginas y a cambiarles el número. No se dibuja nada nuevo. ¿Seguimos?')) return;
+  $('btnOrden').disabled = true;
+  $('estadoOrden').textContent = 'Moviendo las páginas y cambiando los números… (puede tardar un minuto)';
+  pedirOrden('1', pares.join(','))
+    .then(function (r) { if (!r || !r.ok) throw 0; $('estadoOrden').textContent = 'Colocando cada página en su sitio…'; return pedirOrden('2', pares.join(',')); })
+    .then(function (r) { if (!r || !r.ok) throw 0; $('estadoOrden').innerHTML = '✅ Orden guardado. Recargando…'; setTimeout(function () { location.reload(); }, 1500); })
+    .catch(function () { $('estadoOrden').innerHTML = '⚠️ No se ha podido guardar el orden. Vuelve a intentarlo en un momento.'; $('btnOrden').disabled = false; });
+}
+
 // Retoque: la IA recibe el dibujo actual y cambia solo lo pedido (misma escena, personajes y estilo)
 function retocar() {
   var p = paginas[actual], cambios = $('fDibujo').value.trim();
@@ -186,7 +384,16 @@ function retocar() {
   var conTexto = $('bloqueTexto').style.display !== 'none';
   $('btnTexto').disabled = true; $('btnDibujo').disabled = true; $('btnRetoque').disabled = true;
   $('estado').textContent = 'Enviando…';
-  enviar({ modo: 'retoque', pagina: p.pagina, cambios: cambios.replace(/\s*\n\s*/g, ' '), titulo: conTexto ? aPagina($('fTitulo').value) : '', texto: conTexto ? aPagina($('fTexto').value) : '' })
+  // El retoque no guarda el texto: si se ha cambiado, primero se guarda con «Guardar el texto»
+  var v = p.value || '', tituloNuevo = aPagina($('fTitulo').value), textoNuevo = aPagina($('fTexto').value);
+  var textoCambiado = conTexto && (tituloNuevo !== trozo(v, 'TITULO:', 'TEXTO:') || textoNuevo !== trozo(v, 'TEXTO:', 'ILUSTRACION:'));
+  var antes = textoCambiado
+    ? enviar({ modo: 'texto', pagina: p.pagina, titulo: tituloNuevo, texto: textoNuevo, ilustracion: trozo(v, 'ILUSTRACION:') }).then(function (r) {
+        if (!r || !r.ok) throw 0;
+        p.value = '===PAGINA ' + p.pagina + '===\nTITULO: ' + tituloNuevo + '\nTEXTO: ' + textoNuevo + '\nILUSTRACION: ' + trozo(v, 'ILUSTRACION:') + '\n';
+      })
+    : Promise.resolve();
+  antes.then(function () { return enviar({ modo: 'retoque', pagina: p.pagina, cambios: cambios.replace(/\s*\n\s*/g, ' '), titulo: conTexto ? tituloNuevo : '', texto: conTexto ? textoNuevo : '' }); })
     .then(function (r) {
       if (r && r.ok) {
         $('estado').innerHTML = '✨ Se está retocando el dibujo. En unos 2 minutos pulsa <button onclick="location.reload()" style="padding:6px 12px;font-size:13px">Actualizar</button> para verlo.';
