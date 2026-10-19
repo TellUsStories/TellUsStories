@@ -306,7 +306,11 @@ var APROBAR = 'https://hook.eu1.make.com/pluuvg2ioadx8cn866p6tnrugnxa17dc';
 function validarLibro() {
   if (paginas.length !== 26) { alert('El libro tiene ' + paginas.length + ' páginas. El montaje del PDF está preparado para 26: avisa antes de validarlo.'); return; }
   if (!confirm('¿Validar el libro tal como está ahora? Se marcará como aprobado en la hoja de pedidos y se montará el PDF para imprimir (te llega por email en unos minutos).')) return;
-  window.open(APROBAR + '?id=' + encodeURIComponent(CARPETA) + '&accion=aprobar', '_blank');
+  // Se llama al aviso de Make desde la misma página (abrir otra pestaña lo bloqueaban los navegadores)
+  aviso('Validando el libro…');
+  fetch(APROBAR + '?id=' + encodeURIComponent(CARPETA) + '&accion=aprobar', { mode: 'no-cors' })
+    .then(function () { aviso('✅ Libro validado. Ya está marcado como aprobado en la hoja de pedidos. En unos minutos te llega el email con el PDF completo, y después el del borrador en Gelato.'); window.scrollTo(0, 0); })
+    .catch(function () { aviso('⚠️ No se ha podido validar (sin conexión). Vuelve a intentarlo.', true); });
 }
 
 // Flechas para ir pasando páginas sin volver a la rejilla (también con las teclas ← →)
