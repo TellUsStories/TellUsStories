@@ -40,13 +40,14 @@
   .sep{border:none;border-top:1px solid var(--border);margin:22px 0 4px}
   .orden{display:none;margin-top:18px;background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:20px}
   .orden.visible{display:block}
-  .fila{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
-  .fila img{width:52px;aspect-ratio:218/288;object-fit:cover;border-radius:6px;border:1px solid var(--border);flex:none}
-  .fila .num{font-family:var(--display);font-weight:800;font-size:15px;width:34px;flex:none;text-align:center}
-  .fila .tit{flex:1;font-size:14px;line-height:1.4}
-  .fila .tit small{display:block;color:var(--muted);font-size:12px}
-  .fila.movida{background:#FFF6E9}
-  .fila button{padding:7px 12px;font-size:14px}
+  .tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px;margin-top:14px}
+  .tarjeta{background:var(--white);border:2px solid var(--border);border-radius:12px;overflow:hidden;text-align:center;cursor:grab;touch-action:none;user-select:none}
+  .tarjeta img{width:100%;aspect-ratio:218/288;object-fit:cover;display:block;background:#f3eee6;pointer-events:none}
+  .tarjeta b{display:block;font-family:var(--display);font-size:13px;padding:5px 4px 0}
+  .tarjeta small{display:block;color:var(--muted);font-size:11px;min-height:16px;padding-bottom:4px}
+  .tarjeta.movida{background:#FFF6E9;border-color:#E2B97A}
+  .tarjeta.origen{opacity:.3;border-style:dashed}
+  .tarjeta.fantasma{position:fixed;z-index:50;pointer-events:none;cursor:grabbing;box-shadow:0 12px 30px rgba(0,0,0,.25);transform:rotate(2deg)}
   .pasar{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
   .pasar button{padding:9px 16px}
 </style>
@@ -62,8 +63,8 @@
   <div class="botones" id="barraOrden" style="display:none;margin-top:0"><button class="suave" onclick="abrirOrden()">↕️ Cambiar el orden de las páginas</button></div>
   <div class="orden" id="orden">
     <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Orden de las páginas</h2>
-    <p class="ayuda" style="margin-top:6px">Sube o baja cada página con las flechas. Al guardar, las páginas se colocan en su sitio nuevo y el número de página se cambia solo (no se vuelve a dibujar nada).</p>
-    <div id="listaOrden"></div>
+    <p class="ayuda" style="margin-top:6px">Arrastra cada página al sitio donde la quieras: las demás se apartan solas. Al guardar, las páginas se colocan en su sitio nuevo y el número de página se cambia solo (no se vuelve a dibujar nada).</p>
+    <div id="listaOrden" class="tarjetas"></div>
     <div class="botones">
       <button class="principal" id="btnOrden" onclick="guardarOrden()">Guardar el orden nuevo</button>
       <button onclick="cerrarOrden()">Cancelar</button>
@@ -342,23 +343,56 @@ function abrirOrden() {
   $('orden').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function cerrarOrden() { $('orden').classList.remove('visible'); }
+// Las páginas se ordenan arrastrándolas (ratón o dedo): las demás se apartan solas mientras arrastras
+var arrastrando = null, fantasma = null;
 function pintarOrden() {
   var l = $('listaOrden'); l.innerHTML = '';
   nuevoOrden.forEach(function (p, i) {
-    var t = aEditable(trozo(p.value || '', 'TITULO:', 'TEXTO:')) || 'Solo ilustración';
-    var f = document.createElement('div'); f.className = 'fila' + (p.pagina !== i + 1 ? ' movida' : '');
-    f.innerHTML = '<span class="num">' + (i + 1) + '</span><img alt=""><span class="tit"></span><button title="Subir">▲</button><button title="Bajar">▼</button>';
+    var f = document.createElement('div');
+    f.className = 'tarjeta' + (p.pagina !== i + 1 ? ' movida' : '') + (arrastrando === i ? ' origen' : '');
+    f.dataset.i = i;
+    f.innerHTML = '<img alt="" draggable="false"><b></b><small></small>';
     f.querySelector('img').src = p.url + (p.v ? '?v=' + p.v : '');
-    f.querySelector('.tit').innerHTML = '<b></b><small></small>';
-    f.querySelector('.tit b').textContent = t;
-    f.querySelector('.tit small').textContent = p.pagina !== i + 1 ? 'Antes era la página ' + p.pagina : '';
-    var bs = f.querySelectorAll('button');
-    bs[0].disabled = i === 0; bs[1].disabled = i === nuevoOrden.length - 1;
-    bs[0].onclick = function () { mover(i, -1); }; bs[1].onclick = function () { mover(i, 1); };
+    f.querySelector('b').textContent = 'Página ' + (i + 1);
+    f.querySelector('small').textContent = p.pagina !== i + 1 ? 'antes ' + p.pagina : '';
+    f.addEventListener('pointerdown', empezarArrastre);
     l.appendChild(f);
   });
 }
-function mover(i, d) { var j = i + d, x = nuevoOrden[i]; nuevoOrden[i] = nuevoOrden[j]; nuevoOrden[j] = x; pintarOrden(); }
+function empezarArrastre(e) {
+  if (e.button > 0) return;
+  e.preventDefault();
+  var t = e.currentTarget, r = t.getBoundingClientRect();
+  arrastrando = parseInt(t.dataset.i, 10);
+  fantasma = t.cloneNode(true); fantasma.className = 'tarjeta fantasma';
+  fantasma.style.width = r.width + 'px';
+  fantasma.dx = e.clientX - r.left; fantasma.dy = e.clientY - r.top;
+  document.body.appendChild(fantasma); moverFantasma(e);
+  pintarOrden();
+  document.addEventListener('pointermove', siguiendoArrastre);
+  document.addEventListener('pointerup', soltarArrastre);
+  document.addEventListener('pointercancel', soltarArrastre);
+}
+function moverFantasma(e) { fantasma.style.left = (e.clientX - fantasma.dx) + 'px'; fantasma.style.top = (e.clientY - fantasma.dy) + 'px'; }
+function siguiendoArrastre(e) {
+  if (arrastrando === null) return;
+  moverFantasma(e);
+  if (e.clientY < 70) window.scrollBy(0, -14);
+  else if (e.clientY > window.innerHeight - 70) window.scrollBy(0, 14);
+  var debajo = document.elementFromPoint(e.clientX, e.clientY), t = debajo && debajo.closest('#listaOrden .tarjeta');
+  if (!t) return;
+  var j = parseInt(t.dataset.i, 10);
+  if (j === arrastrando) return;
+  nuevoOrden.splice(j, 0, nuevoOrden.splice(arrastrando, 1)[0]);
+  arrastrando = j; pintarOrden();
+}
+function soltarArrastre() {
+  document.removeEventListener('pointermove', siguiendoArrastre);
+  document.removeEventListener('pointerup', soltarArrastre);
+  document.removeEventListener('pointercancel', soltarArrastre);
+  if (fantasma) fantasma.remove();
+  fantasma = null; arrastrando = null; pintarOrden();
+}
 function pedirOrden(fase, pares) {
   var b = new URLSearchParams({ clave: CLAVE, carpeta: CARPETA, fase: fase, pares: pares });
   return fetch(ORDENAR, { method: 'POST', body: b }).then(function (r) { return r.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { return { ok: false }; } });
