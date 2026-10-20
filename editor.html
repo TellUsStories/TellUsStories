@@ -153,7 +153,7 @@
       </div>
       <hr class="sep">
       <label for="fNuevaEscena">Añadir una página nueva detrás de esta, con texto y dibujo</label>
-      <p class="ayuda">Escribe el título, el texto (opcional: sin texto será una página de solo ilustración) y la escena. Las páginas de detrás se corren un número. Recuerda que el libro para imprimir tiene 26 páginas: si añades una, elimina otra.</p>
+      <p class="ayuda">Escribe el título, el texto (opcional: sin texto será una página de solo ilustración) y la escena. Las páginas de detrás se corren un número. Recuerda que en el libro caben como máximo 26 páginas: si ya tiene 26 y añades una, elimina otra.</p>
       <input id="fNuevoTitulo" type="text" placeholder="Título">
       <textarea id="fNuevoTexto" placeholder="Texto (lo que va entre **dos asteriscos** sale resaltado)" style="min-height:80px;margin-top:6px"></textarea>
       <textarea id="fNuevaEscena" placeholder="Escena: quién sale, qué hacen, dónde están y qué objetos hay" style="min-height:80px;margin-top:6px"></textarea>
@@ -362,7 +362,8 @@ function eliminarYa(p, n, est) {
 // y se prepara el borrador en Gelato (no se imprime ni se cobra hasta que lo confirmas allí)
 var APROBAR = 'https://hook.eu1.make.com/pluuvg2ioadx8cn866p6tnrugnxa17dc';
 function validarLibro() {
-  if (paginas.length !== 26) { avisar('El libro tiene ' + paginas.length + ' páginas. El montaje del PDF está preparado para 26: avisa antes de validarlo.'); return; }
+  // El PDF lleva siempre las mismas hojas: si el libro tiene menos de 26 páginas, el final se completa en blanco
+  if (paginas.length > 26) { avisar('El libro tiene ' + paginas.length + ' páginas y como máximo caben 26. Elimina ' + (paginas.length - 26) + ' antes de validarlo.'); return; }
   preguntar('¿Validar el libro tal como está ahora? Se marcará como aprobado en la hoja de pedidos y se montará el PDF para imprimir (te llega por email en unos minutos).')
     .then(function (si) { if (si) validarYa(); });
 }
