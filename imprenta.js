@@ -64,7 +64,11 @@
       try {
         var w = 120, hh = Math.round(w * img.naturalHeight / img.naturalWidth), c = document.createElement('canvas');
         c.width = w; c.height = hh;
-        var x = c.getContext('2d'); x.drawImage(img, 0, 0, w, hh);
+        // Si la p\u00e1gina lleva filtro de color (igualar colores), se mide el dibujo ya filtrado: as\u00ed el papel coge
+        // el mismo crema y no se ve un rect\u00e1ngulo alrededor del dibujo
+        var x = c.getContext('2d'), fl = getComputedStyle(img).filter;
+        if (fl && fl !== 'none') x.filter = fl;
+        x.drawImage(img, 0, 0, w, hh);
         var px = x.getImageData(0, 0, w, hh).data, fondo = [0, 0, 0], n = 0, y, i;
         for (y = 0; y < 3; y++) for (i = 0; i < w; i++) { var k = (y * w + i) * 4; fondo[0] += px[k]; fondo[1] += px[k + 1]; fondo[2] += px[k + 2]; n++; }
         fondo = fondo.map(function (v) { return Math.round(v / n); });
