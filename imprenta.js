@@ -99,18 +99,22 @@
     var limite = txt ? txt.offsetTop + txt.offsetHeight + W * 0.015 : W * 0.04;   // ~3 mm bajo el texto
     var abajo = H - W * 0.035;                                                      // ~6,5 mm sobre el borde de abajo
     var alto = (b2 - t2) * ih;                                                       // alto del dibujo a todo el ancho
-    var s = Math.max(0.3, Math.min(1, (abajo - limite) / alto));
-    // El dibujo, centrado en el hueco; si es de los que llegan hasta abajo (escena completa), apoyado abajo
-    var arribaDibujo = b2 > 0.97 ? Math.max(limite, H - alto * s) : limite + ((abajo - limite) - alto * s) / 2;
+    // Nunca m\u00e1s ancho que el hueco entre las dobles l\u00edneas del marco (5 % menos que la hoja)
+    var s = Math.max(0.3, Math.min(0.95, (abajo - limite) / alto));
+    // El dibujo, centrado en el hueco; si es de los que llegan hasta abajo (escena completa), apoyado sobre
+    // la l\u00ednea de abajo, nunca encima de ella
+    var arribaDibujo = b2 > 0.97 ? Math.max(limite, abajo - alto * s) : limite + ((abajo - limite) - alto * s) / 2;
     img.style.width = (W * s) + 'px';
     img.style.left = ((W - W * s) / 2) + 'px';
     img.style.bottom = 'auto';
     img.style.top = (arribaDibujo - t2 * ih * s) + 'px';
-    // Lo que queda por encima del dibujo (estrellitas, rayas sueltas) se funde con el papel
-    var arriba = 'linear-gradient(transparent ' + Math.max(0, t2 * 100 - 3).toFixed(1) + '%,#000 ' + Math.max(4, t2 * 100).toFixed(1) + '%)', lados = 'linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)';
-    var m = s < 1 ? arriba + ',' + lados : arriba;
-    img.style.webkitMaskImage = img.style.maskImage = m;
-    if (s < 1) { img.style.webkitMaskComposite = 'source-in'; img.style.maskComposite = 'intersect'; }
+    // Lo que queda por encima del dibujo (estrellitas, rayas sueltas) se funde con el papel, y los lados y el
+    // borde de abajo tambi\u00e9n, para que el dibujo nunca acabe en un corte recto junto al marco
+    var arriba = 'linear-gradient(transparent ' + Math.max(0, t2 * 100 - 3).toFixed(1) + '%,#000 ' + Math.max(4, t2 * 100).toFixed(1) + '%)',
+      lados = 'linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)',
+      bajo = 'linear-gradient(#000 ' + Math.max(50, b2 * 100 - 4).toFixed(1) + '%,transparent ' + Math.min(100, b2 * 100).toFixed(1) + '%)';
+    img.style.webkitMaskImage = img.style.maskImage = arriba + ',' + lados + ',' + bajo;
+    img.style.webkitMaskComposite = 'source-in, source-in'; img.style.maskComposite = 'intersect, intersect';
   }
   // El n\u00famero de p\u00e1gina (o.numero), solo si es un n\u00famero de verdad
   function numero(o) { var n = parseInt(o.numero, 10); return n > 0 ? n : ''; }
