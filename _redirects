@@ -1,0 +1,3 @@
+# Cloudflare Pages. El formulario antiguo ya no se usa: quien entre por su dirección va al formulario por etapas
+/formulario.html /formulario-nuevo.html 301
+/formulario /formulario-nuevo 301

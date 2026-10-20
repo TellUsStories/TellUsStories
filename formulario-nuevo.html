@@ -873,7 +873,7 @@ async function transcribeAudio(idx, blob) {
   if (bd) { bd.textContent = 'Transcribiendo…'; bd.classList.add('show'); }
   try {
     var base64 = await blobToBase64(blob);
-    var res = await fetch('/.netlify/functions/transcribe', {
+    var res = await fetch('/api/transcribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ audioBase64: base64, mimeType: blob.type })
@@ -1299,7 +1299,7 @@ async function submit() {
 }
 
 // ---------- Repaso de la IA al terminar cada etapa ----------
-// Al pulsar «Siguiente» en una etapa, /.netlify/functions/ayudante lee lo contado y devuelve un resumen
+// Al pulsar «Siguiente» en una etapa, /api/ayudante lee lo contado y devuelve un resumen
 // (que la familia puede corregir) y, si falta algo importante, hasta 3 preguntas. Si la función falla,
 // se sigue sin repaso: el formulario nunca se bloquea. El estado va en #iaDatos, así entra en el borrador.
 var ETAPAS = {
@@ -1343,7 +1343,7 @@ async function iaRevisar(n, destino) {
   if (pend.length) await Promise.all(pend);   // primero, que terminen de transcribirse las notas de voz
   var firma = iaFirma(n), previas = iaRespuestas(e), r = null;
   try {
-    var res = await fetch('/.netlify/functions/ayudante', {
+    var res = await fetch('/api/ayudante', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         accion: 'revisar', etapaNombre: et.nombre(),
@@ -1500,7 +1500,7 @@ async function iaGrabar(btn, ta) {
       btn.textContent = 'Transcribiendo…';
       var blob = new Blob(chunks, { type: (mr.mimeType || 'audio/webm').split(';')[0] });
       try {
-        var res = await fetch('/.netlify/functions/transcribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ audioBase64: await blobToBase64(blob), mimeType: blob.type }) });
+        var res = await fetch('/api/transcribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ audioBase64: await blobToBase64(blob), mimeType: blob.type }) });
         var d = await res.json();
         if (res.ok && d.text) { ta.value = (ta.value.trim() ? ta.value.trim() + '\n' : '') + d.text.trim(); ta.dispatchEvent(new Event('input', { bubbles: true })); autoAlto(ta); }
         btn.textContent = res.ok && d.text ? '🎙️ Añadir otra nota de voz' : 'No se ha podido transcribir: escríbelo arriba';
@@ -1538,7 +1538,7 @@ async function dedRevisar(destino) {
   panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
   var r = null, texto = vId('dedicatoria'), firmaTxt = vId('dedicatoriaFirma');
   try {
-    var res = await fetch('/.netlify/functions/ayudante', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'dedicatoria', texto: texto, firma: firmaTxt }) });
+    var res = await fetch('/api/ayudante', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'dedicatoria', texto: texto, firma: firmaTxt }) });
     if (res.ok) r = await res.json();
   } catch (err) {}
   var nt = r && typeof r.texto === 'string' ? r.texto.trim() : '', nf = r && typeof r.firma === 'string' ? r.firma.trim() : firmaTxt;
