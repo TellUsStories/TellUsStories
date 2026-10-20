@@ -21,9 +21,12 @@
     // La hoja llega entonces hasta abajo y la doble línea se desvanece antes de llegar a la ilustración.
     var sale = !!o.sobresale;
     var lineas = sale ? '-webkit-mask-image:linear-gradient(#000 50%,transparent 72%);mask-image:linear-gradient(#000 50%,transparent 72%);' : '';
+    // En el libro las páginas pares de la historia quedan a la izquierda (la 1 va a la derecha): su marco va en
+    // espejo para que, en el centro del libro abierto, el estampado de una página continúe reflejado en la otra
+    var espejo = numero(o) && numero(o) % 2 === 0 ? 'transform:scaleX(-1);' : '';
     var h = '<style>.tus-pag .hl{color:inherit;font-weight:500}</style>' +
       '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
-      '<img src="' + TUSPortadas.imagen(d, 'delante', 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' +
+      '<img src="' + TUSPortadas.imagen(d, 'delante', 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
       '<div style="position:absolute;left:' + M.x + 'mm;right:' + M.x + 'mm;top:' + M.y + 'mm;bottom:' + (sale ? 0 : M.y) + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
         '<div style="position:absolute;inset:0;pointer-events:none;z-index:2;' + lineas + '">' +
           '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
