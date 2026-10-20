@@ -126,9 +126,16 @@
       <textarea id="fDibujo" style="min-height:80px"></textarea>
       <div class="botones">
         <button class="principal" id="btnRetoque" onclick="retocar()">✨ Retocar solo lo que pido</button>
-        <button class="suave" id="btnDibujo" onclick="volverADibujar()">Dibujar de nuevo toda la página</button>
       </div>
-      <p class="ayuda" style="margin-top:8px"><b>Retocar</b> cambia solo lo que escribes y deja igual la escena, los personajes y el estilo. <b>Dibujar de nuevo</b> crea una escena distinta: úsalo solo si quieres cambiarlo todo.</p>
+      <p class="ayuda" style="margin-top:8px"><b>Retocar</b> cambia solo lo que escribes y deja igual la escena, los personajes y el estilo.</p>
+      <hr class="sep">
+      <label for="fEscena">Dibujar de nuevo toda la página, con tu escena</label>
+      <p class="ayuda">Describe la escena tal como la quieres: quién sale (y con qué edad), qué hacen, dónde están y qué objetos hay. Se dibuja exactamente eso, con los personajes de la ficha y el estilo de siempre. Ej: «Elena de niña, unos 8 años, en la playa de Barcelona con su hermano, haciendo un castillo de arena; un cubo rojo y gaviotas».</p>
+      <textarea id="fEscena" style="min-height:100px"></textarea>
+      <details style="margin-top:6px"><summary class="ayuda" style="cursor:pointer">Ver la escena que se usó la última vez (en inglés)</summary><p class="ayuda" id="escenaActual" style="margin-top:6px"></p></details>
+      <div class="botones">
+        <button class="suave" id="btnDibujo" onclick="volverADibujar()">🎨 Dibujar de nuevo con esta escena</button>
+      </div>
       </div>
       <div class="estado" id="estado"></div>
     </div>
@@ -145,6 +152,22 @@ document.getElementById('volverPedidos').href = 'pedidos.html?clave=' + encodeUR
 
 function $(id) { return document.getElementById(id); }
 function aviso(t, esError) { var m = $('mensaje'); m.innerHTML = t; m.className = 'aviso' + (esError ? ' error' : ''); m.style.display = t ? '' : 'none'; }
+// Preguntas y avisos dentro de la propia página: algunos navegadores (como el de la app) no muestran las ventanitas de confirm/alert
+function ventana(texto, conCancelar) {
+  return new Promise(function (ok) {
+    var fondo = document.createElement('div');
+    fondo.style.cssText = 'position:fixed;inset:0;background:rgba(74,44,31,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+    fondo.innerHTML = '<div style="background:#fff;border-radius:18px;padding:22px;max-width:440px;width:100%;font-size:15.5px;line-height:1.6;box-shadow:0 10px 40px rgba(0,0,0,.25)"><p style="margin:0 0 18px"></p><div class="botones" style="justify-content:flex-end;margin:0"></div></div>';
+    fondo.querySelector('p').textContent = texto;
+    var caja = fondo.querySelector('.botones');
+    function boton(txt, clase, valor) { var b = document.createElement('button'); b.textContent = txt; if (clase) b.className = clase; b.onclick = function () { fondo.remove(); ok(valor); }; caja.appendChild(b); return b; }
+    if (conCancelar) boton('Cancelar', 'suave', false);
+    boton(conCancelar ? 'Sí, seguir' : 'Entendido', 'principal', true).focus();
+    document.body.appendChild(fondo);
+  });
+}
+function preguntar(texto) { return ventana(texto, true); }
+function avisar(texto) { return ventana(texto, false); }
 
 // El texto de cada página viene como «TITULO: … TEXTO: … ILUSTRACION: …» (así lo escribe la IA del libro)
 function trozo(v, desde, hasta) {
@@ -202,7 +225,8 @@ function abrir(i) {
   $('vistaInfo').textContent = completa ? '' : soloDibujo ? 'Esta es una página de solo ilustración (sin texto).' : '';
   $('fTitulo').value = aEditable(titulo);
   $('fTexto').value = aEditable(texto);
-  $('fDibujo').value = '';
+  $('fDibujo').value = ''; $('fEscena').value = '';
+  $('escenaActual').textContent = trozo(v, 'ILUSTRACION:') || '(sin descripción)';
   $('estado').textContent = ''; $('estadoSubir').textContent = '';
   // ¿Sigue disponible el dibujo original? Si no, solo se puede volver a dibujar
   $('btnTexto').disabled = true; $('btnRetoque').disabled = true; $('avisoImg').style.display = 'none';
@@ -217,7 +241,7 @@ function abrir(i) {
 // Descargar el dibujo solo (para retocarlo fuera) o la página entera
 function descargar(que) {
   var p = paginas[actual], u = que === 'dibujo' ? p.img : p.url;
-  if (!u) { alert('Esta página no tiene ' + (que === 'dibujo' ? 'el dibujo' : 'la imagen') + ' disponible.'); return; }
+  if (!u) { avisar('Esta página no tiene ' + (que === 'dibujo' ? 'el dibujo' : 'la imagen') + ' disponible.'); return; }
   var nombre = 'pagina_' + p.pagina + (que === 'dibujo' ? '_dibujo' : '') + '.png';
   fetch(u).then(function (r) { if (!r.ok) throw 0; return r.blob(); }).then(function (b) {
     var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = nombre;
@@ -238,7 +262,9 @@ function archivoElegido(input) {
     : queSubir === 'completa'
       ? 'Esta imagen va a sustituir a TODA la página ' + p.pagina + ' tal cual. La página anterior se guarda en Drive por si acaso. ¿Seguimos?'
       : 'Esta imagen va a ser el dibujo de la página ' + p.pagina + ', con el marco, el texto y el número de siempre. La página anterior se guarda en Drive. ¿Seguimos?';
-  if (!confirm(aviso)) return;
+  preguntar(aviso).then(function (si) { if (si) subirYa(f, p, n, est); });
+}
+function subirYa(f, p, n, est) {
   est.textContent = 'Preparando la imagen…';
   aDatos(f).then(function (datos) {
     var destino = p.pagina, antes = Promise.resolve();
@@ -287,7 +313,10 @@ function moverPaginas(pares) {
 }
 function eliminarPagina() {
   var p = paginas[actual], n = paginas.length, est = $('estadoSubir');
-  if (!confirm('¿Eliminar la página ' + p.pagina + '? Las de detrás pasan un número atrás y el libro tendrá ' + (n - 1) + ' páginas. La imagen sigue guardada en Drive.')) return;
+  preguntar('¿Eliminar la página ' + p.pagina + '? Las de detrás pasan un número atrás y el libro tendrá ' + (n - 1) + ' páginas. La imagen sigue guardada en Drive.')
+    .then(function (si) { if (si) eliminarYa(p, n, est); });
+}
+function eliminarYa(p, n, est) {
   var pares = [];
   for (var k = p.pagina + 1; k <= n; k++) pares.push(k + ':' + (k - 1));
   est.textContent = 'Eliminando la página…';
@@ -304,8 +333,11 @@ function eliminarPagina() {
 // y se prepara el borrador en Gelato (no se imprime ni se cobra hasta que lo confirmas allí)
 var APROBAR = 'https://hook.eu1.make.com/pluuvg2ioadx8cn866p6tnrugnxa17dc';
 function validarLibro() {
-  if (paginas.length !== 26) { alert('El libro tiene ' + paginas.length + ' páginas. El montaje del PDF está preparado para 26: avisa antes de validarlo.'); return; }
-  if (!confirm('¿Validar el libro tal como está ahora? Se marcará como aprobado en la hoja de pedidos y se montará el PDF para imprimir (te llega por email en unos minutos).')) return;
+  if (paginas.length !== 26) { avisar('El libro tiene ' + paginas.length + ' páginas. El montaje del PDF está preparado para 26: avisa antes de validarlo.'); return; }
+  preguntar('¿Validar el libro tal como está ahora? Se marcará como aprobado en la hoja de pedidos y se montará el PDF para imprimir (te llega por email en unos minutos).')
+    .then(function (si) { if (si) validarYa(); });
+}
+function validarYa() {
   // Se llama al aviso de Make desde la misma página (abrir otra pestaña lo bloqueaban los navegadores)
   aviso('Validando el libro…');
   fetch(APROBAR + '?id=' + encodeURIComponent(CARPETA) + '&accion=aprobar', { mode: 'no-cors' })
@@ -418,7 +450,10 @@ function guardarOrden() {
   var pares = [];
   nuevoOrden.forEach(function (p, i) { if (p.pagina !== i + 1) pares.push(p.pagina + ':' + (i + 1)); });
   if (!pares.length) { $('estadoOrden').textContent = 'No has cambiado nada de sitio.'; return; }
-  if (!confirm('Se van a mover ' + pares.length + ' páginas y a cambiarles el número. No se dibuja nada nuevo. ¿Seguimos?')) return;
+  preguntar('Se van a mover ' + pares.length + ' páginas y a cambiarles el número. No se dibuja nada nuevo. ¿Seguimos?')
+    .then(function (si) { if (si) guardarOrdenYa(pares); });
+}
+function guardarOrdenYa(pares) {
   $('btnOrden').disabled = true;
   $('estadoOrden').textContent = 'Moviendo las páginas y cambiando los números… (puede tardar un minuto)';
   pedirOrden('1', pares.join(','))
@@ -430,8 +465,11 @@ function guardarOrden() {
 // Retoque: la IA recibe el dibujo actual y cambia solo lo pedido (misma escena, personajes y estilo)
 function retocar() {
   var p = paginas[actual], cambios = $('fDibujo').value.trim();
-  if (!cambios) { alert('Escribe primero qué quieres cambiar del dibujo.'); $('fDibujo').focus(); return; }
-  if (!confirm('Se va a retocar el dibujo de esta página cambiando solo lo que has escrito. Gasta unos céntimos y tarda unos 2 minutos. ¿Seguimos?')) return;
+  if (!cambios) { avisar('Escribe primero qué quieres cambiar del dibujo.').then(function () { $('fDibujo').focus(); }); return; }
+  preguntar('Se va a retocar el dibujo de esta página cambiando solo lo que has escrito. Gasta unos céntimos y tarda unos 2 minutos. ¿Seguimos?')
+    .then(function (si) { if (si) retocarYa(p, cambios); });
+}
+function retocarYa(p, cambios) {
   var conTexto = $('bloqueTexto').style.display !== 'none';
   $('btnTexto').disabled = true; $('btnDibujo').disabled = true; $('btnRetoque').disabled = true;
   $('estado').textContent = 'Enviando…';
@@ -457,11 +495,15 @@ function retocar() {
 }
 
 function volverADibujar() {
-  if (!confirm('Se va a dibujar esta página de nuevo. Gasta unos céntimos de créditos y tarda 2 o 3 minutos. ¿Seguimos?')) return;
-  var p = paginas[actual], v = p.value || '', escena = trozo(v, 'ILUSTRACION:'), cambios = $('fDibujo').value.trim();
-  // Lo que pide la familia va delante y como obligatorio; se quitan las peticiones de antes para que no se acumulen
-  escena = escena.split(' CHANGES REQUESTED BY THE FAMILY')[0].replace(/^\s*MANDATORY CHANGES[\s\S]*?BASE SCENE:\s*/, '');
-  var ilustracion = cambios ? 'MANDATORY CHANGES REQUESTED BY THE FAMILY, THE MOST IMPORTANT INSTRUCTION FOR THIS PAGE (written in Spanish; translate them carefully, names of people stay as they are; the new image MUST clearly show these changes, even if the base scene below says otherwise): ' + cambios.replace(/\s*\n\s*/g, ' ') + ' BASE SCENE: ' + escena : escena;
+  var escenaNueva = $('fEscena').value.trim();
+  if (!escenaNueva) { avisar('Describe primero la escena que quieres: quién sale, qué hacen, dónde están y qué objetos hay.').then(function () { $('fEscena').focus(); }); return; }
+  preguntar('Se va a dibujar esta página de nuevo con la escena que has escrito. Gasta unos céntimos y tarda 3 o 4 minutos (se dibuja y después ChatGPT la revisa). ¿Seguimos?')
+    .then(function (si) { if (si) dibujarYa(escenaNueva); });
+}
+function dibujarYa(escenaNueva) {
+  var p = paginas[actual];
+  // La escena la escribe Cris y sustituye a la anterior: se dibuja exactamente eso
+  var ilustracion = 'SCENE WRITTEN BY THE FAMILY, FOLLOW IT EXACTLY (written in Spanish; translate it carefully, names of people stay as they are; draw exactly the people, ages, action, place and objects described, nothing else): ' + escenaNueva.replace(/\s*\n\s*/g, ' ');
   var conTexto = $('bloqueTexto').style.display !== 'none';
   $('btnTexto').disabled = true; $('btnDibujo').disabled = true;
   $('estado').textContent = 'Enviando…';
