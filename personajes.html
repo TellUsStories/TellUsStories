@@ -79,6 +79,7 @@
      </div>
       <h2>¿Hay algo que corregir?</h2>
       <p class="sub">Escríbelo como se lo dirías a un ilustrador. Ej: «Jandro tiene los ojos azules y barba corta», «la abuela es rubia, no morena».</p>
+      <p class="sub" id="baseCorreccion" style="margin-top:6px;font-weight:700"></p>
       <textarea id="cambios"></textarea>
       <div class="botones"><button class="suave" id="btnCorregir" onclick="corregir()">✨ Corregir la ficha con ChatGPT</button></div>
     </div>
@@ -114,6 +115,8 @@ function pintar(d) {
   var hayPropuesta = !!(d.ficha_propuesta && d.ficha_propuesta.trim());
   $('bloquePropuesta').className = hayPropuesta ? '' : 'oculto';
   if (hayPropuesta) { $('propuesta').src = d.ficha_propuesta; $('cambiosPropuestos').textContent = d.cambios_propuestos || ''; }
+  // Cada corrección se hace sobre la última versión: la propuesta si la hay, si no la ficha
+  $('baseCorreccion').textContent = hayPropuesta ? 'Se corregirá sobre la última propuesta de ChatGPT (la de arriba), no sobre la original.' : 'Se corregirá sobre la ficha actual.';
   // Ya validados: no se puede volver a validar; la ficha se puede seguir corrigiendo
   if (d.personajes === 'validados') {
     $('bloqueValidar').className = 'oculto';
