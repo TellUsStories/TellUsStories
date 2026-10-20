@@ -171,7 +171,16 @@ function decidir(accion) {
     .finally(function () { $('btnAceptar').disabled = false; $('btnDescartar').disabled = false; });
 }
 function validar() {
-  if (!confirm('¿Los personajes están bien? Al validar se dibujan las 26 páginas del libro con esta ficha.')) return;
+  // Confirmación en la propia página (algunos navegadores no muestran las ventanitas de confirm)
+  var b = $('btnValidar');
+  if (!b.dataset.seguro) {
+    b.dataset.seguro = '1'; b.dataset.texto = b.textContent;
+    b.textContent = '¿Seguro? Pulsa otra vez para validar';
+    aviso('Al validar, todas las páginas del libro usarán esta ficha. Si los personajes están bien, vuelve a pulsar el botón.');
+    setTimeout(function () { if (b.dataset.seguro) { delete b.dataset.seguro; b.textContent = b.dataset.texto; aviso(''); } }, 10000);
+    return;
+  }
+  delete b.dataset.seguro; b.textContent = b.dataset.texto;
   $('btnCorregir').disabled = true; $('btnValidar').disabled = true;
   aviso('Validando…');
   pedir({ accion: 'validar' }).then(function (r) {
