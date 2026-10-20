@@ -124,6 +124,7 @@
       <label for="fDibujo">¿Qué quieres cambiar del dibujo?</label>
       <p class="ayuda">Escríbelo como se lo dirías a un ilustrador. Ej: «que el abuelo sea calvo», «quita al niño de la izquierda», «Elena aquí es joven, unos 20 años, rubia y sin arrugas».</p>
       <textarea id="fDibujo" style="min-height:80px"></textarea>
+      <label style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:8px;cursor:pointer"><input type="checkbox" id="fRefAnterior" style="width:auto;margin:0"> Usar la página anterior como referencia (por ejemplo «Elena como en la página anterior»)</label>
       <div class="botones">
         <button class="principal" id="btnRetoque" onclick="retocar()">✨ Retocar solo lo que pido</button>
       </div>
@@ -225,7 +226,7 @@ function abrir(i) {
   $('vistaInfo').textContent = completa ? '' : soloDibujo ? 'Esta es una página de solo ilustración (sin texto).' : '';
   $('fTitulo').value = aEditable(titulo);
   $('fTexto').value = aEditable(texto);
-  $('fDibujo').value = ''; $('fEscena').value = '';
+  $('fDibujo').value = ''; $('fEscena').value = ''; $('fRefAnterior').checked = false; $('fRefAnterior').disabled = i === 0;
   $('escenaActual').textContent = trozo(v, 'ILUSTRACION:') || '(sin descripción)';
   $('estado').textContent = ''; $('estadoSubir').textContent = '';
   // ¿Sigue disponible el dibujo original? Si no, solo se puede volver a dibujar
@@ -482,8 +483,11 @@ function retocarYa(p, cambios) {
         p.value = '===PAGINA ' + p.pagina + '===\nTITULO: ' + tituloNuevo + '\nTEXTO: ' + textoNuevo + '\nILUSTRACION: ' + trozo(v, 'ILUSTRACION:') + '\n';
       })
     : Promise.resolve();
+  // Si se pide la página anterior como referencia (casilla o «página anterior» en el texto), ChatGPT la recibe como segunda imagen
+  var ant = actual > 0 ? paginas[actual - 1] : null;
+  var refExtra = ant && ($('fRefAnterior').checked || /p[aá]gina anterior/i.test(cambios)) ? (ant.img || ant.url || '') : '';
   // El retoque lo hace ChatGPT (obedece mejor y mantiene la calidad de impresión) y se guarda en el libro
-  antes.then(function () { return enviar({ modo: 'chatgpt', guardar: '1', pagina: p.pagina, cambios: cambios.replace(/\s*\n\s*/g, ' '), titulo: conTexto ? tituloNuevo : '', texto: conTexto ? textoNuevo : '' }); })
+  antes.then(function () { return enviar({ modo: 'chatgpt', guardar: '1', pagina: p.pagina, cambios: cambios.replace(/\s*\n\s*/g, ' '), ref_extra: refExtra, titulo: conTexto ? tituloNuevo : '', texto: conTexto ? textoNuevo : '' }); })
     .then(function (r) {
       if (r && r.ok) {
         $('estado').innerHTML = '✨ ChatGPT está retocando el dibujo. En unos 2 minutos pulsa <button onclick="location.reload()" style="padding:6px 12px;font-size:13px">Actualizar</button> para verlo.';
