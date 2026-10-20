@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Personajes · Tale Us Stories</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400&display=swap" rel="stylesheet">
+<style>
+  /* Página privada de Cris: antes de dibujar el libro, compara las fotos reales con la ficha de personajes, corrígela con ChatGPT y valídala */
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#fff;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--navy);font-family:var(--texto);min-height:100vh}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 20px 80px}
+  .marca{font-family:var(--display);font-weight:800;letter-spacing:3px;font-size:13px;text-transform:uppercase}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,34px);line-height:1.1;margin:10px 0 6px}
+  h2{font-family:var(--display);font-weight:800;font-size:19px;margin:28px 0 10px}
+  .sub{color:var(--muted);font-size:15px;line-height:1.6}
+  .aviso{background:var(--coral-l);border:1.5px solid var(--coral);border-radius:14px;padding:14px 18px;font-size:15px;line-height:1.6;margin:16px 0}
+  .error{background:#FCECEA;border-color:#C0392B}
+  .ok{background:#EAF5EC;border-color:#4C8A5A}
+  .fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+  .foto{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:10px}
+  .foto b{display:block;font-family:var(--display);font-size:13px;margin-bottom:6px}
+  .foto img{width:100%;border-radius:8px;display:block}
+  .ficha{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:10px}
+  .ficha img{width:100%;border-radius:10px;display:block}
+  .texto{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.65;white-space:pre-line}
+  textarea{width:100%;min-height:90px;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-family:var(--texto);font-size:15px;color:var(--navy);background:var(--white);margin-top:8px}
+  .botones{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  button{border:none;border-radius:100px;padding:14px 22px;font-family:var(--display);font-weight:800;font-size:15px;cursor:pointer}
+  .principal{background:var(--navy);color:var(--cream)}
+  .suave{background:#DCC8B4;color:var(--navy)}
+  button:disabled{opacity:.5;cursor:default}
+  .oculto{display:none}
+  /* Como el editor de páginas: a la izquierda lo real (fotos y descripciones), a la derecha la ficha y los botones */
+  .wrap{max-width:1280px}
+  .dos{display:grid;grid-template-columns:1fr;gap:24px}
+  @media (min-width:900px){ .dos{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)} .der{position:sticky;top:16px;align-self:start} }
+  .fotos{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .ficha img{cursor:zoom-in}
+  .grande{position:fixed;inset:0;background:rgba(30,20,12,.85);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9;cursor:zoom-out}
+  .grande img{max-width:100%;max-height:100%;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="marca">Tale Us Stories</div>
+  <h1 id="titulo">Personajes del libro</h1>
+  <p class="sub">Comprueba que los personajes se parecen a las personas reales. <b>Todas las páginas copian esta ficha</b>: si aquí algo no cuadra, no cuadrará en el libro.</p>
+  <div id="mensaje" class="aviso">Cargando…</div>
+
+  <div id="contenido" class="oculto dos">
+   <div class="izq">
+    <h2>📷 Fotos reales que mandó el cliente</h2>
+    <div class="fotos" id="fotos"></div>
+    <p class="sub" id="sinFotos" style="margin-top:6px"></p>
+    <h2>📝 Cómo los describió el cliente</h2>
+    <div class="texto" id="aspecto"></div>
+    <h2>🤖 Lo que le pedimos a la IA de cada persona</h2>
+    <div class="texto" id="fichaTexto"></div>
+   </div>
+   <div class="der">
+    <h2>🎨 Personajes dibujados</h2>
+    <div class="ficha"><img id="ficha" alt="Ficha de personajes" onclick="ampliar(this.src)"></div>
+    <p class="sub" style="margin-top:8px">Arriba, el/la protagonista de bebé, de niño/a, de joven y hoy. Abajo, los niños y el resto de la familia, en el orden de la lista. Pulsa la imagen para verla en grande.</p>
+    <div id="bloqueCorrecciones" class="oculto"><h2>✏️ Correcciones ya hechas</h2><div class="texto" id="correcciones"></div></div>
+
+    <div id="acciones">
+      <h2>¿Está todo bien?</h2>
+      <div class="botones"><button class="principal" id="btnValidar" onclick="validar()">✅ Sí: validar y crear el libro</button></div>
+      <h2>¿Hay algo que corregir?</h2>
+      <p class="sub">Escríbelo como se lo dirías a un ilustrador. Ej: «Jandro tiene los ojos azules y barba corta», «la abuela es rubia, no morena».</p>
+      <textarea id="cambios"></textarea>
+      <div class="botones"><button class="suave" id="btnCorregir" onclick="corregir()">✨ Corregir la ficha con ChatGPT</button></div>
+    </div>
+   </div>
+  </div>
+</div>
+
+<script>
+// Webhook de Make: «Personajes: ver, corregir o validar (antes de dibujar el libro)»
+var PERSONAJES = 'https://hook.eu1.make.com/wupryteizaonhp13mdihioq87absrkyn';
+var q = new URLSearchParams(location.search), CARPETA = q.get('carpeta') || '', CLAVE = q.get('clave') || '';
+function $(id) { return document.getElementById(id); }
+function aviso(t, clase) { var m = $('mensaje'); m.innerHTML = t; m.className = 'aviso' + (clase ? ' ' + clase : ''); m.style.display = t ? '' : 'none'; }
+function pedir(datos) {
+  var b = new URLSearchParams(datos); b.set('carpeta', CARPETA); b.set('clave', CLAVE);
+  return fetch(PERSONAJES, { method: 'POST', body: b }).then(function (r) { return r.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { return null; } });
+}
+function pintar(d) {
+  $('titulo').textContent = 'Personajes del libro de ' + (d.protagonista || '');
+  var f = $('fotos'); f.innerHTML = '';
+  [['foto_prota', d.protagonista + ' (protagonista)'], ['foto_ninos', 'Los niños: ' + (d.ninos || '')], ['foto_familia', 'La familia (cada foto lleva debajo quién es)']].forEach(function (x) {
+    if (!d[x[0]]) return;
+    var c = document.createElement('div'); c.className = 'foto'; c.innerHTML = '<b></b><img alt="">';
+    c.querySelector('b').textContent = x[1]; c.querySelector('img').src = d[x[0]]; c.querySelector('img').onclick = function () { ampliar(this.src); }; f.appendChild(c);
+  });
+  $('sinFotos').textContent = f.children.length ? '' : 'El cliente no ha mandado fotos: compara con las descripciones de abajo.';
+  $('ficha').src = d.ficha_url || '';
+  $('aspecto').textContent = d.aspecto || '(sin descripción)';
+  $('fichaTexto').textContent = d.ficha_texto || '(sin descripción)';
+  $('correcciones').textContent = d.correcciones || '';
+  $('bloqueCorrecciones').className = d.correcciones && d.correcciones.trim() ? '' : 'oculto';
+  if (d.personajes === 'validados') {
+    $('acciones').className = 'oculto';
+    aviso('✅ Estos personajes ya están validados y el libro se ha dibujado con ellos.', 'ok');
+  } else aviso('');
+  $('contenido').className = 'dos';
+}
+// Ver una imagen en grande (pulsar otra vez para cerrar)
+function ampliar(src) {
+  if (!src) return;
+  var g = document.createElement('div'); g.className = 'grande'; g.innerHTML = '<img alt="">';
+  g.querySelector('img').src = src; g.onclick = function () { g.remove(); }; document.body.appendChild(g);
+}
+function cargar() {
+  if (!CARPETA || !CLAVE) { aviso('Este enlace no está completo.', 'error'); return; }
+  pedir({ accion: 'ver' }).then(function (d) {
+    if (!d || !d.protagonista) { aviso('No encuentro este pedido. Comprueba el enlace.', 'error'); return; }
+    if (!d.ficha_url) { aviso('Este pedido todavía no tiene ficha de personajes.', 'error'); return; }
+    pintar(d);
+  }).catch(function () { aviso('No se ha podido cargar (sin conexión).', 'error'); });
+}
+function corregir() {
+  var c = $('cambios').value.trim();
+  if (!c) { alert('Escribe primero qué hay que corregir.'); $('cambios').focus(); return; }
+  $('btnCorregir').disabled = true; $('btnValidar').disabled = true;
+  aviso('✨ ChatGPT está corrigiendo la ficha… tarda alrededor de un minuto. No cierres la página.');
+  pedir({ accion: 'corregir', cambios: c.replace(/\s*\n\s*/g, ' ') }).then(function (r) {
+    if (r && r.ok && r.ficha_url) { $('cambios').value = ''; aviso('✅ Ficha corregida. Revísala: si está bien, valídala; si no, vuelve a corregir.', 'ok'); return pedir({ accion: 'ver' }).then(function (d) { if (d && d.protagonista) pintar(d); aviso('✅ Ficha corregida. Revísala: si está bien, valídala; si no, vuelve a corregir.', 'ok'); }); }
+    aviso('⚠️ No se ha podido corregir. Vuelve a intentarlo en un momento.', 'error');
+  }).catch(function () { aviso('⚠️ No se ha podido corregir (sin conexión o ha tardado demasiado). Recarga la página en un minuto para ver si se ha corregido.', 'error'); })
+    .finally(function () { $('btnCorregir').disabled = false; $('btnValidar').disabled = false; });
+}
+function validar() {
+  if (!confirm('¿Los personajes están bien? Al validar se dibujan las 26 páginas del libro con esta ficha.')) return;
+  $('btnCorregir').disabled = true; $('btnValidar').disabled = true;
+  aviso('Validando…');
+  pedir({ accion: 'validar' }).then(function (r) {
+    if (r && r.ok) { $('acciones').className = 'oculto'; aviso('🎨 ¡Personajes validados! Se están dibujando las 26 páginas y ChatGPT las revisa una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.', 'ok'); return; }
+    aviso('⚠️ No se ha podido validar. Vuelve a intentarlo en un momento.', 'error'); $('btnCorregir').disabled = false; $('btnValidar').disabled = false;
+  }).catch(function () { aviso('⚠️ No se ha podido validar (sin conexión).', 'error'); $('btnCorregir').disabled = false; $('btnValidar').disabled = false; });
+}
+cargar();
+</script>
+</body>
+</html>
