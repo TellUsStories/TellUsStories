@@ -172,7 +172,12 @@ function validar() {
   pedir({ accion: 'validar' }).then(function (r) {
     if (r && r.ok) { $('bloqueValidar').className = 'oculto'; aviso(r.mejorando
       ? '✨ ¡Personajes validados! Este libro ya estaba dibujado: ChatGPT está mejorando sus ilustraciones una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.'
-      : '🎨 ¡Personajes validados! Se están dibujando las 26 páginas y ChatGPT las revisa una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.', 'ok'); return; }
+      : '🎨 ¡Personajes validados! Se están dibujando las 26 páginas y ChatGPT las revisa una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.', 'ok');
+      // Después de validar, se pasa solo al editor de páginas del mismo libro
+      var editor = 'editor.html?carpeta=' + encodeURIComponent(CARPETA) + '&clave=' + encodeURIComponent(CLAVE);
+      $('mensaje').innerHTML += '<br><br>Te llevo al editor de páginas en unos segundos… <a href="' + editor + '" style="color:var(--coral);font-weight:700">Ir ahora</a>';
+      setTimeout(function () { location.href = editor; }, 8000);
+      return; }
     aviso('⚠️ No se ha podido validar. Vuelve a intentarlo en un momento.', 'error'); $('btnCorregir').disabled = false; $('btnValidar').disabled = false;
   }).catch(function () { aviso('⚠️ No se ha podido validar (sin conexión).', 'error'); $('btnCorregir').disabled = false; $('btnValidar').disabled = false; });
 }
