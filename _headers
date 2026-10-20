@@ -3,3 +3,7 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+
+# Los scripts llevan acentos y símbolos (★): sin charset, hcti los lee mal y salen letras raras en las páginas
+/*.js
+  Content-Type: application/javascript; charset=utf-8
