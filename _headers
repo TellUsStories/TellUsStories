@@ -4,6 +4,18 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
+# Páginas privadas (editor, personajes, pedidos) y de pruebas: que ningún buscador las guarde
+/editor*
+  X-Robots-Tag: noindex, nofollow
+/personajes*
+  X-Robots-Tag: noindex, nofollow
+/pedidos*
+  X-Robots-Tag: noindex, nofollow
+/muestra-imprenta*
+  X-Robots-Tag: noindex
+/prueba-paginas*
+  X-Robots-Tag: noindex
+
 # Los scripts llevan acentos y símbolos (★): sin charset, hcti los lee mal y salen letras raras en las páginas
 /*.js
   Content-Type: application/javascript; charset=utf-8

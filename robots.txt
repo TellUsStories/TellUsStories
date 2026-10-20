@@ -1,8 +1,9 @@
 User-agent: *
 Allow: /
+# Google y los buscadores con IA (ChatGPT, Claude, Perplexity, Gemini) pueden leer la web pública para recomendarla.
+# Las páginas privadas (editor, personajes, pedidos) NO se bloquean aquí a propósito: llevan "noindex" (en la
+# página y en _headers), y para que el buscador vea ese "noindex" tiene que poder abrirlas.
 Disallow: /formulario.html
-Disallow: /muestra-imprenta.html
-Disallow: /prueba-paginas.html
-Disallow: /editor.html
+Disallow: /api/
 
 Sitemap: https://taleusstories.com/sitemap.xml

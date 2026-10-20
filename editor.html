@@ -67,10 +67,10 @@
   </div>
   <div class="orden" id="colores">
     <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Igualar colores del libro</h2>
-    <p class="ayuda" style="margin-top:6px">Elige la página cuyo color te gusta. Se mide el tono de cada dibujo (intensidad del color, brillo y calidez) y se ajusta para que se parezca a esa página, y el crema del papel de fondo se iguala al suyo. Los dibujos no se vuelven a hacer: solo cambia el color. Hazlo al final, justo antes de validar (si después cambias una página, vuelve a igualar).</p>
+    <p class="ayuda" style="margin-top:6px">Elige la página cuyo color te gusta. Se iguala el crema del papel de fondo de todas las páginas al de esa página. El color de los dibujos no se toca. Hazlo al final, justo antes de validar (si después cambias una página, vuelve a igualar).</p>
     <label for="fRefColor" style="font-weight:400">Página de referencia: <select id="fRefColor" style="width:auto;display:inline-block;margin-left:6px"></select></label>
     <div class="botones">
-      <button class="suave" id="btnVerColores" onclick="verColores()">👀 Ver cómo quedaría (no gasta nada)</button>
+      <button class="suave" id="btnVerColores" onclick="verColores()">👀 Comprobar qué páginas cambian (no gasta nada)</button>
       <button class="principal" id="btnAplicarColores" onclick="aplicarColores()" disabled>✅ Aplicar a las páginas</button>
       <button onclick="cerrarColores()">Cancelar</button>
     </div>
@@ -466,7 +466,8 @@ function filtroPara(m, ref) {
   // azul, dividido por la luz): si después de ajustar el color sigue más fría que la referencia, se calienta con sepia.
   var sa = lim(ref.S / Math.max(m.S, 1), 0.65, 1.12);
   var co = sa < 0.92 ? lim(1 - (1 / sa - 1) * 0.25, 0.9, 1) : 1;
-  var br = lim(Math.sqrt(ref.L / m.L), 0.97, 1.06);
+  // Nunca se oscurece: el estilo es claro y la luz media depende mucho de lo que sale en la escena
+  var br = lim(Math.sqrt(ref.L / m.L), 1, 1.06);
   var se = lim((ref.W - m.W * sa) * 1.2, 0, 0.1);
   if (Math.abs(sa - 1) < 0.06 && Math.abs(br - 1) < 0.02 && se < 0.02) return '';
   return 'saturate(' + sa.toFixed(3) + ')' + (co < 0.995 ? ' contrast(' + co.toFixed(3) + ')' : '') + ' brightness(' + br.toFixed(3) + ')' + (se >= 0.02 ? ' sepia(' + se.toFixed(3) + ')' : '');
@@ -523,17 +524,17 @@ function verColores() {
       if (i === iRef || esCompleta(p) || !p.img) return Promise.resolve(null);
       return medir(p.img).then(function (m) {
         if (!m) return null;
-        // Además del color del dibujo, el papel (el crema de fondo) se iguala al de la referencia
+        // Solo se iguala el papel (el crema de fondo) al de la referencia. El color de los dibujos NO se toca
+        // (Cris no quiere que se apaguen las ilustraciones); filtroPara se deja por si algún día se quiere a mano.
         var dif = Math.abs(m.P[0] - mRef.P[0]) + Math.abs(m.P[1] - mRef.P[1]) + Math.abs(m.P[2] - mRef.P[2]);
-        var f = filtroPara(m, mRef);
-        return f || dif > 6 ? { f: f, papel: dif > 6 } : null;
+        return dif > 4 ? { f: '', papel: true } : null;
       });
     }));
   }).then(function (lista) {
     filtros = {}; var n = 0, nPapel = 0;
     var mins = document.querySelectorAll('#rejilla img');
     lista.forEach(function (a, i) { if (mins[i]) mins[i].style.filter = a ? a.f : ''; if (a) { filtros[i] = a; n++; if (a.papel) nPapel++; } });
-    $('estadoColores').innerHTML = n ? 'Así quedarían (mira la rejilla de abajo). Se ajustarían <b>' + n + '</b> páginas' + (nPapel ? ' (en <b>' + nPapel + '</b> de ellas también se iguala el crema del papel, que en la rejilla no se ve)' : '') + '; las demás ya tienen un color parecido. En la rejilla el ajuste se ve también sobre el marco, pero en el libro solo se aplica al dibujo.' : 'Todas las páginas ya tienen un color muy parecido a la de referencia: no hace falta tocar nada.';
+    $('estadoColores').innerHTML = n ? 'En <b>' + n + '</b> páginas el crema del papel es distinto al de la referencia y se igualará. Los dibujos no cambian de color. Las demás ya tienen el mismo papel.' : 'Todas las páginas ya tienen el mismo crema de papel que la de referencia: no hace falta tocar nada.';
     $('btnAplicarColores').disabled = !n;
   }).catch(function () { $('estadoColores').textContent = '⚠️ No se ha podido medir el color. Recarga la página y vuelve a probar.'; })
     .finally(function () { $('btnVerColores').disabled = false; });
@@ -541,7 +542,7 @@ function verColores() {
 function aplicarColores() {
   var ids = Object.keys(filtros);
   if (!ids.length) return;
-  preguntar('Se van a volver a montar ' + ids.length + ' páginas con el color ajustado (no se usa la IA y los dibujos no cambian). Tarda unos segundos por página. ¿Seguimos?')
+  preguntar('Se va a igualar el papel de ' + ids.length + ' páginas (no se usa la IA y el color de los dibujos no cambia). Tarda unos 20 segundos por página: deja esta pestaña abierta hasta que termine. ¿Seguimos?')
     .then(function (si) { if (si) aplicarColoresYa(ids); });
 }
 function aplicarColoresYa(ids) {
