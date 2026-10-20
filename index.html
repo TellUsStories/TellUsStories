@@ -78,7 +78,11 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&family=Allura&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&family=Dancing+Script:wght@500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+<!-- Letras del texto de la web: se cargan primero. Las de las portadas de muestra (Allura, Amatic, PT Serif, Playfair,
+     Dancing Script, Cormorant) se cargan después sin frenar la página (media="print" y al cargar pasa a "all"). -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&family=Dancing+Script:wght@500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Allura&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&family=Dancing+Script:wght@500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet"></noscript>
 <style>
   /* Tale Us Stories: blanco roto y tonos de marrón. La etiqueta tachada da paso a la persona. */
   :root {
@@ -357,7 +361,7 @@
 
 <section class="wrap dos" id="creadora">
   <div class="dibujo" id="dibujo">
-    <img class="d-color" src="img/cris-ilustracion.jpg" alt="Cris ilustrada en acuarela, sentada en el suelo y sonriendo">
+    <img class="d-color" src="img/cris-ilustracion.jpg" width="972" height="1092" alt="Cris, creadora de Tale Us Stories, ilustrada en acuarela, sentada en el suelo y sonriendo">
   </div>
   <div>
     <span class="eyebrow">Quiénes somos</span>
@@ -523,6 +527,7 @@
   <a href="/libro-en-memoria">En memoria</a>
   <a href="/preguntas-para-conocer-a-los-abuelos">60 preguntas para los abuelos</a>
   <a href="/ideas-regalos-originales-abuelos">Regalos para los abuelos</a>
+  <a href="/ideas-regalo-dia-de-la-madre">Ideas Día de la Madre</a>
   <a href="legal.html">Aviso legal · Privacidad · Condiciones</a>
   <span>Hecho con amor · Barcelona</span>
 </div></footer>
