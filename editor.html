@@ -261,7 +261,8 @@ function abrir(i) {
   var prueba = new Image();
   prueba.onload = function () { if (actual === i) { $('btnTexto').disabled = false; $('btnRetoque').disabled = false; } };
   prueba.onerror = function () { if (actual === i) { $('avisoImg').style.display = ''; } };
-  prueba.src = p.img || 'about:blank';
+  // Se comprueba con la miniatura (el dibujo entero pesa ~9 MB y dejaba los botones en gris mucho rato)
+  prueba.src = p.img ? p.img + (/hcti\.io/.test(p.img) ? (p.img.indexOf('?') < 0 ? '?' : '&') + 'width=120' : '') : 'about:blank';
   $('btnAnt').disabled = i === 0; $('btnSig').disabled = i === paginas.length - 1;
   $('panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
