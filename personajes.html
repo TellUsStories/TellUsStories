@@ -64,7 +64,13 @@
     <h2>🎨 Personajes dibujados</h2>
     <div class="ficha"><img id="ficha" alt="Ficha de personajes" onclick="ampliar(this.src)"></div>
     <p class="sub" style="margin-top:8px">Arriba, el/la protagonista de bebé, de niño/a, de joven y hoy. Abajo, los niños y el resto de la familia, en el orden de la lista. Pulsa la imagen para verla en grande.</p>
-    <div id="bloqueCorrecciones" class="oculto"><h2>✏️ Correcciones ya hechas</h2><div class="texto" id="correcciones"></div></div>
+    <div id="bloquePropuesta" class="oculto">
+      <h2>✨ Propuesta de ChatGPT</h2>
+      <div class="ficha" style="border-color:var(--coral)"><img id="propuesta" alt="Ficha propuesta por ChatGPT" onclick="ampliar(this.src)"></div>
+      <p class="sub" style="margin-top:8px">Lo que pediste: <i id="cambiosPropuestos"></i></p>
+      <div class="botones"><button class="principal" id="btnAceptar" onclick="decidir('aceptar')">✅ Me quedo con la nueva</button><button class="suave" id="btnDescartar" onclick="decidir('descartar')">↩️ Descartar (me quedo con la de arriba)</button></div>
+    </div>
+    <div id="bloqueCorrecciones" class="oculto"><h2>✏️ Correcciones ya aceptadas</h2><div class="texto" id="correcciones"></div></div>
 
     <div id="acciones">
      <div id="bloqueValidar">
@@ -104,11 +110,19 @@ function pintar(d) {
   $('fichaTexto').textContent = d.ficha_texto || '(sin descripción)';
   $('correcciones').textContent = d.correcciones || '';
   $('bloqueCorrecciones').className = d.correcciones && d.correcciones.trim() ? '' : 'oculto';
-  // Ya validados: el libro ya se ha dibujado, así que no se puede volver a validar; la ficha se puede seguir corrigiendo
+  // Propuesta de ChatGPT pendiente: se ve al lado de la ficha actual y Cris decide si se la queda
+  var hayPropuesta = !!(d.ficha_propuesta && d.ficha_propuesta.trim());
+  $('bloquePropuesta').className = hayPropuesta ? '' : 'oculto';
+  if (hayPropuesta) { $('propuesta').src = d.ficha_propuesta; $('cambiosPropuestos').textContent = d.cambios_propuestos || ''; }
+  // Ya validados: no se puede volver a validar; la ficha se puede seguir corrigiendo
   if (d.personajes === 'validados') {
     $('bloqueValidar').className = 'oculto';
-    aviso('✅ Estos personajes ya están validados y el libro se ha dibujado con ellos. Puedes seguir corrigiendo la ficha (por ejemplo, para retocar después las páginas en el editor), pero el libro no se vuelve a dibujar.', 'ok');
-  } else { $('bloqueValidar').className = ''; aviso(''); }
+    aviso('✅ Estos personajes ya están validados. Puedes seguir corrigiendo la ficha (por ejemplo, para retocar después las páginas en el editor).', 'ok');
+  } else {
+    // Mientras haya una propuesta sin decidir, primero hay que quedarse con ella o descartarla
+    $('bloqueValidar').className = hayPropuesta ? 'oculto' : '';
+    aviso(hayPropuesta ? 'Compara la propuesta de ChatGPT con la ficha de arriba y decide si te la quedas.' : '');
+  }
   $('contenido').className = 'dos';
 }
 // Ver una imagen en grande (pulsar otra vez para cerrar)
@@ -131,17 +145,34 @@ function corregir() {
   $('btnCorregir').disabled = true; $('btnValidar').disabled = true;
   aviso('✨ ChatGPT está corrigiendo la ficha… tarda alrededor de un minuto. No cierres la página.');
   pedir({ accion: 'corregir', cambios: c.replace(/\s*\n\s*/g, ' ') }).then(function (r) {
-    if (r && r.ok && r.ficha_url) { $('cambios').value = ''; aviso('✅ Ficha corregida. Revísala: si está bien, valídala; si no, vuelve a corregir.', 'ok'); return pedir({ accion: 'ver' }).then(function (d) { if (d && d.protagonista) pintar(d); aviso('✅ Ficha corregida. Revísala: si está bien, valídala; si no, vuelve a corregir.', 'ok'); }); }
+    if (r && r.ok && r.ficha_propuesta) {
+      $('cambios').value = '';
+      return pedir({ accion: 'ver' }).then(function (d) { if (d && d.protagonista) pintar(d); $('bloquePropuesta').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    }
     aviso('⚠️ No se ha podido corregir. Vuelve a intentarlo en un momento.', 'error');
-  }).catch(function () { aviso('⚠️ No se ha podido corregir (sin conexión o ha tardado demasiado). Recarga la página en un minuto para ver si se ha corregido.', 'error'); })
+  }).catch(function () { aviso('⚠️ No se ha podido corregir (sin conexión o ha tardado demasiado). Recarga la página en un minuto para ver si ha llegado la propuesta.', 'error'); })
     .finally(function () { $('btnCorregir').disabled = false; $('btnValidar').disabled = false; });
+}
+// Quedarse con la propuesta de ChatGPT (pasa a ser la ficha) o descartarla
+function decidir(accion) {
+  $('btnAceptar').disabled = true; $('btnDescartar').disabled = true;
+  pedir({ accion: accion }).then(function (r) {
+    if (!r || !r.ok) throw 0;
+    return pedir({ accion: 'ver' }).then(function (d) {
+      if (d && d.protagonista) pintar(d);
+      aviso(accion === 'aceptar' ? '✅ Ficha sustituida por la de ChatGPT. Si todo está bien, valídala; si no, vuelve a corregir.' : '↩️ Propuesta descartada: sigue la ficha de antes.', 'ok');
+    });
+  }).catch(function () { aviso('⚠️ No se ha podido guardar. Vuelve a intentarlo en un momento.', 'error'); })
+    .finally(function () { $('btnAceptar').disabled = false; $('btnDescartar').disabled = false; });
 }
 function validar() {
   if (!confirm('¿Los personajes están bien? Al validar se dibujan las 26 páginas del libro con esta ficha.')) return;
   $('btnCorregir').disabled = true; $('btnValidar').disabled = true;
   aviso('Validando…');
   pedir({ accion: 'validar' }).then(function (r) {
-    if (r && r.ok) { $('bloqueValidar').className = 'oculto'; aviso('🎨 ¡Personajes validados! Se están dibujando las 26 páginas y ChatGPT las revisa una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.', 'ok'); return; }
+    if (r && r.ok) { $('bloqueValidar').className = 'oculto'; aviso(r.mejorando
+      ? '✨ ¡Personajes validados! Este libro ya estaba dibujado: ChatGPT está mejorando sus ilustraciones una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.'
+      : '🎨 ¡Personajes validados! Se están dibujando las 26 páginas y ChatGPT las revisa una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.', 'ok'); return; }
     aviso('⚠️ No se ha podido validar. Vuelve a intentarlo en un momento.', 'error'); $('btnCorregir').disabled = false; $('btnValidar').disabled = false;
   }).catch(function () { aviso('⚠️ No se ha podido validar (sin conexión).', 'error'); $('btnCorregir').disabled = false; $('btnValidar').disabled = false; });
 }
