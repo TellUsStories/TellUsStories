@@ -122,7 +122,7 @@
       <div id="bloqueDibujo">
       <hr class="sep">
       <label for="fDibujo">¿Qué quieres cambiar del dibujo?</label>
-      <p class="ayuda">Escríbelo como se lo dirías a un ilustrador. Ej: «que el abuelo sea calvo», «quita al niño de la izquierda», «que la niña tenga el pelo más largo».</p>
+      <p class="ayuda">Escríbelo como se lo dirías a un ilustrador. Ej: «que el abuelo sea calvo», «quita al niño de la izquierda», «Elena aquí es joven, unos 20 años, rubia y sin arrugas».</p>
       <textarea id="fDibujo" style="min-height:80px"></textarea>
       <div class="botones">
         <button class="principal" id="btnRetoque" onclick="retocar()">✨ Retocar solo lo que pido</button>
@@ -466,7 +466,7 @@ function guardarOrdenYa(pares) {
 function retocar() {
   var p = paginas[actual], cambios = $('fDibujo').value.trim();
   if (!cambios) { avisar('Escribe primero qué quieres cambiar del dibujo.').then(function () { $('fDibujo').focus(); }); return; }
-  preguntar('Se va a retocar el dibujo de esta página cambiando solo lo que has escrito. Gasta unos céntimos y tarda unos 2 minutos. ¿Seguimos?')
+  preguntar('ChatGPT va a retocar el dibujo de esta página cambiando solo lo que has escrito. Gasta unos céntimos y tarda unos 2 minutos. ¿Seguimos?')
     .then(function (si) { if (si) retocarYa(p, cambios); });
 }
 function retocarYa(p, cambios) {
@@ -482,10 +482,11 @@ function retocarYa(p, cambios) {
         p.value = '===PAGINA ' + p.pagina + '===\nTITULO: ' + tituloNuevo + '\nTEXTO: ' + textoNuevo + '\nILUSTRACION: ' + trozo(v, 'ILUSTRACION:') + '\n';
       })
     : Promise.resolve();
-  antes.then(function () { return enviar({ modo: 'retoque', pagina: p.pagina, cambios: cambios.replace(/\s*\n\s*/g, ' '), titulo: conTexto ? tituloNuevo : '', texto: conTexto ? textoNuevo : '' }); })
+  // El retoque lo hace ChatGPT (obedece mejor y mantiene la calidad de impresión) y se guarda en el libro
+  antes.then(function () { return enviar({ modo: 'chatgpt', guardar: '1', pagina: p.pagina, cambios: cambios.replace(/\s*\n\s*/g, ' '), titulo: conTexto ? tituloNuevo : '', texto: conTexto ? textoNuevo : '' }); })
     .then(function (r) {
       if (r && r.ok) {
-        $('estado').innerHTML = '✨ Se está retocando el dibujo. En unos 2 minutos pulsa <button onclick="location.reload()" style="padding:6px 12px;font-size:13px">Actualizar</button> para verlo.';
+        $('estado').innerHTML = '✨ ChatGPT está retocando el dibujo. En unos 2 minutos pulsa <button onclick="location.reload()" style="padding:6px 12px;font-size:13px">Actualizar</button> para verlo.';
       } else {
         $('estado').innerHTML = '⚠️ No se ha podido enviar. Vuelve a intentarlo en un momento.';
       }
