@@ -107,6 +107,7 @@
       <h2 style="font-family:var(--display);font-weight:800;font-size:22px" id="titPanel">Página</h2>
 
       <div id="bloqueTexto">
+        <p class="aviso" id="avisoSoloDibujo" style="display:none">Esta página es de solo ilustración. Si quieres que lleve texto, escribe aquí el título y el texto, y abajo la escena, y pulsa «Dibujar de nuevo»: el dibujo se rehace dejando sitio arriba para el texto.</p>
         <label for="fTitulo">Título</label>
         <input id="fTitulo" type="text">
         <label for="fTexto">Texto</label>
@@ -137,6 +138,15 @@
       <details style="margin-top:6px"><summary class="ayuda" style="cursor:pointer">Ver la escena que se usó la última vez (en inglés)</summary><p class="ayuda" id="escenaActual" style="margin-top:6px"></p></details>
       <div class="botones">
         <button class="suave" id="btnDibujo" onclick="volverADibujar()">🎨 Dibujar de nuevo con esta escena</button>
+      </div>
+      <hr class="sep">
+      <label for="fNuevaEscena">Añadir una página nueva detrás de esta, con texto y dibujo</label>
+      <p class="ayuda">Escribe el título, el texto (opcional: sin texto será una página de solo ilustración) y la escena. Las páginas de detrás se corren un número. Recuerda que el libro para imprimir tiene 26 páginas: si añades una, elimina otra.</p>
+      <input id="fNuevoTitulo" type="text" placeholder="Título">
+      <textarea id="fNuevoTexto" placeholder="Texto (lo que va entre **dos asteriscos** sale resaltado)" style="min-height:80px;margin-top:6px"></textarea>
+      <textarea id="fNuevaEscena" placeholder="Escena: quién sale, qué hacen, dónde están y qué objetos hay" style="min-height:80px;margin-top:6px"></textarea>
+      <div class="botones">
+        <button class="suave" id="btnNueva" onclick="nuevaPagina()">➕ Añadir esta página nueva</button>
       </div>
       </div>
       <div class="estado" id="estado"></div>
@@ -221,13 +231,16 @@ function abrir(i) {
   $('vista').src = p.url + (p.v ? '?v=' + p.v : '');
   var titulo = trozo(v, 'TITULO:', 'TEXTO:'), texto = trozo(v, 'TEXTO:', 'ILUSTRACION:');
   var soloDibujo = !titulo && !texto, completa = v.indexOf('(página completa') >= 0;
-  $('bloqueTexto').style.display = soloDibujo ? 'none' : '';
+  // Las páginas de solo ilustración también pueden llevar texto: se añade al volver a dibujarlas
+  $('bloqueTexto').style.display = completa ? 'none' : '';
+  $('avisoSoloDibujo').style.display = soloDibujo ? '' : 'none';
+  $('btnTexto').style.display = soloDibujo ? 'none' : '';
   $('bloqueDibujo').style.display = completa ? 'none' : '';
   $('avisoCompleta').style.display = completa ? '' : 'none';
   $('vistaInfo').textContent = completa ? '' : soloDibujo ? 'Esta es una página de solo ilustración (sin texto).' : '';
   $('fTitulo').value = aEditable(titulo);
   $('fTexto').value = aEditable(texto);
-  $('fDibujo').value = ''; $('fEscena').value = ''; var sel = $('fRefPagina'); sel.innerHTML = '<option value="">Ninguna</option>';
+  $('fDibujo').value = ''; $('fEscena').value = ''; $('fNuevoTitulo').value = ''; $('fNuevoTexto').value = ''; $('fNuevaEscena').value = ''; var sel = $('fRefPagina'); sel.innerHTML = '<option value="">Ninguna</option>';
   paginas.forEach(function (o, k) { if (k !== i) { var op = document.createElement('option'); op.value = k; op.textContent = 'Página ' + o.pagina; sel.appendChild(op); } });
   $('escenaActual').textContent = trozo(v, 'ILUSTRACION:') || '(sin descripción)';
   $('estado').textContent = ''; $('estadoSubir').textContent = '';
@@ -473,7 +486,8 @@ function retocar() {
     .then(function (si) { if (si) retocarYa(p, cambios); });
 }
 function retocarYa(p, cambios) {
-  var conTexto = $('bloqueTexto').style.display !== 'none';
+  // En las páginas de solo ilustración el retoque no añade texto (para eso hay que dibujarlas de nuevo)
+  var pv = p.value || '', conTexto = $('bloqueTexto').style.display !== 'none' && !!(trozo(pv, 'TITULO:', 'TEXTO:') || trozo(pv, 'TEXTO:', 'ILUSTRACION:'));
   $('btnTexto').disabled = true; $('btnDibujo').disabled = true; $('btnRetoque').disabled = true;
   $('estado').textContent = 'Enviando…';
   // El retoque no guarda el texto: si se ha cambiado, primero se guarda con «Guardar el texto»
@@ -511,6 +525,33 @@ function volverADibujar() {
   if (!escenaNueva) { avisar('Describe primero la escena que quieres: quién sale, qué hacen, dónde están y qué objetos hay.').then(function () { $('fEscena').focus(); }); return; }
   preguntar('Se va a dibujar esta página de nuevo con la escena que has escrito. Gasta unos céntimos y tarda 3 o 4 minutos (se dibuja y después ChatGPT la revisa). ¿Seguimos?')
     .then(function (si) { if (si) dibujarYa(escenaNueva); });
+}
+// Página nueva dibujada: se hace sitio detrás de la actual y se dibuja con el texto y la escena escritos
+function nuevaPagina() {
+  var escena = $('fNuevaEscena').value.trim();
+  if (!escena) { avisar('Describe primero la escena de la página nueva.').then(function () { $('fNuevaEscena').focus(); }); return; }
+  var p = paginas[actual], n = paginas.length;
+  preguntar('Se va a añadir una página nueva detrás de la página ' + p.pagina + ' (las siguientes pasan un número adelante; el libro tendrá ' + (n + 1) + ' páginas) y se dibujará con tu escena. Gasta unos céntimos y tarda 3 o 4 minutos. ¿Seguimos?')
+    .then(function (si) { if (si) nuevaPaginaYa(p, n, escena); });
+}
+function nuevaPaginaYa(p, n, escena) {
+  var destino = p.pagina + 1, pares = [];
+  for (var k = n; k >= destino; k--) pares.push(k + ':' + (k + 1));
+  if (!pares.length) pares.push(n + ':' + (n + 1));
+  $('btnNueva').disabled = true;
+  $('estado').textContent = 'Haciendo sitio para la página nueva…';
+  moverPaginas(pares.join(','))
+    .then(function () {
+      $('estado').textContent = 'Enviando la página nueva a dibujar…';
+      return enviar({ modo: 'dibujo', nueva: '1', pagina: destino, titulo: aPagina($('fNuevoTitulo').value), texto: aPagina($('fNuevoTexto').value),
+        ilustracion: 'SCENE WRITTEN BY THE FAMILY, FOLLOW IT EXACTLY (written in Spanish; translate it carefully, names of people stay as they are; draw exactly the people, ages, action, place and objects described, nothing else): ' + escena.replace(/\s*\n\s*/g, ' ') });
+    })
+    .then(function (r) {
+      if (!r || !r.ok) throw 0;
+      $('estado').innerHTML = '🎨 Se está dibujando la página nueva ' + destino + '. En 3 o 4 minutos pulsa <button onclick="location.reload()" style="padding:6px 12px;font-size:13px">Actualizar</button> para verla.';
+    })
+    .catch(function () { $('estado').innerHTML = '⚠️ No se ha podido completar. Recarga la página y comprueba cómo ha quedado antes de repetirlo.'; })
+    .finally(function () { $('btnNueva').disabled = false; });
 }
 function dibujarYa(escenaNueva) {
   var p = paginas[actual];
