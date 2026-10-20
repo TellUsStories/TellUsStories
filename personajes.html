@@ -98,6 +98,8 @@ function pedir(datos) {
   return fetch(PERSONAJES, { method: 'POST', body: b }).then(function (r) { return r.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { return null; } });
 }
 function pintar(d) {
+  // Make devuelve {} (no texto) cuando un campo está vacío: se trata como texto vacío
+  ['ficha_propuesta', 'cambios_propuestos', 'correcciones', 'ficha_url', 'aspecto', 'ficha_texto', 'personajes', 'foto_prota', 'foto_ninos', 'foto_familia', 'ninos'].forEach(function (k) { if (typeof d[k] !== 'string') d[k] = ''; });
   $('titulo').textContent = 'Personajes del libro de ' + (d.protagonista || '');
   var f = $('fotos'); f.innerHTML = '';
   [['foto_prota', d.protagonista + ' (protagonista)'], ['foto_ninos', 'Los niños: ' + (d.ninos || '')], ['foto_familia', 'La familia (cada foto lleva debajo quién es)']].forEach(function (x) {
