@@ -406,7 +406,7 @@
   </div>
   <div class="vc" id="vc0">
     <div class="vc-q">¿Cómo era <span class="G-name"></span> de bebé y de pequeñ<span class="G-oa"></span>?</div>
-    <div class="vc-h">💡 Te puede ayudar: dónde nació y creció y cómo era su casa · cómo era de carácter (tímid<span class="G-oa"></span>, trasto, curios<span class="G-oa"></span>…) · sus hermanos, si tenía mascota, un amigo o amiga especial · a qué le gustaba jugar y qué quería ser de mayor · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b></div>
+    <div class="vc-h">💡 Te puede ayudar: dónde nació y creció y cómo era su casa · cómo era de carácter (tímid<span class="G-oa"></span>, trasto, curios<span class="G-oa"></span>…) · sus hermanos (cuántos chicos y cuántas chicas, mayores o pequeños), si tenía mascota, un amigo o amiga especial · a qué le gustaba jugar y qué quería ser de mayor · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb0" onclick="toggleRec(0)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt0">0:00</span><span class="rbadge" id="bd0">Grabado</span></div>
     <audio class="ap" id="ap0"></audio><button class="btn-clr" id="bc0" onclick="clearRec(0)">Volver a grabar</button>
     <div class="or-d"><span>o escribe</span></div>
@@ -1304,7 +1304,7 @@ async function submit() {
 // se sigue sin repaso: el formulario nunca se bloquea. El estado va en #iaDatos, así entra en el borrador.
 var ETAPAS = {
   2: { clave: 'infancia', vcs: [0], nombre: function() { return 'De bebé y de pequeñ' + g('oa'); },
-       imp: ['Dónde nació y dónde creció', 'Cómo era de carácter de pequeño/a', 'Con quién vivía (padres, hermanos) y si tenía mascota', 'A qué le gustaba jugar o algún amigo o amiga especial'] },
+       imp: ['Dónde nació y dónde creció', 'Cómo era de carácter de pequeño/a', 'Con quién vivía (padres, hermanos) y si tenía mascota', 'Si tenía hermanos: cuántos eran chicos y cuántas chicas, y si eran mayores o pequeños que él o ella (si ya lo han dicho, no lo preguntes)', 'A qué le gustaba jugar o algún amigo o amiga especial'] },
   3: { clave: 'juventud', vcs: [2], nombre: function() { return 'La juventud'; },
        imp: ['Qué le apasionaba de adolescente o de joven', 'Qué estudió o cuál fue su primer trabajo', 'Cómo llegó a dedicarse a lo que hace hoy'] },
   4: { clave: 'familia', vcs: [4], nombre: function() { return 'Amor y familia'; },

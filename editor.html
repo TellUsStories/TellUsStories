@@ -429,7 +429,10 @@ function cerrarColores() {
 }
 // Media de color de un dibujo (en pequeño, para que sea rápido): luminosidad, saturación y calidez (rojo menos azul)
 function medir(url) {
+  // Se mide la miniatura (los dibujos enteros pesan ~9 MB); si una imagen no llega en 20 s, se deja sin tocar
+  if (/hcti\.io/.test(url)) url += (url.indexOf('?') < 0 ? '?' : '&') + 'width=120';
   return new Promise(function (ok) {
+    setTimeout(function () { ok(null); }, 20000);
     var im = new Image(); im.crossOrigin = 'anonymous';
     im.onload = function () {
       try {
@@ -440,7 +443,7 @@ function medir(url) {
           var r = d[k], g = d[k + 1], b = d[k + 2], mx = Math.max(r, g, b), mn = Math.min(r, g, b);
           L += 0.299 * r + 0.587 * g + 0.114 * b; S += mx - mn; W += r - b; n++;
         }
-        ok({ L: L / n, S: S / n, W: W / n });
+        ok({ L: L / n, S: S / n, W: W / L });
       } catch (e) { ok(null); }
     };
     im.onerror = function () { ok(null); };
@@ -449,8 +452,10 @@ function medir(url) {
 }
 function filtroPara(m, ref) {
   var lim = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
-  var br = lim(ref.L / m.L, 0.88, 1.12), sa = lim(ref.S / Math.max(m.S, 1), 0.75, 1.3), se = lim((ref.W - m.W) / 160, 0, 0.25);
-  if (Math.abs(br - 1) < 0.02 && Math.abs(sa - 1) < 0.04 && se < 0.02) return '';
+  // Ajustes suaves: el contenido de cada escena es distinto, solo se corrige el tono (calidez) y un poco el brillo y la saturación.
+  // W es la calidez relativa (rojo menos azul, dividido por la luz): si la página es más fría que la referencia, se calienta con un poco de sepia
+  var br = lim(Math.sqrt(ref.L / m.L), 0.95, 1.05), sa = lim(Math.sqrt(ref.S / Math.max(m.S, 1)), 0.92, 1.08), se = lim((ref.W - m.W) * 1.5, 0, 0.18);
+  if (Math.abs(br - 1) < 0.015 && Math.abs(sa - 1) < 0.025 && se < 0.02) return '';
   return 'brightness(' + br.toFixed(3) + ') saturate(' + sa.toFixed(3) + ')' + (se >= 0.02 ? ' sepia(' + se.toFixed(3) + ')' : '');
 }
 function esCompleta(p) { return (p.value || '').indexOf('(página completa') >= 0; }
