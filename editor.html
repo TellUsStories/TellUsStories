@@ -62,7 +62,19 @@
   <div id="mensaje" class="aviso">Cargando las páginas del libro…</div>
   <div class="botones" id="barraOrden" style="display:none;margin-top:0">
     <button class="suave" onclick="abrirOrden()">↕️ Cambiar el orden de las páginas</button>
+    <button class="suave" onclick="abrirColores()">🎨 Igualar colores del libro</button>
     <button class="principal" onclick="validarLibro()">✅ Validar el libro y montar el PDF</button>
+  </div>
+  <div class="orden" id="colores">
+    <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Igualar colores del libro</h2>
+    <p class="ayuda" style="margin-top:6px">Elige la página cuyo color te gusta. Se mide el tono de cada dibujo (calidez, brillo y saturación) y se le pone un filtro suave para que se parezca a esa página. Los dibujos no se tocan: solo el color. Hazlo al final, justo antes de validar (si después cambias una página, vuelve a igualar).</p>
+    <label for="fRefColor" style="font-weight:400">Página de referencia: <select id="fRefColor" style="width:auto;display:inline-block;margin-left:6px"></select></label>
+    <div class="botones">
+      <button class="suave" id="btnVerColores" onclick="verColores()">👀 Ver cómo quedaría (no gasta nada)</button>
+      <button class="principal" id="btnAplicarColores" onclick="aplicarColores()" disabled>✅ Aplicar a las páginas</button>
+      <button onclick="cerrarColores()">Cancelar</button>
+    </div>
+    <div class="estado" id="estadoColores"></div>
   </div>
   <div class="orden" id="orden">
     <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Orden de las páginas</h2>
@@ -400,6 +412,91 @@ function guardarTexto() {
 // ---------- Cambiar el orden: se mueven las páginas ya hechas y Make repinta solo el número ----------
 var ORDENAR = 'https://hook.eu1.make.com/uu8cgcnhtro4ctp0ldha6dunvxcxbm8o';
 var nuevoOrden = [];
+// ---------- Igualar colores: se mide el tono de cada dibujo y se calcula un filtro CSS para parecerse a la página de referencia.
+// Make vuelve a montar la página con ese filtro sobre el dibujo (sin IA: los trazos no cambian) ----------
+var filtros = {};
+function abrirColores() {
+  var s = $('fRefColor'); s.innerHTML = '';
+  paginas.forEach(function (p, i) { var o = document.createElement('option'); o.value = i; o.textContent = 'Página ' + p.pagina; s.appendChild(o); });
+  if (actual !== null) s.value = actual;
+  $('panel').classList.remove('visible'); $('orden').classList.remove('visible');
+  $('colores').classList.add('visible'); $('estadoColores').textContent = ''; $('btnAplicarColores').disabled = true;
+  $('colores').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function cerrarColores() {
+  $('colores').classList.remove('visible'); filtros = {};
+  [].forEach.call(document.querySelectorAll('#rejilla img'), function (im) { im.style.filter = ''; });
+}
+// Media de color de un dibujo (en pequeño, para que sea rápido): luminosidad, saturación y calidez (rojo menos azul)
+function medir(url) {
+  return new Promise(function (ok) {
+    var im = new Image(); im.crossOrigin = 'anonymous';
+    im.onload = function () {
+      try {
+        var c = document.createElement('canvas'); c.width = 64; c.height = Math.max(1, Math.round(64 * im.naturalHeight / im.naturalWidth));
+        var x = c.getContext('2d'); x.drawImage(im, 0, 0, c.width, c.height);
+        var d = x.getImageData(0, 0, c.width, c.height).data, n = 0, L = 0, S = 0, W = 0;
+        for (var k = 0; k < d.length; k += 4) {
+          var r = d[k], g = d[k + 1], b = d[k + 2], mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+          L += 0.299 * r + 0.587 * g + 0.114 * b; S += mx - mn; W += r - b; n++;
+        }
+        ok({ L: L / n, S: S / n, W: W / n });
+      } catch (e) { ok(null); }
+    };
+    im.onerror = function () { ok(null); };
+    im.src = url;
+  });
+}
+function filtroPara(m, ref) {
+  var lim = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var br = lim(ref.L / m.L, 0.88, 1.12), sa = lim(ref.S / Math.max(m.S, 1), 0.75, 1.3), se = lim((ref.W - m.W) / 160, 0, 0.25);
+  if (Math.abs(br - 1) < 0.02 && Math.abs(sa - 1) < 0.04 && se < 0.02) return '';
+  return 'brightness(' + br.toFixed(3) + ') saturate(' + sa.toFixed(3) + ')' + (se >= 0.02 ? ' sepia(' + se.toFixed(3) + ')' : '');
+}
+function esCompleta(p) { return (p.value || '').indexOf('(página completa') >= 0; }
+function verColores() {
+  var iRef = parseInt($('fRefColor').value, 10), ref = paginas[iRef];
+  $('btnVerColores').disabled = true; $('btnAplicarColores').disabled = true;
+  $('estadoColores').textContent = 'Midiendo el color de cada dibujo…';
+  medir(ref.img || ref.url).then(function (mRef) {
+    if (!mRef) throw 0;
+    return Promise.all(paginas.map(function (p, i) {
+      if (i === iRef || esCompleta(p) || !p.img) return Promise.resolve('');
+      return medir(p.img).then(function (m) { return m ? filtroPara(m, mRef) : ''; });
+    }));
+  }).then(function (lista) {
+    filtros = {}; var n = 0;
+    var mins = document.querySelectorAll('#rejilla img');
+    lista.forEach(function (f, i) { if (mins[i]) mins[i].style.filter = f; if (f) { filtros[i] = f; n++; } });
+    $('estadoColores').innerHTML = n ? 'Así quedarían (mira la rejilla de abajo). Se ajustarían <b>' + n + '</b> páginas; las demás ya tienen un color parecido. En la rejilla el filtro se ve también sobre el marco, pero en el libro solo se aplica al dibujo.' : 'Todas las páginas ya tienen un color muy parecido a la de referencia: no hace falta tocar nada.';
+    $('btnAplicarColores').disabled = !n;
+  }).catch(function () { $('estadoColores').textContent = '⚠️ No se ha podido medir el color. Recarga la página y vuelve a probar.'; })
+    .finally(function () { $('btnVerColores').disabled = false; });
+}
+function aplicarColores() {
+  var ids = Object.keys(filtros);
+  if (!ids.length) return;
+  preguntar('Se van a volver a montar ' + ids.length + ' páginas con el color ajustado (no se usa la IA y los dibujos no cambian). Tarda unos segundos por página. ¿Seguimos?')
+    .then(function (si) { if (si) aplicarColoresYa(ids); });
+}
+function aplicarColoresYa(ids) {
+  $('btnAplicarColores').disabled = true; $('btnVerColores').disabled = true;
+  var hechas = 0, fallos = 0;
+  ids.reduce(function (cadena, id) {
+    return cadena.then(function () {
+      var p = paginas[id], v = p.value || '';
+      $('estadoColores').textContent = 'Ajustando la página ' + p.pagina + '… (' + (hechas + fallos + 1) + ' de ' + ids.length + ')';
+      return enviar({ modo: 'texto', pagina: p.pagina, filtro: filtros[id], titulo: trozo(v, 'TITULO:', 'TEXTO:'), texto: trozo(v, 'TEXTO:', 'ILUSTRACION:'), ilustracion: trozo(v, 'ILUSTRACION:') })
+        .then(function (r) { if (r && r.ok && r.url) { hechas++; p.url = r.url; p.v = Date.now(); } else fallos++; })
+        .catch(function () { fallos++; });
+    });
+  }, Promise.resolve()).then(function () {
+    filtros = {}; pintarRejilla();
+    $('estadoColores').innerHTML = '✅ Colores igualados en ' + hechas + ' páginas.' + (fallos ? ' ⚠️ ' + fallos + ' no se han podido ajustar: vuelve a probar.' : '');
+    $('btnVerColores').disabled = false;
+  });
+}
+
 function abrirOrden() {
   nuevoOrden = paginas.slice();
   $('panel').classList.remove('visible');
