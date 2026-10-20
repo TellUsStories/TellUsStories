@@ -67,7 +67,7 @@
   </div>
   <div class="orden" id="colores">
     <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Igualar colores del libro</h2>
-    <p class="ayuda" style="margin-top:6px">Elige la página cuyo color te gusta. Se mide el tono de cada dibujo (calidez, brillo y saturación) y se le pone un filtro suave para que se parezca a esa página. Los dibujos no se tocan: solo el color. Hazlo al final, justo antes de validar (si después cambias una página, vuelve a igualar).</p>
+    <p class="ayuda" style="margin-top:6px">Elige la página cuyo color te gusta. Se mide el tono de cada dibujo (intensidad del color, brillo y calidez) y se ajusta para que se parezca a esa página, y el crema del papel de fondo se iguala al suyo. Los dibujos no se vuelven a hacer: solo cambia el color. Hazlo al final, justo antes de validar (si después cambias una página, vuelve a igualar).</p>
     <label for="fRefColor" style="font-weight:400">Página de referencia: <select id="fRefColor" style="width:auto;display:inline-block;margin-left:6px"></select></label>
     <div class="botones">
       <button class="suave" id="btnVerColores" onclick="verColores()">👀 Ver cómo quedaría (no gasta nada)</button>
@@ -451,7 +451,7 @@ function medir(url) {
           L += 0.299 * r + 0.587 * g + 0.114 * b; S += mx - mn; W += r - b; n++;
         }
         if (n < d.length / 4 * 0.05) { ok(null); return; }
-        ok({ L: L / n, S: S / n, W: W / L });
+        ok({ L: L / n, S: S / n, W: W / L, P: fondo });
       } catch (e) { ok(null); }
     };
     im.onerror = function () { ok(null); };
@@ -472,21 +472,68 @@ function filtroPara(m, ref) {
   return 'saturate(' + sa.toFixed(3) + ')' + (co < 0.995 ? ' contrast(' + co.toFixed(3) + ')' : '') + ' brightness(' + br.toFixed(3) + ')' + (se >= 0.02 ? ' sepia(' + se.toFixed(3) + ')' : '');
 }
 function esCompleta(p) { return (p.value || '').indexOf('(página completa') >= 0; }
+var papelRef = null;
+// Aplica el ajuste al dibujo entero: primero el filtro de color (si hay) y después cambia SOLO el papel de fondo
+// al crema de la referencia. Cada punto se mueve según lo parecido que sea al papel: el papel del todo, el dibujo
+// nada (así un sofá o una cara no cambian de color). El papel se mide en las filas de arriba; si ahí ya hay dibujo
+// (escena que llega hasta arriba), el papel no se toca.
+function ajustarDibujo(url, f, papel) {
+  return new Promise(function (ok) {
+    var fin = setTimeout(function () { ok(null); }, 60000);
+    var im = new Image(); im.crossOrigin = 'anonymous';
+    im.onerror = function () { clearTimeout(fin); ok(null); };
+    im.onload = function () {
+      try {
+        var w = Math.min(2472, im.naturalWidth), h = Math.round(w * im.naturalHeight / im.naturalWidth);
+        var c = document.createElement('canvas'); c.width = w; c.height = h;
+        var x = c.getContext('2d');
+        if (f) x.filter = f;
+        x.drawImage(im, 0, 0, w, h);
+        if (papel) {
+          var dat = x.getImageData(0, 0, w, h), d = dat.data, fr = 0, fg = 0, fb = 0, n = 0, k, y, i;
+          for (y = 0; y < 30; y++) for (i = 0; i < w; i += 3) { k = (y * w + i) * 4; fr += d[k]; fg += d[k + 1]; fb += d[k + 2]; n++; }
+          fr /= n; fg /= n; fb /= n;
+          var dev = 0;
+          for (y = 0; y < 30; y++) for (i = 0; i < w; i += 3) { k = (y * w + i) * 4; dev += Math.abs(d[k] - fr) + Math.abs(d[k + 1] - fg) + Math.abs(d[k + 2] - fb); }
+          var dr = papel[0] - fr, dg = papel[1] - fg, db = papel[2] - fb;
+          if (dev / n < 12 && Math.abs(dr) + Math.abs(dg) + Math.abs(db) > 3) {
+            for (k = 0; k < d.length; k += 4) {
+              var dist = Math.abs(d[k] - fr) + Math.abs(d[k + 1] - fg) + Math.abs(d[k + 2] - fb);
+              if (dist >= 30) continue;
+              var p = 1 - dist / 30; p = p * p * (3 - 2 * p);
+              d[k] += dr * p; d[k + 1] += dg * p; d[k + 2] += db * p;
+            }
+            x.putImageData(dat, 0, 0);
+          }
+        }
+        clearTimeout(fin); ok(c.toDataURL('image/jpeg', 0.92));
+      } catch (e) { clearTimeout(fin); ok(null); }
+    };
+    im.src = url;
+  });
+}
 function verColores() {
   var iRef = parseInt($('fRefColor').value, 10), ref = paginas[iRef];
   $('btnVerColores').disabled = true; $('btnAplicarColores').disabled = true;
   $('estadoColores').textContent = 'Midiendo el color de cada dibujo…';
   medir(ref.img || ref.url).then(function (mRef) {
     if (!mRef) throw 0;
+    papelRef = mRef.P;
     return Promise.all(paginas.map(function (p, i) {
-      if (i === iRef || esCompleta(p) || !p.img) return Promise.resolve('');
-      return medir(p.img).then(function (m) { return m ? filtroPara(m, mRef) : ''; });
+      if (i === iRef || esCompleta(p) || !p.img) return Promise.resolve(null);
+      return medir(p.img).then(function (m) {
+        if (!m) return null;
+        // Además del color del dibujo, el papel (el crema de fondo) se iguala al de la referencia
+        var dif = Math.abs(m.P[0] - mRef.P[0]) + Math.abs(m.P[1] - mRef.P[1]) + Math.abs(m.P[2] - mRef.P[2]);
+        var f = filtroPara(m, mRef);
+        return f || dif > 6 ? { f: f, papel: dif > 6 } : null;
+      });
     }));
   }).then(function (lista) {
-    filtros = {}; var n = 0;
+    filtros = {}; var n = 0, nPapel = 0;
     var mins = document.querySelectorAll('#rejilla img');
-    lista.forEach(function (f, i) { if (mins[i]) mins[i].style.filter = f; if (f) { filtros[i] = f; n++; } });
-    $('estadoColores').innerHTML = n ? 'Así quedarían (mira la rejilla de abajo). Se ajustarían <b>' + n + '</b> páginas; las demás ya tienen un color parecido. En la rejilla el filtro se ve también sobre el marco, pero en el libro solo se aplica al dibujo.' : 'Todas las páginas ya tienen un color muy parecido a la de referencia: no hace falta tocar nada.';
+    lista.forEach(function (a, i) { if (mins[i]) mins[i].style.filter = a ? a.f : ''; if (a) { filtros[i] = a; n++; if (a.papel) nPapel++; } });
+    $('estadoColores').innerHTML = n ? 'Así quedarían (mira la rejilla de abajo). Se ajustarían <b>' + n + '</b> páginas' + (nPapel ? ' (en <b>' + nPapel + '</b> de ellas también se iguala el crema del papel, que en la rejilla no se ve)' : '') + '; las demás ya tienen un color parecido. En la rejilla el ajuste se ve también sobre el marco, pero en el libro solo se aplica al dibujo.' : 'Todas las páginas ya tienen un color muy parecido a la de referencia: no hace falta tocar nada.';
     $('btnAplicarColores').disabled = !n;
   }).catch(function () { $('estadoColores').textContent = '⚠️ No se ha podido medir el color. Recarga la página y vuelve a probar.'; })
     .finally(function () { $('btnVerColores').disabled = false; });
@@ -504,8 +551,14 @@ function aplicarColoresYa(ids) {
     return cadena.then(function () {
       var p = paginas[id], v = p.value || '';
       $('estadoColores').textContent = 'Ajustando la página ' + p.pagina + '… (' + (hechas + fallos + 1) + ' de ' + ids.length + ')';
-      return enviar({ modo: 'texto', pagina: p.pagina, filtro: filtros[id], titulo: trozo(v, 'TITULO:', 'TEXTO:'), texto: trozo(v, 'TEXTO:', 'ILUSTRACION:'), ilustracion: trozo(v, 'ILUSTRACION:') })
-        .then(function (r) { if (r && r.ok && r.url) { hechas++; p.url = r.url; p.v = Date.now(); } else fallos++; })
+      // El ajuste se hace aquí, en el navegador, sobre el dibujo a tamaño de imprenta, y se sube como dibujo nuevo
+      // de la página (Make lo monta con el mismo marco, texto y número). Si una imagen sale vacía, no se manda.
+      return ajustarDibujo(p.img, filtros[id].f, papelRef)
+        .then(function (datos) {
+          if (!datos || datos.length < 100000) throw 0;
+          return enviar({ modo: 'subir', completa: '0', pagina: p.pagina, imagen: datos, titulo: trozo(v, 'TITULO:', 'TEXTO:'), texto: trozo(v, 'TEXTO:', 'ILUSTRACION:'), ilustracion: trozo(v, 'ILUSTRACION:') });
+        })
+        .then(function (r) { if (r && r.ok && r.url) { hechas++; p.url = r.url; if (r.img) p.img = r.img; p.v = Date.now(); } else fallos++; })
         .catch(function () { fallos++; });
     });
   }, Promise.resolve()).then(function () {
