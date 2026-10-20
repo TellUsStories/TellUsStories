@@ -124,7 +124,8 @@
       <label for="fDibujo">¿Qué quieres cambiar del dibujo?</label>
       <p class="ayuda">Escríbelo como se lo dirías a un ilustrador. Ej: «que el abuelo sea calvo», «quita al niño de la izquierda», «Elena aquí es joven, unos 20 años, rubia y sin arrugas».</p>
       <textarea id="fDibujo" style="min-height:80px"></textarea>
-      <label style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:8px;cursor:pointer"><input type="checkbox" id="fRefAnterior" style="width:auto;margin:0"> Usar la página anterior como referencia (por ejemplo «Elena como en la página anterior»)</label>
+      <label for="fRefPagina" style="font-weight:400;margin-top:8px">Copiar a las personas de otra página (opcional): <select id="fRefPagina" style="width:auto;display:inline-block;margin-left:6px"></select></label>
+      <p class="ayuda">También vale escribirlo: «Elena como en la página 14» o «como la página anterior».</p>
       <div class="botones">
         <button class="principal" id="btnRetoque" onclick="retocar()">✨ Retocar solo lo que pido</button>
       </div>
@@ -226,7 +227,8 @@ function abrir(i) {
   $('vistaInfo').textContent = completa ? '' : soloDibujo ? 'Esta es una página de solo ilustración (sin texto).' : '';
   $('fTitulo').value = aEditable(titulo);
   $('fTexto').value = aEditable(texto);
-  $('fDibujo').value = ''; $('fEscena').value = ''; $('fRefAnterior').checked = false; $('fRefAnterior').disabled = i === 0;
+  $('fDibujo').value = ''; $('fEscena').value = ''; var sel = $('fRefPagina'); sel.innerHTML = '<option value="">Ninguna</option>';
+  paginas.forEach(function (o, k) { if (k !== i) { var op = document.createElement('option'); op.value = k; op.textContent = 'Página ' + o.pagina; sel.appendChild(op); } });
   $('escenaActual').textContent = trozo(v, 'ILUSTRACION:') || '(sin descripción)';
   $('estado').textContent = ''; $('estadoSubir').textContent = '';
   // ¿Sigue disponible el dibujo original? Si no, solo se puede volver a dibujar
@@ -483,9 +485,14 @@ function retocarYa(p, cambios) {
         p.value = '===PAGINA ' + p.pagina + '===\nTITULO: ' + tituloNuevo + '\nTEXTO: ' + textoNuevo + '\nILUSTRACION: ' + trozo(v, 'ILUSTRACION:') + '\n';
       })
     : Promise.resolve();
-  // Si se pide la página anterior como referencia (casilla o «página anterior» en el texto), ChatGPT la recibe como segunda imagen
-  var ant = actual > 0 ? paginas[actual - 1] : null;
-  var refExtra = ant && ($('fRefAnterior').checked || /p[aá]gina anterior/i.test(cambios)) ? (ant.img || ant.url || '') : '';
+  // Página de referencia: la elegida en el selector o la que se nombra en el texto («página 14», «página anterior»).
+  // ChatGPT la recibe como segunda imagen para copiar de ahí a las personas
+  var k = $('fRefPagina').value !== '' ? parseInt($('fRefPagina').value, 10) : -1, m = cambios.match(/p[aá]gina\s+(\d+)/i);
+  if (k < 0 && m) { var num = parseInt(m[1], 10); paginas.forEach(function (o, j) { if (Number(o.pagina) === num) k = j; }); }
+  if (k < 0 && /p[aá]gina anterior/i.test(cambios) && actual > 0) k = actual - 1;
+  if (k < 0 && /p[aá]gina siguiente/i.test(cambios) && actual < paginas.length - 1) k = actual + 1;
+  var ref = k >= 0 && k !== actual ? paginas[k] : null;
+  var refExtra = ref ? (ref.img || ref.url || '') : '';
   // El retoque lo hace ChatGPT (obedece mejor y mantiene la calidad de impresión) y se guarda en el libro
   antes.then(function () { return enviar({ modo: 'chatgpt', guardar: '1', pagina: p.pagina, cambios: cambios.replace(/\s*\n\s*/g, ' '), ref_extra: refExtra, titulo: conTexto ? tituloNuevo : '', texto: conTexto ? textoNuevo : '' }); })
     .then(function (r) {
