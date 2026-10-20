@@ -67,8 +67,10 @@
     <div id="bloqueCorrecciones" class="oculto"><h2>✏️ Correcciones ya hechas</h2><div class="texto" id="correcciones"></div></div>
 
     <div id="acciones">
+     <div id="bloqueValidar">
       <h2>¿Está todo bien?</h2>
       <div class="botones"><button class="principal" id="btnValidar" onclick="validar()">✅ Sí: validar y crear el libro</button></div>
+     </div>
       <h2>¿Hay algo que corregir?</h2>
       <p class="sub">Escríbelo como se lo dirías a un ilustrador. Ej: «Jandro tiene los ojos azules y barba corta», «la abuela es rubia, no morena».</p>
       <textarea id="cambios"></textarea>
@@ -102,10 +104,11 @@ function pintar(d) {
   $('fichaTexto').textContent = d.ficha_texto || '(sin descripción)';
   $('correcciones').textContent = d.correcciones || '';
   $('bloqueCorrecciones').className = d.correcciones && d.correcciones.trim() ? '' : 'oculto';
+  // Ya validados: el libro ya se ha dibujado, así que no se puede volver a validar; la ficha se puede seguir corrigiendo
   if (d.personajes === 'validados') {
-    $('acciones').className = 'oculto';
-    aviso('✅ Estos personajes ya están validados y el libro se ha dibujado con ellos.', 'ok');
-  } else aviso('');
+    $('bloqueValidar').className = 'oculto';
+    aviso('✅ Estos personajes ya están validados y el libro se ha dibujado con ellos. Puedes seguir corrigiendo la ficha (por ejemplo, para retocar después las páginas en el editor), pero el libro no se vuelve a dibujar.', 'ok');
+  } else { $('bloqueValidar').className = ''; aviso(''); }
   $('contenido').className = 'dos';
 }
 // Ver una imagen en grande (pulsar otra vez para cerrar)
@@ -138,7 +141,7 @@ function validar() {
   $('btnCorregir').disabled = true; $('btnValidar').disabled = true;
   aviso('Validando…');
   pedir({ accion: 'validar' }).then(function (r) {
-    if (r && r.ok) { $('acciones').className = 'oculto'; aviso('🎨 ¡Personajes validados! Se están dibujando las 26 páginas y ChatGPT las revisa una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.', 'ok'); return; }
+    if (r && r.ok) { $('bloqueValidar').className = 'oculto'; aviso('🎨 ¡Personajes validados! Se están dibujando las 26 páginas y ChatGPT las revisa una a una con esta ficha. Te he mandado un email con el enlace al editor: en unos 20-30 minutos estarán todas.', 'ok'); return; }
     aviso('⚠️ No se ha podido validar. Vuelve a intentarlo en un momento.', 'error'); $('btnCorregir').disabled = false; $('btnValidar').disabled = false;
   }).catch(function () { aviso('⚠️ No se ha podido validar (sin conexión).', 'error'); $('btnCorregir').disabled = false; $('btnValidar').disabled = false; });
 }
