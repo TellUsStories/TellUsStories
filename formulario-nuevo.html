@@ -603,7 +603,11 @@
     <h3>Pago</h3>
     <div class="sr"><span class="sk">Importe</span><span class="sv" id="rv-importe">—</span></div>
     <div class="sr"><span class="sk">Forma de pago</span><span class="sv">Tarjeta, pago seguro con Stripe. Es el último paso: tu historia nos llega en cuanto pagas.</span></div>
-    <div class="sr"><span class="sk">Código de descuento</span><span class="sv">¿Tienes uno? Escríbelo en la página de pago, en «Añadir código de promoción».</span></div>
+  </div>
+  <div class="sb">
+    <h3>Código de descuento</h3>
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">¿Tienes un código? Escríbelo aquí y se aplicará en la página de pago.</p>
+    <input type="text" id="codigoDescuento" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Código de descuento" style="width:100%;max-width:280px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);background:#fff;">
   </div>
   <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
     <h3 style="color:var(--coral);">¿Qué pasa ahora?</h3>
@@ -676,7 +680,9 @@ var GUARDAR = 'https://hook.eu1.make.com/k3ru6hcymtkupq46hflxu9qmzloafpes';
 // Enlace de pago con el código del pedido (para recoger su historia al pagar) y el email del cliente ya puesto
 function enlacePago(pedido) {
   var e = (document.getElementById('email').value || '').trim();
-  return STRIPE[formato] + '?client_reference_id=' + encodeURIComponent(pedido) + (e ? '&prefilled_email=' + encodeURIComponent(e) : '');
+  // Código de descuento: lo comprueba y lo aplica Stripe en su página de pago (aquí nunca se muestra ningún código)
+  var c = (document.getElementById('codigoDescuento').value || '').trim().toUpperCase();
+  return STRIPE[formato] + '?client_reference_id=' + encodeURIComponent(pedido) + (e ? '&prefilled_email=' + encodeURIComponent(e) : '') + (c ? '&prefilled_promo_code=' + encodeURIComponent(c) : '');
 }
 // El concepto de la transferencia: así sabes de qué pedido es cada pago
 function conceptoPago() {
