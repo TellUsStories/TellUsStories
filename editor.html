@@ -128,6 +128,21 @@
         <div class="botones">
           <button class="principal" id="btnTexto" onclick="guardarTexto()">Guardar el texto (mismo dibujo)</button>
         </div>
+        <div id="bloqueOtroTexto" style="margin-top:14px">
+          <label for="fComo" style="font-weight:400">¿Quieres otra propuesta de texto? Dinos cómo la prefieres (opcional):</label>
+          <input id="fComo" type="text" placeholder="Ej: más corta, más emotiva, que hable más de su madre…">
+          <div class="botones">
+            <button class="suave" id="btnOtroTexto" onclick="otroTexto()">✨ Proponer otro texto</button>
+          </div>
+          <div id="propuesta" class="aviso" style="display:none;margin-top:10px">
+            <p style="font-weight:700" id="propTitulo"></p>
+            <p id="propTexto" style="margin-top:6px"></p>
+            <div class="botones">
+              <button class="principal" onclick="usarPropuesta()">Usar esta propuesta</button>
+              <button class="suave" onclick="otroTexto()">Otra propuesta</button>
+            </div>
+          </div>
+        </div>
         <p class="ayuda" id="avisoImg" style="display:none;margin-top:8px">El dibujo original ya no está disponible para reutilizarlo: para cambiar el texto de esta página hay que volver a dibujarla.</p>
       </div>
 
@@ -247,6 +262,8 @@ function abrir(i) {
   $('bloqueTexto').style.display = completa ? 'none' : '';
   $('avisoSoloDibujo').style.display = soloDibujo ? '' : 'none';
   $('btnTexto').style.display = soloDibujo ? 'none' : '';
+  $('bloqueOtroTexto').style.display = soloDibujo ? 'none' : '';
+  $('propuesta').style.display = 'none'; $('fComo').value = ''; propuestaActual = null;
   $('bloqueDibujo').style.display = completa ? 'none' : '';
   $('avisoCompleta').style.display = completa ? '' : 'none';
   $('vistaInfo').textContent = completa ? '' : soloDibujo ? 'Esta es una página de solo ilustración (sin texto).' : '';
@@ -409,6 +426,40 @@ function guardarTexto() {
     })
     .catch(function () { $('estado').innerHTML = '⚠️ No se ha podido guardar (sin conexión).'; })
     .finally(function () { $('btnTexto').disabled = false; $('btnDibujo').disabled = false; });
+}
+
+// ---------- Otra propuesta de texto: la escribe Claude (functions/api/ayudante.js, acción otroTexto) con el texto
+// actual, la escena y las páginas de antes y de después. No se guarda sola: con «Usar esta propuesta» pasa a los
+// campos, y solo se guarda en la página al pulsar «Guardar el texto». ----------
+var propuestaActual = null;
+function textoDe(k) { var o = paginas[k]; if (!o) return ''; var v = o.value || ''; return (trozo(v, 'TITULO:', 'TEXTO:') + '. ' + aEditable(trozo(v, 'TEXTO:', 'ILUSTRACION:'))).trim(); }
+function otroTexto() {
+  var i = actual, p = paginas[i], v = p.value || '';
+  $('btnOtroTexto').disabled = true;
+  $('propuesta').style.display = '';
+  $('propTitulo').textContent = 'Escribiendo otra propuesta… (unos segundos)'; $('propTexto').textContent = '';
+  fetch('/api/ayudante', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+    accion: 'otroTexto', titulo: $('fTitulo').value, texto: $('fTexto').value, escena: trozo(v, 'ILUSTRACION:'),
+    anterior: textoDe(i - 1), siguiente: textoDe(i + 1), indicaciones: $('fComo').value,
+    propuestaAnterior: propuestaActual ? propuestaActual.titulo + '. ' + propuestaActual.texto : ''
+  }) })
+    .then(function (r) { return r.json(); })
+    .then(function (r) {
+      if (actual !== i) return;
+      if (!r || !r.texto) throw 0;
+      propuestaActual = { titulo: r.titulo, texto: r.texto };
+      $('propTitulo').textContent = r.titulo;
+      // Lo resaltado (**así**) se ve en negrita
+      $('propTexto').innerHTML = aPagina(r.texto).replace(/<span class="hl">/g, '<b>').replace(/<\/span>/g, '</b>');
+    })
+    .catch(function () { if (actual === i) { $('propTitulo').textContent = '⚠️ No se ha podido escribir la propuesta. Vuelve a probar en un momento.'; $('propTexto').textContent = ''; } })
+    .finally(function () { $('btnOtroTexto').disabled = false; });
+}
+function usarPropuesta() {
+  if (!propuestaActual) return;
+  $('fTitulo').value = propuestaActual.titulo; $('fTexto').value = propuestaActual.texto;
+  $('propuesta').style.display = 'none';
+  $('estado').innerHTML = '✏️ Propuesta puesta en el título y el texto. Revísala (puedes cambiar lo que quieras) y pulsa «Guardar el texto» para que pase a la página.';
 }
 
 // ---------- Cambiar el orden: se mueven las páginas ya hechas y Make repinta solo el número ----------
