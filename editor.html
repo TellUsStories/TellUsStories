@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Editor de páginas · Tale Us Stories</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400&family=Dancing+Script:wght@500&family=Amatic+SC:wght@700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
 <style>
   /* Editor privado de Cris: se entra desde el email de revisión de cada libro (lleva la carpeta y la clave en el enlace) */
   :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#fff;--boton:#DCC8B4;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
@@ -50,6 +50,10 @@
   .tarjeta.fantasma{position:fixed;z-index:50;pointer-events:none;cursor:grabbing;box-shadow:0 12px 30px rgba(0,0,0,.25);transform:rotate(2deg)}
   .pasar{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
   .pasar button{padding:9px 16px}
+  /* Página «Fin»: no es una imagen guardada, se dibuja aquí con la misma plantilla de la imprenta */
+  .mini .cierre{width:100%;aspect-ratio:218/288;overflow:hidden;position:relative;background:#f3eee6}
+  .mini .cierre>div,.grande>div{position:absolute;left:0;top:0;transform-origin:0 0}
+  .grande{width:100%;aspect-ratio:218/288;overflow:hidden;position:relative;border-radius:10px;border:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -181,6 +185,8 @@
   </div>
 </main>
 
+<script src="portadas.js?v=20261021g"></script>
+<script src="imprenta.js?v=20261021g"></script>
 <script>
 // Webhooks de Make: leer las páginas guardadas de un libro y rehacer una página
 var LEER = 'https://hook.eu1.make.com/asb6r9yzv6u8llpn7seg5pdmq39lglx4';
@@ -196,7 +202,7 @@ function ventana(texto, conCancelar) {
   return new Promise(function (ok) {
     var fondo = document.createElement('div');
     fondo.style.cssText = 'position:fixed;inset:0;background:rgba(74,44,31,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
-    fondo.innerHTML = '<div style="background:#fff;border-radius:18px;padding:22px;max-width:440px;width:100%;font-size:15.5px;line-height:1.6;box-shadow:0 10px 40px rgba(0,0,0,.25)"><p style="margin:0 0 18px"></p><div class="botones" style="justify-content:flex-end;margin:0"></div></div>';
+    fondo.innerHTML = '<div style="background:#fff;border-radius:18px;padding:22px;max-width:440px;width:100%;font-size:15.5px;line-height:1.6;box-shadow:0 10px 40px rgba(0,0,0,.25)"><p style="margin:0 0 18px;white-space:pre-line"></p><div class="botones" style="justify-content:flex-end;margin:0"></div></div>';
     fondo.querySelector('p').textContent = texto;
     var caja = fondo.querySelector('.botones');
     function boton(txt, clase, valor) { var b = document.createElement('button'); b.textContent = txt; if (clase) b.className = clase; b.onclick = function () { fondo.remove(); ok(valor); }; caja.appendChild(b); return b; }
@@ -246,6 +252,49 @@ function pintarRejilla() {
     d.onclick = function () { abrir(i); };
     r.appendChild(d);
   });
+  // Al final, la página «Fin» tal como saldrá en el PDF (se crea sola al montarlo)
+  if (paginas.length && window.TUSImprenta) {
+    var f = document.createElement('div'); f.className = 'mini';
+    f.innerHTML = '<div class="cierre"></div><span>Página final (Fin)</span>';
+    f.onclick = verCierre;
+    r.appendChild(f);
+    pintarCierre(f.querySelector('.cierre'));
+  }
+}
+
+// Datos del pedido para la página «Fin»: diseño de la portada (lo llevan las páginas) y nombres (de la hoja de pedidos)
+var LISTA = 'https://hook.eu1.make.com/9crm4fjr848su91hizbvgoyypkvxag7p';
+var pedido = null;
+function cargarPedido() {
+  return fetch(LISTA + '?clave=' + encodeURIComponent(CLAVE)).then(function (r) { return r.text(); }).then(function (t) {
+    var d = JSON.parse(t), f = (d.values || []).filter(function (x) { return x && ((x[19] || '').trim() === CARPETA || (x[15] || '').indexOf(CARPETA) >= 0); })[0];
+    // Columnas de la hoja: C protagonista, D niños
+    pedido = f ? { prota: f[2] || '', ninos: f[3] || '' } : { prota: '', ninos: '' };
+  }).catch(function () { pedido = { prota: '', ninos: '' }; });
+}
+function datosCierre() {
+  // En el libro va a la izquierda si su número (páginas del cuento + 5) es par, como en la imprenta
+  return { diseno: (paginas[0] && paginas[0].color) || '1', prota: pedido ? pedido.prota : '', ninos: pedido ? pedido.ninos : '', izquierda: (paginas.length + 5) % 2 === 0 };
+}
+// Dibuja la página a su tamaño real (218 mm) y la encoge para que quepa en la caja
+function pintarCierre(caja) {
+  var pinta = function () {
+    caja.innerHTML = '<div>' + TUSImprenta.cierre(datosCierre()) + '</div>';
+    var dentro = caja.firstChild, s = caja.clientWidth / dentro.firstChild.offsetWidth;
+    dentro.style.transform = 'scale(' + s + ')';
+  };
+  (pedido ? Promise.resolve() : cargarPedido()).then(function () { requestAnimationFrame(pinta); });
+}
+function verCierre() {
+  var fondo = document.createElement('div');
+  fondo.style.cssText = 'position:fixed;inset:0;background:rgba(74,44,31,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  fondo.innerHTML = '<div style="background:#fff;border-radius:18px;padding:18px;width:min(460px,100%);max-height:100%;overflow:auto;font-size:14.5px;line-height:1.55">' +
+    '<div class="grande"></div><p style="margin:12px 0">Esta página se crea sola al montar el PDF, justo después de la última página del cuento, con el marco y los colores de la portada y los nombres del pedido. Aquí no se puede cambiar.</p>' +
+    '<div class="botones" style="justify-content:flex-end;margin:0"><button class="principal">Cerrar</button></div></div>';
+  fondo.querySelector('button').onclick = function () { fondo.remove(); };
+  fondo.onclick = function (e) { if (e.target === fondo) fondo.remove(); };
+  document.body.appendChild(fondo);
+  pintarCierre(fondo.querySelector('.grande'));
 }
 
 function abrir(i) {
@@ -384,8 +433,40 @@ var APROBAR = 'https://hook.eu1.make.com/pluuvg2ioadx8cn866p6tnrugnxa17dc';
 function validarLibro() {
   // El PDF lleva siempre las mismas hojas: si el libro tiene menos de 26 páginas, el final se completa en blanco
   if (paginas.length > 26) { avisar('El libro tiene ' + paginas.length + ' páginas y como máximo caben 26. Elimina ' + (paginas.length - 26) + ' antes de validarlo.'); return; }
-  preguntar('¿Validar el libro tal como está ahora? Se marcará como aprobado en la hoja de pedidos y se montará el PDF para imprimir (te llega por email en unos minutos).')
-    .then(function (si) { if (si) validarYa(); });
+  // Antes de montar el PDF: un mismo nombre escrito de dos formas (Mia / Mía) se avisa y se puede corregir antes
+  (pedido ? Promise.resolve() : cargarPedido()).then(function () {
+    var dudas = nombresDistintos();
+    var pregunta = dudas.length
+      ? 'Antes de montar el PDF, revisa estos nombres: están escritos de más de una forma en el libro.\n\n' + dudas.join('\n') + '\n\n¿Validar el libro igualmente?'
+      : '¿Validar el libro tal como está ahora? Se marcará como aprobado en la hoja de pedidos y se montará el PDF para imprimir (te llega por email en unos minutos).';
+    return preguntar(pregunta);
+  }).then(function (si) { if (si) validarYa(); });
+}
+// Nombres del libro escritos de formas distintas (solo cambia una tilde o una mayúscula). Cuentan como nombres
+// los del pedido y las palabras con mayúscula en mitad de una frase.
+function nombresDistintos() {
+  var base = function (w) { return w.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); };
+  var esNombre = {}, formas = {};
+  (pedido ? pedido.prota + ' ' + pedido.ninos : '').split(/[^A-Za-zÀ-ÿ]+/).forEach(function (w) { if (w.length > 2 && /^[A-ZÀ-Ý]/.test(w)) esNombre[base(w)] = 1; });
+  paginas.forEach(function (p) {
+    var v = p.value || '', t = (trozo(v, 'TITULO:', 'TEXTO:') + '. ' + trozo(v, 'TEXTO:', 'ILUSTRACION:')).replace(/<[^>]+>/g, '');
+    var re = /[A-Za-zÀ-ÿ]+/g, m, antes;
+    while ((m = re.exec(t))) {
+      var w = m[0], k = base(w);
+      antes = t.slice(0, m.index).replace(/\s+$/, '');
+      if (/^[A-ZÀ-Ý]/.test(w) && antes && !/[.!?¡¿:;"«]$/.test(antes)) esNombre[k] = 1;
+      (formas[k] = formas[k] || {})[w] = (formas[k][w] || []).concat(p.pagina);
+    }
+  });
+  var dudas = [];
+  Object.keys(esNombre).forEach(function (k) {
+    var f = formas[k] || {}, vistas = Object.keys(f).filter(function (w) { return /^[A-ZÀ-Ý]/.test(w); });
+    if (vistas.length > 1) dudas.push(vistas.map(function (w) {
+      var pags = f[w].filter(function (x, i, a) { return a.indexOf(x) === i; });
+      return '«' + w + '» en ' + (pags.length > 1 ? 'las páginas ' : 'la página ') + pags.join(', ');
+    }).join('  ·  '));
+  });
+  return dudas;
 }
 function validarYa() {
   // Se llama al aviso de Make desde la misma página (abrir otra pestaña lo bloqueaban los navegadores)
