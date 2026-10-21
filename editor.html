@@ -241,7 +241,8 @@ function pintarRejilla() {
   paginas.forEach(function (p, i) {
     var d = document.createElement('div'); d.className = 'mini' + (actual === i ? ' activa' : '');
     d.innerHTML = '<img loading="lazy" alt=""><span>Página ' + p.pagina + '</span>';
-    d.querySelector('img').src = p.url + (p.v ? '?v=' + p.v : '');
+    // Miniatura de 300 px (con la página entera, la rejilla cargaba decenas de MB)
+    d.querySelector('img').src = p.url + (/hcti\.io/.test(p.url) ? '?width=300' + (p.v ? '&v=' + p.v : '') : (p.v ? '?v=' + p.v : ''));
     d.onclick = function () { abrir(i); };
     r.appendChild(d);
   });
@@ -254,8 +255,10 @@ function abrir(i) {
   $('titPanel').textContent = 'Página ' + p.pagina;
   // Mientras carga la página nueva, la anterior se ve apagada para no confundirlas
   $('vista').style.opacity = '.25';
-  $('vista').onload = function () { this.style.opacity = '1'; };
-  $('vista').src = p.url + (p.v ? '?v=' + p.v : '');
+  $('vista').onload = $('vista').onerror = function () { this.style.opacity = '1'; };
+  // En pantalla basta una versión de 1200 px (la página entera pesa varios MB y tardaba mucho en verse)
+  $('vista').src = p.url + (/hcti\.io/.test(p.url) ? '?width=1200' + (p.v ? '&v=' + p.v : '') : (p.v ? '?v=' + p.v : ''));
+  if ($('vista').complete && $('vista').naturalWidth) $('vista').style.opacity = '1';
   var titulo = trozo(v, 'TITULO:', 'TEXTO:'), texto = trozo(v, 'TEXTO:', 'ILUSTRACION:');
   var soloDibujo = !titulo && !texto, completa = v.indexOf('(página completa') >= 0;
   // Las páginas de solo ilustración también pueden llevar texto: se añade al volver a dibujarlas
