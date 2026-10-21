@@ -160,7 +160,7 @@
     // estampado, as\u00ed junto al lomo empieza una columna o raya entera. centro = el lomo se centra en u
     // La contraportada es entonces el reflejo de la portada, as\u00ed a los dos lados del lomo se ve lo mismo y
     // las l\u00edneas siguen a la misma altura. Solo en los dise\u00f1os de rayas y cuadros que lo necesitan (5\u20138);
-    // en el resto (1\u20134) la acuarela va centrada, sin reflejo, con su borde escondido bajo el lomo.
+    // en el resto (1\u20134) la acuarela va centrada, con su borde escondido bajo el lomo, y la contraportada en espejo.
     // 9 (Rayas salvia): el lomo se centra en una raya verde, as\u00ed el lomo verde es una raya m\u00e1s del estampado
     var ENCAJE = { 5: ['izq', 22], 6: ['izq', 31], 7: ['izq', 35], 8: ['izq', 4], 9: ['izq', 30, true] };
     var enc = ENCAJE[d.n], espejoDel = !!enc && enc[0] === 'der', u = enc ? enc[1] : 0;
@@ -214,7 +214,9 @@
 
     // Contraportada: el reflejo de la portada (su etiqueta est\u00e1 vac\u00eda); dentro, la dedicatoria tal cual la
     // escribi\u00f3 quien regala el libro, su firma y el logo de Tale Us Stories en las tintas del dise\u00f1o.
-    var espejoTras = !!enc && !espejoDel, LB = colocacion(B), e = d.delante, k = LB.k;
+    // En todos los dise\u00f1os la contraportada va en espejo: a los dos lados del lomo se ve el mismo trozo
+    // del estampado y el dibujo sigue de una cara a la otra sin cortes
+    var espejoTras = !espejoDel, LB = colocacion(B), e = d.delante, k = LB.k;
     var e0 = espejoTras ? W - e[0] - e[2] : e[0];
     var ex = LB.x + (e0 + 26) * k, ey = LB.y + (e[1] + 26) * k, ew = (e[2] - 52) * k, eh = (e[3] - 52) * k;
     var ded = String(o.dedicatoria || '').trim();
