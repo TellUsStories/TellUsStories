@@ -120,6 +120,33 @@
     img.style.webkitMaskImage = img.style.maskImage = arriba + ',' + lados + ',' + bajo;
     img.style.webkitMaskComposite = 'source-in, source-in'; img.style.maskComposite = 'intersect, intersect';
   }
+  // ---------- P\u00e1gina de cierre (la \u00faltima hoja del libro, cuando sobra una) ----------
+  // o = { diseno, prota, ninos, izquierda }. El mismo marco y la misma hoja de papel que las p\u00e1ginas de la historia;
+  // dentro, \u00abFin\u00bb, la estrella, para qui\u00e9n es el libro y el logo. izquierda = la p\u00e1gina cae a la izquierda
+  // del libro abierto (marco en espejo, como las p\u00e1ginas pares).
+  function cierre(o) {
+    var d = TUSPortadas.diseno(o.diseno), M = SANGRADO + 11, espejo = o.izquierda ? 'transform:scaleX(-1);' : '';
+    var prota = String(o.prota || '').trim(), ninos = String(o.ninos || '').trim();
+    // El libro es para la protagonista y para los ni\u00f1os: su nombre grande y, debajo, \u00aby para\u00bb los ni\u00f1os
+    var para = prota ? [prota, ninos ? 'y para ' + ninos : ''] : [ninos, ''];
+    return '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
+      '<img src="' + TUSPortadas.imagen(d, 'delante', 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
+      '<div style="position:absolute;inset:' + M + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
+        '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
+        '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + '"></div>' +
+        '<div style="position:absolute;left:12mm;right:12mm;top:42%;transform:translateY(-50%);text-align:center">' +
+          '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:30mm;line-height:1;color:' + d.titulo + '">Fin</div>' +
+          '<div style="color:#E3A93C;font-size:7mm;line-height:1;margin:6mm 0 9mm">\u2605</div>' +
+          (para[0] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;color:' + d.titulo + '">Un libro hecho con cari\u00f1o para</div>' +
+            '<div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:18mm;line-height:1.1;letter-spacing:.6mm;margin-top:2mm;color:' + d.nombreCol + '">' + esc(para[0]) + '</div>' +
+            (para[1] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;margin-top:2mm;color:' + d.titulo + '">' + esc(para[1]) + '</div>' : '') : '') +
+        '</div>' +
+        '<div style="position:absolute;left:0;right:0;bottom:22mm;text-align:center;font-family:\'Bricolage Grotesque\',\'Arial Black\',sans-serif;font-weight:800;font-size:5.2mm;letter-spacing:1.2mm;line-height:1.15;color:' + d.titulo + '">TALE US<br>STORIES' +
+          '<i style="display:block;width:11mm;height:.9mm;margin:2mm auto 0;border-radius:1mm;background:' + d.titulo + '"></i></div>' +
+      '</div>' +
+    '</div>';
+  }
+
   // El n\u00famero de p\u00e1gina (o.numero), solo si es un n\u00famero de verdad
   function numero(o) { var n = parseInt(o.numero, 10); return n > 0 ? n : ''; }
   // P\u00e1gina sin marco (pedidos anteriores a las portadas nuevas)
@@ -260,5 +287,5 @@
     contentFrontSize: { width: 210, height: 280, left: 217.5, top: 4 }
   };
 
-  window.TUSImprenta = { pagina: pagina, encajar: encajar, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA, EJEMPLO_TAPA_BLANDA: EJEMPLO_TAPA_BLANDA };
+  window.TUSImprenta = { pagina: pagina, cierre: cierre, encajar: encajar, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA, EJEMPLO_TAPA_BLANDA: EJEMPLO_TAPA_BLANDA };
 })();
