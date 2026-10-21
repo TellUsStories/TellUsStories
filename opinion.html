@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Tu opinión · Tale Us Stories</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400&display=swap" rel="stylesheet">
+<style>
+  /* Página para que las familias dejen su opinión (se llega por el enlace del email de «libro entregado») */
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#fff;--oro:#D9A441;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--navy);font-family:var(--texto);min-height:100vh}
+  main{max-width:560px;margin:0 auto;padding:36px 16px 80px}
+  .marca{font-family:var(--display);font-weight:800;letter-spacing:3px;font-size:13px;text-transform:uppercase}
+  .marca i{display:block;width:30px;height:3px;border-radius:3px;background:var(--coral);margin-top:6px}
+  h1{font-family:var(--display);font-weight:800;font-size:30px;line-height:1.15;margin:22px 0 8px}
+  .sub{color:var(--muted);font-size:15px;line-height:1.6}
+  form{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:22px;margin-top:22px}
+  label{display:block;font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;margin:18px 0 6px}
+  label:first-child{margin-top:0}
+  .ayuda{font-size:13px;color:var(--muted);line-height:1.5;margin:-2px 0 6px}
+  input[type=text],input[type=email],textarea{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-family:var(--texto);font-size:16px;color:var(--navy);background:var(--white)}
+  textarea{min-height:140px;line-height:1.55;resize:vertical}
+  .estrellas{display:flex;gap:6px}
+  .estrellas button{background:none;border:none;font-size:38px;line-height:1;color:#E3D6C8;cursor:pointer;padding:2px}
+  .estrellas button.on{color:var(--oro)}
+  .acepto{display:flex;gap:10px;align-items:flex-start;font-family:var(--texto);font-weight:400;font-size:14px;letter-spacing:0;text-transform:none;line-height:1.5;cursor:pointer}
+  .acepto input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#4A2C1F}
+  .oculto{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  button.enviar{margin-top:20px;width:100%;border:none;border-radius:100px;padding:15px 20px;font-family:var(--display);font-weight:800;font-size:15px;background:var(--navy);color:var(--cream);cursor:pointer}
+  button.enviar:disabled{opacity:.5;cursor:wait}
+  .aviso{background:var(--coral-l);border:1.5px solid var(--coral);border-radius:14px;padding:14px 18px;font-size:15px;line-height:1.6;margin-top:16px}
+  .error{background:#FCECEA;border-color:#C0392B}
+  .gracias{text-align:center;padding:40px 10px}
+  .gracias div{font-size:56px}
+</style>
+</head>
+<body>
+<main>
+  <div class="marca">Tale Us Stories<i></i></div>
+  <div id="contenido">
+    <h1>¿Qué te ha parecido tu libro?</h1>
+    <p class="sub">Nos haría muchísima ilusión saberlo. Tu opinión ayuda a otras familias a decidirse y a nosotros a seguir mejorando.</p>
+    <form id="form" novalidate>
+      <label>Tu valoración</label>
+      <div class="estrellas" id="estrellas" role="radiogroup" aria-label="Estrellas"></div>
+
+      <label for="texto">Tu opinión</label>
+      <p class="ayuda">Cuéntanos cómo fue regalarlo, qué sintió quien lo recibió, qué te gustó más…</p>
+      <textarea id="texto" maxlength="1200" required></textarea>
+
+      <label for="nombre">Tu nombre</label>
+      <p class="ayuda">Tal como quieres que aparezca en la web. Por ejemplo: «Laura, Barcelona».</p>
+      <input type="text" id="nombre" maxlength="60" required>
+
+      <label for="para">¿Para quién era el libro? <span style="font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
+      <input type="text" id="para" maxlength="80" placeholder="Por ejemplo: para mi madre">
+
+      <label for="email">Tu email <span style="font-weight:400;text-transform:none;letter-spacing:0">(opcional, no se publica)</span></label>
+      <input type="email" id="email" maxlength="120">
+
+      <!-- Trampa para robots: las personas no ven este campo -->
+      <div class="oculto" aria-hidden="true"><input type="text" id="web" tabindex="-1" autocomplete="off"></div>
+
+      <label class="acepto"><input type="checkbox" id="acepto"> Acepto que mi opinión y mi nombre se publiquen en la web de Tale Us Stories.</label>
+
+      <button type="submit" class="enviar" id="btn">Enviar mi opinión ♥</button>
+      <div id="mensaje"></div>
+    </form>
+  </div>
+</main>
+<script>
+// Las opiniones las recibe Make (escenario «Opiniones de las familias») y le llegan a Cris para que decida si se publican
+var ENVIAR = 'https://hook.eu1.make.com/mfgouvb9ekyasirnmlzkb8rs6w2nefz3';
+var q = new URLSearchParams(location.search), estrellas = 0;
+function $(id) { return document.getElementById(id); }
+
+// Si el email de «libro entregado» trae el nombre o para quién era, ya va escrito
+if (q.get('nombre')) $('nombre').value = q.get('nombre');
+if (q.get('para')) $('para').value = q.get('para');
+if (q.get('email')) $('email').value = q.get('email');
+
+for (var i = 1; i <= 5; i++) (function (n) {
+  var b = document.createElement('button');
+  b.type = 'button'; b.textContent = '★'; b.setAttribute('role', 'radio'); b.setAttribute('aria-label', n + (n > 1 ? ' estrellas' : ' estrella'));
+  b.onclick = function () { estrellas = n; pintar(); };
+  $('estrellas').appendChild(b);
+})(i);
+function pintar() {
+  [].forEach.call($('estrellas').children, function (b, k) { b.className = k < estrellas ? 'on' : ''; b.setAttribute('aria-checked', k + 1 === estrellas); });
+}
+
+function aviso(t, esError) { $('mensaje').innerHTML = t ? '<div class="aviso' + (esError ? ' error' : '') + '">' + t + '</div>' : ''; }
+
+$('form').onsubmit = function (e) {
+  e.preventDefault();
+  if (!estrellas) return aviso('Elige cuántas estrellas le das.', true);
+  if (!$('texto').value.trim()) return aviso('Escribe tu opinión.', true);
+  if (!$('nombre').value.trim()) return aviso('Escribe tu nombre tal como quieres que aparezca.', true);
+  if (!$('acepto').checked) return aviso('Marca la casilla para que podamos publicar tu opinión.', true);
+  aviso(''); $('btn').disabled = true; $('btn').textContent = 'Enviando…';
+  var datos = new URLSearchParams({ accion: 'enviar', estrellas: String(estrellas), texto: $('texto').value.trim(), nombre: $('nombre').value.trim(), para: $('para').value.trim(), email: $('email').value.trim(), web: $('web').value });
+  fetch(ENVIAR, { method: 'POST', body: datos })
+    .then(function (r) { if (!r.ok) throw 0; })
+    .then(function () {
+      $('contenido').innerHTML = '<div class="gracias"><div>💛</div><h1>¡Muchísimas gracias!</h1><p class="sub">Hemos recibido tu opinión. Significa mucho para nosotros.</p><p class="sub" style="margin-top:18px"><a href="/" style="color:var(--coral)">Volver a Tale Us Stories</a></p></div>';
+      window.scrollTo(0, 0);
+    })
+    .catch(function () {
+      $('btn').disabled = false; $('btn').textContent = 'Enviar mi opinión ♥';
+      aviso('No se ha podido enviar. Comprueba tu conexión y vuelve a intentarlo.', true);
+    });
+};
+</script>
+</body>
+</html>

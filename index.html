@@ -161,6 +161,15 @@
   .texto-largo { display: grid; gap: 16px; margin-top: 22px; }
   .texto-largo strong { font-weight: 400; box-shadow: inset 0 -.45em 0 color-mix(in srgb, var(--boton) 60%, transparent); }
 
+  /* OPINIONES: la sección solo aparece cuando Cris ha publicado alguna (las trae /api/opiniones) */
+  .opiniones-media { font-family: var(--display); font-weight: 700; font-size: 16px; margin-top: 8px; }
+  .opiniones-media b { color: #D9A441; letter-spacing: 2px; margin-right: 6px; }
+  .opiniones { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 28px; }
+  .opinion { background: var(--claro); border: 1px solid rgba(74, 44, 31, .12); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .opinion .est { color: #D9A441; font-size: 18px; letter-spacing: 2px; }
+  .opinion p { font-size: 16px; line-height: 1.6; white-space: pre-line; }
+  .opinion small { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--acento); margin-top: auto; }
+
   /* HAZ LA PORTADA */
   .config { border-block: 1px solid rgba(74, 44, 31, .12); }
   .config-grid { display: grid; grid-template-columns: 1fr 360px; gap: 56px; align-items: center; margin-top: 36px; }
@@ -461,6 +470,13 @@
   </div>
 </section>
 
+<section class="wrap" id="opiniones" style="padding-top:0" hidden>
+  <span class="eyebrow">Opiniones</span>
+  <h2>Lo que dicen <em>las familias.</em></h2>
+  <p class="opiniones-media" id="opiniones-media"></p>
+  <div class="opiniones" id="opiniones-lista"></div>
+</section>
+
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Ideal para</span>
   <h2>Un regalo para <em>cualquier momento.</em></h2>
@@ -542,6 +558,32 @@
   function portada(diseno, nombre, calidad) { return '<div class="real">' + TUSPortadas.svg(diseno, nombre, null, { calidad: calidad }) + '</div>'; }
 
   // Libro de ejemplo: en ordenador 2 pasos (cerrado / abierto por las páginas 1 y 2), en móvil 3 (portada, pág. 1, pág. 2)
+  // Opiniones de las familias: solo las que Cris ha publicado. Si hay alguna, se enseña la sección y se añaden
+  // las estrellas a los datos del libro para Google (las mismas opiniones que se ven en la página)
+  (function () {
+    var sec = document.getElementById('opiniones'); if (!sec || !window.fetch) return;
+    var esc = function (t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var est = function (n) { return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n); };
+    fetch('/api/opiniones').then(function (r) { return r.ok ? r.json() : []; }).then(function (lista) {
+      if (!Array.isArray(lista) || !lista.length) return;
+      var media = lista.reduce(function (s, o) { return s + o.estrellas; }, 0) / lista.length;
+      document.getElementById('opiniones-media').innerHTML = '<b>' + est(Math.round(media)) + '</b>' + media.toFixed(1).replace('.', ',') + ' de 5 · ' + lista.length + (lista.length > 1 ? ' opiniones' : ' opinión');
+      document.getElementById('opiniones-lista').innerHTML = lista.map(function (o) {
+        return '<article class="opinion"><div class="est" aria-label="' + o.estrellas + ' de 5 estrellas">' + est(o.estrellas) + '</div><p>' + esc(o.texto) + '</p><small>' + esc(o.nombre) + (o.para ? ' · libro ' + esc(o.para) : '') + '</small></article>';
+      }).join('');
+      sec.hidden = false;
+      var ld = document.querySelector('script[type="application/ld+json"]');
+      try {
+        var datos = JSON.parse(ld.textContent), libro = datos['@graph'].filter(function (n) { return n['@type'] === 'Product'; })[0];
+        libro.aggregateRating = { '@type': 'AggregateRating', ratingValue: media.toFixed(1), reviewCount: lista.length, bestRating: 5, worstRating: 1 };
+        libro.review = lista.slice(0, 10).map(function (o) {
+          return { '@type': 'Review', author: { '@type': 'Person', name: o.nombre }, datePublished: o.fecha || undefined, reviewBody: o.texto, reviewRating: { '@type': 'Rating', ratingValue: o.estrellas, bestRating: 5 } };
+        });
+        ld.textContent = JSON.stringify(datos);
+      } catch (e) {}
+    }).catch(function () {});
+  })();
+
   (function () {
     var libro = document.getElementById('libro'); if (!libro) return;
     // Páginas 1 y 2: el texto lo pone la web (misma letra y color en las dos); de la imagen solo se ve la ilustración.
