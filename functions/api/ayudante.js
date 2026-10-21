@@ -38,6 +38,39 @@ const ESQUEMA_DEDICATORIA = {
   additionalProperties: false,
 };
 
+const ESQUEMA_OTRO_TEXTO = {
+  type: "object",
+  properties: {
+    titulo: { type: "string" },
+    texto: { type: "string" },
+  },
+  required: ["titulo", "texto"],
+  additionalProperties: false,
+};
+
+// Editor de páginas: otra propuesta de título y texto para una página del libro (no se guarda sola: Cris decide)
+function promptOtroTexto(d) {
+  const palabras = String(d.texto || "").trim().split(/\s+/).filter(Boolean).length || 60;
+  return `Escribes los textos de un libro ilustrado personalizado (Tale Us Stories): la historia real de una persona contada a los niños de su familia, en español de España, cálido, sencillo y emotivo, para leer en voz alta a niños pequeños.
+
+Esta es una página del libro. Escribe UNA propuesta nueva y distinta de título y texto para ella.
+<titulo_actual>${corta(d.titulo)}</titulo_actual>
+<texto_actual>${corta(d.texto)}</texto_actual>
+<lo_que_muestra_la_ilustracion>${corta(d.escena) || "(sin descripción)"}</lo_que_muestra_la_ilustracion>
+<pagina_anterior>${corta(d.anterior) || "(es la primera)"}</pagina_anterior>
+<pagina_siguiente>${corta(d.siguiente) || "(es la última)"}</pagina_siguiente>
+${d.propuestaAnterior ? `<propuesta_que_no_ha_gustado>${corta(d.propuestaAnterior)}</propuesta_que_no_ha_gustado>\n` : ""}${d.indicaciones ? `<como_la_quiere_la_familia>${corta(d.indicaciones)}</como_la_quiere_la_familia>\n` : ""}
+Reglas:
+- Cuenta lo mismo que el texto actual (mismos hechos, nombres, lugares y anécdotas) y encaja con la ilustración y con las páginas de antes y de después. No inventes hechos nuevos ni cambies datos. Si la familia pide algo concreto, hazle caso.
+- Longitud: unas ${palabras} palabras (como mucho un 15 % más o menos), para que quepa en la página.
+- Título corto (2 a 6 palabras), distinto del actual.
+- Resalta entre **dos asteriscos** 1 o 2 palabras o expresiones clave, como en el texto actual.
+- Nunca pongas edades exactas de hoy (el libro es para toda la vida), ni des por hecho que alguien lee este libro con los niños.
+- Habla a los niños de «vosotros» si el texto actual lo hace.
+- Debe ser claramente diferente del texto actual${d.propuestaAnterior ? " y de la propuesta que no ha gustado" : ""}.
+Devuelve "titulo" y "texto" (texto sin comillas alrededor, sin etiquetas HTML).`;
+}
+
 function promptRevisar(d) {
   const imprescindibles = (d.imprescindibles || []).map((x) => "- " + corta(x)).join("\n");
   return `Ayudas a una familia a rellenar el formulario de un libro ilustrado personalizado: la historia real de ${corta(d.protagonista) || "una persona"}, contada para ${corta(d.ninos) || "sus niños"}. Ahora están en la etapa «${corta(d.etapaNombre)}».
@@ -122,6 +155,11 @@ export async function onRequestPost({ request, env }) {
       if (!String(d.texto || "").trim()) return responde(200, { texto: "", firma: d.firma || "", hayCambios: false });
       const r = await preguntaAClaude(env, promptDedicatoria(d), ESQUEMA_DEDICATORIA);
       return responde(200, r);
+    }
+    if (d.accion === "otroTexto") {
+      if (!String(d.texto || "").trim()) return responde(400, { error: "La página no tiene texto" });
+      const r = await preguntaAClaude(env, promptOtroTexto(d), ESQUEMA_OTRO_TEXTO);
+      return responde(200, { titulo: r.titulo || "", texto: r.texto || "" });
     }
     return responde(400, { error: "Acción desconocida" });
   } catch (err) {
