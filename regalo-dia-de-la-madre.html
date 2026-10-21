@@ -18,8 +18,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="guias.css?v=1">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="guias.css?v=6">
+<script src="efectos.js?v=2" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -47,8 +48,9 @@
       "mainEntity": [
         { "@type": "Question", "name": "¿Con cuánto tiempo tengo que pedirlo para el Día de la Madre?", "acceptedAnswer": { "@type": "Answer", "text": "El libro llega entre 2 y 3 semanas después de enviarnos la historia. El Día de la Madre en España es el primer domingo de mayo, así que lo ideal es enviarnos la historia a principios de abril." } },
         { "@type": "Question", "name": "¿Puede ser una sorpresa?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. La historia nos la puede contar el papá, los abuelos, una hermana o una amiga, sin que mamá lo sepa. Respondéis con notas de voz y se guarda solo." } },
-        { "@type": "Question", "name": "¿Puede contar mamá su propia historia?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. Puede contarla ella misma para sus hijos: cómo era de pequeña, sus sueños y sus aventuras, para que la conozcan de verdad." } },
-        { "@type": "Question", "name": "¿Cuánto cuesta?", "acceptedAnswer": { "@type": "Answer", "text": "45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos." } }
+        { "@type": "Question", "name": "¿Salen los niños en el libro?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. El libro empieza con una dedicatoria para ellos y aparecen en la parte de la familia, cuando llega cada uno." } },
+        { "@type": "Question", "name": "¿Y si no conozco bien su juventud?", "acceptedAnswer": { "@type": "Answer", "text": "Pregunta a quien la conoció entonces: sus hermanas, sus amigas o sus padres. Cada uno puede aportar una anécdota, y el libro queda más completo." } },
+        { "@type": "Question", "name": "¿Hay temas que podemos dejar fuera?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. En el formulario puedes indicarnos qué temas delicados prefieres no tocar, y el libro solo cuenta lo que tú quieras." } }
       ]
     }
   ]
@@ -66,54 +68,76 @@
 
 <header class="wrap hero">
   <div>
-    <span class="eyebrow">Día de la Madre</span>
+    <p class="tachon vivo" data-nombres="María,Bea,Lucía,Carmen,Ana" aria-hidden="true"><span class="eti">MAMÁ</span><span class="nombre">María</span></p>
     <h1>Un regalo para el Día de la Madre <em>que cuenta quién era antes de ser mamá.</em></h1>
     <p class="intro">Antes de ser «mamá» fue una niña que no paraba de reír, una chica que viajó, que se equivocó y que se atrevió. Convertimos su historia real en un <strong>cuento personalizado ilustrado en acuarela</strong>, para que sus hijos la descubran, y para que ella, al leerlo, se reconozca otra vez.</p>
     <a class="boton" href="/formulario-nuevo">Crear su libro →</a>
   </div>
-  <figure>
-    <img src="img/libro-pagina-2.jpg" width="1000" height="1500" alt="Página de un cuento personalizado: «Antes de ser mami», con mamá ilustrada en acuarela de niña, de joven y de viaje">
-    <figcaption>«Antes de ser mami», una página de uno de nuestros libros.</figcaption>
+  <figure class="libro">
+    <div class="hojas">
+      <img src="img/libro-pagina-1.jpg" width="1000" height="1461" alt="Dedicatoria de un cuento personalizado: «Para Lucas y Martina», con una mamá leyendo a sus dos hijos, ilustrada en acuarela">
+      <img src="img/libro-pagina-2.jpg" width="1000" height="1500" alt="Página «Antes de ser mami»: la mamá ilustrada en acuarela rodeada de escenas de su infancia y su juventud">
+    </div>
   </figure>
 </header>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Por qué es distinto</span>
-  <h2>Un regalo personalizado <em>que no se queda en un cajón.</em></h2>
-  <div class="texto-largo">
-    <p>Las tazas, las fotos y las joyas con nombre están bien. Pero lo que de verdad emociona es que sus hijos sepan <strong>quién es su madre</strong>: cómo era de pequeña, qué soñaba, cómo conoció a su pareja y qué sintió cuando llegó cada uno de ellos.</p>
-    <p>Lo escribimos desde cero con sus recuerdos reales y lo ilustramos en acuarela con <strong>sus rasgos reales</strong> a partir de una foto. El resultado es un libro de más de 25 páginas para leer juntos en el sofá y para guardar siempre.</p>
-    <p>Y no es solo para mamá: también lo puedes hacer para papá, para los abuelos, para los tíos o con <a href="/cuento-con-tu-historia">tu propia historia</a>.</p>
+  <span class="eyebrow">Lo que sus hijos no saben</span>
+  <h2 class="aparece">La mamá de hoy <em>y la chica de antes.</em></h2>
+  <div class="texto-largo aparece">
+    <p>Para sus hijos, mamá es la que sabe dónde está todo. Pero antes de eso hubo una niña con sus travesuras y una chica con sus planes. Esas historias casi nunca se cuentan, y son justo las que hacen que los niños la miren con otros ojos: <strong>con admiración, con risa y con cariño</strong>.</p>
+  </div>
+  <div class="giros">
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:0">
+      <span class="cara delante"><small>Hoy dice</small><p>«Ponte la chaqueta, que hace frío.»</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras vichy-rosa"><span class="etiqueta"><small>Antes</small><p>Iba en minifalda en pleno enero.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:1">
+      <span class="cara delante"><small>Hoy</small><p>Te despierta a las 8 un sábado.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras escoces"><span class="etiqueta"><small>Antes</small><p>Volvía de fiesta con los churros del desayuno.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:2">
+      <span class="cara delante"><small>Hoy dice</small><p>«A las 11 en casa.»</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras cuadros"><span class="etiqueta"><small>Antes</small><p>Se fue sola de Interrail con una mochila.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+  </div>
+  <div class="texto-largo aparece">
+    <p>En el libro contamos su historia con su nombre y sus rasgos reales, para que sus hijos descubran a la persona que había antes de «mamá».</p>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Qué cuenta el libro</span>
-  <h2>Cinco capítulos, <em>una vida.</em></h2>
-  <ol class="capitulos">
-    <li><b>1</b><h3>Infancia</h3><span>Cómo era de pequeña, sus travesuras y sus lugares.</span></li>
-    <li><b>2</b><h3>Juventud</h3><span>Sus sueños, sus aventuras y las decisiones valientes.</span></li>
-    <li><b>3</b><h3>Amor y familia</h3><span>Cómo empezó todo y la llegada de cada hijo.</span></li>
-    <li><b>4</b><h3>Con sus hijos hoy</h3><span>Los planes, los rituales y los recuerdos que comparten.</span></li>
-    <li><b>5</b><h3>El legado</h3><span>Lo que quiere que sepan cuando sean mayores.</span></li>
-  </ol>
-</section>
-
-<section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Cómo funciona</span>
-  <h2>Tú solo tienes que <em>contarlo.</em></h2>
+  <span class="eyebrow">¿Quién lo regala?</span>
+  <h2 class="aparece">Un regalo que encaja <em>en cada familia.</em></h2>
   <div class="pasos">
-    <div><h3>1. Nos lo cuentas</h3><p>Preguntas guiadas sobre su vida. Respondes con notas de voz, a tu ritmo. Puede ser una sorpresa.</p></div>
-    <div><h3>2. Lo escribimos e ilustramos</h3><p>Convertimos los recuerdos en un cuento en acuarela, con sus rasgos reales a partir de una foto.</p></div>
-    <div><h3>3. Llega a casa</h3><p>Impreso en 21 × 28 cm, en tapa blanda o dura, listo para regalar en 2 o 3 semanas.</p></div>
+    <div class="aparece" style="--i:0"><h3>Papá con los niños</h3><p>Le contáis su historia en secreto y los pequeños le dan la sorpresa el primer domingo de mayo.</p></div>
+    <div class="aparece" style="--i:1"><h3>Los hijos mayores</h3><p>Para la madre que ya es abuela: sus hijos reúnen sus recuerdos y el libro es para que lo lean sus nietos.</p></div>
+    <div class="aparece" style="--i:2"><h3>Ella misma</h3><p>Hay madres que quieren contar su historia con su propia voz, para dejársela a sus hijos. Mira <a href="/cuento-con-tu-historia">un cuento con tu historia</a>.</p></div>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <div class="precio">
+  <span class="eyebrow">Para inspirarte</span>
+  <h2 class="aparece">Seis preguntas para <em>descubrir a mamá.</em></h2>
+  <div class="texto-largo">
+    <p>Si no sabes por dónde empezar, prueba con estas. En el formulario te guiamos con más, y puedes responder con notas de voz:</p>
+    <ol class="capitulos preguntas">
+      <li class="aparece" style="--i:0"><b>1</b><span>¿A qué jugaba de pequeña y cuál fue su mayor travesura?</span></li>
+      <li class="aparece" style="--i:1"><b>2</b><span>¿Qué quería ser de mayor?</span></li>
+      <li class="aparece" style="--i:2"><b>3</b><span>¿Cuál fue su primera locura de juventud?</span></li>
+      <li class="aparece" style="--i:3"><b>4</b><span>¿Cómo conoció a su pareja?</span></li>
+      <li class="aparece" style="--i:4"><b>5</b><span>¿Qué sintió el día que nació cada hijo?</span></li>
+      <li class="aparece" style="--i:5"><b>6</b><span>¿Qué le gustaría que sus hijos recordaran siempre?</span></li>
+    </ol>
+    <p>¿Quieres más? Tenemos una guía con <a href="/preguntas-para-conocer-a-los-abuelos">60 preguntas para conocer la vida de alguien</a> que también sirve para mamá.</p>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <div class="precio aparece">
     <div>
       <h2>Para el primer domingo <em>de mayo.</em></h2>
-      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Escrito a partir de sus recuerdos</li><li>Pídelo con 2 semanas de margen</li></ul>
+      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Ella, con sus rasgos reales a partir de una foto</li><li>Pídelo a mediados de abril y vas tranquila</li></ul>
     </div>
     <div>
       <div class="cifras"><div class="cifra"><small>Tapa blanda</small><b>45 €</b></div><div class="cifra"><small>Tapa dura</small><b>63 €</b></div></div>
@@ -126,11 +150,12 @@
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Preguntas frecuentes</span>
   <h2>Lo que más nos <em>preguntáis.</em></h2>
-  <div class="faq">
+  <div class="faq aparece">
     <details><summary>¿Con cuánto tiempo tengo que pedirlo para el Día de la Madre?</summary><p>El libro llega entre 2 y 3 semanas después de enviarnos la historia. El Día de la Madre en España es el primer domingo de mayo, así que lo ideal es enviarnos la historia a principios de abril.</p></details>
     <details><summary>¿Puede ser una sorpresa?</summary><p>Sí. La historia nos la puede contar el papá, los abuelos, una hermana o una amiga, sin que mamá lo sepa. Respondéis con notas de voz y se guarda solo.</p></details>
-    <details><summary>¿Puede contar mamá su propia historia?</summary><p>Claro. Puede contarla ella misma para sus hijos: cómo era de pequeña, sus sueños y sus aventuras, para que la conozcan de verdad.</p></details>
-    <details><summary>¿Cuánto cuesta?</summary><p>45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos.</p></details>
+    <details><summary>¿Salen los niños en el libro?</summary><p>Sí. El libro empieza con una dedicatoria para ellos y aparecen en la parte de la familia, cuando llega cada uno.</p></details>
+    <details><summary>¿Y si no conozco bien su juventud?</summary><p>Pregunta a quien la conoció entonces: sus hermanas, sus amigas o sus padres. Cada uno puede aportar una anécdota, y el libro queda más completo.</p></details>
+    <details><summary>¿Hay temas que podemos dejar fuera?</summary><p>Claro. En el formulario puedes indicarnos qué temas delicados prefieres no tocar, y el libro solo cuenta lo que tú quieras.</p></details>
   </div>
 </section>
 
