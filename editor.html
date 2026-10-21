@@ -100,6 +100,7 @@
       </div>
       <img id="vista" alt="Página seleccionada">
       <p class="ayuda" style="margin-top:8px" id="vistaInfo"></p>
+      <p class="aviso" id="avisoRevisor" style="display:none;margin-top:8px;font-size:14px"></p>
       <div class="botones" style="margin-top:10px">
         <button onclick="descargar('dibujo')">⬇️ Descargar el dibujo</button>
         <button onclick="descargar('pagina')">⬇️ Descargar la página</button>
@@ -235,7 +236,10 @@ function cargar() {
       if (!Array.isArray(paginas) || !paginas.length) { aviso('No hay páginas guardadas para este libro. Solo se pueden editar los libros generados a partir de ahora (o el enlace no es correcto).', true); return; }
       paginas.forEach(function (p) { p.pagina = parseInt(p.pagina, 10); });
       paginas.sort(function (a, b) { return a.pagina - b.pagina; });
-      aviso('Toca una página para editarla. Hay ' + paginas.length + ' páginas.');
+      var marcadas = paginas.filter(function (p) { return problemas(p).length; }).map(function (p) { return p.pagina; });
+      aviso('Toca una página para editarla. Hay ' + paginas.length + ' páginas.' + (marcadas.length
+        ? '<br>⚠️ El revisor automático ha marcado ' + (marcadas.length > 1 ? 'las páginas ' : 'la página ') + marcadas.join(', ') + ': míralas primero (el resto ya las ha dado por buenas).'
+        : ''));
       $('barraOrden').style.display = '';
       pintarRejilla();
     })
@@ -246,7 +250,8 @@ function pintarRejilla() {
   var r = $('rejilla'); r.innerHTML = '';
   paginas.forEach(function (p, i) {
     var d = document.createElement('div'); d.className = 'mini' + (actual === i ? ' activa' : '');
-    d.innerHTML = '<img loading="lazy" alt=""><span>Página ' + p.pagina + '</span>';
+    d.innerHTML = '<img loading="lazy" alt=""><span>' + (problemas(p).length ? '⚠️ ' : '') + 'Página ' + p.pagina + '</span>';
+    if (problemas(p).length) d.style.borderColor = '#E2B97A';
     // Miniatura de 300 px (con la página entera, la rejilla cargaba decenas de MB)
     d.querySelector('img').src = p.url + (/hcti\.io/.test(p.url) ? '?width=300' + (p.v ? '&v=' + p.v : '') : (p.v ? '?v=' + p.v : ''));
     d.onclick = function () { abrir(i); };
@@ -260,6 +265,14 @@ function pintarRejilla() {
     r.appendChild(f);
     pintarCierre(f.querySelector('.cierre'));
   }
+}
+
+// Revisor automático (Claude): cada página nueva se revisa al dibujarla y, si falla algo, ChatGPT la arregla y se
+// vuelve a revisar. En p.revision queda «ok» o lo que sigue fallando (JSON con «problemas», en español)
+function problemas(p) {
+  var r = (p.revision || '').trim();
+  if (!r || r === 'ok') return [];
+  try { var j = JSON.parse(r); return (j.problemas && j.problemas.length) ? j.problemas : ['El revisor ha visto algo que no le convence en esta página.']; } catch (e) { return [r]; }
 }
 
 // Datos del pedido para la página «Fin»: diseño de la portada (lo llevan las páginas) y nombres (de la hoja de pedidos)
@@ -319,6 +332,9 @@ function abrir(i) {
   $('bloqueDibujo').style.display = completa ? 'none' : '';
   $('avisoCompleta').style.display = completa ? '' : 'none';
   $('vistaInfo').textContent = completa ? '' : soloDibujo ? 'Esta es una página de solo ilustración (sin texto).' : '';
+  var pr = problemas(p);
+  $('avisoRevisor').style.display = pr.length ? '' : 'none';
+  $('avisoRevisor').innerHTML = pr.length ? '<b>⚠️ El revisor automático ve esto:</b><br>• ' + pr.map(function (t) { return String(t).replace(/</g, '&lt;'); }).join('<br>• ') : '';
   $('fTitulo').value = aEditable(titulo);
   $('fTexto').value = aEditable(texto);
   $('fDibujo').value = ''; $('fEscena').value = ''; $('fNuevoTitulo').value = ''; $('fNuevoTexto').value = ''; $('fNuevaEscena').value = ''; var sel = $('fRefPagina'); sel.innerHTML = '<option value="">Ninguna</option>';
