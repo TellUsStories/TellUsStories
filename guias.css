@@ -75,3 +75,14 @@ footer a { text-decoration: none; color: var(--boton); }
   section { padding-block: 48px; }
   .precio .cifras { justify-content: center; }
 }
+/* Páginas de ejemplo del libro (dos figuras lado a lado; en el móvil, más pequeñas) */
+.ejemplo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 28px; max-width: 760px; }
+.ejemplo figure { margin: 0; }
+.ejemplo img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 18px 34px -20px rgba(40, 25, 10, .45); }
+.ejemplo figcaption { font-size: 14px; color: var(--suave); font-style: italic; text-align: center; margin-top: 8px; }
+@media (max-width: 900px) { .ejemplo { gap: 12px; } .ejemplo figcaption { font-size: 13px; } }
+
+/* Foto apaisada en la cabecera (collage de familias): más ancha que las portadas verticales */
+.hero:has(figure.ancha) { grid-template-columns: .85fr 1.15fr; gap: 40px; }
+.hero figure.ancha { max-width: 680px; }
+@media (max-width: 900px) { .hero:has(figure.ancha) { grid-template-columns: 1fr; } .hero figure.ancha { max-width: 100%; } }
