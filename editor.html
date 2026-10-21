@@ -391,7 +391,18 @@ function validarYa() {
   // Se llama al aviso de Make desde la misma página (abrir otra pestaña lo bloqueaban los navegadores)
   aviso('Validando el libro…');
   fetch(APROBAR + '?id=' + encodeURIComponent(CARPETA) + '&accion=aprobar', { mode: 'no-cors' })
-    .then(function () { aviso('✅ Libro validado. Ya está marcado como aprobado en la hoja de pedidos. En unos minutos te llega el email con el PDF completo, y después el del borrador en Gelato.'); window.scrollTo(0, 0); })
+    .then(function () {
+      // El borrador de Gelato tarda ~1 minuto en crearse: el botón lleva a la lista de pedidos de Gelato (sale el
+      // primero). El email del borrador trae además el enlace directo a ese pedido.
+      var espera = 60;
+      var pinta = function () {
+        aviso('✅ Libro validado. Ya está marcado como aprobado en la hoja de pedidos; el PDF se guarda en la carpeta del pedido y te llega por email.' +
+          '<br><br>' + (espera > 0 ? '⏳ Preparando el borrador en Gelato… (unos ' + espera + ' s)' : '🖨️ El borrador ya está en Gelato: revisa la vista previa y confírmalo allí.') +
+          '<br><a class="boton-gelato" href="https://dashboard.gelato.com/orders" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;padding:12px 22px;border-radius:100px;background:#4A2C1F;color:#FBFAF7;font-weight:800;text-decoration:none">Ver el pedido en Gelato →</a>');
+      };
+      pinta(); window.scrollTo(0, 0);
+      var t = setInterval(function () { espera -= 5; pinta(); if (espera <= 0) clearInterval(t); }, 5000);
+    })
     .catch(function () { aviso('⚠️ No se ha podido validar (sin conexión). Vuelve a intentarlo.', true); });
 }
 
