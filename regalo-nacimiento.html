@@ -18,8 +18,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="guias.css?v=1">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="guias.css?v=9">
+<script src="efectos.js?v=4" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,10 +46,10 @@
     {
       "@type": "FAQPage",
       "mainEntity": [
-        { "@type": "Question", "name": "¿De quién es la historia del libro?", "acceptedAnswer": { "@type": "Answer", "text": "De quien elijáis: de mamá, de papá o de uno de los abuelos. El libro cuenta su vida y la llegada del bebé, y está escrito para que el pequeño la lea cuando crezca." } },
-        { "@type": "Question", "name": "¿Sale el bebé en el libro?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Su llegada tiene su propio momento en la historia, y el libro se dirige a él o a ella por su nombre." } },
-        { "@type": "Question", "name": "¿Es un buen regalo para unos nuevos abuelos?", "acceptedAnswer": { "@type": "Answer", "text": "Mucho. Podéis hacer el libro con la historia del abuelo o de la abuela, contada a su primer nieto: un regalo para los dos." } },
-        { "@type": "Question", "name": "¿Cuánto cuesta?", "acceptedAnswer": { "@type": "Answer", "text": "45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos." } }
+        { "@type": "Question", "name": "¿De quién cuenta la historia?", "acceptedAnswer": { "@type": "Answer", "text": "De quien tú elijas: de sus padres, de sus abuelos o de cualquier persona de la familia. El libro está escrito para que el bebé la descubra cuando crezca." } },
+        { "@type": "Question", "name": "¿Es un buen regalo de bautizo?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Es un regalo que no se queda pequeño ni se pasa de moda, y que el niño guardará toda la vida." } },
+        { "@type": "Question", "name": "¿Lo pueden pedir los abuelos?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. Muchos abuelos lo regalan con su propia historia, para que su nuevo nieto los conozca de verdad." } },
+        { "@type": "Question", "name": "¿Con cuánto tiempo hay que pedirlo?", "acceptedAnswer": { "@type": "Answer", "text": "El libro tarda entre 2 y 3 semanas desde que nos contáis la historia." } }
       ]
     }
   ]
@@ -66,44 +67,66 @@
 
 <header class="wrap hero">
   <div>
-    <span class="eyebrow">Nacimiento</span>
+    <p class="tachon vivo" data-nombres="MAMÁ:Laura,PAPÁ:Marc,ABUELA:Rosa,ABUELO:Paco" aria-hidden="true"><span class="eti">MAMÁ</span><span class="nombre">Laura</span></p>
     <h1>Un regalo para un recién nacido: <em>la historia de su familia.</em></h1>
-    <p class="intro">Un bebé llega a una familia llena de historias que todavía no conoce. Convertimos la historia real de sus padres o de sus abuelos en un <strong>cuento personalizado ilustrado en acuarela</strong>, para que el día que aprenda a leer descubra de dónde viene y cuánto le esperaban.</p>
+    <p class="intro">Un bebé llega a una familia llena de historias. Convertimos la de sus padres o la de sus abuelos en un <strong>cuento personalizado ilustrado en acuarela</strong>, para que cuando crezca descubra de dónde viene.</p>
     <a class="boton" href="/formulario-nuevo">Crear su libro →</a>
   </div>
-  <figure>
-    <img src="img/portada-mosaico.jpg" width="832" height="1176" alt="Portada en acuarela de un cuento personalizado con un marco de mosaico de colores">
-    <figcaption>Una de nuestras portadas en acuarela.</figcaption>
+  <figure class="libro foto vertical">
+    <div class="hojas">
+      <img src="img/portada-mosaico.jpg" width="832" height="1176" alt="Portada en acuarela de un cuento personalizado con un marco de mosaico de colores">
+    </div>
   </figure>
 </header>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Por qué es distinto</span>
-  <h2>Un regalo que crece <em>con el bebé.</em></h2>
-  <div class="texto-largo">
-    <p>La mayoría de regalos de nacimiento se quedan pequeños en unos meses. Este no: es un libro para leerle ahora y para que lo lea él o ella dentro de unos años. Cuenta la vida de mamá, de papá o de sus abuelos, desde que eran niños hasta el día en que llegó el bebé.</p>
-    <p>Lo escribimos desde cero con <strong>sus recuerdos reales</strong> y lo ilustramos en acuarela con <strong>sus rasgos reales</strong> a partir de una foto. Es perfecto para regalar a unos padres primerizos o a unos <strong>nuevos abuelos</strong>.</p>
-    <p>Si sois los padres, también podéis hacerlo con vuestra propia historia. Y si es para los abuelos, mira el libro para abuelos.</p>
+  <span class="eyebrow">Antes de que llegaras</span>
+  <h2 class="aparece">Los papás de hoy <em>y los de antes del bebé.</em></h2>
+  <div class="texto-largo aparece">
+    <p>Ahora viven entre biberones y pañales. Pero antes de que llegara el bebé tuvieron toda una vida que algún día le encantará conocer. Gira las tarjetas:</p>
+  </div>
+  <div class="giros">
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:0">
+      <span class="cara delante"><small>Hoy</small><p>Duerme cuatro horas y lo llama "una buena noche".</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras vichy-rosa"><span class="etiqueta"><small>Antes</small><p>No se levantaba antes de las doce un domingo.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:1">
+      <span class="cara delante"><small>Hoy dice</small><p>"Bajito, que se despierta."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras vichy-verde"><span class="etiqueta"><small>Antes</small><p>Tocaba la batería en el garaje de sus padres.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:2">
+      <span class="cara delante"><small>Hoy</small><p>Lleva la bolsa del bebé a todas partes.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras rayas-coral"><span class="etiqueta"><small>Antes</small><p>Se fue a Londres con una mochila y doscientos euros.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Qué cuenta el libro</span>
-  <h2>Cinco capítulos, <em>una familia.</em></h2>
-  <ol class="capitulos">
-    <li><b>1</b><h3>Infancia</h3><span>Cómo eran de pequeños mamá, papá o los abuelos.</span></li>
-    <li><b>2</b><h3>Juventud</h3><span>Sus sueños, sus viajes y sus aventuras.</span></li>
-    <li><b>3</b><h3>Amor y familia</h3><span>Cómo se conocieron y la llegada del bebé.</span></li>
-    <li><b>4</b><h3>Juntos hoy</h3><span>Los primeros días y los planes con el pequeño.</span></li>
-    <li><b>5</b><h3>El legado</h3><span>Lo que quieren que sepa cuando sea mayor.</span></li>
+  <span class="eyebrow">Una cápsula del tiempo</span>
+  <h2 class="aparece">Un libro para leer hoy <em>y para cuando crezca.</em></h2>
+  <ol class="escenas aparece">
+    <li style="--i:0"><b>Ahora</b><span>Los recuerdos están frescos: cómo se conocieron, cómo esperaron al bebé, el día que nació.</span></li>
+    <li style="--i:1"><b>Sus primeros años</b><span>Un cuento para leer juntos antes de dormir, con su familia como protagonista.</span></li>
+    <li style="--i:2"><b>Cuando empiece a preguntar</b><span>"¿Y tú qué hacías de pequeña?" Ya tendréis la respuesta ilustrada.</span></li>
+    <li style="--i:3"><b>Para siempre</b><span>Un libro que guardará toda la vida y que algún día leerá a sus propios hijos.</span></li>
   </ol>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <div class="precio">
+  <span class="eyebrow">¿De quién es la historia?</span>
+  <h2 class="aparece">Dos formas <em>de regalarlo.</em></h2>
+  <div class="pasos">
+    <div class="aparece" style="--i:0"><h3>La de sus padres</h3><p>Ideal como regalo de los abuelos o de los amigos: la historia de mamá y papá, contada para su bebé.</p></div>
+    <div class="aparece" style="--i:1"><h3>La de sus abuelos</h3><p>Para un nuevo nieto: los abuelos cuentan su vida para que el bebé la descubra cuando crezca.</p></div>
+    <div class="aparece" style="--i:2"><h3>Para su primer año</h3><p>Un regalo de bautizo o de primer cumpleaños que no se queda pequeño como la ropa.</p></div>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <div class="precio aparece">
     <div>
-      <h2>Un regalo para <em>toda la vida.</em></h2>
-      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Escrito a partir de sus recuerdos</li><li>21 × 28 cm · en casa en 2-3 semanas</li></ul>
+      <h2>Un regalo <em>que crece con él.</em></h2>
+      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Con sus rasgos reales a partir de una foto</li><li>Para leer hoy y guardar siempre</li></ul>
     </div>
     <div>
       <div class="cifras"><div class="cifra"><small>Tapa blanda</small><b>45 €</b></div><div class="cifra"><small>Tapa dura</small><b>63 €</b></div></div>
@@ -115,12 +138,12 @@
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Preguntas frecuentes</span>
-  <h2>Lo que más nos <em>preguntáis.</em></h2>
-  <div class="faq">
-    <details><summary>¿De quién es la historia del libro?</summary><p>De quien elijáis: de mamá, de papá o de uno de los abuelos. El libro cuenta su vida y la llegada del bebé, y está escrito para que el pequeño la lea cuando crezca.</p></details>
-    <details><summary>¿Sale el bebé en el libro?</summary><p>Sí. Su llegada tiene su propio momento en la historia, y el libro se dirige a él o a ella por su nombre.</p></details>
-    <details><summary>¿Es un buen regalo para unos nuevos abuelos?</summary><p>Mucho. Podéis hacer el libro con la historia del abuelo o de la abuela, contada a su primer nieto: un regalo para los dos.</p></details>
-    <details><summary>¿Cuánto cuesta?</summary><p>45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos.</p></details>
+  <h2 class="aparece">Lo que más nos <em>preguntáis.</em></h2>
+  <div class="faq aparece">
+    <details><summary>¿De quién cuenta la historia?</summary><p>De quien tú elijas: de sus padres, de sus abuelos o de cualquier persona de la familia. El libro está escrito para que el bebé la descubra cuando crezca.</p></details>
+    <details><summary>¿Es un buen regalo de bautizo?</summary><p>Sí. Es un regalo que no se queda pequeño ni se pasa de moda, y que el niño guardará toda la vida.</p></details>
+    <details><summary>¿Lo pueden pedir los abuelos?</summary><p>Claro. Muchos abuelos lo regalan con su propia historia, para que su nuevo nieto los conozca de verdad.</p></details>
+    <details><summary>¿Con cuánto tiempo hay que pedirlo?</summary><p>El libro tarda entre 2 y 3 semanas desde que nos contáis la historia.</p></details>
   </div>
 </section>
 

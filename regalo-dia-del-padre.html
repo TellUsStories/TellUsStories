@@ -18,8 +18,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="guias.css?v=2">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="guias.css?v=9">
+<script src="efectos.js?v=4" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -46,9 +47,9 @@
       "@type": "FAQPage",
       "mainEntity": [
         { "@type": "Question", "name": "¿Con cuánto tiempo tengo que pedirlo para el Día del Padre?", "acceptedAnswer": { "@type": "Answer", "text": "El libro llega entre 2 y 3 semanas después de enviarnos la historia. El Día del Padre en España es el 19 de marzo, así que lo ideal es enviarnos la historia a finales de febrero." } },
-        { "@type": "Question", "name": "¿Puede ser una sorpresa?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. La historia nos la puede contar mamá, los abuelos, un hermano o un amigo, sin que papá lo sepa. Respondéis con notas de voz y se guarda solo." } },
-        { "@type": "Question", "name": "¿Y si papá es de pocas palabras?", "acceptedAnswer": { "@type": "Answer", "text": "No hace falta que lo cuente él. Las preguntas son guiadas y cortas, y cualquier persona que le conozca bien puede responderlas. Con unos cuantos recuerdos ya tenemos una historia preciosa." } },
-        { "@type": "Question", "name": "¿Cuánto cuesta?", "acceptedAnswer": { "@type": "Answer", "text": "45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos." } }
+        { "@type": "Question", "name": "¿Y si papá es de pocas palabras?", "acceptedAnswer": { "@type": "Answer", "text": "No hace falta que lo cuente él. Cualquier persona que le conozca bien puede contarnos su historia, y con unos cuantos recuerdos ya tenemos un libro precioso." } },
+        { "@type": "Question", "name": "¿Sirve para su primer Día del Padre?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, y es un regalo muy especial: su historia contada para su bebé, para que la lea cuando crezca." } },
+        { "@type": "Question", "name": "¿Pueden participar los abuelos o los tíos?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. Quien le conoció de pequeño o de joven puede aportar anécdotas que ni sus hijos saben. Cuantos más recuerdos, más completo queda el libro." } }
       ]
     }
   ]
@@ -66,54 +67,77 @@
 
 <header class="wrap hero">
   <div>
-    <span class="eyebrow">Día del Padre</span>
-    <h1>Un regalo para el Día del Padre <em>que cuenta quién era antes de ser papá.</em></h1>
-    <p class="intro">Antes de ser "papá" fue un niño que se subía a todos los árboles, un chico con planes enormes y alguien que un día se enamoró. Convertimos su historia real en un <strong>cuento personalizado ilustrado en acuarela</strong>, para que sus hijos lo descubran y le miren con otros ojos.</p>
+    <p class="tachon vivo" data-nombres="Pedro,Jordi,Javi,Toni,Manolo" aria-hidden="true"><span class="eti">PAPÁ</span><span class="nombre">Pedro</span></p>
+    <h1>Un regalo para el Día del Padre <em>con la historia que nunca cuenta.</em></h1>
+    <p class="intro">Papá es de los que dicen "eso no tiene importancia" cuando le preguntas por su juventud. Nosotros creemos que sí la tiene. Convertimos su historia real en un <strong>cuento personalizado ilustrado en acuarela</strong>, para que sus hijos descubran al chico que fue y él se emocione al verlo.</p>
     <a class="boton" href="/formulario-nuevo">Crear su libro →</a>
   </div>
-  <figure class="ancha">
-    <img src="img/banner.jpg" width="1774" height="887" alt="Niños leyendo sus cuentos personalizados ilustrados en acuarela, &quot;El universo de Sofía&quot; y &quot;El universo de Carmen&quot;">
-    <figcaption>Un libro para leer juntos y guardar siempre.</figcaption>
+  <figure class="libro foto">
+    <div class="hojas">
+      <img src="img/banner.jpg" width="1774" height="887" alt="Un abuelo regala a su nieta el libro &quot;El universo de Mateo&quot; y dos niños leen sus cuentos personalizados ilustrados en acuarela">
+    </div>
   </figure>
 </header>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Por qué es distinto</span>
-  <h2>Un regalo personalizado <em>con su historia de verdad.</em></h2>
-  <div class="texto-largo">
-    <p>Otra corbata, otra taza con su nombre… Este año, regálale algo que nadie más puede tener: <strong>su propia historia</strong>, contada para sus hijos. Dónde creció, qué quería ser de mayor, sus primeras aventuras, cómo conoció a su pareja y qué sintió cuando llegó cada uno de sus hijos.</p>
-    <p>Lo escribimos desde cero con sus recuerdos reales y lo ilustramos en acuarela con <strong>sus rasgos reales</strong> a partir de una foto. Un libro de más de 25 páginas que sus hijos leerán una y otra vez.</p>
-    <p>Y no es solo para papá: también lo puedes hacer para mamá, para los abuelos, para los tíos o con tu propia historia.</p>
+  <span class="eyebrow">Lo que sus hijos no saben</span>
+  <h2 class="aparece">El papá de hoy <em>y el chico de antes.</em></h2>
+  <div class="texto-largo aparece">
+    <p>Los hijos conocen al papá que apaga luces y se duerme en el sofá. Casi nunca conocen al que tuvo una banda, se compró su primera moto o recorrió medio país en autostop. Gira las tarjetas:</p>
+  </div>
+  <div class="giros">
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:0">
+      <span class="cara delante"><small>Hoy dice</small><p>"Eso no es música, es ruido."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras rayas-verdes"><span class="etiqueta"><small>Antes</small><p>Se tiñó el pelo de verde para un concierto.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:1">
+      <span class="cara delante"><small>Hoy</small><p>Se duerme en el sofá viendo las noticias.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras vichy-verde"><span class="etiqueta"><small>Antes</small><p>Tuvo una época punk, con cresta incluida.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:2">
+      <span class="cara delante"><small>Hoy dice</small><p>"Apaga la luz, que no somos ricos."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras ajedrez"><span class="etiqueta"><small>Antes</small><p>Se gastó la paga entera en una chupa de cuero.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <span class="eyebrow">Este año, algo distinto</span>
+  <h2 class="aparece">Otra corbata, <em>no.</em></h2>
+  <div class="versus">
+    <div class="siempre aparece">
+      <small>Lo de cada año</small>
+      <ul>
+        <li style="--i:0">Una corbata</li>
+        <li style="--i:1">Una colonia</li>
+        <li style="--i:2">Unos calcetines divertidos</li>
+        <li style="--i:3">Una taza con "el mejor papá"</li>
+      </ul>
+    </div>
+    <div class="suyo aparece" style="--i:1">
+      <small>Lo que solo vosotros podéis regalarle</small>
+      <p class="grande">Su propia historia, contada para sus hijos.</p>
+      <p>Un libro que no se gasta, no se pierde en un cajón y que sus hijos querrán leer otra vez cuando sean mayores.</p>
+    </div>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Qué cuenta el libro</span>
-  <h2>Cinco capítulos, <em>una vida.</em></h2>
-  <ol class="capitulos">
-    <li><b>1</b><h3>Infancia</h3><span>Cómo era de pequeño, sus travesuras y sus lugares.</span></li>
-    <li><b>2</b><h3>Juventud</h3><span>Sus sueños, sus aventuras y las decisiones valientes.</span></li>
-    <li><b>3</b><h3>Amor y familia</h3><span>Cómo empezó todo y la llegada de cada hijo.</span></li>
-    <li><b>4</b><h3>Con sus hijos hoy</h3><span>Los planes, los rituales y los recuerdos que comparten.</span></li>
-    <li><b>5</b><h3>El legado</h3><span>Lo que quiere que sepan cuando sean mayores.</span></li>
+  <h2 class="aparece">Su vida <em>en cuatro escenas.</em></h2>
+  <ol class="escenas aparece">
+    <li style="--i:0"><b>El niño del barrio</b><span>Dónde creció, a qué jugaba y la travesura que todavía le hace reír.</span></li>
+    <li style="--i:1"><b>El chico con planes</b><span>Lo que soñaba ser, sus amigos de siempre y sus primeras aventuras.</span></li>
+    <li style="--i:2"><b>El día que fue papá</b><span>Cómo conoció a su pareja y qué sintió al tener a cada hijo en brazos.</span></li>
+    <li style="--i:3"><b>El papá de hoy</b><span>Lo que comparte con sus hijos y lo que quiere que recuerden siempre.</span></li>
   </ol>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Cómo funciona</span>
-  <h2>Tú solo tienes que <em>contarlo.</em></h2>
-  <div class="pasos">
-    <div><h3>1. Nos lo cuentas</h3><p>Preguntas guiadas sobre su vida. Respondes con notas de voz, a tu ritmo. Puede ser una sorpresa.</p></div>
-    <div><h3>2. Lo escribimos e ilustramos</h3><p>Convertimos los recuerdos en un cuento en acuarela, con sus rasgos reales a partir de una foto.</p></div>
-    <div><h3>3. Llega a casa</h3><p>Impreso en 21 × 28 cm, en tapa blanda o dura, listo para regalar en 2 o 3 semanas.</p></div>
-  </div>
-</section>
-
-<section class="wrap" style="padding-top:0">
-  <div class="precio">
+  <div class="precio aparece">
     <div>
       <h2>Para el <em>19 de marzo.</em></h2>
-      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Escrito a partir de sus recuerdos</li><li>Pídelo con 2 semanas de margen</li></ul>
+      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Él, con sus rasgos reales a partir de una foto</li><li>Pídelo a principios de marzo y vas tranquilo</li></ul>
     </div>
     <div>
       <div class="cifras"><div class="cifra"><small>Tapa blanda</small><b>45 €</b></div><div class="cifra"><small>Tapa dura</small><b>63 €</b></div></div>
@@ -125,15 +149,14 @@
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Preguntas frecuentes</span>
-  <h2>Lo que más nos <em>preguntáis.</em></h2>
-  <div class="faq">
+  <h2 class="aparece">Lo que más nos <em>preguntáis.</em></h2>
+  <div class="faq aparece">
     <details><summary>¿Con cuánto tiempo tengo que pedirlo para el Día del Padre?</summary><p>El libro llega entre 2 y 3 semanas después de enviarnos la historia. El Día del Padre en España es el 19 de marzo, así que lo ideal es enviarnos la historia a finales de febrero.</p></details>
-    <details><summary>¿Puede ser una sorpresa?</summary><p>Sí. La historia nos la puede contar mamá, los abuelos, un hermano o un amigo, sin que papá lo sepa. Respondéis con notas de voz y se guarda solo.</p></details>
-    <details><summary>¿Y si papá es de pocas palabras?</summary><p>No hace falta que lo cuente él. Las preguntas son guiadas y cortas, y cualquier persona que le conozca bien puede responderlas. Con unos cuantos recuerdos ya tenemos una historia preciosa.</p></details>
-    <details><summary>¿Cuánto cuesta?</summary><p>45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos.</p></details>
+    <details><summary>¿Y si papá es de pocas palabras?</summary><p>No hace falta que lo cuente él. Cualquier persona que le conozca bien puede contarnos su historia, y con unos cuantos recuerdos ya tenemos un libro precioso.</p></details>
+    <details><summary>¿Sirve para su primer Día del Padre?</summary><p>Sí, y es un regalo muy especial: su historia contada para su bebé, para que la lea cuando crezca.</p></details>
+    <details><summary>¿Pueden participar los abuelos o los tíos?</summary><p>Claro. Quien le conoció de pequeño o de joven puede aportar anécdotas que ni sus hijos saben. Cuantos más recuerdos, más completo queda el libro.</p></details>
   </div>
 </section>
-
 <section class="wrap cierre" style="padding-top:0">
   <h2>Su historia merece <em>ser contada.</em></h2>
   <a class="boton" href="/formulario-nuevo">Crear su libro →</a>

@@ -61,11 +61,14 @@
   });
 
   document.querySelectorAll('.tachon[data-nombres]').forEach(function (t) {
-    var nombres = t.getAttribute('data-nombres').split(','), i = 0, n = t.querySelector('.nombre');
+    // Cada nombre puede traer su etiqueta delante ("ABUELA:Carmen"); si no, se queda la que hay
+    var nombres = t.getAttribute('data-nombres').split(','), i = 0, n = t.querySelector('.nombre'), e = t.querySelector('.eti');
     setInterval(function () {
       i = (i + 1) % nombres.length;
+      var partes = nombres[i].split(':');
       t.classList.remove('vivo'); void t.offsetWidth;
-      n.textContent = nombres[i]; t.classList.add('vivo');
+      if (partes.length > 1) e.textContent = partes[0];
+      n.textContent = partes[partes.length - 1]; t.classList.add('vivo');
     }, 4200);
   });
 })();

@@ -18,8 +18,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="guias.css?v=1">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="guias.css?v=9">
+<script src="efectos.js?v=4" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,10 +46,10 @@
     {
       "@type": "FAQPage",
       "mainEntity": [
-        { "@type": "Question", "name": "¿Para qué cumpleaños es buena idea?", "acceptedAnswer": { "@type": "Answer", "text": "Para cualquiera, pero sobre todo para los redondos: 50, 60, 70, 80 o 90 años. Es el momento perfecto para contar toda una vida." } },
-        { "@type": "Question", "name": "¿Podemos participar varios de la familia?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Quien encarga el libro responde a las preguntas con notas de voz, y puede pedir ayuda a hermanos, hijos o amigos para recordar anécdotas." } },
-        { "@type": "Question", "name": "¿Llega a tiempo para el cumpleaños?", "acceptedAnswer": { "@type": "Answer", "text": "El libro tarda entre 2 y 3 semanas. Pídelo con al menos 2 semanas de margen antes de la fecha." } },
-        { "@type": "Question", "name": "¿Cuánto cuesta?", "acceptedAnswer": { "@type": "Answer", "text": "45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos." } }
+        { "@type": "Question", "name": "¿Con cuánto tiempo tengo que pedirlo?", "acceptedAnswer": { "@type": "Answer", "text": "El libro tarda entre 2 y 3 semanas desde que nos contáis la historia. Pídelo con al menos 2 semanas de margen antes de la fiesta." } },
+        { "@type": "Question", "name": "¿Podemos hacerlo entre varios?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, y queda precioso. Cada persona puede aportar sus recuerdos y anécdotas, y el libro lo junta todo en una sola historia." } },
+        { "@type": "Question", "name": "¿Se puede leer en la fiesta?", "acceptedAnswer": { "@type": "Answer", "text": "Es uno de los mejores momentos: leer unas páginas en voz alta después de soplar las velas. Prepara los pañuelos." } },
+        { "@type": "Question", "name": "¿Puede ser una sorpresa?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. Lo podéis preparar sin que se entere y darle el libro el mismo día de su cumpleaños." } }
       ]
     }
   ]
@@ -66,44 +67,75 @@
 
 <header class="wrap hero">
   <div>
-    <span class="eyebrow">Cumpleaños</span>
-    <h1>Un regalo para un cumpleaños especial: <em>toda su vida, en un cuento.</em></h1>
-    <p class="intro">Sesenta, setenta, ochenta años… hay cumpleaños que merecen algo más. Convertimos su historia real en un <strong>cuento personalizado ilustrado en acuarela</strong>, para celebrar todo lo que ha vivido y que sus hijos y nietos lo descubran.</p>
+    <p class="tachon vivo" data-nombres="80 AÑOS:Rosa,70 AÑOS:Antonio,60 AÑOS:Mari Carmen,90 AÑOS:Pepe" aria-hidden="true"><span class="eti">80 AÑOS</span><span class="nombre">Rosa</span></p>
+    <h1>Un regalo original para un cumpleaños <em>de los que se celebran en grande.</em></h1>
+    <p class="intro">60, 70, 80 o 90 años dan para muchas historias. Convertimos la suya en un <strong>cuento personalizado ilustrado en acuarela</strong>, para que toda la familia la lea el día de la fiesta y los más pequeños descubran quién era antes de soplar tantas velas.</p>
     <a class="boton" href="/formulario-nuevo">Crear su libro →</a>
   </div>
-  <figure>
-    <img src="img/portada-mosaico.jpg" width="832" height="1176" alt="Portada en acuarela de un cuento personalizado con un marco de mosaico de colores">
-    <figcaption>Una de nuestras portadas en acuarela.</figcaption>
+  <figure class="libro foto vertical">
+    <div class="hojas">
+      <img src="img/portada-mosaico.jpg" width="832" height="1176" alt="Portada en acuarela de un cuento personalizado con un marco de mosaico de colores">
+    </div>
   </figure>
 </header>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Por qué es distinto</span>
-  <h2>Un regalo que dice <em>"mira todo lo que has vivido".</em></h2>
-  <div class="texto-largo">
-    <p>En un cumpleaños redondo es fácil quedarse sin ideas. Este libro cuenta su vida, de la infancia a hoy: dónde creció, qué soñaba, cómo conoció a su pareja, cómo llegaron los hijos y los nietos, y lo que quiere que la familia recuerde siempre.</p>
-    <p>Lo escribimos desde cero con <strong>sus recuerdos reales</strong> y lo ilustramos en acuarela con <strong>sus rasgos reales</strong> a partir de una foto. Abrirlo el día de su cumpleaños, rodeado de la familia, es un momento que no se olvida.</p>
-    <p>También es un regalo perfecto para una jubilación, para Navidad o para los abuelos.</p>
+  <span class="eyebrow">Muchas velas, muchas historias</span>
+  <h2 class="aparece">Quien cumple hoy <em>y quien soplaba antes.</em></h2>
+  <div class="texto-largo aparece">
+    <p>Detrás de cada cumpleaños redondo hay una vida llena de anécdotas que los nietos ni se imaginan. Gira las tarjetas:</p>
+  </div>
+  <div class="giros">
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:0">
+      <span class="cara delante"><small>Hoy dice</small><p>"Yo ya no estoy para fiestas."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras rayas-mandarina"><span class="etiqueta"><small>Antes</small><p>Cerraba el baile del pueblo todos los sábados.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:1">
+      <span class="cara delante"><small>Hoy dice</small><p>"No quiero regalos, de verdad."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras cuadros"><span class="etiqueta"><small>Antes</small><p>Pidió una bici roja tres cumpleaños seguidos.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:2">
+      <span class="cara delante"><small>Hoy</small><p>Sopla las velas con ayuda de los nietos.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras vichy-rosa"><span class="etiqueta"><small>Antes</small><p>Celebró sus 18 con una fiesta que aún recuerda todo el barrio.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Qué cuenta el libro</span>
-  <h2>Cinco capítulos, <em>una vida.</em></h2>
-  <ol class="capitulos">
-    <li><b>1</b><h3>Infancia</h3><span>Cómo era de pequeño o pequeña y sus travesuras.</span></li>
-    <li><b>2</b><h3>Juventud</h3><span>Sus sueños, sus viajes y sus pasiones.</span></li>
-    <li><b>3</b><h3>Amor y familia</h3><span>Cómo empezó todo y la llegada de cada hijo.</span></li>
-    <li><b>4</b><h3>Hoy</h3><span>Su vida ahora y lo que comparte con los suyos.</span></li>
-    <li><b>5</b><h3>El legado</h3><span>Lo que quiere que sepan sus hijos y nietos.</span></li>
-  </ol>
+  <span class="eyebrow">Una idea para cada edad</span>
+  <h2 class="aparece">Cada cumpleaños <em>tiene su historia.</em></h2>
+  <div class="pasos">
+    <div class="aparece" style="--i:0"><h3>60 y 70 años</h3><p>Justo cuando empiezan a ser abuelos. El libro les presenta a sus nietos tal como eran de jóvenes.</p></div>
+    <div class="aparece" style="--i:1"><h3>80 años</h3><p>Ocho décadas dan para un libro precioso: el pueblo, los bailes, la familia que formaron.</p></div>
+    <div class="aparece" style="--i:2"><h3>90 años o más</h3><p>Un homenaje en vida, para que los bisnietos conozcan su historia contada con cariño.</p></div>
+  </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <div class="precio">
+  <span class="eyebrow">Entre todos</span>
+  <h2 class="aparece">El regalo perfecto <em>para hacer en familia.</em></h2>
+  <div class="versus">
+    <div class="siempre aparece">
+      <small>Los regalos de grupo de siempre</small>
+      <ul>
+        <li style="--i:0">Una cesta de productos</li>
+        <li style="--i:1">Una cena en un restaurante</li>
+        <li style="--i:2">Un marco con fotos</li>
+      </ul>
+    </div>
+    <div class="suyo aparece" style="--i:1">
+      <small>Lo que podéis hacer juntos</small>
+      <p class="grande">Cada uno aporta un recuerdo, y el libro lo junta todo.</p>
+      <p>Hijos, nietos, hermanos y amigos. El precio se reparte entre todos y el regalo es de todos.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <div class="precio aparece">
     <div>
-      <h2>Un regalo para <em>toda la vida.</em></h2>
-      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Escrito a partir de sus recuerdos</li><li>21 × 28 cm · en casa en 2-3 semanas</li></ul>
+      <h2>Para el día <em>de la fiesta.</em></h2>
+      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Con sus rasgos reales a partir de una foto</li><li>Pídelo con 2 semanas de margen</li></ul>
     </div>
     <div>
       <div class="cifras"><div class="cifra"><small>Tapa blanda</small><b>45 €</b></div><div class="cifra"><small>Tapa dura</small><b>63 €</b></div></div>
@@ -115,12 +147,12 @@
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Preguntas frecuentes</span>
-  <h2>Lo que más nos <em>preguntáis.</em></h2>
-  <div class="faq">
-    <details><summary>¿Para qué cumpleaños es buena idea?</summary><p>Para cualquiera, pero sobre todo para los redondos: 50, 60, 70, 80 o 90 años. Es el momento perfecto para contar toda una vida.</p></details>
-    <details><summary>¿Podemos participar varios de la familia?</summary><p>Sí. Quien encarga el libro responde a las preguntas con notas de voz, y puede pedir ayuda a hermanos, hijos o amigos para recordar anécdotas.</p></details>
-    <details><summary>¿Llega a tiempo para el cumpleaños?</summary><p>El libro tarda entre 2 y 3 semanas. Pídelo con al menos 2 semanas de margen antes de la fecha.</p></details>
-    <details><summary>¿Cuánto cuesta?</summary><p>45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos.</p></details>
+  <h2 class="aparece">Lo que más nos <em>preguntáis.</em></h2>
+  <div class="faq aparece">
+    <details><summary>¿Con cuánto tiempo tengo que pedirlo?</summary><p>El libro tarda entre 2 y 3 semanas desde que nos contáis la historia. Pídelo con al menos 2 semanas de margen antes de la fiesta.</p></details>
+    <details><summary>¿Podemos hacerlo entre varios?</summary><p>Sí, y queda precioso. Cada persona puede aportar sus recuerdos y anécdotas, y el libro lo junta todo en una sola historia.</p></details>
+    <details><summary>¿Se puede leer en la fiesta?</summary><p>Es uno de los mejores momentos: leer unas páginas en voz alta después de soplar las velas. Prepara los pañuelos.</p></details>
+    <details><summary>¿Puede ser una sorpresa?</summary><p>Claro. Lo podéis preparar sin que se entere y darle el libro el mismo día de su cumpleaños.</p></details>
   </div>
 </section>
 

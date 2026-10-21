@@ -18,8 +18,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="guias.css?v=2">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="guias.css?v=9">
+<script src="efectos.js?v=4" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,10 +46,10 @@
     {
       "@type": "FAQPage",
       "mainEntity": [
-        { "@type": "Question", "name": "¿Quién nos cuenta la historia del abuelo o la abuela?", "acceptedAnswer": { "@type": "Answer", "text": "Quien quiera: el propio abuelo o la abuela, sus hijos o cualquier familiar. Respondéis a preguntas guiadas con notas de voz, a vuestro ritmo, y se guarda solo. Podéis repartiros las respuestas entre varios." } },
-        { "@type": "Question", "name": "¿Salen los nietos en el libro?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Cada nieto tiene su momento en la historia: cuándo llegó, cómo es y lo que comparte con su abuelo o su abuela. El libro está escrito para ellos." } },
-        { "@type": "Question", "name": "¿Y si el abuelo o la abuela ya no está?", "acceptedAnswer": { "@type": "Answer", "text": "También se puede hacer en su memoria, con lo que recordáis de su vida, para que los nietos sepan quién era." } },
-        { "@type": "Question", "name": "¿Cuánto cuesta y cuánto tarda?", "acceptedAnswer": { "@type": "Answer", "text": "45 € en tapa blanda y 63 € en tapa dura, con el envío incluido. Llega entre 2 y 3 semanas después de enviarnos la historia." } }
+        { "@type": "Question", "name": "¿Es solo para abuelos?", "acceptedAnswer": { "@type": "Answer", "text": "No. También lo hacemos para mamá, papá, los tíos o los padrinos. Esta página es para los abuelos porque es el regalo que más se pide para ellos." } },
+        { "@type": "Question", "name": "¿Pueden contarlo los propios abuelos?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. Pueden contarlo ellos con notas de voz, o pueden hacerlo sus hijos y nietos si es una sorpresa." } },
+        { "@type": "Question", "name": "¿Y si los abuelos son dos?", "acceptedAnswer": { "@type": "Answer", "text": "El libro puede contar la historia de los dos juntos: cómo eran de jóvenes, cómo se conocieron y la familia que formaron." } },
+        { "@type": "Question", "name": "¿Cuándo se celebra el Día de los Abuelos?", "acceptedAnswer": { "@type": "Answer", "text": "En España, el 26 de julio. Pídelo con al menos 2 semanas de margen para que llegue a tiempo." } }
       ]
     }
   ]
@@ -66,54 +67,55 @@
 
 <header class="wrap hero">
   <div>
-    <span class="eyebrow">Para los abuelos</span>
+    <p class="tachon vivo" data-nombres="ABUELA:Carmen,ABUELO:Paco,ABUELA:Pili,ABUELO:Manolo,ABUELA:Encarna" aria-hidden="true"><span class="eti">ABUELA</span><span class="nombre">Carmen</span></p>
     <h1>Libro personalizado para abuelos: <em>su vida, contada a sus nietos.</em></h1>
     <p class="intro">Antes de ser "el abuelo" o "la abuela" fueron niños que hacían travesuras, jóvenes con sueños enormes y una pareja que empezó de cero. Convertimos esa historia real en un <strong>cuento personalizado ilustrado en acuarela</strong>, para que los nietos descubran quién era su abuelo o su abuela antes de serlo.</p>
     <a class="boton" href="/formulario-nuevo">Crear su libro →</a>
   </div>
-  <figure class="ancha">
-    <img src="img/banner.jpg" width="1774" height="887" alt="Un abuelo regala a su nieta el libro &quot;El universo de Mateo&quot;, un cuento personalizado ilustrado en acuarela">
-    <figcaption>Un regalo que los nietos guardarán toda la vida.</figcaption>
+  <figure class="libro foto">
+    <div class="hojas">
+      <img src="img/banner.jpg" width="1774" height="887" alt="Un abuelo regala a su nieta el libro &quot;El universo de Mateo&quot;, un cuento personalizado ilustrado en acuarela">
+    </div>
   </figure>
 </header>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Por qué es distinto</span>
-  <h2>No es un cuento inventado: <em>es su historia.</em></h2>
-  <div class="texto-largo">
-    <p>La mayoría de libros personalizados ponen un nombre en una historia que ya estaba escrita. El nuestro se escribe desde cero con <strong>sus recuerdos reales</strong>: dónde nació, cómo era de pequeño o de pequeña, qué quería ser, cómo conoció a su pareja, cómo llegaron sus hijos y, después, cada uno de sus nietos.</p>
-    <p>Lo ilustramos en acuarela con <strong>sus rasgos reales</strong> a partir de una foto, en cada etapa de su vida, y termina con lo que quiere que sus nietos sepan cuando sean mayores. Es un libro para leer juntos y para guardar: un <strong>libro de recuerdos familiar</strong> que pasa de mano en mano.</p>
-    <p>Y no es solo para los abuelos: también lo puedes hacer para mamá, para papá, para los tíos, para un padrino o con tu propia historia.</p>
+  <span class="eyebrow">Lo que los nietos no saben</span>
+  <h2 class="aparece">Los abuelos de hoy <em>y los chavales de antes.</em></h2>
+  <div class="texto-largo aparece">
+    <p>Los nietos conocen al abuelo que lo arregla todo y a la abuela de las croquetas. Pero casi nadie les ha contado cómo eran a su edad. Gira las tarjetas:</p>
+  </div>
+  <div class="giros">
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:0">
+      <span class="cara delante"><small>Hoy dice</small><p>"Abrígate, que vas a coger frío."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras floral"><span class="etiqueta"><small>Antes</small><p>Se bañaba en el río en pleno noviembre.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:1">
+      <span class="cara delante"><small>Hoy</small><p>Se sabe todas las recetas de memoria.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras ikat-azul"><span class="etiqueta"><small>Antes</small><p>Quemó su primera tortilla delante de la suegra.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:2">
+      <span class="cara delante"><small>Hoy dice</small><p>"En mis tiempos esto no pasaba."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras rayas-mandarina"><span class="etiqueta"><small>Antes</small><p>Se escapaba por la ventana para ir a la verbena.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Qué cuenta el libro</span>
-  <h2>Cinco capítulos, <em>una vida.</em></h2>
-  <ol class="capitulos">
-    <li><b>1</b><h3>Infancia</h3><span>Sus travesuras, su casa y sus hermanos.</span></li>
-    <li><b>2</b><h3>Juventud</h3><span>Sus sueños, sus viajes y sus decisiones valientes.</span></li>
-    <li><b>3</b><h3>Amor y familia</h3><span>Cómo empezó todo y la llegada de cada hijo y cada nieto.</span></li>
-    <li><b>4</b><h3>Con los nietos hoy</h3><span>Los planes, las comidas y los rituales que compartís.</span></li>
-    <li><b>5</b><h3>El legado</h3><span>Lo que quiere que sus nietos sepan de mayores.</span></li>
-  </ol>
-</section>
-
-<section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Cómo funciona</span>
-  <h2>Tú solo tienes que <em>contarlo.</em></h2>
+  <span class="eyebrow">Sin que se den cuenta</span>
+  <h2 class="aparece">Cómo recoger sus recuerdos <em>sin hacer un interrogatorio.</em></h2>
   <div class="pasos">
-    <div><h3>1. Nos lo contáis</h3><p>Preguntas guiadas sobre su vida. Respondéis con notas de voz, como una conversación, a vuestro ritmo.</p></div>
-    <div><h3>2. Lo escribimos e ilustramos</h3><p>Convertimos los recuerdos en un cuento en acuarela, con sus rasgos reales a partir de una foto.</p></div>
-    <div><h3>3. Llega a casa</h3><p>Impreso en 21 × 28 cm, en tapa blanda o dura, listo para regalar en 2 o 3 semanas.</p></div>
+    <div class="aparece" style="--i:0"><h3>En la sobremesa</h3><p>Después de la comida del domingo, saca un tema: "¿Cómo era el pueblo cuando eras pequeña?". Graba una nota de voz y deja que hable.</p></div>
+    <div class="aparece" style="--i:1"><h3>Con las fotos viejas</h3><p>Abrid juntos el álbum. Cada foto despierta una historia que ni sabías que existía.</p></div>
+    <div class="aparece" style="--i:2"><h3>Si viven lejos</h3><p>Una videollamada con los nietos haciendo las preguntas funciona de maravilla. Y sus hermanos o amigos de siempre también pueden aportar.</p></div>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <div class="precio">
+  <div class="precio aparece">
     <div>
-      <h2>Un regalo para <em>toda la vida.</em></h2>
-      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Escrito a partir de sus recuerdos</li><li>21 × 28 cm · en casa en 2-3 semanas</li></ul>
+      <h2>Un regalo <em>para toda la familia.</em></h2>
+      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Con sus rasgos reales a partir de una foto</li><li>Perfecto para el 26 de julio, Día de los Abuelos</li></ul>
     </div>
     <div>
       <div class="cifras"><div class="cifra"><small>Tapa blanda</small><b>45 €</b></div><div class="cifra"><small>Tapa dura</small><b>63 €</b></div></div>
@@ -125,12 +127,12 @@
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Preguntas frecuentes</span>
-  <h2>Lo que más nos <em>preguntáis.</em></h2>
-  <div class="faq">
-    <details><summary>¿Quién nos cuenta la historia del abuelo o la abuela?</summary><p>Quien quiera: el propio abuelo o la abuela, sus hijos o cualquier familiar. Respondéis a preguntas guiadas con notas de voz, a vuestro ritmo, y se guarda solo. Podéis repartiros las respuestas entre varios.</p></details>
-    <details><summary>¿Salen los nietos en el libro?</summary><p>Sí. Cada nieto tiene su momento en la historia: cuándo llegó, cómo es y lo que comparte con su abuelo o su abuela. El libro está escrito para ellos.</p></details>
-    <details><summary>¿Y si el abuelo o la abuela ya no está?</summary><p>También se puede hacer en su memoria, con lo que recordáis de su vida, para que los nietos sepan quién era.</p></details>
-    <details><summary>¿Cuánto cuesta y cuánto tarda?</summary><p>45 € en tapa blanda y 63 € en tapa dura, con el envío incluido. Llega entre 2 y 3 semanas después de enviarnos la historia.</p></details>
+  <h2 class="aparece">Lo que más nos <em>preguntáis.</em></h2>
+  <div class="faq aparece">
+    <details><summary>¿Es solo para abuelos?</summary><p>No. También lo hacemos para mamá, papá, los tíos o los padrinos. Esta página es para los abuelos porque es el regalo que más se pide para ellos.</p></details>
+    <details><summary>¿Pueden contarlo los propios abuelos?</summary><p>Claro. Pueden contarlo ellos con notas de voz, o pueden hacerlo sus hijos y nietos si es una sorpresa.</p></details>
+    <details><summary>¿Y si los abuelos son dos?</summary><p>El libro puede contar la historia de los dos juntos: cómo eran de jóvenes, cómo se conocieron y la familia que formaron.</p></details>
+    <details><summary>¿Cuándo se celebra el Día de los Abuelos?</summary><p>En España, el 26 de julio. Pídelo con al menos 2 semanas de margen para que llegue a tiempo.</p></details>
   </div>
 </section>
 

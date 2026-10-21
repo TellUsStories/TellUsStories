@@ -18,8 +18,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="guias.css?v=1">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="guias.css?v=9">
+<script src="efectos.js?v=4" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,10 +46,10 @@
     {
       "@type": "FAQPage",
       "mainEntity": [
-        { "@type": "Question", "name": "¿Sale su vida profesional en el libro?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Su trabajo, sus compañeros y lo que ha significado para él o para ella forman parte de su historia, junto con su infancia, su juventud y su familia." } },
-        { "@type": "Question", "name": "¿Para quién está escrito el libro?", "acceptedAnswer": { "@type": "Answer", "text": "Para sus hijos o nietos: les cuenta quién es la persona que se jubila y todo lo que ha vivido. Así su historia queda guardada para la familia." } },
-        { "@type": "Question", "name": "¿Puede ser una sorpresa para el día de la jubilación?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. La familia puede contarnos su historia sin que lo sepa. Pídelo con unas 2 semanas de margen para que llegue a tiempo." } },
-        { "@type": "Question", "name": "¿Cuánto cuesta?", "acceptedAnswer": { "@type": "Answer", "text": "45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos." } }
+        { "@type": "Question", "name": "¿Lo pueden regalar los compañeros de trabajo?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Es un regalo de despedida muy especial: cada compañero puede aportar una anécdota y el libro lo junta todo." } },
+        { "@type": "Question", "name": "¿Con cuánto tiempo hay que pedirlo?", "acceptedAnswer": { "@type": "Answer", "text": "El libro tarda entre 2 y 3 semanas desde que nos contáis la historia. Pídelo con al menos 2 semanas de margen antes de la despedida." } },
+        { "@type": "Question", "name": "¿Habla solo de su trabajo?", "acceptedAnswer": { "@type": "Answer", "text": "No. Cuenta toda su vida: su infancia, su juventud, su familia y su carrera, contada para que la lean sus hijos y nietos." } },
+        { "@type": "Question", "name": "¿Puede ser una sorpresa?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. Lo podéis preparar sin que lo sepa y dárselo el día de su despedida." } }
       ]
     }
   ]
@@ -66,44 +67,66 @@
 
 <header class="wrap hero">
   <div>
-    <span class="eyebrow">Jubilación</span>
-    <h1>Un regalo de jubilación original: <em>toda su vida, en un cuento.</em></h1>
-    <p class="intro">Después de toda una vida trabajando, se merece algo más que un reloj o una cena. Convertimos su historia real en un <strong>cuento personalizado ilustrado en acuarela</strong>: de cuando era pequeño o pequeña a su último día de trabajo, para que sus hijos y sus nietos sepan todo lo que ha vivido.</p>
+    <p class="tachon vivo" data-nombres="JUBILADO:Antonio,JUBILADA:Mari Carmen,JUBILADO:Ramón,JUBILADA:Pilar" aria-hidden="true"><span class="eti">JUBILADO</span><span class="nombre">Antonio</span></p>
+    <h1>Un regalo de jubilación original: <em>toda una vida, en un libro.</em></h1>
+    <p class="intro">Se jubila después de muchos años, y se merece algo más que una placa. Convertimos su historia real, de la infancia a su último día de trabajo, en un <strong>cuento personalizado ilustrado en acuarela</strong> para que sus hijos y nietos la conozcan.</p>
     <a class="boton" href="/formulario-nuevo">Crear su libro →</a>
   </div>
-  <figure>
-    <img src="img/portada-rayas.jpg" width="832" height="1176" alt="Portada de un cuento personalizado ilustrado en acuarela: &quot;El universo de Carmen&quot;">
-    <figcaption>Una de nuestras portadas en acuarela.</figcaption>
+  <figure class="libro foto vertical">
+    <div class="hojas">
+      <img src="img/portada-rayas.jpg" width="832" height="1176" alt="Portada de un cuento personalizado ilustrado en acuarela: &quot;El universo de Carmen&quot;">
+    </div>
   </figure>
 </header>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Por qué es distinto</span>
-  <h2>Un regalo que celebra <em>a la persona, no solo el trabajo.</em></h2>
-  <div class="texto-largo">
-    <p>La jubilación es el momento perfecto para mirar atrás. Este libro cuenta su vida entera: cómo era de pequeño o de pequeña, qué soñaba de joven, cómo empezó a trabajar, a qué dedicó tantos años, cómo formó su familia y qué quiere hacer ahora que tiene todo el tiempo del mundo.</p>
-    <p>Lo escribimos desde cero con <strong>sus recuerdos reales</strong> y lo ilustramos en acuarela con <strong>sus rasgos reales</strong> a partir de una foto. Es un regalo para la persona que se jubila y, a la vez, para sus hijos y nietos, que tendrán su historia guardada para siempre.</p>
-    <p>También puedes regalarlo en un cumpleaños especial, en Navidad o hacerlo para los abuelos.</p>
+  <span class="eyebrow">Mucho más que su trabajo</span>
+  <h2 class="aparece">El jubilado de hoy <em>y el chaval de su primer día.</em></h2>
+  <div class="texto-largo aparece">
+    <p>Todos conocen al profesional serio de los últimos años. Pocos saben cómo empezó todo. Gira las tarjetas:</p>
+  </div>
+  <div class="giros">
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:0">
+      <span class="cara delante"><small>Hoy dice</small><p>"Ahora sí que voy a descansar."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras ikat-azul"><span class="etiqueta"><small>Antes</small><p>Trabajaba de día y estudiaba de noche.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:1">
+      <span class="cara delante"><small>Hoy</small><p>Tiene la agenda de jubilado organizada al minuto.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras escoces"><span class="etiqueta"><small>Antes</small><p>Llegó tarde a su primera entrevista de trabajo.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:2">
+      <span class="cara delante"><small>Hoy dice</small><p>"Cuarenta años en la misma empresa."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras rayas-verdes"><span class="etiqueta"><small>Antes</small><p>Quería ser futbolista, y casi lo consigue.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Qué cuenta el libro</span>
-  <h2>Cinco capítulos, <em>una vida.</em></h2>
-  <ol class="capitulos">
-    <li><b>1</b><h3>Infancia</h3><span>Dónde creció, a qué jugaba y qué quería ser de mayor.</span></li>
-    <li><b>2</b><h3>Juventud</h3><span>Sus estudios, su primer trabajo y sus sueños.</span></li>
-    <li><b>3</b><h3>Amor y familia</h3><span>Su pareja, la llegada de los hijos y la vida que construyó.</span></li>
-    <li><b>4</b><h3>Hoy</h3><span>Su nueva etapa y los planes que comparte con los suyos.</span></li>
-    <li><b>5</b><h3>El legado</h3><span>Lo que ha aprendido y quiere que sepan sus hijos y nietos.</span></li>
+  <h2 class="aparece">De su primer trabajo <em>a su último día.</em></h2>
+  <ol class="escenas aparece">
+    <li style="--i:0"><b>Los comienzos</b><span>Su infancia, sus estudios y lo que soñaba ser de mayor.</span></li>
+    <li style="--i:1"><b>El primer trabajo</b><span>Cómo empezó, sus primeros compañeros y alguna anécdota inolvidable.</span></li>
+    <li style="--i:2"><b>Toda una carrera</b><span>Lo que construyó, lo que aprendió y la familia que le acompañó.</span></li>
+    <li style="--i:3"><b>Y ahora, a vivir</b><span>Sus planes para esta nueva etapa y lo que quiere dejar a sus nietos.</span></li>
   </ol>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <div class="precio">
+  <span class="eyebrow">¿Quién lo regala?</span>
+  <h2 class="aparece">De parte de la familia <em>o de los compañeros.</em></h2>
+  <div class="pasos">
+    <div class="aparece" style="--i:0"><h3>La familia</h3><p>Hijos y nietos reúnen sus recuerdos para celebrar que por fin tiene tiempo para ellos.</p></div>
+    <div class="aparece" style="--i:1"><h3>Los compañeros</h3><p>Un regalo de despedida mucho más personal que una placa: cada compañero puede aportar una anécdota.</p></div>
+    <div class="aparece" style="--i:2"><h3>Entre todos</h3><p>Familia y compañeros juntos: el libro completo de una vida de trabajo y de cariño.</p></div>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <div class="precio aparece">
     <div>
-      <h2>Un regalo para <em>toda la vida.</em></h2>
-      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Escrito a partir de sus recuerdos</li><li>21 × 28 cm · en casa en 2-3 semanas</li></ul>
+      <h2>Para su <em>despedida.</em></h2>
+      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Con sus rasgos reales a partir de una foto</li><li>Pídelo con 2 semanas de margen</li></ul>
     </div>
     <div>
       <div class="cifras"><div class="cifra"><small>Tapa blanda</small><b>45 €</b></div><div class="cifra"><small>Tapa dura</small><b>63 €</b></div></div>
@@ -115,12 +138,12 @@
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Preguntas frecuentes</span>
-  <h2>Lo que más nos <em>preguntáis.</em></h2>
-  <div class="faq">
-    <details><summary>¿Sale su vida profesional en el libro?</summary><p>Sí. Su trabajo, sus compañeros y lo que ha significado para él o para ella forman parte de su historia, junto con su infancia, su juventud y su familia.</p></details>
-    <details><summary>¿Para quién está escrito el libro?</summary><p>Para sus hijos o nietos: les cuenta quién es la persona que se jubila y todo lo que ha vivido. Así su historia queda guardada para la familia.</p></details>
-    <details><summary>¿Puede ser una sorpresa para el día de la jubilación?</summary><p>Claro. La familia puede contarnos su historia sin que lo sepa. Pídelo con unas 2 semanas de margen para que llegue a tiempo.</p></details>
-    <details><summary>¿Cuánto cuesta?</summary><p>45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos.</p></details>
+  <h2 class="aparece">Lo que más nos <em>preguntáis.</em></h2>
+  <div class="faq aparece">
+    <details><summary>¿Lo pueden regalar los compañeros de trabajo?</summary><p>Sí. Es un regalo de despedida muy especial: cada compañero puede aportar una anécdota y el libro lo junta todo.</p></details>
+    <details><summary>¿Con cuánto tiempo hay que pedirlo?</summary><p>El libro tarda entre 2 y 3 semanas desde que nos contáis la historia. Pídelo con al menos 2 semanas de margen antes de la despedida.</p></details>
+    <details><summary>¿Habla solo de su trabajo?</summary><p>No. Cuenta toda su vida: su infancia, su juventud, su familia y su carrera, contada para que la lean sus hijos y nietos.</p></details>
+    <details><summary>¿Puede ser una sorpresa?</summary><p>Claro. Lo podéis preparar sin que lo sepa y dárselo el día de su despedida.</p></details>
   </div>
 </section>
 

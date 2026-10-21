@@ -18,8 +18,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="guias.css?v=1">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="guias.css?v=9">
+<script src="efectos.js?v=4" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,10 +46,10 @@
     {
       "@type": "FAQPage",
       "mainEntity": [
-        { "@type": "Question", "name": "¿Cómo se cuenta la historia de alguien que ya no está?", "acceptedAnswer": { "@type": "Answer", "text": "Con los recuerdos de quienes le quisieron. Respondéis a preguntas guiadas con notas de voz, a vuestro ritmo y cuando os sintáis con fuerzas. Podéis repartiros las respuestas entre varios familiares." } },
-        { "@type": "Question", "name": "¿Hace falta tener fotos?", "acceptedAnswer": { "@type": "Answer", "text": "Ayuda mucho tener una foto de su cara para que se parezca. Si no hay, lo dibujamos a partir de cómo nos lo describáis." } },
-        { "@type": "Question", "name": "¿Es adecuado para niños pequeños?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. El libro se centra en su vida, en lo que le hacía feliz y en lo que quería para los niños, con un tono tierno y luminoso, pensado para leerlo juntos." } },
-        { "@type": "Question", "name": "¿Cuánto cuesta y cuánto tarda?", "acceptedAnswer": { "@type": "Answer", "text": "45 € en tapa blanda y 63 € en tapa dura, con el envío incluido. Llega entre 2 y 3 semanas después de enviarnos la historia." } }
+        { "@type": "Question", "name": "¿Cómo tratáis una historia tan delicada?", "acceptedAnswer": { "@type": "Answer", "text": "Con mucho cuidado. El libro se centra en su vida, en lo que le hacía feliz y en lo que dejó a la familia, contado de forma que los niños lo puedan leer con cariño." } },
+        { "@type": "Question", "name": "¿Hay temas que podemos dejar fuera?", "acceptedAnswer": { "@type": "Answer", "text": "Claro. En el formulario puedes indicarnos qué temas prefieres no tocar, y el libro solo cuenta lo que vosotros queráis." } },
+        { "@type": "Question", "name": "¿Necesito una foto?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, una foto nos sirve para ilustrarle con sus rasgos reales en todas las páginas." } },
+        { "@type": "Question", "name": "¿Pueden participar varios familiares?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, y es muy bonito. Cada persona puede aportar sus recuerdos, y el libro los reúne en una sola historia." } }
       ]
     }
   ]
@@ -67,53 +68,54 @@
 <header class="wrap hero">
   <div>
     <span class="eyebrow">En memoria</span>
-    <h1>Un libro en memoria de alguien especial, <em>para que los niños sepan quién era.</em></h1>
-    <p class="intro">Cuando alguien a quien queremos ya no está, lo que más duele es pensar que los más pequeños no llegarán a conocerle. Convertimos su historia real en un <strong>cuento ilustrado en acuarela</strong>, con sus rasgos y sus recuerdos, para que los niños sepan cómo era, qué le hacía reír y cuánto les quería.</p>
+    <h1>Un libro en memoria de un ser querido, <em>para que los niños le conozcan.</em></h1>
+    <p class="intro">Cuando alguien se va, lo que más duele es pensar que los pequeños no llegarán a conocerle de verdad. Convertimos su historia real en un <strong>cuento personalizado ilustrado en acuarela</strong>, para que los niños sepan quién era y le recuerden siempre.</p>
     <a class="boton" href="/formulario-nuevo">Crear su libro →</a>
   </div>
-  <figure>
-    <img src="img/portada-rayas.jpg" width="832" height="1176" alt="Portada de un cuento personalizado ilustrado en acuarela: &quot;El universo de Carmen&quot;">
-    <figcaption>Cada libro lleva su nombre en la portada.</figcaption>
+  <figure class="libro foto vertical">
+    <div class="hojas">
+      <img src="img/portada-rayas.jpg" width="832" height="1176" alt="Portada de un cuento personalizado ilustrado en acuarela: &quot;El universo de Carmen&quot;">
+    </div>
   </figure>
 </header>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Un recuerdo para siempre</span>
-  <h2>Su vida, contada <em>con cariño.</em></h2>
-  <div class="texto-largo">
-    <p>Un abuelo que contaba los mejores chistes, una abuela que cocinaba para todos, una madre, un padre o un tío que dejó huella. Escribimos su historia desde cero con <strong>los recuerdos de la familia</strong>: su infancia, su juventud, cómo formó su familia y lo que le hacía feliz.</p>
-    <p>Lo ilustramos en acuarela con <strong>sus rasgos reales</strong> a partir de una foto, en un tono tierno y luminoso, pensado para leerlo con los niños. Es un <strong>libro de recuerdos</strong> que ayuda a hablar de esa persona y a mantenerla cerca.</p>
-    <p>Y también puedes hacerlo para alguien que sigue con vosotros: mamá, papá, los abuelos, los tíos o tu propia historia.</p>
+  <span class="eyebrow">Lo que no queremos olvidar</span>
+  <h2 class="aparece">Esos detalles <em>que le hacían único.</em></h2>
+  <div class="texto-largo aparece">
+    <p>Una frase, un olor, una costumbre. Son esos pequeños detalles los que hacen que alguien siga vivo en la memoria de la familia. Gira las tarjetas:</p>
+  </div>
+  <div class="giros">
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:0">
+      <span class="cara delante"><small>Su frase</small><p>Lo que siempre decía al despedirse.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras floral"><span class="etiqueta"><small>Por ejemplo</small><p>"Cuidaos mucho, que la vida pasa volando."</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:1">
+      <span class="cara delante"><small>Su olor</small><p>Lo que todavía recuerdas al cerrar los ojos.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras rayas-salvia"><span class="etiqueta"><small>Por ejemplo</small><p>A colonia de lavanda y a pan recién hecho.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:2">
+      <span class="cara delante"><small>Su costumbre</small><p>Aquello que solo hacía él o ella.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras ikat-azul"><span class="etiqueta"><small>Por ejemplo</small><p>Llevar caramelos en todos los bolsillos para los nietos.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Qué cuenta el libro</span>
-  <h2>Cinco capítulos, <em>una vida.</em></h2>
-  <ol class="capitulos">
-    <li><b>1</b><h3>Infancia</h3><span>Cómo era de pequeño o pequeña y dónde creció.</span></li>
-    <li><b>2</b><h3>Juventud</h3><span>Sus sueños, sus aventuras y sus decisiones.</span></li>
-    <li><b>3</b><h3>Amor y familia</h3><span>Cómo empezó todo y la llegada de cada niño.</span></li>
-    <li><b>4</b><h3>Lo que compartía</h3><span>Los planes, las costumbres y los recuerdos con los niños.</span></li>
-    <li><b>5</b><h3>El legado</h3><span>Lo que quería para ellos y lo que nos dejó.</span></li>
-  </ol>
-</section>
-
-<section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Cómo funciona</span>
-  <h2>A vuestro ritmo, <em>sin prisas.</em></h2>
+  <span class="eyebrow">Con calma y con cariño</span>
+  <h2 class="aparece">Cómo reunir <em>sus recuerdos.</em></h2>
   <div class="pasos">
-    <div><h3>1. Nos lo contáis</h3><p>Preguntas guiadas sobre su vida. Respondéis con notas de voz cuando queráis; se guarda solo.</p></div>
-    <div><h3>2. Lo escribimos e ilustramos</h3><p>Convertimos los recuerdos en un cuento en acuarela, con sus rasgos reales a partir de una foto.</p></div>
-    <div><h3>3. Llega a casa</h3><p>Impreso en 21 × 28 cm, en tapa blanda o dura, en 2 o 3 semanas.</p></div>
+    <div class="aparece" style="--i:0"><h3>Entre toda la familia</h3><p>Pide a cada persona un recuerdo: hijos, hermanos, amigos. Cada uno conoció una parte distinta de su vida.</p></div>
+    <div class="aparece" style="--i:1"><h3>Fotos, cartas y recetas</h3><p>Un álbum, una carta antigua o su receta de siempre despiertan historias que creíais olvidadas.</p></div>
+    <div class="aparece" style="--i:2"><h3>A vuestro ritmo</h3><p>No hay prisa. Puedes contarnos su historia poco a poco, con notas de voz, cuando te sientas preparado.</p></div>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <div class="precio">
+  <div class="precio aparece">
     <div>
-      <h2>Un libro para <em>no olvidar.</em></h2>
-      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Escrito a partir de vuestros recuerdos</li><li>21 × 28 cm · en casa en 2-3 semanas</li></ul>
+      <h2>Para que siga <em>presente.</em></h2>
+      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Con sus rasgos reales a partir de una foto</li><li>Escrito con todo el cuidado que merece</li></ul>
     </div>
     <div>
       <div class="cifras"><div class="cifra"><small>Tapa blanda</small><b>45 €</b></div><div class="cifra"><small>Tapa dura</small><b>63 €</b></div></div>
@@ -125,12 +127,12 @@
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Preguntas frecuentes</span>
-  <h2>Lo que más nos <em>preguntáis.</em></h2>
-  <div class="faq">
-    <details><summary>¿Cómo se cuenta la historia de alguien que ya no está?</summary><p>Con los recuerdos de quienes le quisieron. Respondéis a preguntas guiadas con notas de voz, a vuestro ritmo y cuando os sintáis con fuerzas. Podéis repartiros las respuestas entre varios familiares.</p></details>
-    <details><summary>¿Hace falta tener fotos?</summary><p>Ayuda mucho tener una foto de su cara para que se parezca. Si no hay, lo dibujamos a partir de cómo nos lo describáis.</p></details>
-    <details><summary>¿Es adecuado para niños pequeños?</summary><p>Sí. El libro se centra en su vida, en lo que le hacía feliz y en lo que quería para los niños, con un tono tierno y luminoso, pensado para leerlo juntos.</p></details>
-    <details><summary>¿Cuánto cuesta y cuánto tarda?</summary><p>45 € en tapa blanda y 63 € en tapa dura, con el envío incluido. Llega entre 2 y 3 semanas después de enviarnos la historia.</p></details>
+  <h2 class="aparece">Lo que más nos <em>preguntáis.</em></h2>
+  <div class="faq aparece">
+    <details><summary>¿Cómo tratáis una historia tan delicada?</summary><p>Con mucho cuidado. El libro se centra en su vida, en lo que le hacía feliz y en lo que dejó a la familia, contado de forma que los niños lo puedan leer con cariño.</p></details>
+    <details><summary>¿Hay temas que podemos dejar fuera?</summary><p>Claro. En el formulario puedes indicarnos qué temas prefieres no tocar, y el libro solo cuenta lo que vosotros queráis.</p></details>
+    <details><summary>¿Necesito una foto?</summary><p>Sí, una foto nos sirve para ilustrarle con sus rasgos reales en todas las páginas.</p></details>
+    <details><summary>¿Pueden participar varios familiares?</summary><p>Sí, y es muy bonito. Cada persona puede aportar sus recuerdos, y el libro los reúne en una sola historia.</p></details>
   </div>
 </section>
 

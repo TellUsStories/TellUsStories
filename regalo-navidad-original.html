@@ -18,8 +18,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="guias.css?v=2">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="guias.css?v=9">
+<script src="efectos.js?v=4" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,11 +46,9 @@
     {
       "@type": "FAQPage",
       "mainEntity": [
-        { "@type": "Question", "name": "¿Llega a tiempo para Navidad?", "acceptedAnswer": { "@type": "Answer", "text": "El libro tarda entre 2 y 3 semanas desde que nos contáis la historia. Para Navidad, pídelo con al menos 2 semanas de margen; cuanto antes, más tranquilos." } },
-        { "@type": "Question", "name": "¿Para quién puedo hacerlo?", "acceptedAnswer": { "@type": "Answer", "text": "Para mamá, papá, los abuelos, los tíos o los padrinos. El libro cuenta su historia real y está escrito para los niños de la familia." } },
-        { "@type": "Question", "name": "¿Puede ser una sorpresa?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Podéis contarnos su historia sin que lo sepa, y llega a casa listo para envolver." } },
-        { "@type": "Question", "name": "¿Cuánto cuesta?", "acceptedAnswer": { "@type": "Answer", "text": "45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos." } },
+        { "@type": "Question", "name": "¿Llega a tiempo para Navidad?", "acceptedAnswer": { "@type": "Answer", "text": "El libro tarda entre 2 y 3 semanas desde que nos contáis la historia. Para tenerlo en Nochebuena, pídelo como muy tarde el 10 de diciembre; cuanto antes, más tranquilos." } },
         { "@type": "Question", "name": "¿Y como regalo de Reyes?", "acceptedAnswer": { "@type": "Answer", "text": "También. Para abrirlo el 6 de enero, pídelo antes del 22 de diciembre." } },
+        { "@type": "Question", "name": "¿Puede ser una sorpresa?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Podéis contarnos su historia sin que lo sepa, y llega a casa listo para envolver." } },
         { "@type": "Question", "name": "¿Tengo que escribir yo la historia?", "acceptedAnswer": { "@type": "Answer", "text": "No. Nos la cuentas con notas de voz, a tu ritmo, y nosotros la convertimos en un cuento para los niños." } }
       ]
     }
@@ -68,82 +67,66 @@
 
 <header class="wrap hero">
   <div>
-    <span class="eyebrow">Navidad</span>
+    <p class="tachon vivo" data-nombres="MAMÁ:María,ABUELO:Paco,PAPÁ:Jordi,ABUELA:Pili,TÍA:Lola" aria-hidden="true"><span class="eti">MAMÁ</span><span class="nombre">María</span></p>
     <h1>Un regalo de Navidad original: <em>su historia, bajo el árbol.</em></h1>
-    <p class="intro">Este año, regala algo que nadie más puede regalar. Convertimos la historia real de mamá, papá o los abuelos en un <strong>cuento personalizado ilustrado en acuarela</strong>, para abrirlo en Navidad y leerlo en familia, con los niños descubriendo quién era antes de ser "mamá" o "abuelo".</p>
+    <p class="intro">Este año, regala algo que nadie más puede regalar. Convertimos la historia real de mamá, papá o los abuelos en un <strong>cuento personalizado ilustrado en acuarela</strong>, para abrirlo en Navidad y leerlo en familia.</p>
     <a class="boton" href="/formulario-nuevo">Crear su libro →</a>
   </div>
-  <figure>
-    <img src="img/portada-rayas.jpg" width="832" height="1176" alt="Portada de un cuento personalizado ilustrado en acuarela: &quot;El universo de Carmen&quot;">
-    <figcaption>Una de nuestras portadas en acuarela.</figcaption>
+  <figure class="libro foto vertical">
+    <div class="hojas">
+      <img src="img/portada-rayas.jpg" width="832" height="1176" alt="Portada de un cuento personalizado ilustrado en acuarela: &quot;El universo de Carmen&quot;">
+    </div>
   </figure>
 </header>
 
 <section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Por qué es distinto</span>
-  <h2>El regalo que <em>se queda en la familia.</em></h2>
-  <div class="texto-largo">
-    <p>En Navidad se regalan muchas cosas que se olvidan en enero. Un libro con la vida de alguien a quien queréis no se olvida: se lee en familia, se guarda y pasa de generación en generación.</p>
-    <p>Lo escribimos desde cero con <strong>sus recuerdos reales</strong>, que nos contáis con notas de voz a vuestro ritmo, y lo ilustramos en acuarela con <strong>sus rasgos reales</strong> a partir de una foto. Puede ser para mamá, para papá, para los abuelos o para los tíos y padrinos.</p>
-    <p><strong>Importante para Navidad:</strong> el libro tarda entre 2 y 3 semanas. Pídelo con al menos 2 semanas de margen para que llegue a tiempo.</p>
+  <span class="eyebrow">Navidades de antes</span>
+  <h2 class="aparece">La Navidad de hoy <em>y la de su juventud.</em></h2>
+  <div class="texto-largo aparece">
+    <p>En estas fechas todos nos ponemos nostálgicos. Es el mejor momento para descubrir cómo eran sus Navidades cuando tenían veinte años. Gira las tarjetas:</p>
   </div>
-</section>
-
-<section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Así es por dentro</span>
-  <h2>Páginas de verdad, <em>con su historia.</em></h2>
-  <div class="texto-largo">
-    <p>Cada libro empieza con una dedicatoria para los niños y sigue con la vida de la persona protagonista, contada para que la entiendan y la disfruten. Estas son dos páginas de un libro real: la historia de Carla, una mamá, para sus hijos Lucas y Martina.</p>
-  </div>
-  <div class="ejemplo">
-    <figure>
-      <img src="img/libro-pagina-1.jpg" width="1000" height="1461" loading="lazy" alt="Página de dedicatoria de un cuento personalizado: &quot;Para Lucas y Martina&quot;, con una mamá leyendo un libro a sus dos hijos, ilustrada en acuarela">
-      <figcaption>La dedicatoria, para los niños.</figcaption>
-    </figure>
-    <figure>
-      <img src="img/libro-pagina-2.jpg" width="1000" height="1500" loading="lazy" alt="Página &quot;Antes de ser mami&quot; de un cuento personalizado: la mamá rodeada de escenas de su infancia y su juventud, ilustrada en acuarela">
-      <figcaption>"Antes de ser mami": quién era antes.</figcaption>
-    </figure>
+  <div class="giros">
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:0">
+      <span class="cara delante"><small>Hoy</small><p>Prepara la cena de Nochebuena para veinte.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras rayas-salvia"><span class="etiqueta"><small>Antes</small><p>Celebró una Nochevieja bailando hasta el amanecer.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:1">
+      <span class="cara delante"><small>Hoy</small><p>Monta el belén con cada figurita en su sitio.</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras rayas-coral"><span class="etiqueta"><small>Antes</small><p>Iba a la Misa del Gallo para ver a quien le gustaba.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
+    <button class="giro aparece" type="button" aria-pressed="false" style="--i:2">
+      <span class="cara delante"><small>Hoy dice</small><p>"Este año, nada de regalos caros."</p><span class="pista">Gírala ↻</span></span>
+      <span class="cara detras escoces-lavanda"><span class="etiqueta"><small>Antes</small><p>Ahorró un año entero para su primer viaje con amigos.</p><span class="pista">Volver ↺</span></span></span>
+    </button>
   </div>
 </section>
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Fechas clave</span>
-  <h2>Para que llegue <em>a tiempo.</em></h2>
-  <div class="pasos">
-    <div><h3>Nochebuena y Navidad</h3><p>Pídelo como muy tarde el <strong>10 de diciembre</strong>. Si puedes, en noviembre: así vas sin prisas.</p></div>
-    <div><h3>Reyes</h3><p>Para abrirlo el 6 de enero, pídelo antes del <strong>22 de diciembre</strong>. Es un regalo de Reyes muy especial para los abuelos.</p></div>
-    <div><h3>Cómo se hace</h3><p>Nos cuentas su historia con notas de voz, a tu ritmo, y una foto. Nosotros escribimos, ilustramos e imprimimos el libro.</p></div>
-  </div>
-</section>
-
-<section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Ideas para regalarlo</span>
-  <h2>Un momento <em>para recordar.</em></h2>
-  <div class="texto-largo">
-    <p><strong>Leedlo juntos después de la cena de Nochebuena.</strong> Que sean los nietos o los hijos quienes lean las primeras páginas en voz alta: la emoción está asegurada.</p>
-    <p><strong>Hacedlo entre todos.</strong> Los hermanos, los primos y los tíos pueden aportar recuerdos y anécdotas. Es un regalo de toda la familia, y el precio se reparte muy bien.</p>
-    <p><strong>Grabad el momento.</strong> Ver su cara al descubrir que el libro cuenta su propia vida es casi tan bonito como el libro. Si buscas más inspiración, tienes nuestra lista de ideas de regalo de Navidad para padres y abuelos.</p>
-  </div>
-</section>
-
-<section class="wrap" style="padding-top:0">
-  <span class="eyebrow">Qué cuenta el libro</span>
-  <h2>Cinco capítulos, <em>una vida.</em></h2>
-  <ol class="capitulos">
-    <li><b>1</b><h3>Infancia</h3><span>Cómo era de pequeño o pequeña y sus travesuras.</span></li>
-    <li><b>2</b><h3>Juventud</h3><span>Sus sueños, sus viajes y sus pasiones.</span></li>
-    <li><b>3</b><h3>Amor y familia</h3><span>Cómo empezó todo y la llegada de los niños.</span></li>
-    <li><b>4</b><h3>Juntos hoy</h3><span>Las tradiciones y los planes que compartís.</span></li>
-    <li><b>5</b><h3>El legado</h3><span>Lo que quiere que sepan los niños cuando sean mayores.</span></li>
+  <h2 class="aparece">Para que llegue <em>a tiempo.</em></h2>
+  <ol class="escenas aparece">
+    <li style="--i:0"><b>Ahora</b><span>Lo mejor es pedirlo en noviembre: vas sin prisas y con tiempo para recoger recuerdos.</span></li>
+    <li style="--i:1"><b>10 de diciembre</b><span>Último día para tenerlo en casa en Nochebuena.</span></li>
+    <li style="--i:2"><b>22 de diciembre</b><span>Último día para abrirlo el 6 de enero, como regalo de Reyes.</span></li>
+    <li style="--i:3"><b>Nochebuena</b><span>Leedlo juntos después de la cena. Que empiecen los nietos, en voz alta.</span></li>
   </ol>
 </section>
 
 <section class="wrap" style="padding-top:0">
-  <div class="precio">
+  <span class="eyebrow">Ideas para regalarlo</span>
+  <h2 class="aparece">Un momento <em>para recordar.</em></h2>
+  <div class="pasos">
+    <div class="aparece" style="--i:0"><h3>Entre todos</h3><p>Hermanos, primos y tíos pueden aportar recuerdos. Es un regalo de toda la familia, y el precio se reparte muy bien.</p></div>
+    <div class="aparece" style="--i:1"><h3>De parte de los nietos</h3><p>Que sean ellos quienes hagan las preguntas a los abuelos y quienes les den el libro. Nadie se resiste.</p></div>
+    <div class="aparece" style="--i:2"><h3>Grabad el momento</h3><p>Ver su cara al descubrir que el libro cuenta su propia vida es casi tan bonito como el libro.</p></div>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <div class="precio aparece">
     <div>
-      <h2>Un regalo para <em>toda la vida.</em></h2>
-      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Escrito a partir de sus recuerdos</li><li>21 × 28 cm · en casa en 2-3 semanas</li></ul>
+      <h2>Un regalo <em>que no se olvida en enero.</em></h2>
+      <ul><li>Más de 25 páginas ilustradas en acuarela</li><li>Con sus rasgos reales a partir de una foto</li><li>Llega listo para envolver</li></ul>
     </div>
     <div>
       <div class="cifras"><div class="cifra"><small>Tapa blanda</small><b>45 €</b></div><div class="cifra"><small>Tapa dura</small><b>63 €</b></div></div>
@@ -155,13 +138,11 @@
 
 <section class="wrap" style="padding-top:0">
   <span class="eyebrow">Preguntas frecuentes</span>
-  <h2>Lo que más nos <em>preguntáis.</em></h2>
-  <div class="faq">
-    <details><summary>¿Llega a tiempo para Navidad?</summary><p>El libro tarda entre 2 y 3 semanas desde que nos contáis la historia. Para Navidad, pídelo con al menos 2 semanas de margen; cuanto antes, más tranquilos.</p></details>
-    <details><summary>¿Para quién puedo hacerlo?</summary><p>Para mamá, papá, los abuelos, los tíos o los padrinos. El libro cuenta su historia real y está escrito para los niños de la familia.</p></details>
-    <details><summary>¿Puede ser una sorpresa?</summary><p>Sí. Podéis contarnos su historia sin que lo sepa, y llega a casa listo para envolver.</p></details>
-    <details><summary>¿Cuánto cuesta?</summary><p>45 € en tapa blanda y 63 € en tapa dura, con el envío incluido en los dos formatos.</p></details>
+  <h2 class="aparece">Lo que más nos <em>preguntáis.</em></h2>
+  <div class="faq aparece">
+    <details><summary>¿Llega a tiempo para Navidad?</summary><p>El libro tarda entre 2 y 3 semanas desde que nos contáis la historia. Para tenerlo en Nochebuena, pídelo como muy tarde el 10 de diciembre; cuanto antes, más tranquilos.</p></details>
     <details><summary>¿Y como regalo de Reyes?</summary><p>También. Para abrirlo el 6 de enero, pídelo antes del 22 de diciembre.</p></details>
+    <details><summary>¿Puede ser una sorpresa?</summary><p>Sí. Podéis contarnos su historia sin que lo sepa, y llega a casa listo para envolver.</p></details>
     <details><summary>¿Tengo que escribir yo la historia?</summary><p>No. Nos la cuentas con notas de voz, a tu ritmo, y nosotros la convertimos en un cuento para los niños.</p></details>
   </div>
 </section>
