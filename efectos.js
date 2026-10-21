@@ -9,7 +9,7 @@
   }, { rootMargin: '0px 0px -8% 0px' });
   document.querySelectorAll('.aparece').forEach(function (el) { if (io) io.observe(el); else el.classList.add('visto'); });
 
-  // Tarjetas «hoy / antes»: con ratón se giran al pasar por encima (lo hace el CSS); al tocarlas en el móvil
+  // Tarjetas "hoy / antes": con ratón solo se giran al pasar por encima (lo hace el CSS); al tocarlas en el móvil
   // o con el teclado se giran y vuelven solas a los 3 segundos
   var conRaton = window.matchMedia('(hover: hover)').matches;
   document.querySelectorAll('.giro').forEach(function (b) {
@@ -33,31 +33,6 @@
     l.addEventListener('click', function () { l.classList.remove('abierto'); void l.offsetWidth; setTimeout(abrir, 300); });
   });
   if (quieto) return;
-
-  // Además se giran solas, una detrás de otra, mientras se ven; se pausan mientras el ratón está encima
-  // o justo después de tocar una, y luego siguen
-  document.querySelectorAll('.giros').forEach(function (grupo) {
-    var tarjetas = [].slice.call(grupo.querySelectorAll('.giro')), paso = 0, reloj = null, visible = false, pausa = false, espera = null;
-    function siguiente() {
-      if (pausa) return;
-      if (paso < tarjetas.length) tarjetas[paso].setAttribute('aria-pressed', 'true');
-      else tarjetas.forEach(function (t) { t.setAttribute('aria-pressed', 'false'); });
-      paso = (paso + 1) % (tarjetas.length + 1);
-    }
-    function todasDelante() { tarjetas.forEach(function (t) { t.setAttribute('aria-pressed', 'false'); }); paso = 0; }
-    var vigia = 'IntersectionObserver' in window && new IntersectionObserver(function (es) {
-      visible = es[0].isIntersecting;
-      if (visible && !reloj) reloj = setInterval(siguiente, 2200);
-      if (!visible) { clearInterval(reloj); reloj = null; }
-    }, { threshold: .5 });
-    if (vigia) vigia.observe(grupo);
-    grupo.addEventListener('mouseenter', function () { pausa = true; todasDelante(); });
-    grupo.addEventListener('mouseleave', function () { pausa = false; });
-    grupo.addEventListener('touchstart', function () {
-      pausa = true; clearTimeout(espera); todasDelante();
-      espera = setTimeout(function () { pausa = false; paso = 0; }, 4000);
-    }, { passive: true });
-  });
 
   document.querySelectorAll('.libro').forEach(function (l) {
     var h = l.querySelector('.hojas');

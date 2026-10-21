@@ -163,6 +163,22 @@
   .texto-largo { display: grid; gap: 16px; margin-top: 22px; }
   .texto-largo strong { font-weight: 400; box-shadow: inset 0 -.45em 0 color-mix(in srgb, var(--boton) 60%, transparent); }
 
+  /* Quiénes somos: el dibujo de Cris como una portada de Tale Us (vichy rosa y etiqueta) y "mamás" que se tacha al llegar */
+  .portada-cris { justify-self: center; width: 100%; max-width: 420px; padding: 26px; border-radius: 14px; background: url(img/fondos/vichy-rosa.jpg) center / cover; transform: rotate(-2.5deg); box-shadow: 0 44px 60px -34px rgba(40, 25, 10, .55); transition: transform .7s cubic-bezier(.2, .7, .2, 1); }
+  .portada-cris:hover { transform: rotate(0deg) translateY(-4px); }
+  .pc-etiqueta { background: #F6EFE4; border-radius: 6px; outline: 2px solid #915453; outline-offset: -10px; padding: 22px 22px 18px; box-shadow: 0 8px 20px -10px rgba(40, 25, 10, .45); }
+  .portada-cris .dibujo { max-width: none; background: transparent; }
+  .portada-cris .dibujo::before { display: none; }
+  .portada-cris .dibujo img { background: transparent; }
+  .pc-titulo { font-family: 'Caveat', cursive; font-weight: 700; font-size: 46px; line-height: .95; color: #915453; text-align: center; margin-top: 8px; }
+  .pc-titulo small { display: block; font-size: 24px; }
+  .tt { position: relative; white-space: nowrap; }
+  .tt::after { content: ''; position: absolute; left: -3%; top: 55%; width: 106%; height: 3px; border-radius: 3px; background: var(--acento); transform: rotate(-3deg) scaleX(0); transform-origin: left center; transition: transform .6s .5s cubic-bezier(.6, 0, .2, 1); }
+  #creadora .mano { display: inline-block; margin-left: 8px; transform: rotate(-4deg); font-family: 'Caveat', cursive; font-weight: 700; font-size: 27px; line-height: .8; color: var(--acento); white-space: nowrap; clip-path: inset(-40% 100% -40% 0); transition: clip-path .9s 1.1s ease-out; }
+  #creadora.visto .tt::after { transform: rotate(-3deg) scaleX(1); }
+  #creadora.visto .mano { clip-path: inset(-40% 0 -40% 0); }
+  @media (max-width: 900px) { .portada-cris { max-width: 300px; padding: 18px; } .pc-titulo { font-size: 38px; } }
+  @media (prefers-reduced-motion: reduce) { .tt::after, #creadora .mano { transition: none; } .portada-cris { transition: none; } }
   /* OPINIONES: la sección solo aparece cuando Cris ha publicado alguna (las trae /api/opiniones) */
   .opiniones-media { font-family: var(--display); font-weight: 700; font-size: 16px; margin-top: 8px; }
   .opiniones-media b { color: #D9A441; letter-spacing: 2px; margin-right: 6px; }
@@ -373,19 +389,23 @@
 </header>
 
 <section class="wrap dos" id="creadora">
-  <div class="dibujo" id="dibujo">
-    <img class="d-color" src="img/cris-ilustracion.jpg" width="972" height="1092" alt="Cris, creadora de Tale Us Stories, ilustrada en acuarela, sentada en el suelo y sonriendo">
+  <div class="portada-cris">
+    <div class="pc-etiqueta">
+      <div class="dibujo" id="dibujo">
+        <img class="d-color" src="img/cris-ilustracion.jpg" width="972" height="1092" alt="Cris, creadora de Tale Us Stories, ilustrada en acuarela, sentada en el suelo y sonriendo">
+      </div>
+      <p class="pc-titulo"><small>El universo de</small>Cris</p>
+    </div>
   </div>
   <div>
     <span class="eyebrow">Quiénes somos</span>
     <h2>Hola, soy <em>Cris.</em></h2>
     <div class="texto-largo">
-      <p>Hace un tiempo me di cuenta de algo. Mis amigas, mujeres increíbles, se habían convertido sobre todo en “mamás”. Y a veces ni ellas se acordaban de la chica que viajaba sola, que soñaba a lo grande o que se reía hasta llorar.</p>
+      <p>Hace un tiempo me di cuenta de algo. Mis amigas, mujeres increíbles, se habían convertido sobre todo en <span class="tt">"mamás"</span><span class="mano" aria-hidden="true">Laura, Bea, Marta</span>. Y a veces ni ellas se acordaban de la chica que viajaba sola, que soñaba a lo grande o que se reía hasta llorar.</p>
       <p>Y no les pasa solo a ellas. Les pasa a los papás, a los abuelos, a los tíos… a todos los que un día pasaron a ser, sobre todo, una etiqueta.</p>
       <p>Por eso nació Tale Us Stories: para que los niños descubran quién era esa persona antes de serlo todo para ellos. Y para que, al leerlo, esa persona <strong>se reconozca otra vez</strong>.</p>
     </div>
     <p class="firma">Cris</p>
-    <div class="orla">❦</div>
   </div>
 </section>
 
@@ -757,6 +777,15 @@
     document.getElementById('c-nombre').addEventListener('input', function (e) { cfg.nombre = e.target.value.trim(); pinta(); });
     document.getElementById('c-ninos').addEventListener('input', function (e) { cfg.ninos = e.target.value.trim(); pinta(); });
     pinta();
+  })();
+</script>
+<script>
+  // Quiénes somos: al llegar a la sección se tacha "mamás" y aparecen sus nombres a mano
+  (function () {
+    var c = document.getElementById('creadora');
+    if (!c || !('IntersectionObserver' in window)) { if (c) c.classList.add('visto'); return; }
+    var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { c.classList.add('visto'); io.disconnect(); } }, { threshold: .4 });
+    io.observe(c);
   })();
 </script>
 </body>
