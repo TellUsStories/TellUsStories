@@ -23,6 +23,15 @@
     });
   });
 
+  // Libro que se abre y pasa páginas: empieza al verse; al pulsarlo, vuelve a empezar
+  document.querySelectorAll('.libro-anim').forEach(function (l) {
+    var abrir = function () { l.classList.add('abierto'); };
+    var ojo = 'IntersectionObserver' in window && new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { setTimeout(abrir, 400); ojo.disconnect(); }
+    }, { threshold: .4 });
+    if (ojo) ojo.observe(l); else abrir();
+    l.addEventListener('click', function () { l.classList.remove('abierto'); void l.offsetWidth; setTimeout(abrir, 300); });
+  });
   if (quieto) return;
 
   // Además se giran solas, una detrás de otra, mientras se ven; se pausan mientras el ratón está encima
