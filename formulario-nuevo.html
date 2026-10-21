@@ -544,7 +544,7 @@
   </div>
   <div class="field">
     <label>¿Hay algo que NO deba aparecer?</label>
-    <textarea id="noShow" placeholder="Temas sensibles, personas que prefieren no incluir… (si no hay nada, escribe «nada»)" style="min-height:65px;"></textarea>
+    <textarea id="noShow" placeholder="Temas sensibles, personas que prefieren no incluir… (si no hay nada, escribe &quot;nada&quot;)" style="min-height:65px;"></textarea>
   </div>
   <div class="field">
     <label>Otras fotos (opcional)</label>
@@ -815,7 +815,7 @@ function validarPantalla(n) {
   s.querySelectorAll('.vc').forEach(function(vc) {
     if (vc.dataset.opcional) return;
     var i = vc.id.replace('vc', ''), ta = vc.querySelector('textarea');
-    if (!(audioBlobs[i] || pendingTx[i] || (ta && ta.value.trim()))) marcaFalta(vc, falta, '«' + vc.querySelector('.vc-q').textContent.trim().slice(0, 70) + '…»');
+    if (!(audioBlobs[i] || pendingTx[i] || (ta && ta.value.trim()))) marcaFalta(vc, falta, '"' + vc.querySelector('.vc-q').textContent.trim().slice(0, 70) + '…"');
   });
   // Campos de texto, desplegables y cuadros sueltos (los ocultos no cuentan)
   s.querySelectorAll('input[type=text], input[type=email], select, textarea[id]').forEach(function(el) {
@@ -1127,7 +1127,7 @@ function pintaEjemplosDed() {
   ejemplosDedicatoria().forEach(function (t) {
     var d = document.createElement('div'), b = document.createElement('button');
     d.className = 'ded-op' + (actual === t ? ' elegida' : '');
-    d.textContent = '«' + t + '»';
+    d.textContent = '"' + t + '"';
     b.type = 'button'; b.textContent = actual === t ? '✓ Elegida' : 'Usar esta dedicatoria';
     b.onclick = function () {
       var ta = document.getElementById('dedicatoria');
@@ -1163,7 +1163,7 @@ function buildReview() {
   document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
   var ev = function(id){ return document.getElementById(id).value.trim(); };
   document.getElementById('rv-tel').textContent = ev('clienteTelefono') || '—';
-  document.getElementById('rv-ded').textContent = ev('dedicatoria') ? '«' + ev('dedicatoria') + '» — ' + ev('dedicatoriaFirma') : '—';
+  document.getElementById('rv-ded').textContent = ev('dedicatoria') ? '"' + ev('dedicatoria') + '" — ' + ev('dedicatoriaFirma') : '—';
   var envio = [ev('envioNombre'), ev('envioDireccion'), (ev('envioCP') + ' ' + ev('envioCiudad')).trim(), ev('envioProvincia'), ev('envioTelefono')].filter(Boolean).join(' · ');
   document.getElementById('rv-envio').textContent = envio || '—';
   document.getElementById('rv-portada').textContent = TUSPortadas.diseno(selectedPortada).nombre;
@@ -1398,7 +1398,7 @@ function iaPintaPanel(n, destino) {
     (e.manual ? '<div class="ia-bts"><button type="button" class="si">Guardar y seguir →</button></div>' :
     '<div class="ia-t" style="margin-top:22px;font-size:17px">' + (corregido ? '¿Ahora está todo bien?' : '¿Hay algo que no hayamos entendido bien?') + '</div>' +
     '<div class="ia-corr" style="display:none">' +
-      '<div class="ia-s">Dinos qué hay que cambiar, como si nos lo contaras. Ej: «no era en Barcelona, era en Girona» o «su hermano se llama Marc, no Mario».</div>' +
+      '<div class="ia-s">Dinos qué hay que cambiar, como si nos lo contaras. Ej: "no era en Barcelona, era en Girona" o "su hermano se llama Marc, no Mario".</div>' +
       '<button type="button" class="btn-rec ia-corr-mic"><span class="rdot"></span> Grabar la corrección</button>' +
       '<textarea class="ia-corr-txt" placeholder="…o escríbelo aquí" style="margin-top:10px;min-height:70px"></textarea>' +
       '<div class="ia-bts" style="justify-content:flex-start"><button type="button" class="si ia-corr-ok">Corregir el resumen</button>' +
@@ -1558,7 +1558,7 @@ async function dedRevisar(destino) {
   }
   panel.innerHTML = '<div class="ia-t">✏️ Hemos repasado tu dedicatoria</div>' +
     '<div class="ia-s">Como irá impresa en el libro, hemos corregido alguna falta de ortografía o de puntuación (lo marcado en amarillo), sin cambiar tus palabras. Así quedaría:</div>' +
-    '<div class="ia-ded">«' + marcaCambios(texto, nt) + '»' + (nf ? '<br>— ' + marcaCambios(firmaTxt, nf) : '') + '</div>' +
+    '<div class="ia-ded">"' + marcaCambios(texto, nt) + '"' + (nf ? '<br>— ' + marcaCambios(firmaTxt, nf) : '') + '</div>' +
     '<div class="ia-bts"><button type="button" class="no">Dejar la mía</button><button type="button" class="si">Usar esta</button></div>';
   panel.dataset.listo = '1'; panel.dataset.firma = firma;
   panel.querySelector('.no').onclick = function() { ia.ded = { firma: firma, corregida: false }; iaGuarda(); panel.style.display = 'none'; go(destino); };

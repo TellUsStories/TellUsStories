@@ -9,26 +9,45 @@
   }, { rootMargin: '0px 0px -8% 0px' });
   document.querySelectorAll('.aparece').forEach(function (el) { if (io) io.observe(el); else el.classList.add('visto'); });
 
+  // Tarjetas «hoy / antes»: con ratón se giran al pasar por encima (lo hace el CSS); al tocarlas en el móvil
+  // o con el teclado se giran y vuelven solas a los 3 segundos
+  var conRaton = window.matchMedia('(hover: hover)').matches;
   document.querySelectorAll('.giro').forEach(function (b) {
-    b.addEventListener('click', function () { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); });
+    var vuelta = null;
+    b.addEventListener('click', function () {
+      if (conRaton && b.matches(':hover')) return;
+      clearTimeout(vuelta);
+      var girada = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', girada ? 'true' : 'false');
+      if (girada) vuelta = setTimeout(function () { b.setAttribute('aria-pressed', 'false'); }, 3000);
+    });
   });
 
   if (quieto) return;
 
-  // Las tarjetas se giran solas, una detrás de otra, mientras se ven; en cuanto alguien toca una, mandan sus clics
+  // Además se giran solas, una detrás de otra, mientras se ven; se pausan mientras el ratón está encima
+  // o justo después de tocar una, y luego siguen
   document.querySelectorAll('.giros').forEach(function (grupo) {
-    var tarjetas = [].slice.call(grupo.querySelectorAll('.giro')), paso = 0, reloj = null;
+    var tarjetas = [].slice.call(grupo.querySelectorAll('.giro')), paso = 0, reloj = null, visible = false, pausa = false, espera = null;
     function siguiente() {
+      if (pausa) return;
       if (paso < tarjetas.length) tarjetas[paso].setAttribute('aria-pressed', 'true');
       else tarjetas.forEach(function (t) { t.setAttribute('aria-pressed', 'false'); });
       paso = (paso + 1) % (tarjetas.length + 1);
     }
-    function parar() { clearInterval(reloj); reloj = null; }
+    function todasDelante() { tarjetas.forEach(function (t) { t.setAttribute('aria-pressed', 'false'); }); paso = 0; }
     var vigia = 'IntersectionObserver' in window && new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting) { if (!reloj) reloj = setInterval(siguiente, 2200); } else parar();
+      visible = es[0].isIntersecting;
+      if (visible && !reloj) reloj = setInterval(siguiente, 2200);
+      if (!visible) { clearInterval(reloj); reloj = null; }
     }, { threshold: .5 });
     if (vigia) vigia.observe(grupo);
-    ['pointerdown', 'keydown'].forEach(function (ev) { grupo.addEventListener(ev, function () { parar(); if (vigia) vigia.disconnect(); }); });
+    grupo.addEventListener('mouseenter', function () { pausa = true; todasDelante(); });
+    grupo.addEventListener('mouseleave', function () { pausa = false; });
+    grupo.addEventListener('touchstart', function () {
+      pausa = true; clearTimeout(espera); todasDelante();
+      espera = setTimeout(function () { pausa = false; paso = 0; }, 4000);
+    }, { passive: true });
   });
 
   document.querySelectorAll('.libro').forEach(function (l) {
