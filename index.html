@@ -81,9 +81,13 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Letras del texto de la web: se cargan primero. Las de las portadas de muestra (Allura, Amatic, PT Serif, Playfair,
-     Dancing Script, Cormorant) se cargan después sin frenar la página (media="print" y al cargar pasa a "all"). -->
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<!-- Primera portada que se ve (diseño 5): se pide enseguida para que el libro salga antes -->
+<link rel="preload" as="image" href="img/portadas/5.jpg" fetchpriority="high">
+<!-- Ninguna letra frena la página: se pinta con la del sistema y cambia a la buena al llegar (media="print" y al
+     cargar pasa a "all"). Primero las del texto; las de las portadas de muestra (Allura, Amatic, PT Serif, Playfair,
+     Dancing Script, Cormorant) después. -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Caveat:wght@700&display=swap" rel="stylesheet"></noscript>
 <link href="https://fonts.googleapis.com/css2?family=Allura&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&family=Dancing+Script:wght@500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Allura&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&family=Dancing+Script:wght@500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet"></noscript>
 <style>
@@ -391,7 +395,7 @@
   <div class="portada-cris">
     <div class="pc-etiqueta">
       <div class="dibujo" id="dibujo">
-        <img class="d-color" src="img/cris-ilustracion.jpg?v=2" width="972" height="1092" alt="Cris, creadora de Tale Us Stories, ilustrada en acuarela, sentada en el suelo y sonriendo">
+        <img class="d-color" src="img/cris-ilustracion.jpg?v=3" width="800" height="899" alt="Cris, creadora de Tale Us Stories, ilustrada en acuarela, sentada en el suelo y sonriendo">
       </div>
       <p class="pc-titulo"><small>El universo de</small>Cris</p>
     </div>
@@ -694,7 +698,7 @@
     defs.appendChild(mL); defs.appendChild(mC); svg.appendChild(defs);
     svg.appendChild(el('rect', { width: 972, height: 1092, fill: '#FBF6EC' }));
     var iL = el('image', { href: 'img/cris-boceto.jpg', width: 972, height: 1092, mask: 'url(#m-lapiz)' });
-    var iC = el('image', { href: 'img/cris-ilustracion.jpg', width: 972, height: 1092, mask: 'url(#m-pincel)' });
+    var iC = el('image', { href: 'img/cris-ilustracion.jpg?v=3', width: 972, height: 1092, mask: 'url(#m-pincel)' });
     svg.appendChild(iL); svg.appendChild(iC);
     function trazos(mask, zonas, grosor, paso) {
       return zonas.map(function (z, i) {
