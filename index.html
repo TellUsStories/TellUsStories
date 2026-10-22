@@ -401,7 +401,7 @@
     <span class="eyebrow">Quiénes somos</span>
     <h2>Hola, soy <em>Cris.</em></h2>
     <div class="texto-largo">
-      <p>Hace un tiempo me di cuenta de algo. Mis amigas, mujeres increíbles, se habían convertido sobre todo en <span class="tt">"mamás"</span><span class="mano" aria-hidden="true">Laura, Bea, Marta</span>. Y a veces ni ellas se acordaban de la chica que viajaba sola, que soñaba a lo grande o que se reía hasta llorar.</p>
+      <p>Hace un tiempo me di cuenta de algo. Mis amigas, mujeres increíbles, se habían convertido sobre todo en <span class="tt">"mamás"</span><span class="mano" aria-hidden="true">Carlota, María, Ana</span>. Y a veces ni ellas se acordaban de la chica que viajaba sola, que soñaba a lo grande o que se reía hasta llorar.</p>
       <p>Y no les pasa solo a ellas. Les pasa a los papás, a los abuelos, a los tíos… a todos los que un día pasaron a ser, sobre todo, una etiqueta.</p>
       <p>Por eso nació Tale Us Stories: para que los niños descubran quién era esa persona antes de serlo todo para ellos. Y para que, al leerlo, esa persona <strong>se reconozca otra vez</strong>.</p>
     </div>
@@ -550,7 +550,6 @@
 </section>
 
 <section class="wrap cierre" style="padding-top:0">
-  <div class="orla" style="justify-content:center;margin-bottom:18px">❦</div>
   <h2>Historias que merecen <em>ser contadas.</em></h2>
   <div class="ctas"><a class="boton" href="#portada">Crear el libro →</a></div>
 </section>
@@ -671,6 +670,7 @@
   // El dibujo de Cris se esboza a lápiz y luego se pinta en acuarela, zona por zona y a trazos,
   // como si se hiciera a mano. Al terminar se queda un momento, se borra y vuelve a empezar.
   (function () {
+    return; // Cris prefiere ver el dibujo ya terminado, sin animación (22/10)
     var d = document.getElementById('dibujo');
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
     var NS = 'http://www.w3.org/2000/svg';
