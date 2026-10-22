@@ -225,7 +225,13 @@ footer a { text-decoration: none; color: var(--boton); }
 @keyframes pasar-hoja { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); z-index: calc(40 + var(--i)); } }
 .la-libro::after { content: ''; position: absolute; inset: 0; z-index: 90; pointer-events: none; border-radius: 8px; background: linear-gradient(90deg, transparent 46%, rgba(60, 35, 20, .18) 49.6%, rgba(255, 255, 255, .25) 50.4%, transparent 54%); opacity: 0; transition: opacity .4s 1.45s; }
 .libro-anim.abierto .la-libro::after { opacity: 1; }
-@media (max-width: 900px) { .hero:has(.libro-anim) { grid-template-columns: 1fr; } .hero figure.libro-anim { width: 100%; max-width: 100%; margin-right: 0; } }
+/* En el móvil se ve una sola página a todo el ancho: la portada, las páginas que pasan y al final "Gracias, abuela" grande */
+@media (max-width: 900px) {
+  .hero:has(.libro-anim) { grid-template-columns: 1fr; }
+  .hero figure.libro-anim { width: 100%; max-width: 420px; margin: 0 auto; aspect-ratio: 600 / 792; overflow: hidden; border-radius: 8px; box-shadow: 0 30px 40px -26px rgba(40, 25, 10, .55); }
+  .hero .libro-anim .la-libro, .hero .libro-anim.abierto .la-libro { width: 200%; transform: translateX(-50%); }
+  .hero .libro-anim .la-libro::after { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .la-libro, .libro-anim.abierto .la-libro { transform: rotateX(10deg); transition: none; }
   .hero .libro-anim .la-base.izq, .la-libro::after { opacity: 1; transition: none; }
