@@ -45,14 +45,42 @@
   function imagen(d, cara, calidad) {
     return RAIZ + 'img/portadas/' + d.n + (cara === 'detras' ? '-tras' : '') + (calidad ? '-' + calidad : '') + '.jpg' + (VERSION_IMG[d.n] ? '?v=' + VERSION_IMG[d.n] : '');
   }
+  // Solo el estampado, sin la etiqueta (la etiqueta la dibuja svg() con c\u00f3digo, n\u00edtida a cualquier tama\u00f1o).
+  // 'hd' = 2160 px para la imprenta (~250 ppp en la cubierta); sin calidad, 832 px para la web; 'mini', 416 px.
+  function fondo(d, calidad) {
+    return RAIZ + 'img/portadas/' + d.n + '-fondo' + (calidad ? '-' + calidad : '') + '.jpg';
+  }
+
+  // La etiqueta de papel: un 20 % m\u00e1s peque\u00f1a que la que llevaban pintada las acuarelas, con el mismo centro
+  // (27/10: en el primer libro impreso se ve\u00eda demasiado grande). [x, y, ancho, alto] en el dibujo de 832 \u00d7 1176
+  var ESCALA_ETIQUETA = .8;
+  function etiqueta(d, espejo) {
+    var e = d.delante, w = e[2] * ESCALA_ETIQUETA, h = e[3] * ESCALA_ETIQUETA;
+    var x = e[0] + (e[2] - w) / 2, y = e[1] + (e[3] - h) / 2;
+    return [espejo ? W - x - w : x, y, w, h];
+  }
+  // El papel con su sombra suave, una textura muy ligera y la doble l\u00ednea en la tinta del dise\u00f1o
+  function papel(d, r) {
+    var id = 'tus-p' + d.n;
+    return '<defs><filter id="' + id + 's" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5"/></filter>' +
+      '<filter id="' + id + 't"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="' + d.n + '"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .3  0 0 0 .07 0"/><feComposite in2="SourceGraphic" operator="in"/></filter></defs>' +
+      '<rect x="' + (r[0] + 2) + '" y="' + (r[1] + 4) + '" width="' + r[2] + '" height="' + r[3] + '" fill="#3a2a1a" opacity=".22" filter="url(#' + id + 's)"/>' +
+      '<rect x="' + r[0] + '" y="' + r[1] + '" width="' + r[2] + '" height="' + r[3] + '" fill="' + d.papel + '"/>' +
+      '<rect x="' + r[0] + '" y="' + r[1] + '" width="' + r[2] + '" height="' + r[3] + '" fill="#fff" filter="url(#' + id + 't)"/>' +
+      '<rect x="' + (r[0] + 9) + '" y="' + (r[1] + 9) + '" width="' + (r[2] - 18) + '" height="' + (r[3] - 18) + '" fill="none" stroke="' + d.titulo + '" stroke-width="1.6"/>' +
+      '<rect x="' + (r[0] + 15) + '" y="' + (r[1] + 15) + '" width="' + (r[2] - 30) + '" height="' + (r[3] - 30) + '" fill="none" stroke="' + d.titulo + '" stroke-width="1"/>';
+  }
 
   // svg(dise\u00f1o, nombre, [dise\u00f1oDeMake], [opciones]): la portada delantera con el t\u00edtulo.
   // opciones.calidad: 'mini' (miniaturas), 'hd' (imprenta); por defecto la de la web.
+  // opciones.sinTexto: solo la etiqueta vac\u00eda (la contraportada, donde la imprenta pone la dedicatoria)
   function svg(estilo, nombre, alt, op) {
     op = op || {};
     var d = diseno(/\d/.test(String(alt || '')) ? alt : estilo), n = String(nombre || 'Carmen').trim() || 'Carmen';
     // op.espejo: la acuarela va dada la vuelta (imprenta), as\u00ed que el centro de la etiqueta tambi\u00e9n se refleja
-    var e = d.delante, x = op.espejo ? W - e[0] - e[2] / 2 : e[0] + e[2] / 2, nom = n.toUpperCase();
+    var e = etiqueta(d), x = op.espejo ? W - e[0] - e[2] / 2 : e[0] + e[2] / 2, nom = n.toUpperCase();
+    var fondoYPapel = (op.sinImagen ? '' : '<image href="' + fondo(d, op.calidad) + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>') + papel(d, etiqueta(d, op.espejo));
+    if (op.sinTexto) return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + fondoYPapel + '</svg>';
     // El texto nunca puede salirse del marco: \u00abEl universo de\u00bb ocupa siempre el 70 % del ancho de la etiqueta
     // y el nombre, como mucho el 78 % (textLength lo encaja aunque el navegador use una letra m\u00e1s ancha)
     var tamT = Math.round(e[3] * .2), tamN = cabe(nom, Math.round(e[3] * .38), e[2] * .74, .36);
@@ -61,12 +89,12 @@
     // Aire entre \u00abEl universo de\u00bb y el nombre, para que las tildes (\u00c1, \u00c9, \u00cd\u2026) no toquen la l\u00ednea de arriba
     var yT = Math.round(e[1] + e[3] * .37);
     return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada ' + esc(d.nombre) + ': El universo de ' + esc(n) + '">' +
-      // op.sinImagen: solo el texto (la imprenta pone debajo la acuarela por su cuenta)
-      (op.sinImagen ? '' : '<image href="' + imagen(d, 'delante', op.calidad) + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>') +
+      // op.sinImagen: sin el estampado (la imprenta lo pone debajo por su cuenta), pero s\u00ed la etiqueta
+      fondoYPapel +
       '<text x="' + x + '" y="' + yT + '" text-anchor="middle" textLength="' + anchoT + '" lengthAdjust="spacingAndGlyphs" font-family="\'Dancing Script\', cursive" font-weight="400" font-size="' + tamT + '" fill="' + d.titulo + '">El universo de</text>' +
       '<text x="' + x + '" y="' + Math.round(yT + tamN * 1.12) + '" text-anchor="middle" font-family="\'Amatic SC\', cursive" font-weight="700" font-size="' + tamN + '" letter-spacing="2"' + ajusteN + ' fill="' + d.nombreCol + '">' + esc(nom) + '</text>' +
       '</svg>';
   }
 
-  window.TUSPortadas = { svg: svg, disenos: DISENOS, diseno: diseno, imagen: imagen, W: W, H: H };
+  window.TUSPortadas = { svg: svg, disenos: DISENOS, diseno: diseno, imagen: imagen, fondo: fondo, etiqueta: etiqueta, W: W, H: H };
 })();
