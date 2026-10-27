@@ -35,6 +35,9 @@
         // La ilustraci\u00f3n ocupa todo el ancho de la hoja, apoyada abajo, y NUNCA se recorta: al cargar, encajar()
         // mira d\u00f3nde empieza el dibujo de verdad y, si se meter\u00eda bajo el texto, la reduce lo justo (ver encajar).
         '<img src="' + esc(o.img) + '" crossorigin="anonymous" onload="TUSImprenta.encajar(this)" onerror="TUSImprenta.encajar(this)" style="position:absolute;left:0;bottom:0;width:100%;display:block">' +
+        // o.textura: si o.img es la ilustraci\u00f3n ampliada con IA (m\u00e1s n\u00edtida pero algo lisa), encima va la original a
+        // media transparencia para que no se pierda la textura de la acuarela. encajar() la coloca igual que la otra.
+        (o.textura ? '<img class="tus-tex" src="' + esc(o.textura) + '" style="position:absolute;left:0;bottom:0;width:100%;display:block;opacity:.45;pointer-events:none">' : '') +
         '<div style="position:absolute;inset:0;display:flex;flex-direction:column">';
     if (conTexto) {
       h += '<div class="tus-txt" style="flex:none;position:relative;z-index:1;box-sizing:border-box;padding:13mm 13mm 3mm;text-align:center">' +
@@ -119,6 +122,8 @@
       bajo = 'linear-gradient(#000 ' + Math.max(50, b2 * 100 - 4).toFixed(1) + '%,transparent ' + Math.min(100, b2 * 100).toFixed(1) + '%)';
     img.style.webkitMaskImage = img.style.maskImage = arriba + ',' + lados + ',' + bajo;
     img.style.webkitMaskComposite = 'source-in, source-in'; img.style.maskComposite = 'intersect, intersect';
+    var tex = hoja.querySelector('.tus-tex');
+    if (tex) ['width', 'left', 'bottom', 'top', 'webkitMaskImage', 'maskImage', 'webkitMaskComposite', 'maskComposite'].forEach(function (p) { tex.style[p] = img.style[p]; });
   }
   // ---------- P\u00e1gina de cierre (la \u00faltima hoja del libro, cuando sobra una) ----------
   // o = { diseno, prota, ninos, izquierda }. El mismo marco y la misma hoja de papel que las p\u00e1ginas de la historia;
