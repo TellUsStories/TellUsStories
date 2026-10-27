@@ -16,7 +16,7 @@
   function pagina(o) {
     var conTexto = !!(o.titulo || o.texto);
     if (!o.diseno) return paginaSinMarco(o, conTexto);
-    var d = TUSPortadas.diseno(o.diseno), M = { x: SANGRADO + 11, y: SANGRADO + 11 };   // 11 mm de marco visible
+    var d = TUSPortadas.diseno(o.diseno), M = { x: SANGRADO + 11, y: SANGRADO + 11 }, marco = TUSPortadas.fondo(d, 'hd');   // 11 mm de marco visible
     // o.sobresale: la ilustraci\u00f3n baja por encima del marco hasta el borde de la p\u00e1gina (en ~1 de cada 4 p\u00e1ginas).
     // La hoja llega entonces hasta abajo y la doble l\u00ednea se desvanece antes de llegar a la ilustraci\u00f3n.
     var sale = !!o.sobresale;
@@ -26,7 +26,7 @@
     var espejo = numero(o) && numero(o) % 2 === 0 ? 'transform:scaleX(-1);' : '';
     var h = '<style>.tus-pag .hl{color:inherit;font-weight:500}</style>' +
       '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
-      '<img src="' + TUSPortadas.imagen(d, 'delante', 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
+      '<img src="' + marco + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
       '<div style="position:absolute;left:' + M.x + 'mm;right:' + M.x + 'mm;top:' + M.y + 'mm;bottom:' + (sale ? 0 : M.y) + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
         '<div style="position:absolute;inset:0;pointer-events:none;z-index:2;' + lineas + '">' +
           '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
@@ -130,7 +130,7 @@
     // El libro es para la protagonista y para los ni\u00f1os: su nombre grande y, debajo, \u00aby para\u00bb los ni\u00f1os
     var para = prota ? [prota, ninos ? 'y para ' + ninos : ''] : [ninos, ''];
     return '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
-      '<img src="' + TUSPortadas.imagen(d, 'delante', 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
+      '<img src="' + TUSPortadas.fondo(d, 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
       '<div style="position:absolute;inset:' + M + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
         '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
         '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + '"></div>' +
@@ -230,7 +230,7 @@
         '</div>' +
       '</div>';
     }
-    var imgDel = TUSPortadas.imagen(d, 'delante', 'hd');
+    var imgDel = TUSPortadas.fondo(d, 'hd');
 
     // Delantera: la acuarela de la portada (en espejo si toca) con \u00abEl universo de\u00bb y el nombre en la etiqueta
     var del = cara(F, S.left + S.width, H.width, TUSPortadas.svg(d.n, nombre, null, { calidad: 'hd', sinImagen: true, espejo: espejoDel }), espejoDel);
@@ -243,7 +243,7 @@
     // escribi\u00f3 quien regala el libro, su firma y el logo de Tale Us Stories en las tintas del dise\u00f1o.
     // En todos los dise\u00f1os la contraportada va en espejo: a los dos lados del lomo se ve el mismo trozo
     // del estampado y el dibujo sigue de una cara a la otra sin cortes
-    var espejoTras = !espejoDel, LB = colocacion(B), e = d.delante, k = LB.k;
+    var espejoTras = !espejoDel, LB = colocacion(B), e = TUSPortadas.etiqueta(d), k = LB.k;
     var e0 = espejoTras ? W - e[0] - e[2] : e[0];
     var ex = LB.x + (e0 + 26) * k, ey = LB.y + (e[1] + 26) * k, ew = (e[2] - 52) * k, eh = (e[3] - 52) * k;
     var ded = String(o.dedicatoria || '').trim();
@@ -258,7 +258,7 @@
         '</div>' +
         '<div style="flex:none;margin-top:3mm">' + logo + '</div>' +
       '</div>';
-    var tras = cara(B, 0, S.left - ext, '', espejoTras) + texto;
+    var tras = cara(B, 0, S.left - ext, TUSPortadas.svg(d.n, '', null, { sinImagen: true, sinTexto: true, espejo: espejoTras }), espejoTras) + texto;
 
     // Si la dedicatoria es larga, la letra se reduce hasta que todo quepa en la etiqueta (hcti ejecuta el script)
     var ajuste = '<script>(function(){var c=document.querySelectorAll(".tus-ded");c.forEach(function(b){var p=b.querySelector("p"),t=7.2;while(b.scrollHeight>b.clientHeight+1&&t>4){t-=.2;p.style.fontSize=t.toFixed(1)+"mm";}});})();<\/script>';
