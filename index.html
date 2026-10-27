@@ -31,7 +31,7 @@
       "image": "https://taleusstories.com/compartir.jpg",
       "description": "Cuentos personalizados ilustrados en acuarela que cuentan la historia real de mamá, papá, los abuelos o los tíos para que los niños la descubran.",
       "disambiguatingDescription": "Tale Us Stories (taleusstories.com, @tale_us_stories en Instagram) es una marca española de cuentos personalizados con historias reales, con sede en Barcelona. No tiene relación con el dúo de música electrónica Tale Of Us ni con otras webs de nombre parecido.",
-      "slogan": "Antes de la etiqueta hubo una persona entera.",
+      "slogan": "Vuestra historia, su cuento favorito.",
       "knowsAbout": ["cuentos personalizados", "libros personalizados", "regalos personalizados", "historia familiar"],
       "address": { "@type": "PostalAddress", "addressLocality": "Barcelona", "addressCountry": "ES" },
       "areaServed": { "@type": "Country", "name": "España" },
@@ -128,6 +128,11 @@
   nav .wrap { display: flex; justify-content: space-between; align-items: center; padding-block: 14px; gap: 16px; }
   .logo { font-family: var(--display); font-weight: 800; font-size: 15px; letter-spacing: 2px; text-transform: uppercase; color: var(--tinta); text-decoration: none; line-height: 1.05; }
   .logo span { display: block; width: 28px; height: 3px; background: var(--acento); margin-top: 5px; border-radius: 2px; }
+  /* El slogan junto al logo, separado por una línea fina (en pantallas estrechas y en el móvil, debajo y sin línea) */
+  .marca { display: flex; align-items: center; }
+  .slogan { margin-left: 18px; padding-left: 18px; border-left: 1.5px solid #d8c9bb; font-family: var(--display); font-weight: 500; font-size: 13px; letter-spacing: .5px; color: var(--acento); white-space: nowrap; }
+  @media (max-width: 1150px) { .marca { flex-direction: column; align-items: flex-start; } .slogan { margin: 7px 0 0; padding: 0; border: 0; font-size: 12px; } .menu { flex-shrink: 0; } .menu .pill { white-space: nowrap; } }
+  @media (max-width: 600px) { .slogan { font-size: 11.5px; } }
   .menu { display: flex; align-items: center; gap: 26px; list-style: none; font-family: var(--display); font-weight: 500; font-size: 14px; }
   .menu a { text-decoration: none; color: var(--suave); }
   .menu a:hover { color: var(--acento); }
@@ -370,7 +375,7 @@
 <body>
 
 <nav><div class="wrap">
-  <a class="logo" href="/">Tale Us<br>Stories<span></span></a>
+  <div class="marca"><a class="logo" href="/">Tale Us<br>Stories<span></span></a><span class="slogan">Vuestra historia, su cuento favorito.</span></div>
   <ul class="menu">
     <li><a href="#creadora">Quiénes somos</a></li>
     <li><a href="#portada">La portada</a></li>
