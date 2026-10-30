@@ -54,6 +54,14 @@
   .mini .cierre{width:100%;aspect-ratio:218/288;overflow:hidden;position:relative;background:#f3eee6}
   .mini .cierre>div,.grande>div{position:absolute;left:0;top:0;transform-origin:0 0}
   .grande{width:100%;aspect-ratio:218/288;overflow:hidden;position:relative;border-radius:10px;border:1px solid var(--border)}
+  /* «De dónde sale»: lo que contó la familia, copiado tal cual (solo lo ve Cris, no va al libro) */
+  .fuente{margin-top:12px;font-size:14px;line-height:1.55}
+  .fuente blockquote{margin:6px 0;padding:8px 12px;background:#EEF6EC;border-left:4px solid #6FA36A;border-radius:6px;white-space:pre-line}
+  .fuente .tag{display:inline-block;font-family:var(--display);font-weight:700;font-size:11px;background:#6FA36A;color:#fff;border-radius:4px;padding:1px 6px;margin-right:6px}
+  .fuente .add{background:#FFE3B3;border-radius:4px;padding:0 3px}
+  .fuente .nota{background:#F1EAF7;border-radius:6px;padding:6px 10px;margin-top:6px}
+  .resp{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14.5px;line-height:1.6;white-space:pre-line}
+  .resp .usado{background:#EEF6EC;color:#7d8b7a}
 </style>
 </head>
 <body>
@@ -67,7 +75,14 @@
   <div class="botones" id="barraOrden" style="display:none;margin-top:0">
     <button class="suave" onclick="abrirOrden()">↕️ Cambiar el orden de las páginas</button>
     <button class="suave" onclick="abrirColores()">🎨 Igualar colores del libro</button>
+    <button class="suave" id="btnResto" style="display:none" onclick="verResto()">📋 Lo que no ha entrado en el libro</button>
     <button class="principal" onclick="validarLibro()">✅ Validar el libro y montar el PDF</button>
+  </div>
+  <div class="orden" id="resto">
+    <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Lo que no ha entrado en el libro</h2>
+    <p class="ayuda" style="margin-top:6px">Solo lo ves tú, no va al libro. Abajo están las respuestas completas de la familia, tal cual: en gris sobre verde lo que ya sale en alguna página; en negro, lo que todavía no se ha usado.</p>
+    <div id="restoDentro"></div>
+    <div class="botones"><button onclick="$('resto').classList.remove('visible')">Cerrar</button></div>
   </div>
   <div class="orden" id="colores">
     <h2 style="font-family:var(--display);font-weight:800;font-size:22px">Igualar colores del libro</h2>
@@ -101,6 +116,7 @@
       <img id="vista" alt="Página seleccionada">
       <p class="ayuda" style="margin-top:8px" id="vistaInfo"></p>
       <p class="aviso" id="avisoRevisor" style="display:none;margin-top:8px;font-size:14px"></p>
+      <div class="fuente" id="fuentePagina" style="display:none"></div>
       <div class="botones" style="margin-top:10px">
         <button onclick="descargar('dibujo')">⬇️ Descargar el dibujo</button>
         <button onclick="descargar('pagina')">⬇️ Descargar la página</button>
@@ -227,6 +243,49 @@ function aPagina(txt) {
   return esc.replace(/\*\*([\s\S]+?)\*\*/g, '<span class="hl">$1</span>').replace(/\s*\n\s*/g, ' ').trim();
 }
 
+// «De dónde sale cada página»: lo prepara Claude a mano para cada libro (lo que contó la familia, copiado tal cual)
+// y se guarda en el data store «Fuentes de las páginas». Si un libro no lo tiene, no se ve nada.
+var FUENTES = 'https://hook.eu1.make.com/iofhcdmogsuxivqlogcju49ilm5hdx4v';
+var fuentes = null;
+function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function cargarFuentes() {
+  fetch(FUENTES + '?carpeta=' + encodeURIComponent(CARPETA) + '&clave=' + encodeURIComponent(CLAVE))
+    .then(function (r) { return r.text(); })
+    .then(function (t) {
+      try { fuentes = JSON.parse(t); } catch (e) { fuentes = null; }
+      if (!fuentes || !fuentes.paginas) { fuentes = null; return; }
+      $('btnResto').style.display = '';
+      if (actual !== null) pintarFuente(paginas[actual]);
+    })
+    .catch(function () { fuentes = null; });
+}
+function pintarFuente(p) {
+  var caja = $('fuentePagina'), f = fuentes && fuentes.paginas[String(p.pagina)];
+  if (!f) { caja.style.display = 'none'; return; }
+  var h = '<label style="margin-top:4px">De dónde sale (lo que contó ' + esc(fuentes.familia || 'la familia') + ', tal cual)</label>';
+  h += (f.src && f.src.length) ? f.src.map(function (s) { return '<blockquote><span class="tag">' + esc(s[0]) + '</span>' + esc(s[1]) + '</blockquote>'; }).join('') : '<p class="ayuda">—</p>';
+  if (f.add && f.add.length) h += '<p style="margin-top:8px"><b>Lo añadimos nosotros</b> (no lo dijo la familia): ' + f.add.map(function (a) { return '<span class="add">' + esc(a) + '</span>'; }).join(' · ') + '</p>';
+  if (f.aviso) h += '<p class="aviso" style="margin:8px 0 0;padding:8px 12px">⚠️ ' + esc(f.aviso) + '</p>';
+  if (f.fuera) h += '<p class="nota">✂️ ' + esc(f.fuera) + '</p>';
+  if (f.nota) h += '<p class="ayuda" style="margin-top:6px">' + esc(f.nota) + '</p>';
+  h += '<p class="ayuda" style="margin-top:6px">Va con el número de página: si cambias el orden, pídeme que lo ponga al día.</p>';
+  caja.innerHTML = h; caja.style.display = '';
+}
+function verResto() {
+  if (!fuentes) return;
+  var h = '';
+  if (fuentes.ideas && fuentes.ideas.length) h += '<label>Se podría aprovechar</label><ul style="padding-left:20px;font-size:14.5px;line-height:1.6">' + fuentes.ideas.map(function (x) { return '<li><b>' + esc(x[0]) + ':</b> ' + esc(x[1]) + '</li>'; }).join('') + '</ul>';
+  if (fuentes.otros && fuentes.otros.length) h += '<label>Otros datos del formulario</label><ul style="padding-left:20px;font-size:14.5px;line-height:1.6">' + fuentes.otros.map(function (x) { return '<li><b>' + esc(x[0]) + ':</b> ' + esc(x[1]) + '</li>'; }).join('') + '</ul>';
+  (fuentes.respuestas || []).forEach(function (r) {
+    var t = esc(r[1]);
+    (r[2] || []).slice().sort(function (a, b) { return b.length - a.length; }).forEach(function (u) { t = t.split(esc(u)).join('<span class="usado">' + esc(u) + '</span>'); });
+    h += '<label>' + esc(r[0]) + '</label><div class="resp">' + t + '</div>';
+  });
+  $('restoDentro').innerHTML = h;
+  $('resto').classList.add('visible');
+  $('resto').scrollIntoView({ behavior: 'smooth' });
+}
+
 function cargar() {
   if (!CARPETA || !CLAVE) { aviso('Este enlace no está completo. Entra desde el botón «✏️ Editar páginas» del email de revisión del libro.', true); return; }
   fetch(LEER + '?carpeta=' + encodeURIComponent(CARPETA) + '&clave=' + encodeURIComponent(CLAVE))
@@ -242,6 +301,7 @@ function cargar() {
         : ''));
       $('barraOrden').style.display = '';
       pintarRejilla();
+      cargarFuentes();
     })
     .catch(function () { aviso('No se han podido cargar las páginas. Comprueba la conexión y vuelve a intentarlo.', true); });
 }
@@ -335,6 +395,7 @@ function abrir(i) {
   var pr = problemas(p);
   $('avisoRevisor').style.display = pr.length ? '' : 'none';
   $('avisoRevisor').innerHTML = pr.length ? '<b>⚠️ El revisor automático ve esto:</b><br>• ' + pr.map(function (t) { return String(t).replace(/</g, '&lt;'); }).join('<br>• ') : '';
+  pintarFuente(p);
   $('fTitulo').value = aEditable(titulo);
   $('fTexto').value = aEditable(texto);
   $('fDibujo').value = ''; $('fEscena').value = ''; $('fNuevoTitulo').value = ''; $('fNuevoTexto').value = ''; $('fNuevaEscena').value = ''; var sel = $('fRefPagina'); sel.innerHTML = '<option value="">Ninguna</option>';
