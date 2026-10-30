@@ -259,8 +259,18 @@ function cargarFuentes() {
     })
     .catch(function () { fuentes = null; });
 }
+// Cada página se busca por su título, así sigue bien aunque se cambie el orden; las de solo ilustración, por su número
+function tituloDe(v) { return aEditable(trozo(v || '', 'TITULO:', 'TEXTO:')).replace(/\*\*/g, '').trim(); }
+function fuenteDe(p) {
+  var ps = fuentes.paginas, t = tituloDe(p.value), k;
+  if (t) for (k in ps) if (ps[k].titulo && tituloDe('TITULO:' + ps[k].titulo + 'TEXTO:') === t) return ps[k];
+  var f = ps[String(p.pagina)];
+  if (!f || !f.titulo) return f || null;
+  // Si su título es el de otra página del libro, es que esa página se ha movido
+  return paginas.some(function (o) { return o !== p && tituloDe(o.value) === f.titulo; }) ? null : f;
+}
 function pintarFuente(p) {
-  var caja = $('fuentePagina'), f = fuentes && fuentes.paginas[String(p.pagina)];
+  var caja = $('fuentePagina'), f = fuentes && fuenteDe(p);
   if (!f) { caja.style.display = 'none'; return; }
   var h = '<label style="margin-top:4px">De dónde sale (lo que contó ' + esc(fuentes.familia || 'la familia') + ', tal cual)</label>';
   h += (f.src && f.src.length) ? f.src.map(function (s) { return '<blockquote><span class="tag">' + esc(s[0]) + '</span>' + esc(s[1]) + '</blockquote>'; }).join('') : '<p class="ayuda">—</p>';
@@ -268,7 +278,6 @@ function pintarFuente(p) {
   if (f.aviso) h += '<p class="aviso" style="margin:8px 0 0;padding:8px 12px">⚠️ ' + esc(f.aviso) + '</p>';
   if (f.fuera) h += '<p class="nota">✂️ ' + esc(f.fuera) + '</p>';
   if (f.nota) h += '<p class="ayuda" style="margin-top:6px">' + esc(f.nota) + '</p>';
-  h += '<p class="ayuda" style="margin-top:6px">Va con el número de página: si cambias el orden, pídeme que lo ponga al día.</p>';
   caja.innerHTML = h; caja.style.display = '';
 }
 function verResto() {
