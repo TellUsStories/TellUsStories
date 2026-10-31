@@ -132,8 +132,8 @@
   function cierre(o) {
     var d = TUSPortadas.diseno(o.diseno), M = SANGRADO + 11, espejo = o.izquierda ? 'transform:scaleX(-1);' : '';
     var prota = String(o.prota || '').trim(), ninos = String(o.ninos || '').trim();
-    // El libro es para la protagonista y para los ni\u00f1os: su nombre grande y, debajo, \u00aby para\u00bb los ni\u00f1os
-    var para = prota ? [prota, ninos ? 'y para ' + ninos : ''] : [ninos, ''];
+    // El libro es para la protagonista y para los ni\u00f1os: los dos nombres con la misma letra, tama\u00f1o y color
+    var para = prota ? [prota, ninos] : [ninos, ''];
     return '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
       '<img src="' + TUSPortadas.fondo(d, 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
       '<div style="position:absolute;inset:' + M + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
@@ -144,7 +144,8 @@
           '<div style="color:#E3A93C;font-size:7mm;line-height:1;margin:6mm 0 9mm">\u2605</div>' +
           (para[0] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;color:' + d.titulo + '">Un libro hecho con cari\u00f1o para</div>' +
             '<div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:18mm;line-height:1.1;letter-spacing:.6mm;margin-top:2mm;color:' + d.nombreCol + '">' + esc(para[0]) + '</div>' +
-            (para[1] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;margin-top:2mm;color:' + d.titulo + '">' + esc(para[1]) + '</div>' : '') : '') +
+            (para[1] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;margin-top:2mm;color:' + d.titulo + '">y para</div>' +
+              '<div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:18mm;line-height:1.1;letter-spacing:.6mm;margin-top:2mm;color:' + d.nombreCol + '">' + esc(para[1]) + '</div>' : '') : '') +
         '</div>' +
         '<div style="position:absolute;left:0;right:0;bottom:22mm;text-align:center;font-family:\'Bricolage Grotesque\',\'Arial Black\',sans-serif;font-weight:800;font-size:5.2mm;letter-spacing:1.2mm;line-height:1.15;color:' + d.titulo + '">TALE US<br>STORIES' +
           '<i style="display:block;width:11mm;height:.9mm;margin:2mm auto 0;border-radius:1mm;background:' + d.titulo + '"></i></div>' +
