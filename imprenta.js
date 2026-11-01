@@ -186,7 +186,9 @@
     var H = hoja(m), F = m.contentFrontSize, B = m.contentBackSize, S = m.spineSize;
     var d = TUSPortadas.diseno(o.diseno || o.estilo), nombre = String(o.nombre || '').trim() || 'Carmen';
     var ratio = TUSPortadas.H / TUSPortadas.W, blanda = !m.wraparoundInsideSize;   // tapa blanda: sin cart\u00f3n ni bisagras
-    var ext = blanda ? 0 : 1;   // en tapa dura las caras y el lomo se solapan 1 mm (cae en la bisagra)
+    // En tapa dura la franja del lomo entra 2,5 mm en cada bisagra (la hendidura mide 8 mm): con el libro cerrado se ve igual,
+    // pero si la imprenta desv\u00eda la tapa hasta 2,5 mm no asoma el estampado de la portada en el lomo ni al rev\u00e9s
+    var ext = blanda ? 0 : 2.5;
     // C\u00f3mo se encaja el estampado junto al lomo, por dise\u00f1o (medido en las acuarelas de 832 px de ancho):
     // lado 'izq' = junto al lomo va el borde izquierdo de la acuarela de la portada; 'der' = el derecho
     // (entonces la portada va en espejo). u = a cu\u00e1ntos px de ese borde cae el lomo: en una l\u00ednea del
