@@ -221,17 +221,35 @@
       h = w * ratio;
       return { w: w, h: h, x: cx - w / 2, y: A.top + A.height / 2 - h / 2, k: w / W };
     }
-    // Una cara (delantera o trasera) de x0 a x1 de la hoja. Debajo, la misma acuarela ampliada y difuminada
+    // Dise\u00f1os de cuadros que se repiten: un solo tablero que da la vuelta al libro (portada, lomo y contraportada
+    // siguen el mismo orden de cuadros, sin espejo), con el centro del lomo justo en la l\u00ednea entre dos columnas.
+    // En px de la acuarela de 832 de ancho: cada cu\u00e1nto se repite el estampado en horizontal y en vertical, y d\u00f3nde
+    // cae la primera l\u00ednea entre columnas.
+    var PERIODO = { 4: [463, 710.4, 191.8] };
+    // Una cara (delantera o trasera) de x0 a x1 de la hoja. En los dise\u00f1os de cuadros, el tablero son copias de la
+    // acuarela desplazadas un periodo y con los bordes fundidos 4 mm (su textura no es id\u00e9ntica), as\u00ed no se ve
+    // ninguna raya ni en lo que se dobla hacia dentro. En el resto, debajo, la misma acuarela ampliada y difuminada
     // rellena lo que se dobla hacia dentro, para que no quede ning\u00fan borde blanco.
     function cara(A, x0, x1, contenido, espejo) {
       var L = colocacion(A), cx = L.x + L.w / 2, cy = L.y + L.h / 2;
-      var wF = Math.max(2 * (x1 - cx), 2 * (cx - x0)) + 4, hF = Math.max(wF * ratio, 2 * Math.max(cy, H.height - cy) + 4);
-      wF = Math.max(wF, hF / ratio);
-      var giro = espejo ? 'transform:scaleX(-1);' : '';
-      return '<div style="position:absolute;left:' + x0 + 'mm;top:0;width:' + (x1 - x0) + 'mm;height:' + H.height + 'mm;overflow:hidden;background:' + d.papel + '">' +
-        '<img src="' + imgDel + '" style="position:absolute;left:' + (cx - x0 - wF / 2) + 'mm;top:' + (cy - hF / 2) + 'mm;width:' + wF + 'mm;height:' + hF + 'mm;filter:blur(1.5mm);' + giro + '">' +
+      var giro = espejo ? 'transform:scaleX(-1);' : '', per = PERIODO[d.n], fondoCara;
+      if (per) {
+        var LF = colocacion(F), k = LF.k, tw = W * k, th = TUSPortadas.H * k;
+        var gx = S.left + S.width / 2 - per[2] * k, gy = LF.y, m = 'linear-gradient(to right,transparent,#000 4mm,#000 calc(100% - 4mm),transparent),linear-gradient(transparent,#000 4mm,#000 calc(100% - 4mm),transparent)';
+        fondoCara = '';
+        for (var i = -4; i <= 4; i++) for (var j = -2; j <= 2; j++) {
+          var tx = gx + i * per[0] * k, ty = gy + j * per[1] * k;
+          if (tx > x1 || tx + tw < x0 || ty > H.height || ty + th < 0) continue;
+          fondoCara += '<img src="' + imgDel + '" style="position:absolute;left:' + (tx - x0) + 'mm;top:' + ty + 'mm;width:' + tw + 'mm;height:' + th + 'mm;-webkit-mask-image:' + m + ';mask-image:' + m + ';-webkit-mask-composite:source-in;mask-composite:intersect">';
+        }
+      } else {
+        var wF = Math.max(2 * (x1 - cx), 2 * (cx - x0)) + 4, hF = Math.max(wF * ratio, 2 * Math.max(cy, H.height - cy) + 4);
+        wF = Math.max(wF, hF / ratio);
+        fondoCara = '<img src="' + imgDel + '" style="position:absolute;left:' + (cx - x0 - wF / 2) + 'mm;top:' + (cy - hF / 2) + 'mm;width:' + wF + 'mm;height:' + hF + 'mm;filter:blur(1.5mm);' + giro + '">';
+      }
+      return '<div style="position:absolute;left:' + x0 + 'mm;top:0;width:' + (x1 - x0) + 'mm;height:' + H.height + 'mm;overflow:hidden;background:' + d.papel + '">' + fondoCara +
         '<div style="position:absolute;left:' + (L.x - x0) + 'mm;top:' + L.y + 'mm;width:' + L.w + 'mm;height:' + L.h + 'mm">' +
-          '<img src="' + imgDel + '" style="position:absolute;inset:0;width:100%;height:100%;' + giro + '">' +
+          (per ? '' : '<img src="' + imgDel + '" style="position:absolute;inset:0;width:100%;height:100%;' + giro + '">') +
           '<div style="position:absolute;inset:0">' + contenido + '</div>' +
         '</div>' +
       '</div>';
