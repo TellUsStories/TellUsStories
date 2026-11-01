@@ -238,7 +238,7 @@
         // de fuera del recuadro (a ras, sin una tira fina de otro color junto a \u00e9l)
         var LF = colocacion(F), e = TUSPortadas.etiqueta(d), sc = S.left + S.width / 2, med = per[0] * LF.k / 2;
         var dist = LF.x + (espejoDel ? W - e[0] : e[0] + e[2]) * LF.k - sc, n = Math.max(1, Math.round(dist / med));
-        var k = LF.k * (dist - 0.3) / (n * med), tw = W * k, th = TUSPortadas.H * k;
+        var k = LF.k * (dist - 1.5) / (n * med), tw = W * k, th = TUSPortadas.H * k;
         var gx = sc - per[2] * k, gy = LF.y, m = 'linear-gradient(to right,transparent,#000 4mm,#000 calc(100% - 4mm),transparent),linear-gradient(transparent,#000 4mm,#000 calc(100% - 4mm),transparent)';
         fondoCara = '';
         for (var i = -4; i <= 4; i++) for (var j = -2; j <= 2; j++) {
