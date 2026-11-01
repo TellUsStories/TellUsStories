@@ -189,7 +189,7 @@
       </div>
       <hr class="sep">
       <label for="fNuevaEscena">Añadir una página nueva detrás de esta, con texto y dibujo</label>
-      <p class="ayuda">Escribe el título, el texto (opcional: sin texto será una página de solo ilustración) y la escena. Las páginas de detrás se corren un número. Recuerda que en el libro caben como máximo 26 páginas: si ya tiene 26 y añades una, elimina otra.</p>
+      <p class="ayuda">Escribe el título, el texto (opcional: sin texto será una página de solo ilustración) y la escena. Las páginas de detrás se corren un número. Recuerda que en el libro caben como máximo 27 páginas en tapa dura y 26 en tapa blanda: si ya está lleno y añades una, elimina otra.</p>
       <input id="fNuevoTitulo" type="text" placeholder="Título">
       <textarea id="fNuevoTexto" placeholder="Texto (lo que va entre **dos asteriscos** sale resaltado)" style="min-height:80px;margin-top:6px"></textarea>
       <textarea id="fNuevaEscena" placeholder="Escena: quién sale, qué hacen, dónde están y qué objetos hay" style="min-height:80px;margin-top:6px"></textarea>
@@ -350,9 +350,9 @@ var pedido = null;
 function cargarPedido() {
   return fetch(LISTA + '?clave=' + encodeURIComponent(CLAVE)).then(function (r) { return r.text(); }).then(function (t) {
     var d = JSON.parse(t), f = (d.values || []).filter(function (x) { return x && ((x[19] || '').trim() === CARPETA || (x[15] || '').indexOf(CARPETA) >= 0); })[0];
-    // Columnas de la hoja: C protagonista, D niños
-    pedido = f ? { prota: f[2] || '', ninos: f[3] || '' } : { prota: '', ninos: '' };
-  }).catch(function () { pedido = { prota: '', ninos: '' }; });
+    // Columnas de la hoja: C protagonista, D niños, E formato
+    pedido = f ? { prota: f[2] || '', ninos: f[3] || '', formato: f[4] || '' } : { prota: '', ninos: '', formato: '' };
+  }).catch(function () { pedido = { prota: '', ninos: '', formato: '' }; });
 }
 function datosCierre() {
   // En el libro va a la izquierda si su número (páginas del cuento + 5) es par, como en la imprenta
@@ -517,10 +517,12 @@ function eliminarYa(p, n, est) {
 // y se prepara el borrador en Gelato (no se imprime ni se cobra hasta que lo confirmas allí)
 var APROBAR = 'https://hook.eu1.make.com/pluuvg2ioadx8cn866p6tnrugnxa17dc';
 function validarLibro() {
-  // El PDF lleva siempre las mismas hojas: si el libro tiene menos de 26 páginas, el final se completa en blanco
-  if (paginas.length > 26) { avisar('El libro tiene ' + paginas.length + ' páginas y como máximo caben 26. Elimina ' + (paginas.length - 26) + ' antes de validarlo.'); return; }
-  // Antes de montar el PDF: un mismo nombre escrito de dos formas (Mia / Mía) se avisa y se puede corregir antes
+  // Máximo de páginas: tapa dura 27 (caben en las mismas hojas que 26, con «Fin» en la 32), tapa blanda 26.
+  // Si el libro tiene menos, el final se completa en blanco
   (pedido ? Promise.resolve() : cargarPedido()).then(function () {
+    var max = /blanda/i.test(pedido.formato) ? 26 : 27;
+    if (paginas.length > max) { avisar('El libro tiene ' + paginas.length + ' páginas y como máximo caben ' + max + '. Elimina ' + (paginas.length - max) + ' antes de validarlo.'); return false; }
+    // Antes de montar el PDF: un mismo nombre escrito de dos formas (Mia / Mía) se avisa y se puede corregir antes
     var dudas = nombresDistintos();
     var pregunta = dudas.length
       ? 'Antes de montar el PDF, revisa estos nombres: están escritos de más de una forma en el libro.\n\n' + dudas.join('\n') + '\n\n¿Validar el libro igualmente?'
@@ -730,13 +732,23 @@ function ajustarDibujo(url, f, papel) {
           for (y = 0; y < 30; y++) for (i = 0; i < w; i += 3) { k = (y * w + i) * 4; dev += Math.abs(d[k] - fr) + Math.abs(d[k + 1] - fg) + Math.abs(d[k + 2] - fb); }
           var dr = papel[0] - fr, dg = papel[1] - fg, db = papel[2] - fb;
           if (dev / n < 12 && Math.abs(dr) + Math.abs(dg) + Math.abs(db) > 3) {
-            for (k = 0; k < d.length; k += 4) {
-              var dist = Math.abs(d[k] - fr) + Math.abs(d[k + 1] - fg) + Math.abs(d[k + 2] - fb);
-              if (dist >= 30) continue;
-              var p = 1 - dist / 30; p = p * p * (3 - 2 * p);
-              d[k] += dr * p; d[k + 1] += dg * p; d[k + 2] += db * p;
-            }
-            x.putImageData(dat, 0, 0);
+            // Por trozos, dejando respirar al navegador entre uno y otro (de golpe, la pestaña se queda bloqueada)
+            k = 0;
+            var trozoPapel = function () {
+              try {
+                for (var tope = Math.min(d.length, k + 4000000); k < tope; k += 4) {
+                  var dist = Math.abs(d[k] - fr) + Math.abs(d[k + 1] - fg) + Math.abs(d[k + 2] - fb);
+                  if (dist >= 30) continue;
+                  var p = 1 - dist / 30; p = p * p * (3 - 2 * p);
+                  d[k] += dr * p; d[k + 1] += dg * p; d[k + 2] += db * p;
+                }
+                if (k < d.length) { setTimeout(trozoPapel, 0); return; }
+                x.putImageData(dat, 0, 0);
+                clearTimeout(fin); ok(c.toDataURL('image/jpeg', 0.92));
+              } catch (e) { clearTimeout(fin); ok(null); }
+            };
+            trozoPapel();
+            return;
           }
         }
         clearTimeout(fin); ok(c.toDataURL('image/jpeg', 0.92));
@@ -752,16 +764,21 @@ function verColores() {
   medir(ref.img || ref.url).then(function (mRef) {
     if (!mRef) throw 0;
     papelRef = mRef.P;
-    return Promise.all(paginas.map(function (p, i) {
-      if (i === iRef || esCompleta(p) || !p.img) return Promise.resolve(null);
+    // De tres en tres (si se piden todas a la vez, el navegador se queda colgado con los dibujos grandes)
+    var lista = [], sig = 0, medidas = 0;
+    function otra() {
+      if (sig >= paginas.length) return Promise.resolve();
+      var i = sig++, p = paginas[i];
+      if (i === iRef || esCompleta(p) || !p.img) { lista[i] = null; return otra(); }
       return medir(p.img).then(function (m) {
-        if (!m) return null;
+        $('estadoColores').textContent = 'Midiendo el color de cada dibujo… (' + (++medidas) + ')';
         // Solo se iguala el papel (el crema de fondo) al de la referencia. El color de los dibujos NO se toca
         // (Cris no quiere que se apaguen las ilustraciones); filtroPara se deja por si algún día se quiere a mano.
-        var dif = Math.abs(m.P[0] - mRef.P[0]) + Math.abs(m.P[1] - mRef.P[1]) + Math.abs(m.P[2] - mRef.P[2]);
-        return dif > 4 ? { f: '', papel: true } : null;
-      });
-    }));
+        var dif = m ? Math.abs(m.P[0] - mRef.P[0]) + Math.abs(m.P[1] - mRef.P[1]) + Math.abs(m.P[2] - mRef.P[2]) : 0;
+        lista[i] = dif > 4 ? { f: '', papel: true } : null;
+      }).then(otra);
+    }
+    return Promise.all([otra(), otra(), otra()]).then(function () { return lista; });
   }).then(function (lista) {
     filtros = {}; var n = 0, nPapel = 0;
     var mins = document.querySelectorAll('#rejilla img');
