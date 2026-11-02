@@ -690,7 +690,8 @@ function origenVisita() {
   var o = {};
   try { o = JSON.parse(localStorage.getItem('tus_origen') || '{}'); } catch (e) {}
   var t = ((o.utm || '') + ' ' + (o.ref || '') + ' ' + (o.ua || '')).toLowerCase();
-  var fuentes = [['mail.google', 'Email'], ['outlook', 'Email'], ['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['google', 'Google'], ['bing', 'Bing'], ['facebook', 'Facebook'], ['chatgpt', 'ChatGPT'], ['openai', 'ChatGPT'], ['perplexity', 'Perplexity'], ['duckduckgo', 'DuckDuckGo'], ['yahoo', 'Yahoo'], ['mail', 'Email']];
+  // Las IA van antes que Google y Bing (gemini.google.com, copilot.microsoft.com…) para no confundirlas con el buscador
+  var fuentes = [['mail.google', 'Email'], ['outlook', 'Email'], ['chatgpt', 'IA · ChatGPT'], ['openai', 'IA · ChatGPT'], ['gemini', 'IA · Gemini'], ['bard.google', 'IA · Gemini'], ['copilot', 'IA · Copilot'], ['perplexity', 'IA · Perplexity'], ['claude.ai', 'IA · Claude'], ['deepseek', 'IA · DeepSeek'], ['meta.ai', 'IA · Meta AI'], ['you.com', 'IA · You.com'], ['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['google', 'Google'], ['bing', 'Bing'], ['facebook', 'Facebook'], ['duckduckgo', 'DuckDuckGo'], ['yahoo', 'Yahoo'], ['ecosia', 'Ecosia'], ['mail', 'Email']];
   var f = fuentes.find(function(x) { return t.indexOf(x[0]) >= 0; });
   var nombre = f ? f[1] : (o.utm || o.ref || (o.fecha ? 'Directo (escribió la web o sin datos)' : 'Sin datos'));
   return nombre + (o.fecha ? ' · entró por ' + (o.pag || '/') + ' el ' + o.fecha : '');
