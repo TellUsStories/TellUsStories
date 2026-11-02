@@ -685,6 +685,16 @@ function enlacePago(pedido) {
   var c = (document.getElementById('codigoDescuento').value || '').trim().toUpperCase();
   return STRIPE[formato] + '?client_reference_id=' + encodeURIComponent(pedido) + (e ? '&prefilled_email=' + encodeURIComponent(e) : '') + (c ? '&prefilled_promo_code=' + encodeURIComponent(c) : '');
 }
+// De dónde llegó el cliente (Google, Bing, Instagram, TikTok…), según lo que apuntó la web en su primera visita
+function origenVisita() {
+  var o = {};
+  try { o = JSON.parse(localStorage.getItem('tus_origen') || '{}'); } catch (e) {}
+  var t = ((o.utm || '') + ' ' + (o.ref || '') + ' ' + (o.ua || '')).toLowerCase();
+  var fuentes = [['mail.google', 'Email'], ['outlook', 'Email'], ['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['google', 'Google'], ['bing', 'Bing'], ['facebook', 'Facebook'], ['chatgpt', 'ChatGPT'], ['openai', 'ChatGPT'], ['perplexity', 'Perplexity'], ['duckduckgo', 'DuckDuckGo'], ['yahoo', 'Yahoo'], ['mail', 'Email']];
+  var f = fuentes.find(function(x) { return t.indexOf(x[0]) >= 0; });
+  var nombre = f ? f[1] : (o.utm || o.ref || (o.fecha ? 'Directo (escribió la web o sin datos)' : 'Sin datos'));
+  return nombre + (o.fecha ? ' · entró por ' + (o.pag || '/') + ' el ' + o.fecha : '');
+}
 // El concepto de la transferencia: así sabes de qué pedido es cada pago
 function conceptoPago() {
   var p = (document.getElementById('protName').value || '').trim(), e = (document.getElementById('email').value || '').trim();
@@ -1273,6 +1283,7 @@ async function submit() {
   payload.dedicatoria_corregida = ia.ded && ia.ded.corregida ? 'sí' : 'no';
   payload.version_formulario = 'etapas';
   payload.acepta_privacidad = 'sí';   // no se puede enviar sin marcar la casilla
+  payload.origen = origenVisita();     // de dónde llegó a la web la primera vez (lo apunta functions/_middleware.js)
 
   // Fotos: reducidas en el navegador para que el envío pese poco
   payload.foto_cara  = await photoToBase64(document.getElementById('fotoCara').files[0]);
