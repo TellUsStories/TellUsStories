@@ -1,3 +1,6 @@
 # Cloudflare Pages. El formulario antiguo ya no se usa: quien entre por su dirección va al formulario por etapas
 /formulario.html /formulario-nuevo.html 301
 /formulario /formulario-nuevo 301
+# Enlaces cortos de las bios: guardan de dónde viene la visita (columna Origen de la hoja)
+/ig /?utm_source=instagram&utm_medium=bio 302
+/tt /?utm_source=tiktok&utm_medium=bio 302
