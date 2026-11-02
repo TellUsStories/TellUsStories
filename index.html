@@ -342,7 +342,7 @@
 
   .barra { display: none; }
   @media (max-width: 900px) {
-    .menu li:not(:last-child) { display: none; }
+    .menu li:not(:last-child):not(.menu-blog) { display: none; }
     .hero, .dos, .config-grid, .faq-grid { grid-template-columns: 1fr; }
     .hero { gap: 26px; padding-block: 8px 52px; }
     .pila { order: -1; width: 54%; max-width: 220px; }
@@ -382,7 +382,7 @@
     <li><a href="#como">Cómo funciona</a></li>
     <li><a href="#dentro">El libro</a></li>
     <li><a href="#precio">Precio</a></li>
-    <li><a href="/blog">Blog</a></li>
+    <li class="menu-blog"><a href="/blog">Blog</a></li>
     <li><a class="pill" href="/formulario-nuevo">Crear el libro</a></li>
   </ul>
 </div></nav>
