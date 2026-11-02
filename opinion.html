@@ -104,7 +104,7 @@ $('form').onsubmit = function (e) {
   fetch(ENVIAR, { method: 'POST', body: datos })
     .then(function (r) { if (!r.ok) throw 0; })
     .then(function () {
-      $('contenido').innerHTML = '<div class="gracias"><div>💛</div><h1>¡Muchísimas gracias!</h1><p class="sub">Hemos recibido tu opinión. Significa mucho para nosotros.</p><p class="sub" style="margin-top:18px"><a href="/" style="color:var(--coral)">Volver a Tale Us Stories</a></p></div>';
+      $('contenido').innerHTML = '<div class="gracias"><div>💛</div><h1>¡Muchísimas gracias!</h1><p class="sub">Hemos recibido tu opinión. Significa mucho para nosotros.</p><p class="sub" style="margin-top:18px">¿Nos ayudas un poquito más? Copia tu opinión en <a href="https://es.trustpilot.com/evaluate/taleusstories.com" target="_blank" rel="noopener" style="color:var(--coral)">Trustpilot</a>: así otras familias pueden encontrarnos.</p><p class="sub" style="margin-top:18px"><a href="/" style="color:var(--coral)">Volver a Tale Us Stories</a></p></div>';
       window.scrollTo(0, 0);
     })
     .catch(function () {
