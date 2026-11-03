@@ -871,6 +871,7 @@ function go(n) {
   var nextId = n <= TOTAL ? 's' + n : 'sFinal';
   var nextEl = document.getElementById(nextId);
   if (nextEl) nextEl.classList.add('active');
+  if (n === 1) aspPinta();
   var stepLbl = document.getElementById('stepLbl');
   if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Paso ' + (n + 1) + ' de ' + TOTAL) : (n === TOTAL ? 'Revisión' : '¡Listo!');
   var prog = document.getElementById('prog');
@@ -1973,7 +1974,7 @@ function aspTexto() {
   });
   return out.join('\n');
 }
-document.addEventListener('input', function(e) { if (e.target.id === 'childNames' || e.target.id === 'protName') aspPinta(); });
+// Las tarjetas de «¿Cómo son?» se pintan al llegar a esa pantalla (en go), no a cada tecla: en iPhone dejaba la pantalla en blanco al escribir
 
 document.getElementById('prog').style.width = '0%';
 loadDraft();
