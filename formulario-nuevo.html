@@ -1127,7 +1127,7 @@ function ninosSync() {
 }
 function ninoFila(n, e, foco) {
   var f = document.createElement('div'); f.className = 'nino-fila';
-  f.innerHTML = '<input type="text" placeholder="Nombre"><input type="text" inputmode="numeric" placeholder="Edad"><button type="button" aria-label="Quitar">✕</button>';
+  f.innerHTML = '<input type="text" placeholder="Nombre"><input type="text" placeholder="Edad" autocomplete="off"><button type="button" aria-label="Quitar">✕</button>';
   f.children[0].value = n || ''; f.children[1].value = e || '';
   f.children[0].oninput = f.children[1].oninput = ninosSync;
   f.children[2].onclick = function() { f.remove(); if (!document.querySelector('#ninosFilas .nino-fila')) ninoFila(); ninosSync(); };
