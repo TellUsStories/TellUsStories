@@ -386,7 +386,7 @@
   <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y ya no tienes que rellenar nada más de esa persona. Si no tienes foto, toca <b>"No tengo foto"</b> y descríbela con los botones. Las fotos solo se usan para dibujar.</div>
   <div id="aspCards"></div>
   <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
-  <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspRecortar(this)">
+  <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspGrupo(this)">
   <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia (su pareja, sus padres, un amigo…)? Añádelas para que también se parezcan:</div>
   <div class="asp-add">
     <button type="button" onclick="aspAdd('pareja')">+ Su pareja</button>
@@ -1311,7 +1311,7 @@ async function submit() {
 
   // Fotos: reducidas en el navegador para que el envío pese poco
   payload.foto_cara  = await photoToBase64(document.getElementById('fotoCara').files[0]);
-  payload.foto_ninos = await photoToBase64(document.getElementById('fotoNinos').files[0]);
+  payload.foto_ninos = await aspCollageNinos();   // una foto por niño, con su nombre debajo
   payload.foto_familia = await aspCollageFamilia();   // pareja, padres y hermanos con foto, en una sola imagen
   payload.fotos_extra = [];
   var extras = fotosExtra.slice(0, 3);
@@ -1756,22 +1756,20 @@ function aspPinta() {
     tp.insertBefore(aspCajaFoto('fotoCara', 'Sube una foto de su cara y te saltas este paso'), tp.children[1]);
     cont.appendChild(tp);
   }
-  // Niños: una foto de todos o una tarjeta por niño
+  // Niños: cada uno con su propia foto o su tarjeta (una foto de grupo no dice quién es quién)
   var ninos = aspNinos();
-  if (ninos.length) {
-    if (aspFoto('fotoNinos')) {
-      var cn = document.createElement('div'); cn.className = 'asp';
-      cn.innerHTML = '<div class="asp-h"><div class="asp-t">Los niños <small>· ' + ninos.join(', ') + '</small></div></div>';
-      cn.appendChild(aspCajaFoto('fotoNinos'));
-      cont.appendChild(cn);
-    } else {
-      cont.appendChild(aspCajaFoto('fotoNinos', '¿Tienes una foto de ' + (ninos.length > 1 ? 'los niños juntos' : ninos[0]) + '? Súbela y te saltas ' + (ninos.length > 1 ? 'sus tarjetas' : 'su tarjeta')));
-      ninos.forEach(function(n) {
-        asp.ninos[n] = asp.ninos[n] || {};
-        cont.appendChild(aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>'));
-      });
+  if (ninos.length) cont.appendChild(aspCajaFoto('fotoNinos', ninos.length > 1 ? '¿Tienes una foto de los niños? Súbela y marca quién es cada uno' : '¿Tienes una foto de ' + ninos[0] + '? Súbela y marca su cara'));
+  ninos.forEach(function(n) {
+    asp.ninos[n] = asp.ninos[n] || {};
+    var fid = aspInputNino(n);
+    var t = aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>');
+    if (aspFoto(fid)) {
+      t.querySelector('.asp-desc').style.display = 'none';
+      t.querySelector('.asp-sinfoto').style.display = 'none';
     }
-  }
+    if (aspFoto(fid)) t.insertBefore(aspCajaFoto(fid), t.children[1]);   // la foto sale de marcarlo en la foto de los niños
+    cont.appendChild(t);
+  });
   // Pareja, padres y hermanos: también foto o botones (cada uno con su propio <input type=file> en #aspInputs)
   asp.extra.forEach(function(p, i) {
     p.id = p.id || ('x' + Date.now().toString(36) + i);
@@ -1797,6 +1795,56 @@ function aspInputExtra(pid) {
     document.getElementById('aspInputs').appendChild(f);
   }
   return id;
+}
+// Cada niño tiene su propio <input type=file> (en #aspInputs), con su nombre en el id
+function aspIdNino(n) { return 'fotoNino_' + n.normalize('NFD').replace(/[^A-Za-z0-9]/g, '_'); }
+function aspInputNino(n) {
+  var id = aspIdNino(n);
+  if (!document.getElementById(id)) {
+    var f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.id = id;
+    f.onchange = function() { aspRecortar(f); };
+    document.getElementById('aspInputs').appendChild(f);
+  }
+  return id;
+}
+// Foto de grupo: se sube una vez y se recuadra a cada niño por su nombre (así sabemos quién es quién)
+function aspRecuadro(f, n) {
+  return aspCargaCropper().then(function() { return new Promise(function(fin) {
+    var url = URL.createObjectURL(f), fondo = document.createElement('div');
+    fondo.className = 'rec-fondo';
+    fondo.innerHTML = '<div class="rec-caja"><div class="rec-t"></div><div class="rec-h"></div>' +
+      '<div class="rec-img"><img alt="Foto de grupo"></div>' +
+      '<div class="rec-bts"><button type="button" data-a="no">No sale en la foto</button><button type="button" class="si" data-a="si"></button></div></div>';
+    fondo.querySelector('.rec-t').textContent = '¿Quién es ' + n + '?';
+    fondo.querySelector('.rec-h').textContent = 'Mueve y ajusta el recuadro para dejar solo la cara de ' + n + '.';
+    fondo.querySelector('[data-a="si"]').textContent = 'Es ' + n;
+    document.body.appendChild(fondo);
+    var img = fondo.querySelector('img'), cr;
+    img.onload = function() { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.35, background: false, movable: false, zoomable: false, rotatable: false, checkOrientation: false }); };
+    img.src = url;
+    function cierra(b) { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); fin(b); }
+    fondo.querySelector('[data-a="no"]').onclick = function() { cierra(null); };
+    fondo.querySelector('[data-a="si"]').onclick = function() {
+      if (!cr) return cierra(null);
+      cr.getCroppedCanvas({ maxWidth: 1200, maxHeight: 1200, imageSmoothingQuality: 'high' }).toBlob(function(b) { cierra(b); }, 'image/jpeg', 0.92);
+    };
+  }); });
+}
+async function aspGrupo(input) {
+  var f = input.files[0]; if (!f) return;
+  var ninos = aspNinos();
+  for (var i = 0; i < ninos.length; i++) {
+    var b = null;
+    try { b = await aspRecuadro(f, ninos[i]); } catch (e) {}
+    if (b) {
+      try {
+        var dt = new DataTransfer();
+        dt.items.add(new File([b], 'foto-' + aspIdNino(ninos[i]) + '.jpg', { type: 'image/jpeg' }));
+        document.getElementById(aspInputNino(ninos[i])).files = dt.files;
+      } catch (e) {}
+    }
+  }
+  input.value = ''; aspPinta();
 }
 function aspAdd(rol) { asp.extra.push({ rol: rol }); aspGuarda(); aspPinta(); }
 
@@ -1824,11 +1872,34 @@ function aspCollageFamilia() {
   })).then(function() { return cv.toDataURL('image/jpeg', 0.85).split(',')[1]; });
 }
 
+// Al enviar: las fotos de los niños se juntan en una sola imagen, cada una con su nombre debajo
+function aspCollageNinos() {
+  var conFoto = aspNinos().filter(function(n) { return aspFoto(aspIdNino(n)); });
+  if (!conFoto.length) return Promise.resolve('');
+  var CEL = 480, ALTO = 560, PIE = 60, cols = Math.min(conFoto.length, 3), filas = Math.ceil(conFoto.length / cols);
+  var cv = document.createElement('canvas'); cv.width = cols * CEL; cv.height = filas * (ALTO + PIE);
+  var x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, cv.width, cv.height);
+  return Promise.all(conFoto.map(function(n, i) {
+    return new Promise(function(ok) {
+      var url = URL.createObjectURL(aspFoto(aspIdNino(n))), im = new Image();
+      im.onload = function() {
+        var cx = (i % cols) * CEL, cy = Math.floor(i / cols) * (ALTO + PIE), k = Math.min(CEL / im.width, ALTO / im.height);
+        x.drawImage(im, cx + (CEL - im.width * k) / 2, cy + (ALTO - im.height * k) / 2, im.width * k, im.height * k);
+        x.fillStyle = '#222'; x.font = 'bold 30px Arial'; x.textAlign = 'center';
+        x.fillText(n, cx + CEL / 2, cy + ALTO + 42);
+        URL.revokeObjectURL(url); ok();
+      };
+      im.onerror = function() { URL.revokeObjectURL(url); ok(); };
+      im.src = url;
+    });
+  })).then(function() { return cv.toDataURL('image/jpeg', 0.85).split(',')[1]; });
+}
+
 // Qué falta (pelo, ojos y piel de la protagonista y de cada niño); marca las tarjetas en rojo
 function aspFaltan() {
   var falta = [], cards = document.querySelectorAll('#aspCards .asp');
   var datos = [[(document.getElementById('protName').value || '').trim() || 'el protagonista', asp.prot, aspFoto('fotoCara')]]
-    .concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}, aspFoto('fotoNinos')]; }));
+    .concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}, aspFoto(aspIdNino(n))]; }));
   datos.forEach(function(p, i) {
     if (p[2]) return;   // con foto no hace falta rellenar
     var c = cards[i], sin = ASP_OBLIG.filter(function(k) { return !p[1][k]; });
@@ -1854,7 +1925,7 @@ function aspTexto() {
   }
   var prot = (document.getElementById('protName').value || '').trim(), out = [];
   out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (aspFoto('fotoCara') ? 'ver su foto' : (linea(asp.prot) || 'sin datos')));
-  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto('fotoNinos') ? 'ver la foto de los niños' : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
+  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto(aspIdNino(n)) ? 'ver su foto (en la imagen de los niños, con su nombre)' : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
   asp.extra.forEach(function(p) {
     var l = (p.id && aspFoto('fotoExtra_' + p.id)) ? 'ver su foto (en la imagen de la familia)' : linea(p);
     if (!l && !p.nombre && !p.quien) return;
