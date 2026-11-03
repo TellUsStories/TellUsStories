@@ -1132,7 +1132,8 @@ function ninoFila(n, e, foco) {
   f.children[0].oninput = f.children[1].oninput = ninosSync;
   f.children[2].onclick = function() { f.remove(); if (!document.querySelector('#ninosFilas .nino-fila')) ninoFila(); ninosSync(); };
   document.getElementById('ninosFilas').appendChild(f);
-  if (foco) f.children[0].focus();
+  // En el móvil no se pone el cursor solo: el iPhone salta y deja la pantalla en blanco un momento
+  if (foco && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) f.children[0].focus();
 }
 function ninosCarga() {
   var cont = document.getElementById('ninosFilas'); if (!cont) return; cont.innerHTML = '';
