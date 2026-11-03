@@ -89,6 +89,9 @@
   .or-d span{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .tf{display:none;}
   .tf.show{display:block;}
+  .nino-fila{display:grid;grid-template-columns:1fr 96px 34px;gap:10px;margin-bottom:10px;align-items:center}
+  .nino-fila button{border:0;background:none;font-size:18px;cursor:pointer;color:inherit;opacity:.6}
+  .ninos-mas{border:1.5px dashed rgba(74,44,31,.35);border-radius:12px;background:none;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer;color:inherit}
   .asp.plegada .asp-desc{display:none}
   .asp-sinfoto{display:block;width:100%;margin:10px 0 2px;padding:10px 14px;border:1.5px dashed rgba(74,44,31,.35);border-radius:12px;background:none;font:inherit;font-size:15px;font-weight:600;color:inherit;cursor:pointer;text-align:left}
   .asp:not(.plegada) .asp-sinfoto{display:none}
@@ -250,15 +253,17 @@
       <div class="aviso-det-s">Nosotros ponemos la acuarela y las palabras; tú pones los recuerdos. Ese apodo que solo usáis en casa, la canción del coche, la manía de cada mañana, el jersey de siempre… <b>Cuantos más detalles nos regales, más os reconoceréis en cada página.</b></div>
     </div>
   </div>
-  <div class="two">
-    <div class="field">
-      <label>Nombre del protagonista</label>
-      <input type="text" id="protName" placeholder="Ej: María, José, Carlos…" oninput="onNameInput()">
-    </div>
-    <div class="field">
-      <label>Nombre/s de los niños</label>
-      <input type="text" id="childNames" placeholder="Ej: Martina, Pedro y Lucas">
-    </div>
+  <div class="field">
+    <label>Nombre del protagonista</label>
+    <input type="text" id="protName" placeholder="Ej: María, José, Carlos…" oninput="onNameInput()">
+  </div>
+  <div class="field">
+    <label>Los niños del libro</label>
+    <div class="hint">El nombre de cada niño y la edad que tiene hoy.</div>
+    <div id="ninosFilas"></div>
+    <button type="button" class="ninos-mas" onclick="ninoFila('', '', true)">+ Añadir otro niño</button>
+    <input type="text" id="childNames" style="display:none">
+    <input type="text" id="childAges" style="display:none">
   </div>
   <div class="field">
     <label>El protagonista es…</label>
@@ -371,10 +376,7 @@
     </div>
     <div class="field"><label>¿Cómo la llaman los niños?</label><input type="text" id="nicknames" placeholder="Ej: mamá, yaya, la abuela Pepa…"></div>
   </div>
-  <div class="two">
-    <div class="field"><label>¿Qué edad tiene hoy?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ej: 38"></div>
-    <div class="field"><label>Edad de cada niño</label><input type="text" id="childAges" placeholder="Ej: Lucas 7, Martina 5"></div>
-  </div>
+  <div class="field"><label>¿Qué edad tiene hoy?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ej: 38"></div>
   <div class="field"><label>Descríbela en 3 palabras</label><input type="text" id="tresPalabras" placeholder="Ej: alegre, valiente y curiosa"></div>
   <div class="two">
     <div class="field"><label>¿A qué se dedica?</label><input type="text" id="job" placeholder="Ej: arquitecta, maestro, jubilada…"></div>
@@ -1109,6 +1111,37 @@ function avisoBorrador() {
   bs[1].onclick = function() { b.remove(); };
   document.body.appendChild(b);
   setTimeout(function() { if (b.parentNode) b.remove(); }, 15000);
+}
+
+// Niños: una fila por niño (nombre y edad de hoy); se guardan juntos en #childNames y #childAges
+function ninosSync() {
+  var noms = [], edades = [];
+  document.querySelectorAll('#ninosFilas .nino-fila').forEach(function(f) {
+    var n = f.children[0].value.trim(), e = f.children[1].value.trim();
+    if (n) { noms.push(n); if (e) edades.push(n + ' ' + e); }
+  });
+  var cn = document.getElementById('childNames'), ca = document.getElementById('childAges');
+  cn.value = noms.join(', '); ca.value = edades.join(', ');
+  cn.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function ninoFila(n, e, foco) {
+  var f = document.createElement('div'); f.className = 'nino-fila';
+  f.innerHTML = '<input type="text" placeholder="Nombre"><input type="text" inputmode="numeric" placeholder="Edad"><button type="button" aria-label="Quitar">✕</button>';
+  f.children[0].value = n || ''; f.children[1].value = e || '';
+  f.children[0].oninput = f.children[1].oninput = ninosSync;
+  f.children[2].onclick = function() { f.remove(); if (!document.querySelector('#ninosFilas .nino-fila')) ninoFila(); ninosSync(); };
+  document.getElementById('ninosFilas').appendChild(f);
+  if (foco) f.children[0].focus();
+}
+function ninosCarga() {
+  var cont = document.getElementById('ninosFilas'); if (!cont) return; cont.innerHTML = '';
+  var noms = (document.getElementById('childNames').value || '').split(/\s*,\s*|\s+y\s+|\s+e\s+/i).map(function(s) { return s.trim(); }).filter(Boolean);
+  var partes = (document.getElementById('childAges').value || '').split(/\s*,\s*/);
+  noms.forEach(function(n) {
+    var p = partes.filter(function(x) { return x.toLowerCase().indexOf(n.toLowerCase() + ' ') === 0; })[0];
+    ninoFila(n, p ? p.slice(n.length).trim() : '');
+  });
+  if (!noms.length) ninoFila();
 }
 
 function loadDraft() {
@@ -1941,6 +1974,7 @@ document.addEventListener('input', function(e) { if (e.target.id === 'childNames
 
 document.getElementById('prog').style.width = '0%';
 loadDraft();
+ninosCarga();
 aspCarga();
 iaCarga();
 aspPinta();
