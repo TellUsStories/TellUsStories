@@ -89,6 +89,7 @@
   .or-d span{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .tf{display:none;}
   .tf.show{display:block;}
+  .asp-mini{width:46px;height:46px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:10px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
   .nino-fila{display:grid;grid-template-columns:1fr 96px 34px;gap:10px;margin-bottom:10px;align-items:center}
   .nino-fila button{border:0;background:none;font-size:18px;cursor:pointer;color:inherit;opacity:.6}
   .ninos-mas{border:1.5px dashed rgba(74,44,31,.35);border-radius:12px;background:none;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer;color:inherit}
@@ -1713,7 +1714,8 @@ function aspCajaFoto(id, texto) {
   var f = aspFoto(id), c = document.createElement('div');
   if (f) {
     c.className = 'asp-foto ok';
-    c.innerHTML = '✓ Foto subida: <b></b> <button type="button">Recortar</button> <button type="button">Cambiar</button> <button type="button">Quitar</button>';
+    c.innerHTML = '<img class="asp-mini" alt="">✓ Foto subida: <b></b> <button type="button">Recortar</button> <button type="button">Cambiar</button> <button type="button">Quitar</button>';
+    c.querySelector('.asp-mini').src = URL.createObjectURL(f);   // miniatura: se ve quién ha quedado marcado
     c.querySelector('b').textContent = f.name;
     var bs = c.querySelectorAll('button');
     bs[0].onclick = function() { aspRecortar(document.getElementById(id)); };
