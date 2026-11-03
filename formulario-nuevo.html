@@ -1767,7 +1767,9 @@ function aspPinta() {
       t.querySelector('.asp-desc').style.display = 'none';
       t.querySelector('.asp-sinfoto').style.display = 'none';
     }
-    if (aspFoto(fid)) t.insertBefore(aspCajaFoto(fid), t.children[1]);   // la foto sale de marcarlo en la foto de los niños
+    // La foto sale de marcarlo en la foto de los niños; si no salía, puede subir una solo suya
+    if (aspFoto(fid)) t.insertBefore(aspCajaFoto(fid), t.children[1]);
+    else if (aspGrupoUsado) t.insertBefore(aspCajaFoto(fid, 'No sale en la foto: sube una foto de ' + n), t.children[1]);
     cont.appendChild(t);
   });
   // Pareja, padres y hermanos: también foto o botones (cada uno con su propio <input type=file> en #aspInputs)
@@ -1830,8 +1832,10 @@ function aspRecuadro(f, n) {
     };
   }); });
 }
+var aspGrupoUsado = false;
 async function aspGrupo(input) {
   var f = input.files[0]; if (!f) return;
+  aspGrupoUsado = true;
   var ninos = aspNinos();
   for (var i = 0; i < ninos.length; i++) {
     var b = null;
