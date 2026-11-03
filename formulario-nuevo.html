@@ -1088,6 +1088,18 @@ function saveDraft() {
   } catch (e) {}
 }
 
+// Aviso al volver: se retoma el borrador guardado, con opción de empezar de cero
+function avisoBorrador() {
+  var b = document.createElement('div');
+  b.style.cssText = 'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9999;background:#4A2C1F;color:#FBFAF7;font:600 14px system-ui,sans-serif;padding:10px 16px;border-radius:100px;box-shadow:0 8px 20px rgba(0,0,0,.25);display:flex;gap:12px;align-items:center;max-width:calc(100% - 32px)';
+  b.innerHTML = 'Seguimos donde lo dejaste <button type="button" style="all:unset;cursor:pointer;text-decoration:underline">Empezar de cero</button> <button type="button" aria-label="Cerrar" style="all:unset;cursor:pointer;padding:0 4px">✕</button>';
+  var bs = b.querySelectorAll('button');
+  bs[0].onclick = function() { if (confirm('¿Borrar lo que has escrito y empezar de nuevo?')) { enviado = true; try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} location.reload(); } };
+  bs[1].onclick = function() { b.remove(); };
+  document.body.appendChild(b);
+  setTimeout(function() { if (b.parentNode) b.remove(); }, 15000);
+}
+
 function loadDraft() {
   try {
     var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
@@ -1106,7 +1118,7 @@ function loadDraft() {
     pintaPortadas();
     if (d.tone) document.querySelectorAll('.tone-opt').forEach(function(o) { if (o.querySelector('.tt').textContent === d.tone) selTone(o); });
     // Volver al paso en el que se quedó (sin saltar a la revisión)
-    if (d.paso > 0 && d.paso < TOTAL) go(d.paso);
+    if (d.paso > 0 && d.paso < TOTAL) { go(d.paso); avisoBorrador(); }
   } catch (e) {}
 }
 
