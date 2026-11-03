@@ -89,6 +89,9 @@
   .or-d span{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .tf{display:none;}
   .tf.show{display:block;}
+  .asp.plegada .asp-desc{display:none}
+  .asp-sinfoto{display:block;width:100%;margin:10px 0 2px;padding:10px 14px;border:1.5px dashed rgba(74,44,31,.35);border-radius:12px;background:none;font:inherit;font-size:15px;font-weight:600;color:inherit;cursor:pointer;text-align:left}
+  .asp:not(.plegada) .asp-sinfoto{display:none}
   .btn-tw{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--texto);}
   .tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
   .tone-opt{border:1.5px solid var(--border);border-radius:6px;padding:14px 16px;cursor:pointer;transition:all .2s;background:var(--white);}
@@ -380,16 +383,17 @@
   <div class="hint" style="margin:-8px 0 18px">Su profesión y sus aficiones aparecerán como detalles en los dibujos.</div>
 
   <div class="sdiv"><span>¿Cómo son? Así los dibujaremos</span></div>
-  <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y ya no tienes que rellenar nada más de esa persona, <b>o toca</b> lo que más se parezca. Las fotos solo se usan para dibujar.</div>
+  <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y ya no tienes que rellenar nada más de esa persona. Si no tienes foto, toca <b>"No tengo foto"</b> y descríbela con los botones. Las fotos solo se usan para dibujar.</div>
   <div id="aspCards"></div>
   <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
   <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspRecortar(this)">
-  <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia? Añádelas para que también se parezcan:</div>
+  <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia (su pareja, sus padres, un amigo…)? Añádelas para que también se parezcan:</div>
   <div class="asp-add">
     <button type="button" onclick="aspAdd('pareja')">+ Su pareja</button>
     <button type="button" onclick="aspAdd('madre')">+ Su madre</button>
     <button type="button" onclick="aspAdd('padre')">+ Su padre</button>
     <button type="button" onclick="aspAdd('hermano')">+ Un hermano/a</button>
+    <button type="button" onclick="aspAdd('otra')">+ Otra persona</button>
   </div>
   <div class="hint" style="margin:14px 0 6px;background:var(--coral-l);border-radius:12px;padding:12px 14px;color:var(--navy)"><b>Importante:</b> a quien salga en la historia sin foto ni descripción lo dibujaremos libremente, así que no se parecerá a la persona real. Si no quieres subir foto, descríbelo con los botones. Con foto es como más se parecen; solo con la descripción, el parecido será aproximado.</div>
   <input type="text" id="aspectoFamilia" style="display:none">
@@ -910,6 +914,7 @@ async function transcribeAudio(idx, blob) {
       if (ta) {
         ta.value = ta.value.trim() ? ta.value.trim() + '\n\n' + transcribedTexts[idx] : transcribedTexts[idx];
         saveDraft();
+        tfEtiqueta(idx);
       }
     } else {
       txFailed(idx);
@@ -997,6 +1002,12 @@ function clearRec(idx) {
 function toggleTF(idx) {
   var tf = document.getElementById('tf' + idx);
   if (tf) { tf.classList.toggle('show'); autoAlto(tf.querySelector('textarea')); }
+}
+
+// Si ya hay algo contado (grabado o escrito), el botón invita a verlo y corregirlo
+function tfEtiqueta(idx) {
+  var b = document.querySelector('#vc' + idx + ' .btn-tw'), ta = document.querySelector('#tf' + idx + ' textarea');
+  if (b && ta) b.textContent = ta.value.trim() ? '✎ Ver y corregir lo que has contado' : 'Prefiero escribir';
 }
 
 // Los cuadros de texto crecen con lo que se escribe (o se transcribe): siempre se lee todo sin hacer scroll dentro
@@ -1109,7 +1120,7 @@ function loadDraft() {
       var box = document.getElementById('tf' + i);
       var ta = box && box.querySelector('textarea');
       // Lo ya contado se guarda sin enseñarlo: la tarjeta queda marcada como hecha
-      if (ta) { ta.value = d.tf[i]; var vc = document.getElementById('vc' + i), bd = document.getElementById('bd' + i); if (vc) vc.classList.add('done'); if (bd) { bd.textContent = 'Guardado'; bd.classList.add('show'); } }
+      if (ta) { ta.value = d.tf[i]; var vc = document.getElementById('vc' + i), bd = document.getElementById('bd' + i); if (vc) vc.classList.add('done'); if (bd) { bd.textContent = 'Guardado'; bd.classList.add('show'); } tfEtiqueta(i); }
     });
     if (d.gender) setGender(d.gender, document.getElementById(d.gender === 'm' ? 'gm' : 'gf'));
     if (d.narrator) setNarrator(d.narrator, document.getElementById(d.narrator === 'protagonist' ? 'n1' : 'n2'));
@@ -1608,7 +1619,9 @@ var ASP_GRUPOS = [
   { k: 'extra', t: 'Además', multi: true, o: ['Gafas', 'Pecas', 'Barba', 'Bigote'] }
 ];
 var ASP_OBLIG = ['pelo', 'ojos', 'piel'];
-var ASP_TIT = { prot: 'Protagonista', nino: '', pareja: 'Su pareja', madre: 'Su madre', padre: 'Su padre', hermano: 'Hermano/a' };
+var ASP_TIT = { prot: 'Protagonista', nino: '', pareja: 'Su pareja', madre: 'Su madre', padre: 'Su padre', hermano: 'Hermano/a', otra: 'Otra persona' };
+// En «Otra persona» la familia escribe quién es (su mejor amiga, un vecino…)
+function aspTit(p) { return p.rol === 'otra' && p.quien ? p.quien.trim() : ASP_TIT[p.rol]; }
 var asp = { prot: {}, ninos: {}, extra: [] };
 
 function aspNinos() {
@@ -1620,13 +1633,20 @@ function aspCarga() { try { var v = JSON.parse(document.getElementById('aspectoF
 function aspTarjeta(d, titulo, quitar, conNombre) {
   var c = document.createElement('div'); c.className = 'asp';
   var h = '<div class="asp-h"><div class="asp-t">' + titulo + '</div>' + (quitar ? '<button type="button" class="asp-x">Quitar</button>' : '') + '</div>';
+  if (d.rol === 'otra') h += '<div class="asp-g"><input type="text" class="asp-quien" placeholder="¿Quién es? Ej: su mejor amiga, su abuelo, un vecino"></div>';
   if (conNombre) h += '<div class="asp-g"><input type="text" class="asp-nombre" placeholder="Su nombre (opcional)"></div>';
+  // Sin foto, la descripción con botones se despliega al pedirla
+  h += '<button type="button" class="asp-sinfoto">No tengo foto: prefiero describirlo ▾</button><div class="asp-desc">';
   ASP_GRUPOS.forEach(function(gr) {
     h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
       gr.o.map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
   });
   h += '<div class="asp-g"><input type="text" class="asp-mas" placeholder="Algo más (opcional). Ej: siempre con coleta, muy alto, un lunar en la mejilla"></div>';
+  h += '</div>';
   c.innerHTML = h;
+  if (!d.manual && !d.pelo && !d.ojos && !d.piel && !d.mas) c.classList.add('plegada');
+  c.querySelector('.asp-sinfoto').onclick = function() { d.manual = true; c.classList.remove('plegada'); aspGuarda(); };
+  var qu = c.querySelector('.asp-quien'); if (qu) { qu.value = d.quien || ''; qu.oninput = function() { d.quien = qu.value; aspGuarda(); }; }
   // Estado inicial y clics
   c.querySelectorAll('.asp-g[data-k]').forEach(function(g) {
     var k = g.dataset.k, multi = k === 'extra';
@@ -1734,8 +1754,6 @@ function aspPinta() {
   } else {
     var tp = aspTarjeta(asp.prot, 'Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : ''));
     tp.insertBefore(aspCajaFoto('fotoCara', 'Sube una foto de su cara y te saltas este paso'), tp.children[1]);
-    var o = document.createElement('div'); o.className = 'asp-o'; o.textContent = 'o toca lo que más se parezca:';
-    tp.insertBefore(o, tp.children[2]);
     cont.appendChild(tp);
   }
   // Niños: una foto de todos o una tarjeta por niño
@@ -1763,10 +1781,10 @@ function aspPinta() {
     var nombre = t.querySelector('.asp-nombre').parentNode;
     if (aspFoto(fid)) {
       t.querySelectorAll('.asp-g[data-k], .asp-mas').forEach(function(g) { (g.classList.contains('asp-mas') ? g.parentNode : g).style.display = 'none'; });
+      t.querySelector('.asp-sinfoto').style.display = 'none';
       nombre.after(aspCajaFoto(fid));
     } else {
-      var o = document.createElement('div'); o.className = 'asp-o'; o.textContent = 'o toca lo que más se parezca:';
-      nombre.after(aspCajaFoto(fid, 'Sube una foto y te saltas este paso'), o);
+      nombre.after(aspCajaFoto(fid, 'Sube una foto y te saltas este paso'));
     }
     cont.appendChild(t);
   });
@@ -1797,7 +1815,7 @@ function aspCollageFamilia() {
         var cx = (i % cols) * CEL, cy = Math.floor(i / cols) * (ALTO + PIE), k = Math.min(CEL / im.width, ALTO / im.height);
         x.drawImage(im, cx + (CEL - im.width * k) / 2, cy + (ALTO - im.height * k) / 2, im.width * k, im.height * k);
         x.fillStyle = '#222'; x.font = 'bold 30px Arial'; x.textAlign = 'center';
-        x.fillText(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : ''), cx + CEL / 2, cy + ALTO + 42);
+        x.fillText(aspTit(p) + (p.nombre ? ' (' + p.nombre.trim() + ')' : ''), cx + CEL / 2, cy + ALTO + 42);
         URL.revokeObjectURL(url); ok();
       };
       im.onerror = function() { URL.revokeObjectURL(url); ok(); };
@@ -1815,7 +1833,7 @@ function aspFaltan() {
     if (p[2]) return;   // con foto no hace falta rellenar
     var c = cards[i], sin = ASP_OBLIG.filter(function(k) { return !p[1][k]; });
     if (!sin.length || !c) return;
-    c.classList.add('falta');
+    c.classList.add('falta'); c.classList.remove('plegada'); p[1].manual = true;
     sin.forEach(function(k) { var g = c.querySelector('.asp-g[data-k="' + k + '"]'); if (g) g.classList.add('falta'); });
     falta.push('cómo es ' + p[0] + ' (' + sin.join(', ') + ')');
   });
@@ -1839,8 +1857,8 @@ function aspTexto() {
   aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto('fotoNinos') ? 'ver la foto de los niños' : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
   asp.extra.forEach(function(p) {
     var l = (p.id && aspFoto('fotoExtra_' + p.id)) ? 'ver su foto (en la imagen de la familia)' : linea(p);
-    if (!l && !p.nombre) return;
-    out.push(ASP_TIT[p.rol] + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
+    if (!l && !p.nombre && !p.quien) return;
+    out.push(aspTit(p) + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
   });
   return out.join('\n');
 }
