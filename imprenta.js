@@ -189,6 +189,13 @@
     // En tapa dura la franja del lomo entra 2,5 mm en cada bisagra (la hendidura mide 8 mm): con el libro cerrado se ve igual,
     // pero si la imprenta desv\u00eda la tapa hasta 2,5 mm no asoma el estampado de la portada en el lomo ni al rev\u00e9s
     var ext = blanda ? 0 : 2.5;
+    // En tapa dura cada cara que se ve incluye su bisagra (la hendidura de 8 mm junto al lomo): el dibujo y el
+    // recuadro se centran en bisagra + cara, no solo en la cara (si no, el recuadro queda 4 mm hacia fuera,
+    // como pasó en el libro de María)
+    if (!blanda && m.jointFrontSize && m.jointBackSize) {
+      F = { left: m.jointFrontSize.left, top: F.top, width: F.width + m.jointFrontSize.width, height: F.height };
+      B = { left: B.left, top: B.top, width: B.width + m.jointBackSize.width, height: B.height };
+    }
     // C\u00f3mo se encaja el estampado junto al lomo, por dise\u00f1o (medido en las acuarelas de 832 px de ancho):
     // lado 'izq' = junto al lomo va el borde izquierdo de la acuarela de la portada; 'der' = el derecho
     // (entonces la portada va en espejo). u = a cu\u00e1ntos px de ese borde cae el lomo: en una l\u00ednea del
@@ -319,3 +326,4 @@
 
   window.TUSImprenta = { pagina: pagina, cierre: cierre, encajar: encajar, portada: portada, hoja: hoja, PAG: PAG, SANGRADO: SANGRADO, EJEMPLO_TAPA_DURA: EJEMPLO_TAPA_DURA, EJEMPLO_TAPA_BLANDA: EJEMPLO_TAPA_BLANDA };
 })();
+
