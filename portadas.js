@@ -53,7 +53,7 @@
 
   // La etiqueta de papel: un 20 % m\u00e1s peque\u00f1a que la que llevaban pintada las acuarelas, con el mismo centro
   // (27/10: en el primer libro impreso se ve\u00eda demasiado grande). [x, y, ancho, alto] en el dibujo de 832 \u00d7 1176
-  var ESCALA_ETIQUETA = .8;
+  var ESCALA_ETIQUETA = .7;
   function etiqueta(d, espejo) {
     var e = d.delante, w = e[2] * ESCALA_ETIQUETA, h = e[3] * ESCALA_ETIQUETA;
     var x = e[0] + (e[2] - w) / 2, y = e[1] + (e[3] - h) / 2;
