@@ -366,7 +366,7 @@
   <div class="perm" id="permBanner">Tu navegador necesita acceso al micrófono. Si prefieres, usa los campos de texto.</div>
 
   <div class="two">
-    <div class="field"><label>Los niños del libro son sus…</label>
+    <div class="field"><label data-yo="Los niños del libro son tus…">Los niños del libro son sus…</label>
       <select id="relacionNinos">
         <option value="">Elige una opción</option>
         <option value="Son sus hijos">Hijos</option>
@@ -375,26 +375,26 @@
         <option value="Otra relación">Otra relación</option>
       </select>
     </div>
-    <div class="field"><label>¿Cómo la llaman los niños?</label><input type="text" id="nicknames" placeholder="Ej: mamá, yaya, la abuela Pepa…"></div>
+    <div class="field"><label data-yo="¿Cómo te llaman los niños?">¿Cómo <span class="G-lo"></span> llaman los niños?</label><input type="text" id="nicknames" placeholder="Ej: mamá, yaya, la abuela Pepa…"></div>
   </div>
-  <div class="field"><label>¿Qué edad tiene hoy?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ej: 38"></div>
-  <div class="field"><label>Descríbela en 3 palabras</label><input type="text" id="tresPalabras" placeholder="Ej: alegre, valiente y curiosa"></div>
+  <div class="field"><label data-yo="¿Qué edad tienes hoy?">¿Qué edad tiene hoy?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ej: 38"></div>
+  <div class="field"><label data-yo="Descríbete en 3 palabras">Descríbe<span class="G-lo"></span> en 3 palabras</label><input type="text" id="tresPalabras" placeholder="Ej: alegre, valiente y curiosa"></div>
   <div class="two">
-    <div class="field"><label>¿A qué se dedica?</label><input type="text" id="job" placeholder="Ej: arquitecta, maestro, jubilada…"></div>
-    <div class="field"><label>Sus aficiones</label><input type="text" id="sport" placeholder="Ej: el surf y dibujar"></div>
+    <div class="field"><label data-yo="¿A qué te dedicas?">¿A qué se dedica?</label><input type="text" id="job" placeholder="Ej: arquitecta, maestro, jubilada…"></div>
+    <div class="field"><label data-yo="Tus aficiones">Sus aficiones</label><input type="text" id="sport" placeholder="Ej: el surf y dibujar"></div>
   </div>
-  <div class="hint" style="margin:-8px 0 18px">Su profesión y sus aficiones aparecerán como detalles en los dibujos.</div>
+  <div class="hint" style="margin:-8px 0 18px" data-yo="Tu profesión y tus aficiones aparecerán como detalles en los dibujos.">Su profesión y sus aficiones aparecerán como detalles en los dibujos.</div>
 
   <div class="sdiv"><span>¿Cómo son? Así los dibujaremos</span></div>
   <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y ya no tienes que rellenar nada más de esa persona. Si no tienes foto, toca <b>"No tengo foto"</b> y descríbela con los botones. Las fotos solo se usan para dibujar.</div>
   <div id="aspCards"></div>
   <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
   <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspGrupo(this)">
-  <div class="hint" style="margin-bottom:6px">¿Salen más personas en la historia (su pareja, sus padres, un amigo…)? Añádelas para que también se parezcan:</div>
+  <div class="hint" style="margin-bottom:6px" data-yo="¿Salen más personas en la historia (tu pareja, tus padres, un amigo…)? Añádelas para que también se parezcan:">¿Salen más personas en la historia (su pareja, sus padres, un amigo…)? Añádelas para que también se parezcan:</div>
   <div class="asp-add">
-    <button type="button" onclick="aspAdd('pareja')">+ Su pareja</button>
-    <button type="button" onclick="aspAdd('madre')">+ Su madre</button>
-    <button type="button" onclick="aspAdd('padre')">+ Su padre</button>
+    <button type="button" onclick="aspAdd('pareja')" data-yo="+ Tu pareja">+ Su pareja</button>
+    <button type="button" onclick="aspAdd('madre')" data-yo="+ Tu madre">+ Su madre</button>
+    <button type="button" onclick="aspAdd('padre')" data-yo="+ Tu padre">+ Su padre</button>
     <button type="button" onclick="aspAdd('hermano')">+ Un hermano/a</button>
     <button type="button" onclick="aspAdd('otra')">+ Otra persona</button>
   </div>
@@ -411,12 +411,12 @@
 <div class="screen" id="s2">
   <div class="sh">
     <div class="sh-chapter">02 · De bebé y de pequeñ<span class="G-oa"></span></div>
-    <h2 class="sh-title">Cuando <span class="G-name"></span><br>era <span class="G-unna"></span> <span class="G-ninoa"></span>.</h2>
+    <h2 class="sh-title" data-yo="Cuando eras<br><span class=&quot;G-unna&quot;></span> <span class=&quot;G-ninoa&quot;></span>.">Cuando <span class="G-name"></span><br>era <span class="G-unna"></span> <span class="G-ninoa"></span>.</h2>
     <p class="sh-sub">Graba una nota de voz y cuéntanos todo lo que se te ocurra, sin prisa, como si se lo contaras a una amiga. Al seguir, te enseñamos lo que hemos entendido y te avisamos si falta algo importante.</p>
   </div>
   <div class="vc" id="vc0">
-    <div class="vc-q">¿Cómo era <span class="G-name"></span> de bebé y de pequeñ<span class="G-oa"></span>?</div>
-    <div class="vc-h">💡 Te puede ayudar: dónde nació y creció y cómo era su casa · cómo era de carácter (tímid<span class="G-oa"></span>, trasto, curios<span class="G-oa"></span>…) · sus hermanos (cuántos chicos y cuántas chicas, mayores o pequeños), si tenía mascota, un amigo o amiga especial · a qué le gustaba jugar y qué quería ser de mayor · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b></div>
+    <div class="vc-q" data-yo="¿Cómo eras de bebé y de pequeñ<span class=&quot;G-oa&quot;></span>?">¿Cómo era <span class="G-name"></span> de bebé y de pequeñ<span class="G-oa"></span>?</div>
+    <div class="vc-h" data-yo="💡 Te puede ayudar: dónde naciste y creciste y cómo era tu casa · cómo eras de carácter (tímid<span class=&quot;G-oa&quot;></span>, trasto, curios<span class=&quot;G-oa&quot;></span>…) · tus hermanos (cuántos chicos y cuántas chicas, mayores o pequeños), si tenías mascota, un amigo o amiga especial · a qué te gustaba jugar y qué querías ser de mayor · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b>">💡 Te puede ayudar: dónde nació y creció y cómo era su casa · cómo era de carácter (tímid<span class="G-oa"></span>, trasto, curios<span class="G-oa"></span>…) · sus hermanos (cuántos chicos y cuántas chicas, mayores o pequeños), si tenía mascota, un amigo o amiga especial · a qué le gustaba jugar y qué quería ser de mayor · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb0" onclick="toggleRec(0)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt0">0:00</span><span class="rbadge" id="bd0">Grabado</span></div>
     <audio class="ap" id="ap0"></audio><button class="btn-clr" id="bc0" onclick="clearRec(0)">Volver a grabar</button>
     <div class="or-d"><span>o escribe</span></div>
@@ -433,12 +433,12 @@
 <div class="screen" id="s3">
   <div class="sh">
     <div class="sh-chapter">03 · La juventud</div>
-    <h2 class="sh-title">Cuando <span class="G-name"></span> empezó<br>a volar sol<span class="G-oa"></span>.</h2>
+    <h2 class="sh-title" data-yo="Cuando empezaste<br>a volar sol<span class=&quot;G-oa&quot;></span>.">Cuando <span class="G-name"></span> empezó<br>a volar sol<span class="G-oa"></span>.</h2>
     <p class="sh-sub">La adolescencia, los estudios, los sueños y las primeras aventuras.</p>
   </div>
   <div class="vc" id="vc2">
-    <div class="vc-q">¿Cómo era <span class="G-name"></span> de adolescente y de joven?</div>
-    <div class="vc-h">💡 Te puede ayudar: qué le apasionaba · sus amigos y su música · qué estudió y su primer trabajo · un viaje o una decisión valiente · cómo llegó a dedicarse a lo que hace hoy · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b></div>
+    <div class="vc-q" data-yo="¿Cómo eras de adolescente y de joven?">¿Cómo era <span class="G-name"></span> de adolescente y de joven?</div>
+    <div class="vc-h" data-yo="💡 Te puede ayudar: qué te apasionaba · tus amigos y tu música · qué estudiaste y tu primer trabajo · un viaje o una decisión valiente · cómo llegaste a dedicarte a lo que haces hoy · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b>">💡 Te puede ayudar: qué le apasionaba · sus amigos y su música · qué estudió y su primer trabajo · un viaje o una decisión valiente · cómo llegó a dedicarse a lo que hace hoy · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb2" onclick="toggleRec(2)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt2">0:00</span><span class="rbadge" id="bd2">Grabado</span></div>
     <audio class="ap" id="ap2"></audio><button class="btn-clr" id="bc2" onclick="clearRec(2)">Volver a grabar</button>
     <div class="or-d"><span>o escribe</span></div>
@@ -455,11 +455,11 @@
 <div class="screen" id="s4">
   <div class="sh">
     <div class="sh-chapter">04 · Amor y familia</div>
-    <h2 class="sh-title">Cuando la familia<br>de <span class="G-name"></span> creció.</h2>
-    <p class="sh-sub">El amor y la llegada de los niños: una etapa más de su historia.</p>
+    <h2 class="sh-title" data-yo="Cuando tu familia<br>creció.">Cuando la familia<br>de <span class="G-name"></span> creció.</h2>
+    <p class="sh-sub" data-yo="El amor y la llegada de los niños: una etapa más de tu historia.">El amor y la llegada de los niños: una etapa más de su historia.</p>
   </div>
   <div class="vc" id="vc4">
-    <div class="vc-q">¿Cómo empezó la familia de <span class="G-name"></span>?</div>
+    <div class="vc-q" data-yo="¿Cómo empezó tu familia?">¿Cómo empezó la familia de <span class="G-name"></span>?</div>
     <div class="vc-h" id="guiaFamilia"></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb4" onclick="toggleRec(4)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt4">0:00</span><span class="rbadge" id="bd4">Grabado</span></div>
     <audio class="ap" id="ap4"></audio><button class="btn-clr" id="bc4" onclick="clearRec(4)">Volver a grabar</button>
@@ -481,7 +481,7 @@
     <p class="sh-sub">La relación que existe hoy. Esto es el corazón del libro.</p>
   </div>
   <div class="vc" id="vc6">
-    <div class="vc-q">¿Cómo es hoy la vida de <span class="G-name"></span> con los niños?</div>
+    <div class="vc-q" data-yo="¿Cómo es hoy tu vida con los niños?">¿Cómo es hoy la vida de <span class="G-name"></span> con los niños?</div>
     <div class="vc-h">💡 Te puede ayudar: cómo es cada niño (carácter y qué le encanta) · qué hacéis juntos · una tradición o ritual solo vuestro · cómo es vuestra casa y si tenéis mascota · <b>y algún recuerdo especial o gracioso con los niños, si se te ocurre</b></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb6" onclick="toggleRec(6)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt6">0:00</span><span class="rbadge" id="bd6">Grabado</span></div>
     <audio class="ap" id="ap6"></audio><button class="btn-clr" id="bc6" onclick="clearRec(6)">Volver a grabar</button>
@@ -499,11 +499,11 @@
 <div class="screen" id="s6">
   <div class="sh">
     <div class="sh-chapter">06 · El final del libro</div>
-    <h2 class="sh-title">Lo que querría<br>que supieran.</h2>
+    <h2 class="sh-title" data-yo="Lo que te gustaría<br>que supieran.">Lo que querría<br>que supieran.</h2>
     <p class="sh-sub">El cierre del libro, la dedicatoria y a dónde lo enviamos.</p>
   </div>
   <div class="vc" id="vc8">
-    <div class="vc-q">¿Qué crees que <span class="G-name"></span> querría que los niños supieran cuando sean mayores?</div>
+    <div class="vc-q" data-yo="¿Qué te gustaría que los niños supieran cuando sean mayores?">¿Qué crees que <span class="G-name"></span> querría que los niños supieran cuando sean mayores?</div>
     <div class="vc-h">Un valor, un consejo, lo que está en cada cosa que hace.</div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb8" onclick="toggleRec(8)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt8">0:00</span><span class="rbadge" id="bd8">Grabado</span></div>
     <audio class="ap" id="ap8"></audio><button class="btn-clr" id="bc8" onclick="clearRec(8)">Volver a grabar</button>
@@ -513,7 +513,7 @@
   </div>
   <div class="vc" id="vc9" data-opcional="1">
     <div class="vc-q">¿Se nos ha quedado algo en el tintero?</div>
-    <div class="vc-h">Ese recuerdo que no encajaba en ninguna etapa, una persona muy importante, una costumbre, una frase… Lo que sientas que sin ello el libro no sería del todo suyo. Es opcional: si ya está todo, sigue sin más.</div>
+    <div class="vc-h">Ese recuerdo que no encajaba en ninguna etapa, una persona muy importante, una costumbre, una frase… Lo que sientas que sin ello el libro no sería del todo <span class="G-suyo">suyo</span>. Es opcional: si ya está todo, sigue sin más.</div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb9" onclick="toggleRec(9)"><span class="rdot"></span> Grabar</button><span class="rtimer" id="rt9">0:00</span><span class="rbadge" id="bd9">Grabado</span></div>
     <audio class="ap" id="ap9"></audio><button class="btn-clr" id="bc9" onclick="clearRec(9)">Volver a grabar</button>
     <div class="or-d"><span>o escribe</span></div>
@@ -749,6 +749,7 @@ function setNarrator(val, el) {
   narrator = val;
   document.querySelectorAll('#n1,#n2').forEach(function(o) { o.classList.remove('selected'); });
   el.classList.add('selected');
+  if (typeof updateAll === 'function') updateAll();
 }
 
 const G = {
@@ -770,6 +771,13 @@ function nameOrPronoun() {
 }
 
 function updateAll() {
+  // Si el protagonista cuenta su propia historia, las preguntas se le hacen de tú
+  var yo = narrator === 'protagonist';
+  document.querySelectorAll('[data-yo]').forEach(function(el) {
+    if (el.dataset.otro === undefined) el.dataset.otro = el.innerHTML;
+    el.innerHTML = yo ? el.dataset.yo : el.dataset.otro;
+  });
+  document.querySelectorAll('.G-suyo').forEach(function(el) { el.textContent = yo ? 'tuyo' : 'suyo'; });
   const nm = nameOrPronoun();
   document.querySelectorAll('.G-name').forEach(function(el) { el.textContent = nm; });
   var artProt = gender === 'f' ? 'a la protagonista' : 'al protagonista';
@@ -789,7 +797,10 @@ function updateAll() {
   if (cnh) cnh.textContent = cn;
   // Guía de «Amor y familia»: si los niños son sus nietos, se pregunta por sus hijos y luego por los nietos
   var gf = document.getElementById('guiaFamilia');
-  if (gf) gf.innerHTML = (document.getElementById('relacionNinos') || {}).value === 'Son sus nietos'
+  if (gf && yo) gf.innerHTML = (document.getElementById('relacionNinos') || {}).value === 'Son sus nietos'
+    ? '💡 Te puede ayudar: cómo conociste a tu pareja (si la tienes) · cómo fue tener a tus hijos · y, años después, cómo viviste la llegada de cada nieto · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b>'
+    : '💡 Te puede ayudar: cómo conociste a tu pareja (si la tienes) · cómo fue la llegada de cada uno de los niños · cómo te cambió la vida · <b>y si te acuerdas de alguna anécdota (la primera cita, el primer día en casa con el bebé…), ¡cuéntala!</b>';
+  else if (gf) gf.innerHTML = (document.getElementById('relacionNinos') || {}).value === 'Son sus nietos'
     ? '💡 Te puede ayudar: cómo conoció a su pareja (si la tiene) · cómo fue tener a sus hijos · y, años después, cómo vivió la llegada de cada nieto · <b>y si te acuerdas de alguna anécdota, ¡cuéntala!</b>'
     : '💡 Te puede ayudar: cómo conoció a su pareja (si la tiene) · cómo fue la llegada de cada uno de los niños · cómo le cambió la vida · <b>y si te acuerdas de alguna anécdota (la primera cita, el primer día en casa con el bebé…), ¡cuéntala!</b>';
 }
@@ -1428,7 +1439,7 @@ async function iaRevisar(n, destino) {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         accion: 'revisar', etapaNombre: et.nombre(),
-        protagonista: [vId('protName') || 'la protagonista', gender === 'f' ? 'mujer' : 'hombre', vId('protAge') ? vId('protAge') + ' años' : '', vId('relacionNinos'), vId('nicknames') ? 'los niños la llaman ' + vId('nicknames') : ''].filter(Boolean).join(', '),
+        protagonista: [vId('protName') || 'la protagonista', gender === 'f' ? 'mujer' : 'hombre', vId('protAge') ? vId('protAge') + ' años' : '', vId('relacionNinos'), vId('nicknames') ? 'los niños ' + (gender === 'f' ? 'la' : 'lo') + ' llaman ' + vId('nicknames') : '', narrator === 'protagonist' ? 'IMPORTANTE: quien rellena el formulario es la propia persona protagonista contando su propia historia, así que hazle las preguntas de tú, sobre su propia vida (¿cómo eras…?, ¿qué hacías…?)' : ''].filter(Boolean).join(', '),
         ninos: [vId('childNames'), vId('childAges')].filter(Boolean).join(' · '),
         texto: txtVc(et.vcs[0]), respuestasPrevias: previas, imprescindibles: et.imp,
         resumenAnterior: e && e.nCorr ? (e.antes || '') : ''
