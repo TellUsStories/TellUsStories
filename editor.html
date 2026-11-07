@@ -360,7 +360,7 @@ function datosCierre() {
   // En el libro va a la izquierda si su número (páginas del cuento + 5) es par, como en la imprenta
   // fuentes.cierre = { memoria, ninos }: lo mismo que el pedido guardado en Make (en_memoria, ninos), que es lo que usa el PDF
   var c = (fuentes && fuentes.cierre) || {};
-  return { diseno: (paginas[0] && paginas[0].color) || '1', prota: pedido ? pedido.prota : '', ninos: c.ninos || (pedido ? pedido.ninos : ''), memoria: !!c.memoria, izquierda: (paginas.length + 5) % 2 === 0 };
+  return { diseno: (paginas[0] && paginas[0].color) || '1', prota: pedido ? pedido.prota : '', ninos: c.ninos || (pedido ? pedido.ninos : ''), memoria: !!c.memoria, izquierda: (paginas.length + 6) % 2 === 0 };
 }
 // Dibuja la página a su tamaño real (218 mm) y la encoge para que quepa en la caja
 function pintarCierre(caja) {
