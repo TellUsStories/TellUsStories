@@ -134,6 +134,30 @@
     var prota = String(o.prota || '').trim(), ninos = String(o.ninos || '').trim();
     // El libro es para la protagonista y para los ni\u00f1os: los dos nombres con la misma letra, tama\u00f1o y color
     var para = prota ? [prota, ninos] : [ninos, ''];
+    // Libro en memoria de alguien que ya no está (o.memoria): «En memoria de» + su nombre, una frase y para quién es
+    if (o.memoria && prota) {
+      var cor = "font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;color:" + d.titulo + ';';
+      var ama = "font-family:'Amatic SC',cursive;font-weight:700;letter-spacing:.6mm;color:" + d.nombreCol + ';';
+      var orn = '<div style="display:flex;align-items:center;justify-content:center;margin:7mm auto;width:70mm"><i style="flex:1;height:.3mm;background:' + d.titulo + ';opacity:.5"></i><span style="color:#E3A93C;font-size:4.5mm;line-height:1;margin:0 3mm">★</span><i style="flex:1;height:.3mm;background:' + d.titulo + ';opacity:.5"></i></div>';
+      var frase = String(o.frase || '«El amor no se acaba, solo cambia de lugar.»');
+      return '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
+        '<img src="' + TUSPortadas.fondo(d, 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
+        '<div style="position:absolute;inset:' + M + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
+          '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
+          '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + '"></div>' +
+          '<div style="position:absolute;left:14mm;right:14mm;top:44%;transform:translateY(-50%);text-align:center">' +
+            '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:26mm;line-height:1;color:' + d.titulo + '">Fin</div>' + orn +
+            '<div style="' + cor + 'font-size:8mm;line-height:1.3">En memoria de</div>' +
+            '<div style="' + ama + 'font-size:22mm;line-height:1.05;margin-top:1mm">' + esc(prota) + '</div>' +
+            (frase ? '<div style="' + cor + 'font-size:6.2mm;line-height:1.45;margin:6mm auto 0;max-width:120mm;opacity:.9">' + esc(frase) + '</div>' : '') +
+            (ninos ? orn + '<div style="' + cor + 'font-size:7mm;line-height:1.3">Con todo el cariño, para</div>' +
+              '<div style="' + ama + 'font-size:' + (ninos.length > 22 ? 13 : 17) + 'mm;line-height:1.1;margin-top:2mm">' + esc(ninos) + '</div>' : '') +
+          '</div>' +
+          '<div style="position:absolute;left:0;right:0;bottom:20mm;text-align:center;font-family:\'Bricolage Grotesque\',\'Arial Black\',sans-serif;font-weight:800;font-size:5.2mm;letter-spacing:1.2mm;line-height:1.15;color:' + d.titulo + '">TALE US<br>STORIES' +
+            '<i style="display:block;width:11mm;height:.9mm;margin:2mm auto 0;border-radius:1mm;background:' + d.titulo + '"></i></div>' +
+        '</div>' +
+      '</div>';
+    }
     return '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
       '<img src="' + TUSPortadas.fondo(d, 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
       '<div style="position:absolute;inset:' + M + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
