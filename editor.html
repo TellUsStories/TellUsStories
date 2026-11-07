@@ -712,7 +712,60 @@ var papelRef = null;
 // al crema de la referencia. Cada punto se mueve según lo parecido que sea al papel: el papel del todo, el dibujo
 // nada (así un sofá o una cara no cambian de color). El papel se mide en las filas de arriba; si ahí ya hay dibujo
 // (escena que llega hasta arriba), el papel no se toca.
+var CODIGO_PAPEL = [
+  'onmessage = async function (e) {',
+  '  var a = e.data;',
+  '  try {',
+  '    var r = await fetch(a.url, { mode: "cors" }); if (!r.ok) throw 0;',
+  '    var bmp = await createImageBitmap(await r.blob());',
+  '    var w = Math.min(2472, bmp.width), h = Math.round(w * bmp.height / bmp.width);',
+  '    var c = new OffscreenCanvas(w, h), x = c.getContext("2d");',
+  '    if (a.f) x.filter = a.f;',
+  '    x.drawImage(bmp, 0, 0, w, h); bmp.close && bmp.close();',
+  '    if (a.papel) {',
+  '      var dat = x.getImageData(0, 0, w, h), d = dat.data, fr = 0, fg = 0, fb = 0, n = 0, k, y, i;',
+  '      for (y = 0; y < 30; y++) for (i = 0; i < w; i += 3) { k = (y * w + i) * 4; fr += d[k]; fg += d[k + 1]; fb += d[k + 2]; n++; }',
+  '      fr /= n; fg /= n; fb /= n;',
+  '      var dev = 0;',
+  '      for (y = 0; y < 30; y++) for (i = 0; i < w; i += 3) { k = (y * w + i) * 4; dev += Math.abs(d[k] - fr) + Math.abs(d[k + 1] - fg) + Math.abs(d[k + 2] - fb); }',
+  '      var dr = a.papel[0] - fr, dg = a.papel[1] - fg, db = a.papel[2] - fb;',
+  '      if (dev / n < 12 && Math.abs(dr) + Math.abs(dg) + Math.abs(db) > 3) {',
+  '        for (k = 0; k < d.length; k += 4) {',
+  '          var dist = Math.abs(d[k] - fr) + Math.abs(d[k + 1] - fg) + Math.abs(d[k + 2] - fb);',
+  '          if (dist >= 30) continue;',
+  '          var p = 1 - dist / 30; p = p * p * (3 - 2 * p);',
+  '          d[k] += dr * p; d[k + 1] += dg * p; d[k + 2] += db * p;',
+  '        }',
+  '        x.putImageData(dat, 0, 0);',
+  '      }',
+  '    }',
+  '    postMessage({ blob: await c.convertToBlob({ type: "image/jpeg", quality: 0.92 }) });',
+  '  } catch (err) { postMessage({ error: 1 }); }',
+  '};'
+].join('\n');
+var trabajadorPapel = null;
 function ajustarDibujo(url, f, papel) {
+  var puede = false;
+  try { puede = typeof Worker !== 'undefined' && typeof OffscreenCanvas !== 'undefined' && typeof createImageBitmap !== 'undefined' && !!new OffscreenCanvas(1, 1).convertToBlob; } catch (e) {}
+  if (!puede) return ajustarDibujoAntiguo(url, f, papel);
+  return new Promise(function (ok) {
+    try {
+      if (!trabajadorPapel) trabajadorPapel = new Worker(URL.createObjectURL(new Blob([CODIGO_PAPEL], { type: 'text/javascript' })));
+    } catch (e) { ajustarDibujoAntiguo(url, f, papel).then(ok); return; }
+    var fin = setTimeout(function () { trabajadorPapel.terminate(); trabajadorPapel = null; ok(null); }, 120000);
+    trabajadorPapel.onmessage = function (e) {
+      clearTimeout(fin);
+      if (!e.data || !e.data.blob) { ok(null); return; }
+      var lector = new FileReader();
+      lector.onload = function () { ok(lector.result); };
+      lector.onerror = function () { ok(null); };
+      lector.readAsDataURL(e.data.blob);
+    };
+    trabajadorPapel.onerror = function () { clearTimeout(fin); trabajadorPapel.terminate(); trabajadorPapel = null; ajustarDibujoAntiguo(url, f, papel).then(ok); };
+    trabajadorPapel.postMessage({ url: url, f: f || '', papel: papel || null });
+  });
+}
+function ajustarDibujoAntiguo(url, f, papel) {
   return new Promise(function (ok) {
     var fin = setTimeout(function () { ok(null); }, 60000);
     var im = new Image(); im.crossOrigin = 'anonymous';
