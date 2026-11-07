@@ -203,7 +203,7 @@
 </main>
 
 <script src="portadas.js?v=20261104a"></script>
-<script src="imprenta.js?v=20261021g"></script>
+<script src="imprenta.js?v=20261107m"></script>
 <script>
 // Webhooks de Make: leer las páginas guardadas de un libro y rehacer una página
 var LEER = 'https://hook.eu1.make.com/asb6r9yzv6u8llpn7seg5pdmq39lglx4';
@@ -256,6 +256,8 @@ function cargarFuentes() {
       if (!fuentes || !fuentes.paginas) { fuentes = null; return; }
       $('btnResto').style.display = '';
       if (actual !== null) pintarFuente(paginas[actual]);
+      // Si las notas del pedido traen datos de la página «Fin» (libro en memoria, niños), se vuelve a pintar
+      if (fuentes.cierre) { var c = document.querySelector('#rejilla .cierre'); if (c) pintarCierre(c); }
     })
     .catch(function () { fuentes = null; });
 }
@@ -356,7 +358,9 @@ function cargarPedido() {
 }
 function datosCierre() {
   // En el libro va a la izquierda si su número (páginas del cuento + 5) es par, como en la imprenta
-  return { diseno: (paginas[0] && paginas[0].color) || '1', prota: pedido ? pedido.prota : '', ninos: pedido ? pedido.ninos : '', izquierda: (paginas.length + 5) % 2 === 0 };
+  // fuentes.cierre = { memoria, ninos }: lo mismo que el pedido guardado en Make (en_memoria, ninos), que es lo que usa el PDF
+  var c = (fuentes && fuentes.cierre) || {};
+  return { diseno: (paginas[0] && paginas[0].color) || '1', prota: pedido ? pedido.prota : '', ninos: c.ninos || (pedido ? pedido.ninos : ''), memoria: !!c.memoria, izquierda: (paginas.length + 5) % 2 === 0 };
 }
 // Dibuja la página a su tamaño real (218 mm) y la encoge para que quepa en la caja
 function pintarCierre(caja) {
