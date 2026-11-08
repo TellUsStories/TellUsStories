@@ -15,6 +15,9 @@
   X-Robots-Tag: noindex
 /prueba-paginas*
   X-Robots-Tag: noindex
+# Los pasos del formulario (/formulario-nuevo/paso-N) son la misma página: que no se indexen por separado
+/formulario-nuevo/*
+  X-Robots-Tag: noindex
 
 # Los scripts llevan acentos y símbolos (★): sin charset, hcti los lee mal y salen letras raras en las páginas
 /*.js

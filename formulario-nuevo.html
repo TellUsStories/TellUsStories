@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<!-- Todas las rutas relativas (portadas.js, img/…) salen de la raíz aunque la dirección sea /formulario-nuevo/paso-N -->
+<base href="/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crea tu cuento personalizado · Tale Us Stories</title>
 <meta name="description" content="Cuéntanos su historia con notas de voz, a tu ritmo, y la convertimos en un cuento personalizado ilustrado en estilo acuarela. Se guarda solo.">
@@ -646,7 +648,7 @@
     <div class="pago" id="pago-tarjeta">
       <div class="pago-t">Último paso: el pago</div>
       <p class="pago-s">Paga con tarjeta de forma segura (Stripe). Empezamos tu libro en cuanto recibimos el pago.</p>
-      <a class="pago-btn" id="pago-enlace" href="#" target="_self">Pagar <span id="pago-importe3">—</span> con tarjeta →</a>
+      <a class="pago-btn" id="pago-enlace" href="javascript:void(0)" target="_self">Pagar <span id="pago-importe3">—</span> con tarjeta →</a>
     </div>
     <!-- Pago por transferencia (ya no se usa: ahora se paga con tarjeta) -->
     <div class="pago" id="pago-transferencia" style="display:none">
@@ -891,7 +893,28 @@ function go(n) {
   if (n === TOTAL) buildReview();
   setTimeout(autoAltoTodos, 30);   // los cuadros de la pantalla nueva, a su altura (p. ej. al volver con el borrador)
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  marcaPaso(n);
 }
+
+// Medición del embudo: cada pantalla tiene su dirección (/formulario-nuevo/paso-2 … /revision, /enviado) y
+// Cloudflare Web Analytics la cuenta como una página vista; así el informe ve en qué paso se queda la gente.
+// Cada cambio de pantalla se añade al historial: el botón «atrás» del móvil vuelve a la pantalla anterior.
+function rutaPaso(n) { return '/formulario-nuevo' + (n === 0 ? '' : n < TOTAL ? '/paso-' + (n + 1) : n === TOTAL ? '/revision' : '/enviado'); }
+function marcaPaso(n) {
+  try {
+    var ruta = rutaPaso(n);
+    if (location.pathname === ruta) return;
+    history.pushState({ paso: n }, '', ruta + location.search);
+  } catch (e) {}
+}
+try { history.replaceState({ paso: 0 }, '', rutaPaso(0) + location.search); } catch (e) {}
+window.addEventListener('popstate', function (ev) {
+  if (enviado) return;
+  var n = ev.state && typeof ev.state.paso === 'number' ? ev.state.paso : 0;
+  if (n !== cur && n <= TOTAL) go(n);
+  // Si no se ha podido ir a ese paso (falta algo por rellenar), la dirección vuelve a la pantalla en la que sigue
+  if (n !== cur) { try { history.replaceState({ paso: cur }, '', rutaPaso(cur) + location.search); } catch (e) {} }
+});
 
 var recorders = {}, audioBlobs = {}, timers = {}, recSecs = {}, transcribedTexts = {}, pendingTx = {};
 

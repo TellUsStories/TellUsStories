@@ -4,3 +4,5 @@
 # Enlaces cortos de las bios: guardan de dónde viene la visita (columna Origen de la hoja)
 /ig /?utm_source=instagram&utm_medium=bio 302
 /tt /?utm_source=tiktok&utm_medium=bio 302
+# Pasos del formulario (/formulario-nuevo/paso-2, /revision, /enviado): son la misma página; las direcciones solo sirven para medir el embudo
+/formulario-nuevo/* /formulario-nuevo 200
