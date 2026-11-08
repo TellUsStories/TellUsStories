@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aporta tus recuerdos · Tale Us Stories</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Te han invitado a aportar tus recuerdos a un cuento personalizado de Tale Us Stories.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#FFFFFF;--boton:#DCC8B4;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--navy);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .top{text-align:center;padding:22px 16px 10px;font-family:var(--display);font-weight:800;letter-spacing:3px;font-size:14px;color:var(--navy)}
+  .top a{color:inherit;text-decoration:none}
+  main{max-width:640px;margin:0 auto;padding:8px 16px 60px}
+  .chap{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--coral);margin:18px 0 8px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,7vw,40px);line-height:1.08;margin-bottom:12px}
+  .sub{color:var(--muted);margin-bottom:22px}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:20px 18px;margin-bottom:16px}
+  label{display:block;font-family:var(--display);font-weight:700;font-size:15px;margin-bottom:6px}
+  .hint{font-size:14px;color:var(--muted);margin:-2px 0 10px}
+  input[type=text],textarea{width:100%;font:inherit;font-size:16px;color:var(--navy);background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;outline:none}
+  input[type=text]:focus,textarea:focus{border-color:var(--coral)}
+  textarea{min-height:150px;resize:vertical}
+  .fila{display:flex;gap:12px;flex-wrap:wrap}.fila>div{flex:1 1 200px}
+  .etapas{display:flex;flex-wrap:wrap;gap:8px}
+  .etapas button{font-family:var(--display);font-weight:500;font-size:15px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--cream);color:var(--navy);cursor:pointer}
+  .etapas button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .rec{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .btn{font-family:var(--display);font-weight:700;font-size:16px;border:0;border-radius:999px;padding:13px 22px;cursor:pointer}
+  .btn-rec{background:var(--coral-l);color:var(--navy);display:inline-flex;align-items:center;gap:8px}
+  .btn-rec .dot{width:11px;height:11px;border-radius:50%;background:#C0392B}
+  .btn-rec.grabando{background:#C0392B;color:#fff}.btn-rec.grabando .dot{background:#fff;animation:lat 1s infinite}
+  @keyframes lat{50%{opacity:.3}}
+  .estado{font-size:14px;color:var(--muted)}
+  .btn-env{background:var(--navy);color:#fff;width:100%;font-size:17px;padding:16px}
+  .btn-env:disabled{opacity:.5}
+  .btn-sec{background:transparent;color:var(--navy);border:1.5px solid var(--border)}
+  .ok{text-align:center;padding:30px 18px}
+  .ok .cor{font-size:40px;color:var(--coral)}
+  .err{color:#A33A2B;font-size:15px;margin-top:10px}
+  .mias{margin-top:8px;font-size:15px;color:var(--muted)}
+  .mias li{margin:4px 0 4px 18px}
+  .pie{text-align:center;font-size:13px;color:var(--muted);margin-top:26px}
+  .oculto{display:none}
+</style>
+</head>
+<body>
+<div class="top"><a href="/">TALE US STORIES</a></div>
+<main>
+  <div id="cargando" class="sub" style="text-align:center;margin-top:40px">Cargando…</div>
+
+  <div id="error" class="card oculto" style="text-align:center">
+    <h1 style="font-size:26px">Este enlace no funciona</h1>
+    <p class="sub" id="errorTxt">Puede que haya caducado. Pide a quien te lo envió que te mande uno nuevo.</p>
+  </div>
+
+  <div id="app" class="oculto">
+    <div class="chap">Un cuento con vuestra historia</div>
+    <h1 id="titulo">Ayúdanos a contar su historia</h1>
+    <p class="sub" id="intro"></p>
+
+    <div class="card">
+      <div class="fila">
+        <div><label for="nombre">Tu nombre</label><input type="text" id="nombre" maxlength="50" placeholder="Por ejemplo, Jordi" autocomplete="given-name"></div>
+        <div><label for="relacion">¿Quién eres para <span class="G-prot">él o ella</span>?</label><input type="text" id="relacion" maxlength="50" placeholder="Su hijo, su hermana, una amiga…"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>¿De qué momento es tu recuerdo?</label>
+      <div class="hint">Elige uno. Si tienes recuerdos de varias épocas, envía uno y luego añade otro.</div>
+      <div class="etapas" id="etapas">
+        <button type="button" data-e="infancia">De pequeño/a</button>
+        <button type="button" data-e="juventud">La juventud</button>
+        <button type="button" data-e="familia">Amor y familia</button>
+        <button type="button" data-e="ninos">Con los niños</button>
+        <button type="button" data-e="otros">Otro recuerdo</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Tu recuerdo</label>
+      <div class="hint">Graba una nota de voz, sin prisa, como si se lo contaras a alguien en la sobremesa. Lo pasamos a texto y puedes corregirlo. Si lo prefieres, escríbelo directamente.</div>
+      <div class="rec">
+        <button type="button" class="btn btn-rec" id="btnRec"><span class="dot"></span><span id="recTxt">Grabar nota de voz</span></button>
+        <span class="estado" id="recEstado"></span>
+      </div>
+      <textarea id="texto" maxlength="12000" placeholder="Cuéntalo aquí: una anécdota, cómo era, algo que solo sabes tú…"></textarea>
+    </div>
+
+    <button type="button" class="btn btn-env" id="btnEnviar">Enviar mi recuerdo ♥</button>
+    <div class="err" id="errEnviar"></div>
+    <ul class="mias" id="mias"></ul>
+    <p class="pie">Lo que escribas solo lo verá quien prepara el libro y el equipo de Tale Us Stories, para escribir el cuento.</p>
+  </div>
+
+  <div id="gracias" class="card ok oculto">
+    <div class="cor">♥</div>
+    <h1 style="font-size:28px">¡Gracias!</h1>
+    <p class="sub" id="graciasTxt">Tu recuerdo ya está guardado.</p>
+    <button type="button" class="btn btn-sec" id="btnOtro">Añadir otro recuerdo</button>
+  </div>
+</main>
+
+<script>
+var C = new URLSearchParams(location.search).get('c') || '';
+var datos = null, etapa = '', grabador = null, trozos = [], grabando = false, enviados = [];
+var NOMBRES = { infancia: 'De pequeño/a', juventud: 'La juventud', familia: 'Amor y familia', ninos: 'Con los niños', otros: 'Otro recuerdo' };
+function $(id) { return document.getElementById(id); }
+function muestra(id) { ['cargando', 'error', 'app', 'gracias'].forEach(function (x) { $(x).classList.toggle('oculto', x !== id); }); window.scrollTo(0, 0); }
+
+// Lo que la persona invitada ya escribió (su nombre y relación) se recuerda en este móvil
+try { var yo = JSON.parse(localStorage.getItem('tus_aporta_yo') || '{}'); if (yo.nombre) $('nombre').value = yo.nombre; if (yo.relacion) $('relacion').value = yo.relacion; } catch (e) {}
+try { $('texto').value = localStorage.getItem('tus_aporta_borrador_' + C) || ''; } catch (e) {}
+$('texto').addEventListener('input', function () { try { localStorage.setItem('tus_aporta_borrador_' + C, $('texto').value); } catch (e) {} });
+
+async function carga() {
+  if (!/^[a-z0-9]{20}$/.test(C)) { muestra('error'); return; }
+  try {
+    var r = await fetch('/api/aportaciones?c=' + encodeURIComponent(C));
+    var j = await r.json();
+    if (!r.ok) { $('errorTxt').textContent = j.error || $('errorTxt').textContent; muestra('error'); return; }
+    datos = j;
+    var p = j.prot, q = j.quien;
+    document.title = 'Recuerdos de ' + p + ' · Tale Us Stories';
+    $('titulo').textContent = '¿Nos ayudas con los recuerdos de ' + p + '?';
+    $('intro').textContent = (q ? q + ' está preparando' : 'Están preparando') + ' un cuento ilustrado con la historia real de ' + p + ', para regalar. Tus recuerdos lo harán todavía más especial: una anécdota, cómo era de pequeño o de pequeña, algo que solo sabes tú.';
+    document.querySelectorAll('.G-prot').forEach(function (s) { s.textContent = p; });
+    if (j.g) {
+      var oa = j.g === 'f' ? 'a' : 'o';
+      NOMBRES.infancia = 'De pequeñ' + oa;
+      document.querySelector('#etapas [data-e=infancia]').textContent = NOMBRES.infancia;
+      $('intro').textContent = $('intro').textContent.replace('cómo era de pequeño o de pequeña', 'cómo era de pequeñ' + oa);
+    }
+    muestra('app');
+  } catch (e) { $('errorTxt').textContent = 'No hemos podido conectar. Comprueba tu conexión y vuelve a intentarlo.'; muestra('error'); }
+}
+
+$('etapas').addEventListener('click', function (ev) {
+  var b = ev.target.closest('button'); if (!b) return;
+  etapa = b.getAttribute('data-e');
+  document.querySelectorAll('#etapas button').forEach(function (x) { x.classList.toggle('on', x === b); });
+});
+
+// Nota de voz → texto (la misma transcripción que usa el formulario)
+function blobToBase64(blob) { return new Promise(function (ok, ko) { var fr = new FileReader(); fr.onload = function () { ok(String(fr.result).split(',')[1]); }; fr.onerror = ko; fr.readAsDataURL(blob); }); }
+$('btnRec').addEventListener('click', async function () {
+  if (grabando) { grabador.stop(); return; }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    trozos = [];
+    grabador = new MediaRecorder(stream);
+    grabador.ondataavailable = function (e) { if (e.data && e.data.size) trozos.push(e.data); };
+    grabador.onstop = async function () {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      grabando = false; $('btnRec').classList.remove('grabando'); $('recTxt').textContent = 'Grabar otra nota';
+      var blob = new Blob(trozos, { type: grabador.mimeType || 'audio/webm' });
+      $('recEstado').textContent = 'Pasando a texto…'; $('btnRec').disabled = true;
+      try {
+        var r = await fetch('/api/transcribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ audioBase64: await blobToBase64(blob), mimeType: blob.type }) });
+        var j = await r.json();
+        if (!r.ok || !j.text) throw new Error(j.error || 'sin texto');
+        var t = $('texto'); t.value = (t.value.trim() ? t.value.trim() + '\n\n' : '') + j.text.trim();
+        t.dispatchEvent(new Event('input'));
+        $('recEstado').textContent = 'Listo. Revisa el texto y corrige lo que haga falta.';
+      } catch (e) { $('recEstado').textContent = 'No se ha podido pasar a texto. Vuelve a probar o escríbelo.'; }
+      $('btnRec').disabled = false;
+    };
+    grabador.start();
+    grabando = true; $('btnRec').classList.add('grabando'); $('recTxt').textContent = 'Parar'; $('recEstado').textContent = 'Grabando… habla con calma';
+  } catch (e) { $('recEstado').textContent = 'No podemos usar el micrófono. Revisa los permisos o escribe tu recuerdo.'; }
+});
+
+$('btnEnviar').addEventListener('click', async function () {
+  var nombre = $('nombre').value.trim(), relacion = $('relacion').value.trim(), texto = $('texto').value.trim();
+  $('errEnviar').textContent = '';
+  if (!nombre) { $('errEnviar').textContent = 'Pon tu nombre, para que sepamos de quién es el recuerdo.'; $('nombre').focus(); return; }
+  if (!etapa) { $('errEnviar').textContent = 'Elige de qué momento es tu recuerdo.'; return; }
+  if (texto.length < 3) { $('errEnviar').textContent = 'Graba o escribe tu recuerdo antes de enviarlo.'; return; }
+  if (grabando) { $('errEnviar').textContent = 'Para la grabación antes de enviar.'; return; }
+  var b = $('btnEnviar'); b.disabled = true; b.textContent = 'Enviando…';
+  try {
+    var r = await fetch('/api/aportaciones', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'aportar', c: C, nombre: nombre, relacion: relacion, etapa: etapa, texto: texto }) });
+    var j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'Error');
+    try { localStorage.setItem('tus_aporta_yo', JSON.stringify({ nombre: nombre, relacion: relacion })); localStorage.removeItem('tus_aporta_borrador_' + C); } catch (e) {}
+    enviados.push(NOMBRES[etapa]);
+    $('graciasTxt').textContent = 'Tu recuerdo ya está guardado y ' + (datos.quien || 'quien prepara el libro') + ' lo verá en su formulario. Si te acuerdas de algo más, puedes añadir otro.';
+    $('texto').value = ''; etapa = ''; document.querySelectorAll('#etapas button').forEach(function (x) { x.classList.remove('on'); });
+    $('recEstado').textContent = ''; $('recTxt').textContent = 'Grabar nota de voz';
+    $('mias').innerHTML = enviados.map(function (e) { return '<li>Recuerdo enviado: ' + e + '</li>'; }).join('');
+    muestra('gracias');
+  } catch (e) { $('errEnviar').textContent = 'No se ha podido enviar: ' + e.message + '. Inténtalo de nuevo.'; }
+  b.disabled = false; b.textContent = 'Enviar mi recuerdo ♥';
+});
+$('btnOtro').addEventListener('click', function () { muestra('app'); });
+
+carga();
+</script>
+</body>
+</html>

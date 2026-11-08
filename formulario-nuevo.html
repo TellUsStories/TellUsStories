@@ -217,6 +217,20 @@
   .asp-add{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 22px;}
   .asp-add button{border:1.5px dashed var(--coral);background:none;border-radius:100px;padding:8px 15px;font-family:var(--display);font-weight:700;font-size:13px;color:var(--coral);cursor:pointer;}
   .asp-add button:hover{background:var(--coral-l);}
+  /* Formulario colaborativo: invitar a otras personas a aportar recuerdos */
+  .invita{background:#fff;border:1.5px dashed var(--border);border-radius:16px;padding:16px 16px 14px;margin:18px 0 6px}
+  .invita-t{font-family:var(--display);font-weight:700;font-size:15px;color:var(--navy);margin-bottom:4px}
+  .invita-s{font-size:14px;line-height:1.55;color:var(--muted);margin-bottom:12px}
+  .invita-b{font-family:var(--display);font-weight:700;font-size:14px;border-radius:999px;padding:10px 16px;border:1.5px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer;margin:0 6px 6px 0}
+  .invita-b.sec{background:#fff;color:var(--navy);border-color:var(--border)}
+  .invita-link{display:block;width:100%;font-size:13px;color:var(--navy);background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;margin:0 0 10px;word-break:break-all}
+  .invita-lista{margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
+  .invita-item{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.5;color:var(--navy);padding:8px 0;border-bottom:1px solid var(--coral-l)}
+  .invita-item input{width:18px;height:18px;flex:none;margin-top:2px;accent-color:#4A2C1F}
+  .invita-item.fuera .invita-txt{opacity:.45;text-decoration:line-through}
+  .invita-quien{font-weight:700}
+  .invita-etapa{font-size:12px;color:var(--coral);font-family:var(--display);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-left:6px}
+  .invita-msg{font-size:13px;color:var(--muted);margin-top:6px}
   /* Repaso de la IA al terminar cada etapa (y corrección de la dedicatoria) */
   .ia{background:var(--white);border:2px solid var(--navy);border-radius:20px;padding:20px 22px;margin:22px 0 6px;}
   .ia-t{font-family:var(--display);font-weight:800;font-size:19px;color:var(--navy);margin-bottom:4px;}
@@ -249,11 +263,11 @@
   <div class="sh">
     <div class="sh-chapter">Antes de empezar</div>
     <h1 class="sh-title">No hace falta escribir.<br>Solo contar.</h1>
-    <p class="sh-sub">Iremos etapa por etapa por la vida del protagonista. En cada una, graba una o dos notas de voz y cuéntanos todo lo que se te ocurra. Al terminar cada etapa te enseñamos lo que hemos entendido, por si quieres corregir algo o falta algún detalle.</p>
-    <p class="sh-sub" style="margin-top:10px;"><strong>A tu ritmo.</strong> Lo que escribes se guarda solo en este dispositivo: puedes dejarlo a medias y volver cuando quieras. Las anécdotas y las fotos son opcionales.</p>
+    <p class="sh-sub">Iremos etapa por etapa. En cada una, graba una nota de voz con todo lo que se te ocurra y te enseñaremos lo que hemos entendido.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>A tu ritmo:</strong> se guarda en este dispositivo y puedes volver cuando quieras. <strong>¿Más gente con recuerdos?</strong> Podrás invitarla a aportar los suyos desde su móvil.</p>
     <div class="aviso-det">
       <div class="aviso-det-t">✨ La magia está en los detalles</div>
-      <div class="aviso-det-s">Nosotros ponemos los dibujos y las palabras; tú pones los recuerdos. Ese apodo que solo usáis en casa, la canción del coche, la manía de cada mañana, el jersey de siempre… <b>Cuantos más detalles nos regales, más os reconoceréis en cada página.</b></div>
+      <div class="aviso-det-s">El apodo de casa, la canción del coche, el jersey de siempre… <b>Cuantos más detalles, más os reconoceréis en cada página.</b></div>
     </div>
   </div>
   <div class="field">
@@ -403,6 +417,9 @@
   <div class="hint" style="margin:14px 0 6px;background:var(--coral-l);border-radius:12px;padding:12px 14px;color:var(--navy)"><b>Importante:</b> a quien salga en la historia sin foto ni descripción lo dibujaremos libremente, así que no se parecerá a la persona real. Si no quieres subir foto, descríbelo con los botones. Con foto es como más se parecen; solo con la descripción, el parecido será aproximado.</div>
   <input type="text" id="aspectoFamilia" style="display:none">
   <input type="text" id="iaDatos" style="display:none">
+  <!-- Formulario colaborativo: enlace secreto para que otras personas aporten recuerdos, y las que se dejan fuera -->
+  <input type="text" id="aportaId" style="display:none">
+  <input type="text" id="aportaFuera" style="display:none">
   <div id="aspInputs" style="display:none"></div>
   <div class="nav">
     <button class="btn-back" onclick="go(0)">← Atrás</button>
@@ -894,6 +911,120 @@ function go(n) {
   setTimeout(autoAltoTodos, 30);   // los cuadros de la pantalla nueva, a su altura (p. ej. al volver con el borrador)
   window.scrollTo({ top: 0, behavior: 'smooth' });
   marcaPaso(n);
+  invitaPinta(n);
+}
+
+// ---------- Formulario colaborativo ----------
+// Quien encarga el libro crea un enlace secreto (/aportar?c=…) y lo pasa a hermanos, pareja, amigos o a la propia
+// protagonista. Lo que aporten se guarda en /api/aportaciones (Cloudflare KV) y, al enviar el pedido, se añade a la
+// nota de su etapa firmado («Aportación de Jordi, su hijo»), así Make lo recibe sin cambiar nada. Desde aquí se
+// puede dejar fuera cualquier aportación.
+var APORTA_CAMPO = { infancia: 'q2_infancia', juventud: 'q3_sueno', familia: 'q4_pareja', ninos: 'q5_ninos', otros: 'q6_deseo' };
+var APORTA_ETAPA = { infancia: 'De pequeño/a', juventud: 'Juventud', familia: 'Amor y familia', ninos: 'Con los niños', otros: 'Otros recuerdos' };
+var aportaItems = null, aportaCargando = false;
+function aportaEsc(t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function aportaClave(it) { return (it.fecha || '') + '|' + (it.nombre || ''); }
+function aportaFuera() { try { return JSON.parse(document.getElementById('aportaFuera').value || '[]'); } catch (e) { return []; } }
+function aportaUrl() { var id = document.getElementById('aportaId').value; return id ? location.origin + '/aportar?c=' + id : ''; }
+function invitaPinta(n) {
+  var caja = document.getElementById('invita');
+  if (!caja) {
+    caja = document.createElement('div'); caja.className = 'invita'; caja.id = 'invita';
+    caja.addEventListener('click', invitaClic);
+  }
+  var pantalla = document.getElementById('s' + n);
+  if (n < 2 || n > TOTAL || !pantalla) { if (caja.parentNode) caja.parentNode.removeChild(caja); return; }
+  var nav = pantalla.querySelector('.nav');
+  pantalla.insertBefore(caja, nav);
+  invitaHtml();
+  if (document.getElementById('aportaId').value && !aportaCargando) aportaCarga();
+}
+function invitaHtml() {
+  var caja = document.getElementById('invita'); if (!caja) return;
+  var prot = (document.getElementById('protName').value || '').trim() || g('vuestra');
+  var propia = narrator === 'protagonist';
+  var url = aportaUrl();
+  var h = '<div class="invita-t">👥 ' + (propia ? '¿Alguien más quiere aportar sus recuerdos?' : '¿Alguien más conoce bien a ' + aportaEsc(prot) + '?') + '</div>';
+  if (!url) {
+    h += '<div class="invita-s">' + (propia ? 'Tu pareja, tus hermanos o un amigo pueden grabar sus recuerdos sobre ti desde su móvil.' : 'Sus hermanos, su pareja, un amigo… o ' + aportaEsc(prot) + ' en persona pueden grabar sus recuerdos desde su móvil.') + ' Tú ves todo lo que envían y decides qué entra en el libro.</div>' +
+      '<button type="button" class="invita-b" data-a="crear">Invitar a alguien a aportar</button>';
+  } else {
+    h += '<div class="invita-s">Manda este enlace a quien quieras. Cada persona elige la etapa, graba o escribe su recuerdo y nos llega aquí.</div>' +
+      '<span class="invita-link">' + aportaEsc(url) + '</span>' +
+      '<button type="button" class="invita-b" data-a="wa">Enviar por WhatsApp</button>' +
+      '<button type="button" class="invita-b sec" data-a="copiar">Copiar enlace</button>' +
+      '<button type="button" class="invita-b sec" data-a="ver">Ver aportaciones</button>';
+    var fuera = aportaFuera();
+    if (aportaItems && aportaItems.length) {
+      h += '<div class="invita-lista"><div class="invita-s" style="margin-bottom:4px">Han aportado ' + aportaItems.length + (aportaItems.length === 1 ? ' recuerdo' : ' recuerdos') + '. Desmarca el que no quieras que entre en el libro.</div>';
+      aportaItems.forEach(function (it) {
+        var k = aportaClave(it), off = fuera.indexOf(k) >= 0, txt = String(it.texto || '');
+        h += '<label class="invita-item' + (off ? ' fuera' : '') + '"><input type="checkbox" data-k="' + aportaEsc(k) + '"' + (off ? '' : ' checked') + '><span class="invita-txt"><span class="invita-quien">' + aportaEsc(it.nombre) + (it.relacion ? ' (' + aportaEsc(it.relacion) + ')' : '') + '</span><span class="invita-etapa">' + aportaEsc(APORTA_ETAPA[it.etapa] || '') + '</span><br>' + aportaEsc(txt.length > 220 ? txt.slice(0, 220) + '…' : txt) + '</span></label>';
+      });
+      h += '</div>';
+    } else if (aportaItems) {
+      h += '<div class="invita-msg">Todavía no ha llegado ninguna aportación. Puedes seguir con el formulario y volver a mirar luego.</div>';
+    }
+  }
+  caja.innerHTML = h + '<div class="invita-msg" id="invitaMsg"></div>';
+}
+async function invitaClic(ev) {
+  var cb = ev.target.closest('input[type=checkbox][data-k]');
+  if (cb) {
+    var fuera = aportaFuera(), k = cb.getAttribute('data-k'), i = fuera.indexOf(k);
+    if (cb.checked && i >= 0) fuera.splice(i, 1); else if (!cb.checked && i < 0) fuera.push(k);
+    document.getElementById('aportaFuera').value = JSON.stringify(fuera); saveDraft();
+    cb.closest('.invita-item').classList.toggle('fuera', !cb.checked);
+    return;
+  }
+  var b = ev.target.closest('button[data-a]'); if (!b) return;
+  var a = b.getAttribute('data-a'), msg = document.getElementById('invitaMsg');
+  if (a === 'crear') {
+    var prot = (document.getElementById('protName').value || '').trim();
+    if (!prot) { msg.textContent = 'Primero escribe el nombre del protagonista (en el primer paso).'; return; }
+    b.disabled = true; b.textContent = 'Creando el enlace…';
+    try {
+      var quien = narrator === 'protagonist' ? prot : (document.getElementById('orderer').value || '').trim();
+      var r = await fetch('/api/aportaciones', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'crear', prot: prot, quien: quien, g: gender }) });
+      var j = await r.json(); if (!r.ok || !j.id) throw new Error(j.error || 'error');
+      document.getElementById('aportaId').value = j.id; saveDraft();
+      aportaItems = []; invitaHtml();
+    } catch (e) { b.disabled = false; b.textContent = 'Invitar a alguien a aportar'; msg.textContent = 'No hemos podido crear el enlace. Inténtalo de nuevo en un momento.'; }
+  } else if (a === 'copiar') {
+    try { await navigator.clipboard.writeText(aportaUrl()); msg.textContent = 'Enlace copiado.'; } catch (e) { msg.textContent = 'Mantén pulsado el enlace para copiarlo.'; }
+  } else if (a === 'wa') {
+    var p = (document.getElementById('protName').value || '').trim();
+    var t = 'Estoy preparando un cuento ilustrado con la historia de ' + p + '. ¿Me ayudas con tus recuerdos? Puedes grabar una nota de voz aquí: ' + aportaUrl();
+    window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank');
+  } else if (a === 'ver') {
+    msg.textContent = 'Mirando…'; await aportaCarga(); var m = document.getElementById('invitaMsg'); if (m && !m.textContent) m.textContent = 'Actualizado.';
+  }
+}
+async function aportaCarga() {
+  var id = document.getElementById('aportaId').value; if (!id) return [];
+  aportaCargando = true;
+  try {
+    var r = await fetch('/api/aportaciones?c=' + encodeURIComponent(id));
+    var j = await r.json();
+    if (r.ok) aportaItems = j.items || [];
+  } catch (e) {}
+  aportaCargando = false;
+  invitaHtml();
+  return aportaItems || [];
+}
+// Al enviar el pedido: las aportaciones marcadas se añaden a la nota de su etapa, firmadas
+async function aportaAnade(payload) {
+  if (!document.getElementById('aportaId').value) return;
+  var items = await aportaCarga(), fuera = aportaFuera(), usadas = [];
+  items.forEach(function (it) {
+    if (fuera.indexOf(aportaClave(it)) >= 0) return;
+    var campo = APORTA_CAMPO[it.etapa] || APORTA_CAMPO.otros;
+    var firma = it.nombre + (it.relacion ? ', ' + it.relacion : '');
+    payload[campo] = (payload[campo] || '') + '\n\nAportación de ' + firma + ':\n' + String(it.texto || '').trim();
+    usadas.push({ nombre: it.nombre, relacion: it.relacion || '', etapa: it.etapa });
+  });
+  payload.aportaciones = usadas.length ? usadas.map(function (u) { return u.nombre + (u.relacion ? ' (' + u.relacion + ')' : '') + ' · ' + (APORTA_ETAPA[u.etapa] || u.etapa); }).join('\n') : '';
+  payload.aportaciones_enlace = document.getElementById('aportaId').value;
 }
 
 // Medición del embudo: cada pantalla tiene su dirección (/formulario-nuevo/paso-2 … /revision, /enviado) y
@@ -1370,6 +1501,8 @@ async function submit() {
     if (resp) payload[campo] = (payload[campo] || '') + '\n\nMás detalles (respuestas a nuestras preguntas):\n' + resp;
     payload['resumen_' + et.clave] = e && e.resumen ? e.resumen : '';
   });
+  // Formulario colaborativo: lo que han aportado otras personas, en la nota de su etapa (si falla, se sigue sin ello)
+  try { await aportaAnade(payload); } catch (e) {}
   payload.q1_nombre = val('tresPalabras');            // cómo es en 3 palabras
   payload.edad_protagonista = val('protAge');
   payload.relacion_ninos = val('relacionNinos');       // hijos, nietos, sobrinos…
