@@ -959,7 +959,8 @@ function invitaHtml() {
       h += '<div class="invita-lista"><div class="invita-s" style="margin-bottom:4px">Han aportado ' + aportaItems.length + (aportaItems.length === 1 ? ' recuerdo' : ' recuerdos') + '. Desmarca el que no quieras que entre en el libro.</div>';
       aportaItems.forEach(function (it) {
         var k = aportaClave(it), off = fuera.indexOf(k) >= 0, txt = String(it.texto || '');
-        h += '<label class="invita-item' + (off ? ' fuera' : '') + '"><input type="checkbox" data-k="' + aportaEsc(k) + '"' + (off ? '' : ' checked') + '><span class="invita-txt"><span class="invita-quien">' + aportaEsc(it.nombre) + (it.relacion ? ' (' + aportaEsc(it.relacion) + ')' : '') + '</span><span class="invita-etapa">' + aportaEsc(APORTA_ETAPA[it.etapa] || '') + '</span><br>' + aportaEsc(txt.length > 220 ? txt.slice(0, 220) + '…' : txt) + '</span></label>';
+        var et = it.etapa === 'infancia' ? (gender === 'f' ? 'De pequeña' : 'De pequeño') : (APORTA_ETAPA[it.etapa] || '');
+        h += '<label class="invita-item' + (off ? ' fuera' : '') + '"><input type="checkbox" data-k="' + aportaEsc(k) + '"' + (off ? '' : ' checked') + '><span class="invita-txt"><span class="invita-quien">' + aportaEsc(it.nombre) + (it.relacion ? ' (' + aportaEsc(it.relacion) + ')' : '') + '</span><span class="invita-etapa">' + aportaEsc(et) + '</span><br>' + aportaEsc(txt.length > 220 ? txt.slice(0, 220) + '…' : txt) + '</span></label>';
       });
       h += '</div>';
     } else if (aportaItems) {
