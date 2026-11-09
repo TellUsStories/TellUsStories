@@ -45,6 +45,20 @@
   .mias li{margin:4px 0 4px 18px}
   .pie{text-align:center;font-size:13px;color:var(--muted);margin-top:26px}
   .oculto{display:none}
+  .rec-fondo{position:fixed;inset:0;background:rgba(40,25,15,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+  .rec-caja{background:var(--cream);border-radius:20px;padding:18px;width:100%;max-width:560px;max-height:96vh;display:flex;flex-direction:column;gap:12px}
+  .rec-t{font-family:var(--display);font-weight:700;font-size:18px;color:var(--navy)}
+  .rec-h{font-size:13px;color:var(--muted);line-height:1.5}
+  .rec-img{height:min(60vh,460px);background:#eee;border-radius:12px;overflow:hidden}
+  .rec-img img{display:block;max-width:100%}
+  .rec-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .rec-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy)}
+  .rec-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+  .fotos{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+  .fotos:empty{display:none}
+  .fotos div{position:relative;width:88px;height:88px}
+  .fotos img{width:100%;height:100%;object-fit:cover;border-radius:12px;border:1px solid var(--border)}
+  .fotos button{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:0;background:var(--navy);color:#fff;font-size:15px;line-height:26px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -91,6 +105,14 @@
       <textarea id="texto" maxlength="12000" placeholder="Cuéntalo aquí: una anécdota, cómo era, algo que solo sabes tú…"></textarea>
     </div>
 
+    <div class="card">
+      <label>Fotos (opcional)</label>
+      <div class="hint">¿Tienes alguna foto de ese momento? Nos ayuda a dibujar a las personas y los lugares tal como eran. Hasta 3 por recuerdo.</div>
+      <input type="file" id="fotoInput" accept="image/*" multiple style="display:none">
+      <div class="fotos" id="fotos"></div>
+      <button type="button" class="btn btn-sec" id="btnFoto">📷 Añadir foto</button>
+    </div>
+
     <button type="button" class="btn btn-env" id="btnEnviar">Enviar mi recuerdo ♥</button>
     <div class="err" id="errEnviar"></div>
     <ul class="mias" id="mias"></ul>
@@ -127,7 +149,7 @@ async function carga() {
     var p = j.prot, q = j.quien;
     document.title = 'Recuerdos de ' + p + ' · Tale Us Stories';
     $('titulo').textContent = '¿Nos ayudas con los recuerdos de ' + p + '?';
-    $('intro').textContent = (q ? q + ' está preparando' : 'Están preparando') + ' un cuento ilustrado con la historia real de ' + p + ', para regalar. Tus recuerdos lo harán todavía más especial: una anécdota, cómo era de pequeño o de pequeña, algo que solo sabes tú.';
+    $('intro').textContent = (q ? q + ' está preparando' : 'Están preparando') + ' un cuento ilustrado con la historia real de ' + p + ', para regalar. Tus recuerdos lo harán todavía más especial: una anécdota, cómo era de pequeño o de pequeña, algo que solo sabes tú. Y si tienes fotos, mejor todavía.';
     document.querySelectorAll('.G-prot').forEach(function (s) { s.textContent = p; });
     if (j.g) {
       var oa = j.g === 'f' ? 'a' : 'o';
@@ -174,20 +196,96 @@ $('btnRec').addEventListener('click', async function () {
   } catch (e) { $('recEstado').textContent = 'No podemos usar el micrófono. Revisa los permisos o escribe tu recuerdo.'; }
 });
 
+// Fotos: se reducen en el móvil (1600 px, JPEG) antes de enviarlas, así pesan poco
+var fotos = [];   // base64 sin prefijo
+function reduce(file) {
+  return new Promise(function (ok) {
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      var M = 1600, w = img.naturalWidth, h = img.naturalHeight, s = Math.min(1, M / Math.max(w, h));
+      var cv = document.createElement('canvas'); cv.width = Math.round(w * s); cv.height = Math.round(h * s);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      ok(cv.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); ok(''); };
+    img.src = url;
+  });
+}
+function pintaFotos() {
+  $('fotos').innerHTML = '';
+  fotos.forEach(function (b64, i) {
+    var d = document.createElement('div');
+    d.innerHTML = '<img alt="Foto ' + (i + 1) + '"><button type="button" aria-label="Quitar foto">×</button>';
+    d.querySelector('img').src = 'data:image/jpeg;base64,' + b64;
+    d.querySelector('button').onclick = function () { fotos.splice(i, 1); pintaFotos(); };
+    $('fotos').appendChild(d);
+  });
+  $('btnFoto').style.display = fotos.length >= 3 ? 'none' : '';
+  $('btnFoto').textContent = fotos.length ? '📷 Añadir otra foto (' + fotos.length + ' de 3)' : '📷 Añadir foto';
+}
+$('btnFoto').addEventListener('click', function () { $('fotoInput').click(); });
+// Recorte: el mismo que en el formulario (Cropper.js, se carga solo la primera vez)
+var CROPPER_V = '1.6.2';
+function cargaCropper() {
+  if (window.Cropper) return Promise.resolve();
+  return new Promise(function (ok, ko) {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.css';
+    document.head.appendChild(l);
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.js';
+    s.onload = ok; s.onerror = ko; document.head.appendChild(s);
+  });
+}
+// Devuelve la foto (recortada o entera) en base64, o '' si se cancela
+function recorta(file) {
+  return cargaCropper().then(function () { return new Promise(function (fin) {
+    var url = URL.createObjectURL(file), fondo = document.createElement('div');
+    fondo.className = 'rec-fondo';
+    fondo.innerHTML = '<div class="rec-caja"><div class="rec-t">Recorta la foto</div>' +
+      '<div class="rec-h">Mueve y ajusta el recuadro para dejar lo importante. Si está bien así, usa la foto entera.</div>' +
+      '<div class="rec-img"><img alt="Foto para recortar"></div>' +
+      '<div class="rec-bts"><button type="button" data-a="no">Cancelar</button><button type="button" data-a="entera">Usar la foto entera</button><button type="button" class="si" data-a="si">Usar este recorte</button></div></div>';
+    document.body.appendChild(fondo);
+    var img = fondo.querySelector('img'), cr;
+    // checkOrientation: false → el navegador ya endereza las fotos del móvil (EXIF)
+    img.onload = function () { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.8, background: false, movable: false, zoomable: false, rotatable: false, checkOrientation: false }); };
+    img.src = url;
+    function cierra(v) { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); fin(v); }
+    fondo.querySelector('[data-a="no"]').onclick = function () { cierra(''); };
+    fondo.querySelector('[data-a="entera"]').onclick = function () { reduce(file).then(cierra); };
+    fondo.querySelector('[data-a="si"]').onclick = function () {
+      if (!cr) { reduce(file).then(cierra); return; }
+      var cv = cr.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1600, imageSmoothingQuality: 'high' });
+      cierra(cv ? cv.toDataURL('image/jpeg', 0.85).split(',')[1] : '');
+    };
+  }); }).catch(function () { return reduce(file); });   // sin conexión al recortador: la foto entera
+}
+$('fotoInput').addEventListener('change', async function () {
+  var fs = Array.from(this.files || []); this.value = '';
+  for (var i = 0; i < fs.length && fotos.length < 3; i++) {
+    if (!/^image\//.test(fs[i].type || 'image/')) continue;
+    var b = await recorta(fs[i]); if (b) { fotos.push(b); pintaFotos(); }
+  }
+  pintaFotos();
+});
+
 $('btnEnviar').addEventListener('click', async function () {
   var nombre = $('nombre').value.trim(), relacion = $('relacion').value.trim(), texto = $('texto').value.trim();
   $('errEnviar').textContent = '';
   if (!nombre) { $('errEnviar').textContent = 'Pon tu nombre, para que sepamos de quién es el recuerdo.'; $('nombre').focus(); return; }
   if (!etapa) { $('errEnviar').textContent = 'Elige de qué momento es tu recuerdo.'; return; }
-  if (texto.length < 3) { $('errEnviar').textContent = 'Graba o escribe tu recuerdo antes de enviarlo.'; return; }
+  if (texto.length < 3 && !fotos.length) { $('errEnviar').textContent = 'Graba o escribe tu recuerdo (o añade una foto) antes de enviarlo.'; return; }
   if (grabando) { $('errEnviar').textContent = 'Para la grabación antes de enviar.'; return; }
   var b = $('btnEnviar'); b.disabled = true; b.textContent = 'Enviando…';
   try {
-    var r = await fetch('/api/aportaciones', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'aportar', c: C, nombre: nombre, relacion: relacion, etapa: etapa, texto: texto }) });
+    var r = await fetch('/api/aportaciones', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'aportar', c: C, nombre: nombre, relacion: relacion, etapa: etapa, texto: texto, fotos: fotos }) });
     var j = await r.json();
     if (!r.ok) throw new Error(j.error || 'Error');
     try { localStorage.setItem('tus_aporta_yo', JSON.stringify({ nombre: nombre, relacion: relacion })); localStorage.removeItem('tus_aporta_borrador_' + C); } catch (e) {}
-    enviados.push(NOMBRES[etapa]);
+    enviados.push(NOMBRES[etapa] + (fotos.length ? ' (con ' + fotos.length + (fotos.length > 1 ? ' fotos)' : ' foto)') : ''));
+    fotos = []; pintaFotos();
     $('graciasTxt').textContent = 'Tu recuerdo ya está guardado y ' + (datos.quien || 'quien prepara el libro') + ' lo verá en su formulario. Si te acuerdas de algo más, puedes añadir otro.';
     $('texto').value = ''; etapa = ''; document.querySelectorAll('#etapas button').forEach(function (x) { x.classList.remove('on'); });
     $('recEstado').textContent = ''; $('recTxt').textContent = 'Grabar nota de voz';

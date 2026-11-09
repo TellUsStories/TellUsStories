@@ -228,6 +228,9 @@
   .invita-item{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.5;color:var(--navy);padding:8px 0;border-bottom:1px solid var(--coral-l)}
   .invita-item input{width:18px;height:18px;flex:none;margin-top:2px;accent-color:#4A2C1F}
   .invita-item.fuera .invita-txt{opacity:.45;text-decoration:line-through}
+  .invita-fotos{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .invita-fotos img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+  .invita-item.fuera .invita-fotos{opacity:.45}
   .invita-quien{font-weight:700}
   .invita-etapa{font-size:12px;color:var(--coral);font-family:var(--display);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-left:6px}
   .invita-msg{font-size:13px;color:var(--muted);margin-top:6px}
@@ -919,6 +922,7 @@ function go(n) {
 // protagonista. Lo que aporten se guarda en /api/aportaciones (Cloudflare KV) y, al enviar el pedido, se añade a la
 // nota de su etapa firmado («Aportación de Jordi, su hijo»), así Make lo recibe sin cambiar nada. Desde aquí se
 // puede dejar fuera cualquier aportación.
+var APORTA_MAX_FOTOS = 8;   // en el pedido (el envío a Make no debe pasar de unos 5 MB)
 var APORTA_CAMPO = { infancia: 'q2_infancia', juventud: 'q3_sueno', familia: 'q4_pareja', ninos: 'q5_ninos', otros: 'q6_deseo' };
 var APORTA_ETAPA = { infancia: 'De pequeño/a', juventud: 'Juventud', familia: 'Amor y familia', ninos: 'Con los niños', otros: 'Otros recuerdos' };
 var aportaItems = null, aportaCargando = false;
@@ -946,10 +950,10 @@ function invitaHtml() {
   var url = aportaUrl();
   var h = '<div class="invita-t">👥 ' + (propia ? '¿Alguien más quiere aportar sus recuerdos?' : '¿Alguien más conoce bien a ' + aportaEsc(prot) + '?') + '</div>';
   if (!url) {
-    h += '<div class="invita-s">' + (propia ? 'Tu pareja, tus hermanos o un amigo pueden grabar sus recuerdos sobre ti desde su móvil.' : 'Sus hermanos, su pareja, un amigo… o ' + aportaEsc(prot) + ' en persona pueden grabar sus recuerdos desde su móvil.') + ' Tú ves todo lo que envían y decides qué entra en el libro.</div>' +
+    h += '<div class="invita-s">' + (propia ? 'Tu pareja, tus hermanos o un amigo pueden grabar sus recuerdos sobre ti (y mandar fotos) desde su móvil.' : 'Sus hermanos, su pareja, un amigo… o ' + aportaEsc(prot) + ' en persona pueden grabar sus recuerdos (y mandar fotos) desde su móvil.') + ' Tú ves todo lo que envían y decides qué entra en el libro.</div>' +
       '<button type="button" class="invita-b" data-a="crear">Invitar a alguien a aportar</button>';
   } else {
-    h += '<div class="invita-s">Manda este enlace a quien quieras. Cada persona elige la etapa, graba o escribe su recuerdo y nos llega aquí.</div>' +
+    h += '<div class="invita-s">Manda este enlace a quien quieras. Cada persona elige la etapa, graba o escribe su recuerdo (y sube fotos si quiere) y nos llega aquí.</div>' +
       '<span class="invita-link">' + aportaEsc(url) + '</span>' +
       '<button type="button" class="invita-b" data-a="wa">Enviar por WhatsApp</button>' +
       '<button type="button" class="invita-b sec" data-a="copiar">Copiar enlace</button>' +
@@ -960,7 +964,9 @@ function invitaHtml() {
       aportaItems.forEach(function (it) {
         var k = aportaClave(it), off = fuera.indexOf(k) >= 0, txt = String(it.texto || '');
         var et = it.etapa === 'infancia' ? (gender === 'f' ? 'De pequeña' : 'De pequeño') : (APORTA_ETAPA[it.etapa] || '');
-        h += '<label class="invita-item' + (off ? ' fuera' : '') + '"><input type="checkbox" data-k="' + aportaEsc(k) + '"' + (off ? '' : ' checked') + '><span class="invita-txt"><span class="invita-quien">' + aportaEsc(it.nombre) + (it.relacion ? ' (' + aportaEsc(it.relacion) + ')' : '') + '</span><span class="invita-etapa">' + aportaEsc(et) + '</span><br>' + aportaEsc(txt.length > 220 ? txt.slice(0, 220) + '…' : txt) + '</span></label>';
+        h += '<label class="invita-item' + (off ? ' fuera' : '') + '"><input type="checkbox" data-k="' + aportaEsc(k) + '"' + (off ? '' : ' checked') + '><span class="invita-txt"><span class="invita-quien">' + aportaEsc(it.nombre) + (it.relacion ? ' (' + aportaEsc(it.relacion) + ')' : '') + '</span><span class="invita-etapa">' + aportaEsc(et) + '</span><br>' + aportaEsc(txt.length > 220 ? txt.slice(0, 220) + '…' : txt) +
+          ((it.fotos && it.fotos.length) ? '<span class="invita-fotos">' + it.fotos.map(function (n) { return '<img loading="lazy" alt="Foto aportada" src="/api/aportaciones?c=' + encodeURIComponent(document.getElementById('aportaId').value) + '&f=' + (+n) + '">'; }).join('') + '</span>' : '') +
+          '</span></label>';
       });
       h += '</div>';
     } else if (aportaItems) {
@@ -1016,15 +1022,29 @@ async function aportaCarga() {
 // Al enviar el pedido: las aportaciones marcadas se añaden a la nota de su etapa, firmadas
 async function aportaAnade(payload) {
   if (!document.getElementById('aportaId').value) return;
-  var items = await aportaCarga(), fuera = aportaFuera(), usadas = [];
-  items.forEach(function (it) {
-    if (fuera.indexOf(aportaClave(it)) >= 0) return;
+  var items = await aportaCarga(), fuera = aportaFuera(), usadas = [], id = document.getElementById('aportaId').value;
+  payload.fotos_aportadas = [];
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    if (fuera.indexOf(aportaClave(it)) >= 0) continue;
     var campo = APORTA_CAMPO[it.etapa] || APORTA_CAMPO.otros;
     var firma = it.nombre + (it.relacion ? ', ' + it.relacion : '');
-    payload[campo] = (payload[campo] || '') + '\n\nAportación de ' + firma + ':\n' + String(it.texto || '').trim();
-    usadas.push({ nombre: it.nombre, relacion: it.relacion || '', etapa: it.etapa });
-  });
-  payload.aportaciones = usadas.length ? usadas.map(function (u) { return u.nombre + (u.relacion ? ' (' + u.relacion + ')' : '') + ' · ' + (APORTA_ETAPA[u.etapa] || u.etapa); }).join('\n') : '';
+    var nf = 0;
+    // Fotos aportadas: se descargan, se reducen como las demás (1024 px) y van con las fotos del pedido (carpeta de Drive)
+    for (var k = 0; it.fotos && k < it.fotos.length && payload.fotos_aportadas.length < APORTA_MAX_FOTOS; k++) {
+      try {
+        var r = await fetch('/api/aportaciones?c=' + encodeURIComponent(id) + '&f=' + (+it.fotos[k]));
+        if (!r.ok) continue;
+        var b64 = await photoToBase64(await r.blob());
+        if (b64) { payload.fotos_aportadas.push(b64); nf++; }
+      } catch (e) {}
+    }
+    var texto = String(it.texto || '').trim();
+    if (nf) texto += (texto ? '\n' : '') + '(' + (nf > 1 ? 'Envía ' + nf + ' fotos' : 'Envía 1 foto') + ', guardada' + (nf > 1 ? 's' : '') + ' en la carpeta del pedido con las demás fotos.)';
+    payload[campo] = (payload[campo] || '') + '\n\nAportación de ' + firma + ':\n' + texto;
+    usadas.push({ nombre: it.nombre, relacion: it.relacion || '', etapa: it.etapa, fotos: nf });
+  }
+  payload.aportaciones = usadas.length ? usadas.map(function (u) { return u.nombre + (u.relacion ? ' (' + u.relacion + ')' : '') + ' · ' + (APORTA_ETAPA[u.etapa] || u.etapa) + (u.fotos ? ' · ' + u.fotos + (u.fotos > 1 ? ' fotos' : ' foto') : ''); }).join('\n') : '';
   payload.aportaciones_enlace = document.getElementById('aportaId').value;
 }
 
@@ -1523,6 +1543,9 @@ async function submit() {
     var b64 = await photoToBase64(extras[j]);
     if (b64) payload.fotos_extra.push(b64);
   }
+  // Las fotos de las aportaciones van detrás (Make las guarda todas en la carpeta del pedido)
+  if (payload.fotos_aportadas && payload.fotos_aportadas.length) payload.fotos_extra = payload.fotos_extra.concat(payload.fotos_aportadas);
+  delete payload.fotos_aportadas;
 
   // Primero se paga: la historia se guarda aparte y solo empieza el libro cuando Stripe confirma el pago
   var pedido = 'TUS' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
