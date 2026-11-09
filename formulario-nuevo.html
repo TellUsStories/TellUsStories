@@ -405,7 +405,7 @@
   <div class="hint" style="margin:-8px 0 18px" data-yo="Tu profesión y tus aficiones aparecerán como detalles en los dibujos.">Su profesión y sus aficiones aparecerán como detalles en los dibujos.</div>
 
   <div class="sdiv"><span>¿Cómo son? Así los dibujaremos</span></div>
-  <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> y ya no tienes que rellenar nada más de esa persona. Si no tienes foto, toca <b>"No tengo foto"</b> y descríbela con los botones. Las fotos solo se usan para dibujar.</div>
+  <div class="hint" style="margin-bottom:14px">Para dibujar a cada persona igual en todas las páginas (de bebé, de niño/a, de joven y hoy): <b>sube una foto</b> de su cara, con buena luz y mirando a cámara, y marca el color de su pelo y de sus ojos. Si no tienes foto, toca <b>"No tengo foto"</b> y descríbela con los botones. Las fotos solo se usan para dibujar.</div>
   <div id="aspCards"></div>
   <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
   <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspGrupo(this)">
@@ -1902,7 +1902,37 @@ function aspTarjeta(d, titulo, quitar, conNombre) {
   return c;
 }
 
-// Foto o botones: con la foto subida no hace falta tocar nada
+// Con foto también preguntamos el color de ojos y de pelo: en las fotos no siempre se ven bien
+// (pasó con el primer pedido: salió con los ojos y el pelo de otro color). Del protagonista, además, el pelo de joven.
+var ASP_COL_OBLIG = ['pelo', 'ojos'];
+function aspColores(d, conJoven) {
+  var c = document.createElement('div'); c.className = 'asp-col';
+  var grupos = [ASP_GRUPOS[0], ASP_GRUPOS[3]];
+  if (conJoven) grupos.push({ k: 'joven', t: 'Pelo de joven (si era distinto)', o: ['Rubio', 'Castaño claro', 'Castaño oscuro', 'Moreno', 'Pelirrojo'] });
+  var h = '<div class="asp-gl" style="margin:10px 0 6px;color:var(--navy)">Para acertar con los colores (en las fotos a veces no se ven bien):</div>';
+  grupos.forEach(function(gr) {
+    h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
+      gr.o.map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
+  });
+  c.innerHTML = h;
+  c.querySelectorAll('.asp-g[data-k]').forEach(function(g) {
+    var k = g.dataset.k;
+    g.querySelectorAll('.chip').forEach(function(b) {
+      var v = b.textContent;
+      if (d[k] === v) b.classList.add('on');
+      b.onclick = function() {
+        d[k] = d[k] === v ? '' : v;
+        g.querySelectorAll('.chip').forEach(function(x) { x.classList.toggle('on', x.textContent === d[k]); });
+        g.classList.remove('falta');
+        var card = c.closest('.asp'); if (card && !card.querySelector('.asp-g.falta')) card.classList.remove('falta');
+        aspGuarda();
+      };
+    });
+  });
+  return c;
+}
+
+// Foto o botones: con la foto subida solo se piden los colores de ojos y pelo
 function aspFoto(id) { var f = document.getElementById(id); return f && f.files[0]; }
 function aspCajaFoto(id, texto) {
   var f = aspFoto(id), c = document.createElement('div');
@@ -1979,6 +2009,7 @@ function aspPinta() {
     var cp = document.createElement('div'); cp.className = 'asp';
     cp.innerHTML = '<div class="asp-h"><div class="asp-t">Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : '') + '</div></div>';
     cp.appendChild(aspCajaFoto('fotoCara'));
+    cp.appendChild(aspColores(asp.prot, true));
     cont.appendChild(cp);
   } else {
     var tp = aspTarjeta(asp.prot, 'Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : ''));
@@ -1997,7 +2028,7 @@ function aspPinta() {
       t.querySelector('.asp-sinfoto').style.display = 'none';
     }
     // La foto sale de marcarlo en la foto de los niños; si no salía, puede subir una solo suya
-    if (aspFoto(fid)) t.insertBefore(aspCajaFoto(fid), t.children[1]);
+    if (aspFoto(fid)) { t.insertBefore(aspCajaFoto(fid), t.children[1]); t.appendChild(aspColores(asp.ninos[n])); }
     else if (aspGrupoUsado) t.insertBefore(aspCajaFoto(fid, 'No sale en la foto: sube una foto de ' + n), t.children[1]);
     cont.appendChild(t);
   });
@@ -2012,6 +2043,7 @@ function aspPinta() {
       t.querySelectorAll('.asp-g[data-k], .asp-mas').forEach(function(g) { (g.classList.contains('asp-mas') ? g.parentNode : g).style.display = 'none'; });
       t.querySelector('.asp-sinfoto').style.display = 'none';
       nombre.after(aspCajaFoto(fid));
+      t.appendChild(aspColores(p));
     } else {
       nombre.after(aspCajaFoto(fid, 'Sube una foto y te saltas este paso'));
     }
@@ -2134,11 +2166,11 @@ function aspFaltan() {
   var datos = [[(document.getElementById('protName').value || '').trim() || 'el protagonista', asp.prot, aspFoto('fotoCara')]]
     .concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}, aspFoto(aspIdNino(n))]; }));
   datos.forEach(function(p, i) {
-    if (p[2]) return;   // con foto no hace falta rellenar
-    var c = cards[i], sin = ASP_OBLIG.filter(function(k) { return !p[1][k]; });
+    // Con foto solo hacen falta los colores de pelo y ojos; sin foto, pelo, ojos y piel
+    var c = cards[i], sin = (p[2] ? ASP_COL_OBLIG : ASP_OBLIG).filter(function(k) { return !p[1][k]; });
     if (!sin.length || !c) return;
-    c.classList.add('falta'); c.classList.remove('plegada'); p[1].manual = true;
-    sin.forEach(function(k) { var g = c.querySelector('.asp-g[data-k="' + k + '"]'); if (g) g.classList.add('falta'); });
+    c.classList.add('falta'); if (!p[2]) { c.classList.remove('plegada'); p[1].manual = true; }
+    sin.forEach(function(k) { var g = c.querySelector((p[2] ? '.asp-col ' : '') + '.asp-g[data-k="' + k + '"]'); if (g) g.classList.add('falta'); });
     falta.push('cómo es ' + p[0] + ' (' + sin.join(', ') + ')');
   });
   return falta;
@@ -2154,13 +2186,16 @@ function aspTexto() {
     if (d.piel) r.push('piel ' + d.piel.toLowerCase());
     if (d.extra && d.extra.length) r.push(d.extra.join(', ').toLowerCase());
     if (d.mas) r.push(d.mas.trim());
+    if (d.joven) r.push('de joven, pelo ' + d.joven.toLowerCase());
     return r.join('; ');
   }
+  // Con foto: la foto + los colores que ha marcado la familia (mandan sobre lo que parezca en la foto)
+  function conFoto(base, d) { var col = [d.pelo ? 'pelo ' + d.pelo.toLowerCase() : '', d.ojos ? 'ojos ' + d.ojos.toLowerCase() : '', d.joven ? 'de joven, pelo ' + d.joven.toLowerCase() : ''].filter(Boolean); return base + (col.length ? '; COLORES REALES: ' + col.join(', ') : ''); }
   var prot = (document.getElementById('protName').value || '').trim(), out = [];
-  out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (aspFoto('fotoCara') ? 'ver su foto' : (linea(asp.prot) || 'sin datos')));
-  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto(aspIdNino(n)) ? 'ver su foto (en la imagen de los niños, con su nombre)' : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
+  out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (aspFoto('fotoCara') ? conFoto('ver su foto', asp.prot) : (linea(asp.prot) || 'sin datos')));
+  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto(aspIdNino(n)) ? conFoto('ver su foto (en la imagen de los niños, con su nombre)', asp.ninos[n] || {}) : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
   asp.extra.forEach(function(p) {
-    var l = (p.id && aspFoto('fotoExtra_' + p.id)) ? 'ver su foto (en la imagen de la familia)' : linea(p);
+    var l = (p.id && aspFoto('fotoExtra_' + p.id)) ? conFoto('ver su foto (en la imagen de la familia)', p) : linea(p);
     if (!l && !p.nombre && !p.quien) return;
     out.push(aspTit(p) + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
   });
