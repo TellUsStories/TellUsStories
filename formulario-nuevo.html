@@ -937,7 +937,8 @@ function invitaPinta(n) {
     caja.addEventListener('click', invitaClic);
   }
   var pantalla = document.getElementById('s' + n);
-  if (n < 2 || n > TOTAL || !pantalla) { if (caja.parentNode) caja.parentNode.removeChild(caja); return; }
+  // En la revisión no: quedaba entre la casilla de condiciones y «Ir a pagar» y despistaba en el móvil
+  if (n < 2 || n >= TOTAL || !pantalla) { if (caja.parentNode) caja.parentNode.removeChild(caja); return; }
   var nav = pantalla.querySelector('.nav');
   pantalla.insertBefore(caja, nav);
   invitaHtml();
