@@ -202,7 +202,7 @@ function enviarCliente() {
   var body = new URLSearchParams({ accion: 'enviar', carpeta: CARPETA, clave: CLAVE });
   fetch(CLIENTE, { method: 'POST', body: body }).then(function (r) { return r.text(); }).then(function (t) {
     var r = null; try { r = JSON.parse(t); } catch (e) {}
-    if (r && r.ok) { aviso('📩 ¡Enviada! El cliente tiene 24 horas para revisarla. Te llegará un email cuando conteste (o cuando pasen las 24 horas y se empiece a dibujar solo).', 'ok'); return pedir({ accion: 'ver' }).then(function (d) { if (d && d.protagonista) pintar(d); }); }
+    if (r && r.ok) { return pedir({ accion: 'ver' }).then(function (d) { if (d && d.protagonista) pintar(d); aviso('📩 ¡Enviada! El cliente tiene 24 horas para revisarla. Te llegará un email cuando conteste (o cuando pasen las 24 horas y se empiece a dibujar solo).', 'ok'); }); }
     aviso('⚠️ No se ha podido enviar. ¿Tiene el pedido email y ficha? Vuelve a intentarlo en un momento.', 'error');
   }).catch(function () { aviso('⚠️ No se ha podido enviar (sin conexión).', 'error'); }).finally(function () { b.disabled = false; });
 }
