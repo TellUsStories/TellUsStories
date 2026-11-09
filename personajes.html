@@ -103,7 +103,7 @@ function pedir(datos) {
 }
 function pintar(d) {
   // Make devuelve {} (no texto) cuando un campo está vacío: se trata como texto vacío
-  ['ficha_propuesta', 'cambios_propuestos', 'correcciones', 'ficha_url', 'aspecto', 'ficha_texto', 'personajes', 'foto_prota', 'foto_ninos', 'foto_familia', 'ninos', 'cliente_estado', 'cliente_ronda', 'cliente_cambios', 'cliente_enviado'].forEach(function (k) { if (typeof d[k] !== 'string') d[k] = ''; });
+  ['ficha_propuesta', 'cambios_propuestos', 'correcciones', 'ficha_url', 'aspecto', 'ficha_texto', 'personajes', 'foto_prota', 'foto_ninos', 'foto_familia', 'ninos', 'cliente_estado', 'cliente_ronda', 'cliente_cambios', 'cliente_enviado'].forEach(function (k) { if (typeof d[k] === 'number') d[k] = String(d[k]); else if (typeof d[k] !== 'string') d[k] = ''; });
   // Revisión del cliente: en qué punto está
   var ce = d.cliente_estado, ronda = parseInt(d.cliente_ronda || '0', 10);
   var fecha = d.cliente_enviado ? new Date(d.cliente_enviado).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';

@@ -106,7 +106,7 @@ var q = new URLSearchParams(location.search), P = q.get('p') || '', T = q.get('t
 var datos = null, foto = '';
 function $(id) { return document.getElementById(id); }
 function muestra(id) { ['cargando', 'error', 'app', 'hecho'].forEach(function (x) { $(x).classList.toggle('oculto', x !== id); }); window.scrollTo(0, 0); }
-function txt(v) { return typeof v === 'string' ? v : ''; }   // Make devuelve {} cuando un campo está vacío
+function txt(v) { return typeof v === 'string' ? v : typeof v === 'number' ? String(v) : ''; }   // Make devuelve {} cuando un campo está vacío (y la ronda como número)
 function pedir(d) {
   var b = new URLSearchParams(d); b.set('carpeta', P); b.set('t', T);
   return fetch(HOOK, { method: 'POST', body: b }).then(function (r) { return r.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { return null; } });
