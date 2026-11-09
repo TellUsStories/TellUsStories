@@ -73,9 +73,11 @@
     <div id="bloqueCorrecciones" class="oculto"><h2>✏️ Correcciones ya aceptadas</h2><div class="texto" id="correcciones"></div></div>
 
     <div id="acciones">
+     <div id="bloqueCliente" class="oculto"><h2>👪 Revisión del cliente</h2><div class="texto" id="estadoCliente"></div></div>
      <div id="bloqueValidar">
       <h2>¿Está todo bien?</h2>
-      <div class="botones"><button class="principal" id="btnValidar" onclick="validar()">✅ Sí: validar y crear el libro</button></div>
+      <p class="sub" id="explicaEnviar">Lo normal: envíasela al cliente. Tiene 24 horas para decir «¡Todo perfecto!» o pedir cambios; si no contesta, el libro se dibuja solo. Máximo 2 rondas.</p>
+      <div class="botones"><button class="principal" id="btnEnviarCliente" onclick="enviarCliente()">📩 Enviar al cliente para que la apruebe</button><button class="suave" id="btnValidar" onclick="validar()">✅ Validar ya, sin preguntar al cliente</button></div>
      </div>
       <h2>¿Hay algo que corregir?</h2>
       <p class="sub">Escríbelo como se lo dirías a un ilustrador. Ej: «Jandro tiene los ojos azules y barba corta», «la abuela es rubia, no morena».</p>
@@ -90,6 +92,8 @@
 <script>
 // Webhook de Make: «Personajes: ver, corregir o validar (antes de dibujar el libro)»
 var PERSONAJES = 'https://hook.eu1.make.com/wupryteizaonhp13mdihioq87absrkyn';
+// Webhook de Make: «Personajes: aprobación del cliente (24 h)»
+var CLIENTE = 'https://hook.eu1.make.com/9621wygk4rsjqh2c1f5uu5q6qjiq5mky';
 var q = new URLSearchParams(location.search), CARPETA = q.get('carpeta') || '', CLAVE = q.get('clave') || '';
 function $(id) { return document.getElementById(id); }
 function aviso(t, clase) { var m = $('mensaje'); m.innerHTML = t; m.className = 'aviso' + (clase ? ' ' + clase : ''); m.style.display = t ? '' : 'none'; }
@@ -99,7 +103,20 @@ function pedir(datos) {
 }
 function pintar(d) {
   // Make devuelve {} (no texto) cuando un campo está vacío: se trata como texto vacío
-  ['ficha_propuesta', 'cambios_propuestos', 'correcciones', 'ficha_url', 'aspecto', 'ficha_texto', 'personajes', 'foto_prota', 'foto_ninos', 'foto_familia', 'ninos'].forEach(function (k) { if (typeof d[k] !== 'string') d[k] = ''; });
+  ['ficha_propuesta', 'cambios_propuestos', 'correcciones', 'ficha_url', 'aspecto', 'ficha_texto', 'personajes', 'foto_prota', 'foto_ninos', 'foto_familia', 'ninos', 'cliente_estado', 'cliente_ronda', 'cliente_cambios', 'cliente_enviado'].forEach(function (k) { if (typeof d[k] !== 'string') d[k] = ''; });
+  // Revisión del cliente: en qué punto está
+  var ce = d.cliente_estado, ronda = parseInt(d.cliente_ronda || '0', 10);
+  var fecha = d.cliente_enviado ? new Date(d.cliente_enviado).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+  var est = { esperando: '⏳ Enviada al cliente el ' + fecha + ' (ronda ' + ronda + ' de 2). Esperando su respuesta: si no contesta en 24 horas, el libro se dibuja solo.',
+    cambios: '✏️ El cliente ha pedido cambios (ronda ' + ronda + ' de 2). Corrige la ficha con lo que pide y ' + (ronda >= 2 ? 'era su última revisión: después, pulsa «Validar ya».' : 'vuelve a pulsar «Enviar al cliente».'),
+    aprobado: '✅ El cliente ha dicho «¡Todo perfecto!».' }[ce] || (ce ? '✅ ' + ce : '');
+  if (d.cliente_cambios) est += '\n\nLo que ha pedido:\n' + d.cliente_cambios;
+  $('estadoCliente').textContent = est;
+  $('bloqueCliente').className = est ? '' : 'oculto';
+  // Mientras espera al cliente no se vuelve a enviar; tras la 2.ª ronda, ya no se puede enviar más
+  $('btnEnviarCliente').style.display = (ce === 'esperando' || ronda >= 2) ? 'none' : '';
+  $('explicaEnviar').style.display = (ce === 'esperando' || ronda >= 2) ? 'none' : '';
+  $('btnEnviarCliente').textContent = ronda >= 1 ? '📩 Enviar la ficha corregida al cliente (última revisión)' : '📩 Enviar al cliente para que la apruebe';
   $('titulo').textContent = 'Personajes del libro de ' + (d.protagonista || '');
   var f = $('fotos'); f.innerHTML = '';
   [['foto_prota', d.protagonista + ' (protagonista)'], ['foto_ninos', 'Los niños: ' + (d.ninos || '')], ['foto_familia', 'La familia (cada foto lleva debajo quién es)']].forEach(function (x) {
@@ -169,6 +186,25 @@ function decidir(accion) {
     });
   }).catch(function () { aviso('⚠️ No se ha podido guardar. Vuelve a intentarlo en un momento.', 'error'); })
     .finally(function () { $('btnAceptar').disabled = false; $('btnDescartar').disabled = false; });
+}
+// Mandar la ficha al cliente: le llega un email con la ficha y los botones «¡Todo perfecto!» / «Quiero cambiar algo»
+function enviarCliente() {
+  var b = $('btnEnviarCliente');
+  if (!b.dataset.seguro) {
+    b.dataset.seguro = '1'; b.dataset.texto = b.textContent;
+    b.textContent = '¿Seguro? Pulsa otra vez para enviarla';
+    aviso('Le llegará al cliente un email con esta ficha. Tendrá 24 horas para aprobarla o pedir cambios.');
+    setTimeout(function () { if (b.dataset.seguro) { delete b.dataset.seguro; b.textContent = b.dataset.texto; aviso(''); } }, 10000);
+    return;
+  }
+  delete b.dataset.seguro; b.textContent = b.dataset.texto; b.disabled = true;
+  aviso('Enviando al cliente…');
+  var body = new URLSearchParams({ accion: 'enviar', carpeta: CARPETA, clave: CLAVE });
+  fetch(CLIENTE, { method: 'POST', body: body }).then(function (r) { return r.text(); }).then(function (t) {
+    var r = null; try { r = JSON.parse(t); } catch (e) {}
+    if (r && r.ok) { aviso('📩 ¡Enviada! El cliente tiene 24 horas para revisarla. Te llegará un email cuando conteste (o cuando pasen las 24 horas y se empiece a dibujar solo).', 'ok'); return pedir({ accion: 'ver' }).then(function (d) { if (d && d.protagonista) pintar(d); }); }
+    aviso('⚠️ No se ha podido enviar. ¿Tiene el pedido email y ficha? Vuelve a intentarlo en un momento.', 'error');
+  }).catch(function () { aviso('⚠️ No se ha podido enviar (sin conexión).', 'error'); }).finally(function () { b.disabled = false; });
 }
 function validar() {
   // Confirmación en la propia página (algunos navegadores no muestran las ventanitas de confirm)

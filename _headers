@@ -24,3 +24,5 @@
   Content-Type: application/javascript; charset=utf-8
 /aportar*
   X-Robots-Tag: noindex, nofollow
+/mis-personajes*
+  X-Robots-Tag: noindex, nofollow

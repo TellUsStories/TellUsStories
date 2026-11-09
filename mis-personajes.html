@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vuestros personajes · Tale Us Stories</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+  /* Página del cliente: ve cómo hemos dibujado a su familia y la aprueba o pide cambios (antes de dibujar el libro) */
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#FFFFFF;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--navy);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .top{text-align:center;padding:22px 16px 10px;font-family:var(--display);font-weight:800;letter-spacing:3px;font-size:14px}
+  .top a{color:inherit;text-decoration:none}
+  main{max-width:640px;margin:0 auto;padding:8px 16px 60px}
+  .chap{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--coral);margin:18px 0 8px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,7vw,38px);line-height:1.1;margin-bottom:12px}
+  .sub{color:var(--muted);margin-bottom:18px}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:16px}
+  .ficha img{width:100%;border-radius:12px;display:block;cursor:zoom-in}
+  .reloj{background:#FBF1E6;border:1.5px solid #E3A48F;border-radius:14px;padding:14px 16px;font-size:16px;margin-bottom:16px}
+  .ultima{background:var(--coral-l);border-radius:14px;padding:12px 16px;font-size:15px;margin-bottom:16px}
+  .btn{font-family:var(--display);font-weight:800;font-size:16px;border:0;border-radius:999px;padding:15px 22px;cursor:pointer;width:100%}
+  .btn-ok{background:var(--navy);color:#fff;margin-bottom:10px}
+  .btn-sec{background:var(--coral-l);color:var(--navy);border:1.5px solid var(--border)}
+  .btn:disabled{opacity:.5}
+  label{display:block;font-family:var(--display);font-weight:700;font-size:15px;margin:12px 0 6px}
+  textarea{width:100%;min-height:70px;font:inherit;font-size:16px;color:var(--navy);background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:11px 13px;outline:none;resize:vertical}
+  textarea:focus{border-color:var(--coral)}
+  .hint{font-size:14px;color:var(--muted)}
+  .foto-mini{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:14px}
+  .foto-mini img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid var(--border)}
+  .err{color:#A33A2B;font-size:15px;margin-top:10px}
+  .ok{text-align:center;padding:30px 18px}
+  .ok .cor{font-size:40px;color:var(--coral)}
+  .oculto{display:none}
+  .grande{position:fixed;inset:0;background:rgba(30,20,12,.88);display:flex;align-items:center;justify-content:center;padding:12px;z-index:9;cursor:zoom-out}
+  .grande img{max-width:100%;max-height:100%;border-radius:10px}
+  .pie{text-align:center;font-size:13px;color:var(--muted);margin-top:24px}
+</style>
+</head>
+<body>
+<div class="top"><a href="/">TALE US STORIES</a></div>
+<main>
+  <div id="cargando" class="sub" style="text-align:center;margin-top:40px">Cargando…</div>
+
+  <div id="error" class="card oculto" style="text-align:center">
+    <h1 style="font-size:24px">Este enlace no funciona</h1>
+    <p class="sub" id="errorTxt">Puede que esté incompleto. Escríbenos a hello@taleusstories.com y te ayudamos.</p>
+  </div>
+
+  <div id="app" class="oculto">
+    <div class="chap">Antes de dibujar el cuento</div>
+    <h1 id="titulo">Así hemos dibujado a vuestra familia</h1>
+    <p class="sub" id="intro"></p>
+    <div class="card ficha"><img id="ficha" alt="Los personajes de vuestro cuento"></div>
+    <p class="hint" style="margin:-6px 0 16px">Pulsa la imagen para verla en grande. Fíjate sobre todo en el color del pelo y de los ojos, y en si falta o sobra alguien.</p>
+    <div class="ultima oculto" id="ultima"><b>Esta es la última revisión:</b> si ves algo más, cuéntanoslo ahora y lo dejaremos listo antes de dibujar.</div>
+    <div class="reloj" id="reloj"></div>
+
+    <!-- Paso 1: elegir -->
+    <div id="elegir">
+      <button type="button" class="btn btn-ok" id="btnOk">¡Todo perfecto!</button>
+      <button type="button" class="btn btn-sec" id="btnCambiar">Quiero cambiar algo</button>
+    </div>
+
+    <!-- Confirmar el OK (por si alguien pulsa sin querer) -->
+    <div id="confirmar" class="card oculto" style="text-align:center">
+      <p style="margin-bottom:14px">¿Confirmas que todos están bien? Empezaremos a dibujar el libro con estos personajes.</p>
+      <button type="button" class="btn btn-ok" id="btnSi">Sí, ¡adelante!</button>
+      <button type="button" class="btn btn-sec" id="btnNo">Volver</button>
+    </div>
+
+    <!-- Pedir cambios -->
+    <div id="form" class="card oculto">
+      <p style="font-family:var(--display);font-weight:800;font-size:18px">¿Qué cambiamos?</p>
+      <p class="hint">Escribe solo en las personas que haya que cambiar, como se lo dirías a un ilustrador. Por ejemplo: «ojos verdes y pelo castaño claro», «más pecas», «sin gafas».</p>
+      <div id="personas"></div>
+      <label for="otros">Otra cosa (falta alguien, sobra alguien…)</label>
+      <textarea id="otros" placeholder="Opcional"></textarea>
+      <label>¿Tienes una foto mejor? <span class="hint">(opcional)</span></label>
+      <input type="file" id="fotoInput" accept="image/*" style="display:none">
+      <button type="button" class="btn btn-sec" id="btnFoto" style="width:auto;padding:11px 18px;font-size:15px">📷 Añadir una foto</button>
+      <div class="foto-mini oculto" id="fotoMini"><img alt=""><span>Foto añadida · <a href="#" id="quitarFoto" style="color:var(--coral)">quitar</a></span></div>
+      <div style="height:16px"></div>
+      <button type="button" class="btn btn-ok" id="btnEnviar">Enviar cambios</button>
+      <button type="button" class="btn btn-sec" id="btnVolver">Volver</button>
+      <div class="err" id="errForm"></div>
+    </div>
+    <p class="pie">Si tienes cualquier duda, contesta al email o escríbenos a hello@taleusstories.com</p>
+  </div>
+
+  <div id="hecho" class="card ok oculto">
+    <div class="cor">♥</div>
+    <h1 style="font-size:26px" id="hechoT">¡Gracias!</h1>
+    <p class="sub" id="hechoTxt" style="margin:8px 0 0"></p>
+  </div>
+</main>
+
+<script>
+// Webhook de Make: «Personajes: aprobación del cliente (24 h)»
+var HOOK = 'https://hook.eu1.make.com/9621wygk4rsjqh2c1f5uu5q6qjiq5mky';
+var q = new URLSearchParams(location.search), P = q.get('p') || '', T = q.get('t') || '', R = q.get('r') || '';
+var datos = null, foto = '';
+function $(id) { return document.getElementById(id); }
+function muestra(id) { ['cargando', 'error', 'app', 'hecho'].forEach(function (x) { $(x).classList.toggle('oculto', x !== id); }); window.scrollTo(0, 0); }
+function txt(v) { return typeof v === 'string' ? v : ''; }   // Make devuelve {} cuando un campo está vacío
+function pedir(d) {
+  var b = new URLSearchParams(d); b.set('carpeta', P); b.set('t', T);
+  return fetch(HOOK, { method: 'POST', body: b }).then(function (r) { return r.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { return null; } });
+}
+function hecho(t, s) { $('hechoT').textContent = t; $('hechoTxt').textContent = s; muestra('hecho'); }
+
+function carga() {
+  if (!P || !/^[a-f0-9]{32}$/.test(T)) { muestra('error'); return; }
+  pedir({ accion: 'ver' }).then(function (d) {
+    if (!d || !txt(d.ficha_url)) { muestra('error'); return; }
+    datos = d;
+    var prot = txt(d.protagonista), estado = txt(d.estado), ronda = parseInt(txt(d.ronda) || '1', 10);
+    if (estado === 'aprobado' || estado.indexOf('sin respuesta') >= 0) { hecho('¡Ya estamos dibujando!', 'Estamos pintando el libro de ' + prot + ' con estos personajes. Te avisaremos cuando esté de camino.'); return; }
+    if (estado === 'cambios') { hecho('¡Recibido!', 'Ya tenemos tus cambios y los estamos haciendo. Te mandaremos la ficha corregida por email.'); return; }
+    document.title = 'Los personajes de ' + prot + ' · Tale Us Stories';
+    $('titulo').textContent = ronda >= 2 ? 'Hemos corregido a los personajes' : 'Así hemos dibujado a vuestra familia';
+    $('intro').textContent = ronda >= 2 ? 'Ya hemos hecho los cambios que nos pediste. Echa un último vistazo antes de que dibujemos el libro de ' + prot + '.' : 'Antes de pintar las páginas del libro de ' + prot + ', queremos que veas cómo hemos dibujado a cada persona, para que os reconozcáis en cada página.';
+    $('ficha').src = d.ficha_url;
+    $('ultima').classList.toggle('oculto', ronda < 2);
+    // Las 24 horas: hasta cuándo puede contestar
+    var env = new Date(txt(d.enviado)), lim = isNaN(env) ? null : new Date(env.getTime() + 24 * 3600 * 1000);
+    var hora = lim ? lim.toLocaleString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : 'mañana a esta hora';
+    $('reloj').innerHTML = '<b>⏰ Tienes 24 horas para revisarlo</b> (hasta el ' + hora + ').<br>Si no nos dices nada, seguiremos con el libro tal como está, para que te llegue a tiempo.';
+    // Una casilla por persona: protagonista y niños
+    var nombres = [prot].concat(txt(d.ninos).split(/\s*,\s*|\s+y\s+|\s+e\s+/i)).map(function (s) { return s.trim(); }).filter(Boolean);
+    $('personas').innerHTML = '';
+    nombres.forEach(function (n, i) {
+      var l = document.createElement('label'); l.textContent = n; l.setAttribute('for', 'per' + i);
+      var t = document.createElement('textarea'); t.id = 'per' + i; t.dataset.n = n; t.placeholder = 'Sin cambios';
+      $('personas').appendChild(l); $('personas').appendChild(t);
+    });
+    muestra('app');
+    if (R === 'ok') mostrar('confirmar'); else if (R === 'cambios') mostrar('form');
+  }).catch(function () { $('errorTxt').textContent = 'No hemos podido conectar. Comprueba tu conexión y vuelve a intentarlo.'; muestra('error'); });
+}
+function mostrar(id) { ['elegir', 'confirmar', 'form'].forEach(function (x) { $(x).classList.toggle('oculto', x !== id); }); if (id !== 'elegir') $(id).scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+$('btnOk').onclick = function () { mostrar('confirmar'); };
+$('btnCambiar').onclick = function () { mostrar('form'); };
+$('btnNo').onclick = $('btnVolver').onclick = function () { mostrar('elegir'); };
+$('ficha').onclick = function () { var g = document.createElement('div'); g.className = 'grande'; g.innerHTML = '<img alt="">'; g.querySelector('img').src = this.src; g.onclick = function () { g.remove(); }; document.body.appendChild(g); };
+
+$('btnSi').onclick = function () {
+  var b = this; b.disabled = true; b.textContent = 'Un momento…';
+  pedir({ accion: 'ok' }).then(function (r) {
+    if (r && r.ok) { hecho('¡Genial!', 'Empezamos a dibujar vuestro cuento con estos personajes. Te avisaremos por email cuando esté de camino.'); return; }
+    b.disabled = false; b.textContent = 'Sí, ¡adelante!'; alert('No se ha podido guardar. Vuelve a intentarlo en un momento.');
+  }).catch(function () { b.disabled = false; b.textContent = 'Sí, ¡adelante!'; alert('No hemos podido conectar. Vuelve a intentarlo.'); });
+};
+
+// Foto opcional: se reduce en el móvil antes de enviarla
+$('btnFoto').onclick = function () { $('fotoInput').click(); };
+$('fotoInput').onchange = function () {
+  var f = this.files[0]; this.value = ''; if (!f) return;
+  var url = URL.createObjectURL(f), img = new Image();
+  img.onload = function () {
+    var s = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight)), cv = document.createElement('canvas');
+    cv.width = Math.round(img.naturalWidth * s); cv.height = Math.round(img.naturalHeight * s);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height); URL.revokeObjectURL(url);
+    foto = cv.toDataURL('image/jpeg', 0.85).split(',')[1];
+    $('fotoMini').querySelector('img').src = 'data:image/jpeg;base64,' + foto; $('fotoMini').classList.remove('oculto'); $('btnFoto').classList.add('oculto');
+  };
+  img.src = url;
+};
+$('quitarFoto').onclick = function (e) { e.preventDefault(); foto = ''; $('fotoMini').classList.add('oculto'); $('btnFoto').classList.remove('oculto'); };
+
+$('btnEnviar').onclick = function () {
+  var partes = [];
+  document.querySelectorAll('#personas textarea').forEach(function (t) { if (t.value.trim()) partes.push(t.dataset.n + ': ' + t.value.trim()); });
+  if ($('otros').value.trim()) partes.push('Otros: ' + $('otros').value.trim());
+  $('errForm').textContent = '';
+  if (!partes.length) { $('errForm').textContent = 'Escribe qué quieres cambiar en al menos una persona.'; return; }
+  var b = this; b.disabled = true; b.textContent = 'Enviando…';
+  var d = { accion: 'cambios', cambios: partes.join('\n') }; if (foto) d.foto = foto;
+  pedir(d).then(function (r) {
+    if (r && r.ok) { hecho('¡Recibido!', 'Gracias. Hacemos los cambios y te mandamos la ficha corregida por email para que le eches un último vistazo.'); return; }
+    b.disabled = false; b.textContent = 'Enviar cambios'; $('errForm').textContent = 'No se ha podido enviar. Vuelve a intentarlo en un momento.';
+  }).catch(function () { b.disabled = false; b.textContent = 'Enviar cambios'; $('errForm').textContent = 'No hemos podido conectar. Vuelve a intentarlo.'; });
+};
+carga();
+</script>
+</body>
+</html>
