@@ -573,12 +573,12 @@
     <textarea id="delicadas" data-opcional="1" placeholder="Ej: el abuelo falleció hace dos años; nos gustaría que apareciera en los recuerdos de la infancia, con cariño." style="min-height:65px;"></textarea>
   </div>
   <div class="field">
-    <label>¿Hay algo que NO deba aparecer?</label>
-    <textarea id="noShow" placeholder="Temas sensibles, personas que prefieren no incluir… (si no hay nada, escribe &quot;nada&quot;)" style="min-height:65px;"></textarea>
+    <label>¿Hay algo que NO deba aparecer? (opcional)</label>
+    <textarea id="noShow" data-opcional="1" placeholder="Temas sensibles, personas que prefieren no incluir… Si no hay nada, déjalo en blanco." style="min-height:65px;"></textarea>
   </div>
   <div class="field">
     <label>Otras fotos (opcional)</label>
-    <div class="hint">De la protagonista en otras épocas, de la familia o de lugares especiales. Hasta 3 fotos.</div>
+    <div class="hint">De <span class="G-deprot">la protagonista</span> en otras épocas, de la familia o de lugares especiales. Hasta 3 fotos.</div>
     <div class="uzone" onclick="if (fotosExtra.length < 3) document.getElementById('fileInput').click()">
       <div class="uzone-icon">📷</div>
       <div class="uzone-txt">Haz clic para añadir fotos</div>
@@ -591,7 +591,7 @@
   <div class="sdiv"><span>¿A dónde enviamos el libro?</span></div>
   <div class="two">
     <div class="field"><label>Nombre de quien lo recibe</label><input type="text" id="envioNombre" name="ship-name" autocomplete="shipping name" placeholder="Ej: Javier García López"></div>
-    <div class="field"><label>Teléfono</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="Para la empresa de mensajería"></div>
+    <div class="field"><label>Teléfono</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="Para la empresa de mensajería"><div class="hint">Hemos puesto el tuyo; cámbialo si lo recibe otra persona.</div></div>
   </div>
   <div class="field"><label>Dirección</label><input type="text" id="envioDireccion" name="ship-address" autocomplete="shipping street-address" placeholder="Calle, número, piso y puerta"></div>
   <div class="two">
@@ -723,7 +723,10 @@ function origenVisita() {
   var fuentes = [['mail.google', 'Email'], ['outlook', 'Email'], ['chatgpt', 'IA · ChatGPT'], ['openai', 'IA · ChatGPT'], ['gemini', 'IA · Gemini'], ['bard.google', 'IA · Gemini'], ['copilot', 'IA · Copilot'], ['perplexity', 'IA · Perplexity'], ['claude.ai', 'IA · Claude'], ['deepseek', 'IA · DeepSeek'], ['meta.ai', 'IA · Meta AI'], ['you.com', 'IA · You.com'], ['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['pinterest', 'Pinterest'], ['pin.it', 'Pinterest'], ['google', 'Google'], ['bing', 'Bing'], ['facebook', 'Facebook'], ['duckduckgo', 'DuckDuckGo'], ['yahoo', 'Yahoo'], ['ecosia', 'Ecosia'], ['mail', 'Email']];
   var f = fuentes.find(function(x) { return t.indexOf(x[0]) >= 0; });
   var nombre = f ? f[1] : (o.utm || o.ref || (o.fecha ? 'Directo (escribió la web o sin datos)' : 'Sin datos'));
-  return nombre + (o.fecha ? ' · entró por ' + (o.pag || '/') + ' el ' + o.fecha : '');
+  // Si vino por un enlace con UTM (el anuncio de Meta, por ejemplo), se añade: «anuncio: instagram / anuncio / papa»
+  var u = {}; try { u = JSON.parse(localStorage.getItem('tus_utm') || '{}'); } catch (e) {}
+  var anuncio = u.source ? ' · anuncio: ' + [u.source, u.medium, u.campaign].filter(Boolean).join(' / ') + (u.fecha ? ' (' + u.fecha + ')' : '') : '';
+  return nombre + (o.fecha ? ' · entró por ' + (o.pag || '/') + ' el ' + o.fecha : '') + anuncio;
 }
 // El concepto de la transferencia: así sabes de qué pedido es cada pago
 function conceptoPago() {
@@ -814,6 +817,7 @@ function updateAll() {
   document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
   document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = g('vuestra'); });
   document.querySelectorAll('.G-protag').forEach(function(el) { el.textContent = g('protag'); });
+  document.querySelectorAll('.G-deprot').forEach(function(el) { el.textContent = yo ? 'ti' : (gender === 'f' ? 'la protagonista' : 'el protagonista'); });
   var cn = document.getElementById('childNames')?.value.trim() || 'los niños';
   var cnh = document.getElementById('childNamesH');
   if (cnh) cnh.textContent = cn;
@@ -881,7 +885,8 @@ function validarPantalla(n) {
   });
   // ¿Cómo son?: de la protagonista y de cada niño hace falta al menos pelo, ojos y piel
   if (s.querySelector('#aspCards')) aspFaltan().forEach(function(t) { falta.push(t); });
-  return falta;
+  // Sin repetir (p. ej. «Los niños del libro» por el nombre y por la edad)
+  return falta.filter(function(x, i) { return falta.indexOf(x) === i; });
 }
 
 function go(n) {
@@ -901,6 +906,9 @@ function go(n) {
   var prevEl = document.getElementById(prevId);
   if (prevEl) prevEl.classList.remove('active');
   cur = n;
+  // El teléfono de envío sale ya con el suyo (no se pide dos veces); se puede cambiar
+  var tEnv = document.getElementById('envioTelefono');
+  if (tEnv && !tEnv.value.trim()) tEnv.value = (document.getElementById('clienteTelefono').value || '').trim();
   var nextId = n <= TOTAL ? 's' + n : 'sFinal';
   var nextEl = document.getElementById(nextId);
   if (nextEl) nextEl.classList.add('active');
@@ -1365,7 +1373,9 @@ window.addEventListener('load', cuentaDed);   // por si vuelve con el borrador g
 // Dedicatorias de ejemplo con los nombres del pedido: con un clic pasan al cuadro, donde se pueden retocar
 function ejemplosDedicatoria() {
   var ninos = (document.getElementById('childNames').value || '').trim();
-  var prot = (document.getElementById('protName').value || '').trim() || g('vuestra');
+  // Con cómo le llaman los niños (mamá, yaya…): «lo mucho que te quiere mamá», no «…te quiere Javier»
+  var apodo = ((document.getElementById('nicknames') || {}).value || '').split(/\s*[,;\/]\s*|\s+o\s+/)[0].trim();
+  var prot = apodo || (document.getElementById('protName').value || '').trim() || g('vuestra');
   var varios = !ninos || /,|\sy\s|\se\s/.test(ninos);
   var a = ninos || 'Queridos niños';
   if (varios) return [
@@ -1396,7 +1406,7 @@ function pintaEjemplosDed() {
   });
 }
 // Se repintan al cambiar los nombres, el género o la propia dedicatoria
-document.addEventListener('input', function (e) { if (['childNames', 'protName', 'dedicatoria'].indexOf(e.target.id) >= 0) pintaEjemplosDed(); });
+document.addEventListener('input', function (e) { if (['childNames', 'protName', 'nicknames', 'dedicatoria'].indexOf(e.target.id) >= 0) pintaEjemplosDed(); });
 document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#gf,#gm')) pintaEjemplosDed(); });
 window.addEventListener('load', pintaEjemplosDed);
 // Al rellenar un campo marcado en rojo, se quita la marca
@@ -1858,7 +1868,10 @@ function aspNinos() {
 function aspGuarda() { document.getElementById('aspectoFamilia').value = JSON.stringify(asp); saveDraft(); }
 function aspCarga() { try { var v = JSON.parse(document.getElementById('aspectoFamilia').value || 'null'); if (v && v.prot) asp = v; } catch (e) {} }
 
-function aspTarjeta(d, titulo, quitar, conNombre) {
+// A los niños no se les ofrece canoso, barba ni bigote
+var ASP_NO_NINOS = ['Canoso', 'Barba', 'Bigote'];
+function aspOps(gr, nino) { return nino ? gr.o.filter(function(o) { return ASP_NO_NINOS.indexOf(o) < 0; }) : gr.o; }
+function aspTarjeta(d, titulo, quitar, conNombre, nino) {
   var c = document.createElement('div'); c.className = 'asp';
   var h = '<div class="asp-h"><div class="asp-t">' + titulo + '</div>' + (quitar ? '<button type="button" class="asp-x">Quitar</button>' : '') + '</div>';
   if (d.rol === 'otra') h += '<div class="asp-g"><input type="text" class="asp-quien" placeholder="¿Quién es? Ej: su mejor amiga, su abuelo, un vecino"></div>';
@@ -1867,7 +1880,7 @@ function aspTarjeta(d, titulo, quitar, conNombre) {
   h += '<button type="button" class="asp-sinfoto">No tengo foto: prefiero describirlo ▾</button><div class="asp-desc">';
   ASP_GRUPOS.forEach(function(gr) {
     h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
-      gr.o.map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
+      aspOps(gr, nino).map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
   });
   h += '<div class="asp-g"><input type="text" class="asp-mas" placeholder="Algo más (opcional). Ej: siempre con coleta, muy alto, un lunar en la mejilla"></div>';
   h += '</div>';
@@ -1905,14 +1918,14 @@ function aspTarjeta(d, titulo, quitar, conNombre) {
 // Con foto también preguntamos el color de ojos y de pelo: en las fotos no siempre se ven bien
 // (pasó con el primer pedido: salió con los ojos y el pelo de otro color). Del protagonista, además, el pelo de joven.
 var ASP_COL_OBLIG = ['pelo', 'ojos'];
-function aspColores(d, conJoven) {
+function aspColores(d, conJoven, nino) {
   var c = document.createElement('div'); c.className = 'asp-col';
   var grupos = [ASP_GRUPOS[0], ASP_GRUPOS[3]];
   if (conJoven) grupos.push({ k: 'joven', t: 'Pelo de joven (si era distinto)', o: ['Rubio', 'Castaño claro', 'Castaño oscuro', 'Moreno', 'Pelirrojo'] });
   var h = '<div class="asp-gl" style="margin:10px 0 6px;color:var(--navy)">Para acertar con los colores (en las fotos a veces no se ven bien):</div>';
   grupos.forEach(function(gr) {
     h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
-      gr.o.map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
+      aspOps(gr, nino).map(function(o) { return '<button type="button" class="chip">' + o + '</button>'; }).join('') + '</div></div>';
   });
   c.innerHTML = h;
   c.querySelectorAll('.asp-g[data-k]').forEach(function(g) {
@@ -2022,13 +2035,13 @@ function aspPinta() {
   ninos.forEach(function(n) {
     asp.ninos[n] = asp.ninos[n] || {};
     var fid = aspInputNino(n);
-    var t = aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>');
+    var t = aspTarjeta(asp.ninos[n], n + ' <small>· uno de los niños</small>', null, false, true);
     if (aspFoto(fid)) {
       t.querySelector('.asp-desc').style.display = 'none';
       t.querySelector('.asp-sinfoto').style.display = 'none';
     }
     // La foto sale de marcarlo en la foto de los niños; si no salía, puede subir una solo suya
-    if (aspFoto(fid)) { t.insertBefore(aspCajaFoto(fid), t.children[1]); t.appendChild(aspColores(asp.ninos[n])); }
+    if (aspFoto(fid)) { t.insertBefore(aspCajaFoto(fid), t.children[1]); t.appendChild(aspColores(asp.ninos[n], false, true)); }
     else if (aspGrupoUsado) t.insertBefore(aspCajaFoto(fid, 'No sale en la foto: sube una foto de ' + n), t.children[1]);
     cont.appendChild(t);
   });
