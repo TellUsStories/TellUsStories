@@ -7,7 +7,7 @@
 (function () {
   var PIXEL_ID = '2308899656318623';   // «Web Tale Us Stories» (porfolio Tale Us Stories)
   var CLAVE = 'tus_cookies';           // 'si' | 'no'
-  var PRECIOS = { dura: 63, blanda: 45 };
+  var PRECIOS = { dura: 67.45, blanda: 49.45 };   // libro + envío 5,95 € (desde 12/11/2026)
 
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 
@@ -105,7 +105,7 @@
     var idc = q.get('session_id') || q.get('pedido') || p.pedido || String(p.fecha || '');
     if (!ls('tus_compra_' + idc)) {
       ls('tus_compra_' + idc, '1');
-      track('Purchase', { value: PRECIOS[fmt2] || 45, currency: 'EUR', content_name: 'Cuento tapa ' + fmt2, formato: fmt2, pedido: p.pedido || '' }, false);
+      track('Purchase', { value: PRECIOS[fmt2] || 49.45, currency: 'EUR', content_name: 'Cuento tapa ' + fmt2, formato: fmt2, pedido: p.pedido || '' }, false);
     }
   }
   // Clic en «Crear mi cuento» / enlaces al formulario desde cualquier página
