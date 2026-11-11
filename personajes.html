@@ -49,6 +49,7 @@
   <h1 id="titulo">Personajes del libro</h1>
   <p class="sub">Comprueba que los personajes se parecen a las personas reales. <b>Todas las páginas copian esta ficha</b>: si aquí algo no cuadra, no cuadrará en el libro.</p>
   <div id="mensaje" class="aviso">Cargando…</div>
+  <div id="avisoSorpresa" class="aviso" style="display:none;background:#FFF6D6;border-color:#E0B43C">🎁 <b>Este cliente prefiere que sea SORPRESA:</b> no quiere ver los personajes antes. Revísalos tú con calma y pulsa «✅ Validar ya». <span style="font-size:13px">(Si te escribe diciendo que sí quiere verlos, puedes enviárselos igualmente.)</span></div>
 
   <div id="contenido" class="oculto dos">
    <div class="izq">
@@ -103,7 +104,7 @@ function pedir(datos) {
 }
 function pintar(d) {
   // Make devuelve {} (no texto) cuando un campo está vacío: se trata como texto vacío
-  ['ficha_propuesta', 'cambios_propuestos', 'correcciones', 'ficha_url', 'aspecto', 'ficha_texto', 'personajes', 'foto_prota', 'foto_ninos', 'foto_familia', 'ninos', 'cliente_estado', 'cliente_ronda', 'cliente_cambios', 'cliente_enviado'].forEach(function (k) { if (typeof d[k] === 'number') d[k] = String(d[k]); else if (typeof d[k] !== 'string') d[k] = ''; });
+  ['ficha_propuesta', 'cambios_propuestos', 'correcciones', 'ficha_url', 'aspecto', 'ficha_texto', 'personajes', 'foto_prota', 'foto_ninos', 'foto_familia', 'ninos', 'cliente_estado', 'cliente_ronda', 'cliente_cambios', 'cliente_enviado', 'cliente_validar'].forEach(function (k) { if (typeof d[k] === 'number') d[k] = String(d[k]); else if (typeof d[k] !== 'string') d[k] = ''; });
   // Revisión del cliente: en qué punto está
   var ce = d.cliente_estado, ronda = parseInt(d.cliente_ronda || '0', 10);
   var fecha = d.cliente_enviado ? new Date(d.cliente_enviado).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
@@ -117,6 +118,13 @@ function pintar(d) {
   $('btnEnviarCliente').style.display = (ce === 'esperando' || ronda >= 2) ? 'none' : '';
   $('explicaEnviar').style.display = (ce === 'esperando' || ronda >= 2) ? 'none' : '';
   $('btnEnviarCliente').textContent = ronda >= 1 ? '📩 Enviar la ficha corregida al cliente (última revisión)' : '📩 Enviar al cliente para que la apruebe';
+  // El cliente eligió en el formulario si quiere ver los personajes («no» = sorpresa): entonces lo normal es validar ya
+  var sorpresa = d.cliente_validar === 'no' && !ce;
+  $('avisoSorpresa').style.display = sorpresa ? '' : 'none';
+  $('explicaEnviar').textContent = sorpresa ? 'El cliente ha elegido que sea sorpresa: si los personajes están bien, pulsa «Validar ya».' : 'Lo normal: envíasela al cliente. Tiene 24 horas para decir «¡Todo perfecto!» o pedir cambios; si no contesta, el libro se dibuja solo. Máximo 2 rondas.';
+  $('btnValidar').className = sorpresa ? 'principal' : 'suave';
+  $('btnEnviarCliente').className = sorpresa ? 'suave' : 'principal';
+  $('btnValidar').textContent = sorpresa ? '✅ Validar ya (es sorpresa)' : '✅ Validar ya, sin preguntar al cliente';
   $('titulo').textContent = 'Personajes del libro de ' + (d.protagonista || '');
   var f = $('fotos'); f.innerHTML = '';
   [['foto_prota', d.protagonista + ' (protagonista)'], ['foto_ninos', 'Los niños: ' + (d.ninos || '')], ['foto_familia', 'La familia (cada foto lleva debajo quién es)']].forEach(function (x) {
