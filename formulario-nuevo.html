@@ -587,6 +587,24 @@
     <div id="fileList"></div>
   </div>
 
+  <!-- El cliente decide si quiere ver los personajes antes de dibujar el libro (por defecto, sorpresa) -->
+  <div class="field">
+    <label>¿Quieres ver a los personajes antes de que dibujemos el libro?</label>
+    <div class="gender-grid">
+      <div class="gender-opt selected" id="vpNo" onclick="setValidar('no',this)">
+        <div class="gender-emoji">🎁</div>
+        <div class="gender-title">No, que sea sorpresa</div>
+        <div class="gender-desc">Nosotros nos encargamos de que se parezcan</div>
+      </div>
+      <div class="gender-opt" id="vpSi" onclick="setValidar('si',this)">
+        <div class="gender-emoji">👀</div>
+        <div class="gender-title">Sí, quiero verlos</div>
+        <div class="gender-desc">Te los enviamos por email y tienes 24 h para darnos el OK</div>
+      </div>
+    </div>
+    <div class="hint" style="margin-top:8px">Si tienes dudas con las fotos, mejor elige verlos.</div>
+  </div>
+
   <!-- La dirección va al final: pedirla al principio echa para atrás a mucha gente -->
   <div class="sdiv"><span>¿A dónde enviamos el libro?</span></div>
   <div class="two">
@@ -624,6 +642,7 @@
     <div class="sr"><span class="sk">Portada</span><span class="sv" id="rv-portada">—</span></div>
     <div class="sr"><span class="sk">Formato</span><span class="sv" id="rv-formato">—</span></div>
     <div class="sr"><span class="sk">Tono</span><span class="sv" id="rv-tone">—</span></div>
+    <div class="sr"><span class="sk">Personajes</span><span class="sv" id="rv-validar">—</span></div>
   </div>
   <div class="sb">
     <h3>Estructura del libro</h3>
@@ -736,6 +755,15 @@ function conceptoPago() {
 function copiaPago(id, b) {
   var t = document.getElementById(id).textContent;
   try { navigator.clipboard.writeText(t).then(function() { b.textContent = '¡Copiado!'; setTimeout(function() { b.textContent = 'Copiar'; }, 1500); }); } catch (e) {}
+}
+
+// ¿Ver los personajes antes de dibujar? 'no' = sorpresa (por defecto) · 'si' = se los enviamos para que den el OK (24 h)
+var validarPers = 'no';
+function setValidar(v, el) {
+  validarPers = v === 'si' ? 'si' : 'no';
+  document.querySelectorAll('#vpNo,#vpSi').forEach(function(o) { o.classList.remove('selected'); });
+  (el || document.getElementById(validarPers === 'si' ? 'vpSi' : 'vpNo')).classList.add('selected');
+  if (el) saveDraft();   // al recuperar el borrador no se guarda a medias
 }
 
 function setFormato(val, el) {
@@ -1286,7 +1314,7 @@ var enviado = false;
 function saveDraft() {
   if (enviado) return; // tras enviar, un clic en la pantalla final no debe recrear el borrador
   try {
-    var d = { gender: gender, narrator: narrator, portada: selectedPortada, formato: formato, paso: cur <= TOTAL ? cur : 0, fields: {}, tf: {} };
+    var d = { gender: gender, narrator: narrator, portada: selectedPortada, formato: formato, validar: validarPers, paso: cur <= TOTAL ? cur : 0, fields: {}, tf: {} };
     document.querySelectorAll('input[type=text][id],input[type=email][id],select[id],textarea[id]').forEach(function(el) { d.fields[el.id] = el.value; });
     for (var i = 0; i <= 13; i++) {
       var ta = document.querySelector('#tf' + i + ' textarea');
@@ -1356,6 +1384,7 @@ function loadDraft() {
     if (d.gender) setGender(d.gender, document.getElementById(d.gender === 'm' ? 'gm' : 'gf'));
     if (d.narrator) setNarrator(d.narrator, document.getElementById(d.narrator === 'protagonist' ? 'n1' : 'n2'));
     if (d.formato) setFormato(d.formato, document.getElementById(d.formato === 'blanda' ? 'fb' : 'fd'));
+    if (d.validar) setValidar(d.validar);
     if (d.portada) { var pc = document.querySelector('.portada-card[data-portada="' + d.portada + '"]'); if (pc) selPortada(pc, d.portada); }
     pintaPortadas();
     if (d.tone) document.querySelectorAll('.tone-opt').forEach(function(o) { if (o.querySelector('.tt').textContent === d.tone) selTone(o); });
@@ -1440,6 +1469,7 @@ function buildReview() {
   document.getElementById('rv-pago').style.display = '';
   var tEl = document.querySelector('.tone-opt.selected .tt');
   document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrado';
+  document.getElementById('rv-validar').textContent = validarPers === 'si' ? 'Quiero verlos antes (24 h para dar el OK)' : 'Sorpresa: no quiero verlos antes';
   var c = document.getElementById('rv-chapters');
   c.innerHTML = '';
   CHAPTERS.forEach(function(ch) {
@@ -1494,6 +1524,8 @@ async function submit() {
     q5_lugar:        document.getElementById('places') ? document.getElementById('places').value : '',
     tone:            document.querySelector('.tone-opt.selected .tt') ? document.querySelector('.tone-opt.selected .tt').textContent : 'Equilibrado',
     narrator:        narrator === 'protagonist' ? 'protagonista' : 'otra_persona',
+    // ¿Quiere ver los personajes antes? 'no' = sorpresa (Cris los valida sin enviárselos)
+    validar_personajes: validarPers,
     // Datos rápidos que antes no se enviaban
     d_hermanos:          val('siblings'),
     d_mascota:           val('pets'),
