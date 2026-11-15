@@ -107,6 +107,13 @@ ${corta(d.firma)}
 </firma>`;
 }
 
+// Formulario en catalán (/ca/formulario-nuevo manda idioma: "ca"). Sin ese campo, todo sigue igual que antes (castellano).
+const EN_CATALAN = {
+  revisar: "\n\nIMPORTANTE: la familia usa la web en catalán y escribe en catalán. Escribe las \"preguntas\" y el \"resumen\" en catalán (catalán central, el de Barcelona, con la ortografía cuidada), no en español. Todo lo demás, igual.",
+  dedicatoria: "\n\nIMPORTANTE: esta dedicatoria está escrita en catalán. Corrígela con la normativa catalana (accents, apòstrofs, l·l, guionets dels pronoms febles) y déjala en catalán: no la traduzcas al español y no añadas signos de apertura ¿ ¡, que en catalán no existen.",
+};
+function conIdioma(prompt, d, tipo) { return d && d.idioma === "ca" && EN_CATALAN[tipo] ? prompt + EN_CATALAN[tipo] : prompt; }
+
 async function preguntaAClaude(env, prompt, esquema) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -148,12 +155,12 @@ export async function onRequestPost({ request, env }) {
 
   try {
     if (d.accion === "revisar") {
-      const r = await preguntaAClaude(env, promptRevisar(d), ESQUEMA_REVISAR);
+      const r = await preguntaAClaude(env, conIdioma(promptRevisar(d), d, "revisar"), ESQUEMA_REVISAR);
       return responde(200, { preguntas: (r.preguntas || []).slice(0, 2), resumen: r.resumen || "" });
     }
     if (d.accion === "dedicatoria") {
       if (!String(d.texto || "").trim()) return responde(200, { texto: "", firma: d.firma || "", hayCambios: false });
-      const r = await preguntaAClaude(env, promptDedicatoria(d), ESQUEMA_DEDICATORIA);
+      const r = await preguntaAClaude(env, conIdioma(promptDedicatoria(d), d, "dedicatoria"), ESQUEMA_DEDICATORIA);
       return responde(200, r);
     }
     if (d.accion === "otroTexto") {

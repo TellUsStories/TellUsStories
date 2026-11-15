@@ -20,7 +20,8 @@ export async function onRequestPost({ request, env }) {
   try {
     if (!env.OPENAI_API_KEY) return responde(500, { error: "OPENAI_API_KEY no configurada" });
 
-    const { audioBase64, mimeType } = await request.json();
+    // idioma: "ca" lo manda el formulario en catalán (/ca/); sin él, castellano como siempre. SIN PROBAR.
+    const { audioBase64, mimeType, idioma } = await request.json();
     if (!audioBase64) return responde(400, { error: "No se recibio audio" });
 
     // base64 → bytes (en Cloudflare no hay Buffer)
@@ -36,7 +37,7 @@ export async function onRequestPost({ request, env }) {
     const form = new FormData();
     form.append("file", new File([audio], "audio." + ext, { type: mimeType || "audio/webm" }));
     form.append("model", "whisper-1");
-    form.append("language", "es");
+    form.append("language", idioma === "ca" ? "ca" : "es");
 
     const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
       method: "POST",
