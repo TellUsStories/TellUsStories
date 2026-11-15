@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<!-- Todas las rutas relativas (portadas.js, img/…) salen de la raíz aunque la dirección sea /formulario-nuevo/paso-N -->
+<base href="/ca/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crea el teu conte personalitzat · Tale Us Stories</title>
+<meta name="description" content="Explica'ns la seva història amb notes de veu, al teu ritme, i la convertim en un conte personalitzat il·lustrat amb estil aquarel·la. Es desa sol.">
+<link rel="canonical" href="https://taleusstories.com/ca/formulario-nuevo">
+<link rel="alternate" hreflang="es" href="https://taleusstories.com/formulario-nuevo">
+<link rel="alternate" hreflang="ca" href="https://taleusstories.com/ca/formulario-nuevo">
+<link rel="alternate" hreflang="x-default" href="https://taleusstories.com/formulario-nuevo">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=Allura&family=Dancing+Script&family=Amatic+SC:wght@700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#FFFFFF;--boton:#DCC8B4;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--cream);font-family:var(--texto);color:var(--navy);min-height:100vh;}
+  .prog-track{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:100;}
+  .prog-fill{height:100%;background:var(--coral);transition:width .5s ease;width:0%;}
+  header{text-align:center;padding:44px 24px 0;}
+  .brand{font-family:var(--display);font-size:12px;letter-spacing:6px;color:var(--coral);text-transform:uppercase;margin-bottom:6px;}
+  .step-lbl{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+  .wrap{max-width:680px;margin:0 auto;padding:0 24px 100px;}
+  .screen{display:none;}
+  .screen.active{display:block;animation:up .4s ease forwards;}
+  @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .sh{padding:42px 0 30px;border-bottom:1px solid var(--border);margin-bottom:30px;}
+  .sh-chapter{font-size:10px;letter-spacing:4px;color:var(--coral);text-transform:uppercase;margin-bottom:6px;}
+  .sh-title{font-family:var(--display);font-size:29px;line-height:1.25;color:var(--navy);margin-bottom:10px;}
+  .sh-sub{font-size:14px;color:var(--muted);line-height:1.65;font-weight:300;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:10px;background:var(--coral-l);border:1px solid var(--coral);border-radius:4px;padding:8px 16px;margin-bottom:24px;}
+  .ch-num{font-size:11px;font-weight:700;color:var(--coral);letter-spacing:1px;}
+  .ch-name{font-family:var(--display);font-size:15px;color:var(--navy);}
+  .field{margin-bottom:20px;}
+  .field label{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:6px;}
+  .hint{font-size:12px;color:var(--muted);margin-bottom:7px;font-style:italic;line-height:1.5;}
+  .ded-cont{font-size:12px;color:var(--muted);text-align:right;margin-top:4px;}
+  .ded-ej{display:grid;gap:10px;margin-bottom:12px;}
+  .ded-op{border:1.5px solid var(--border);border-radius:4px;background:var(--white);padding:12px 15px;font-family:var(--texto);font-size:15px;font-style:italic;line-height:1.55;color:var(--navy);}
+  .ded-op button{display:block;margin-top:8px;background:none;border:none;padding:0;font-family:var(--display);font-style:normal;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--coral);cursor:pointer;text-decoration:underline;}
+  .ded-op.elegida{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.07);}
+  input[type=text],input[type=email],select,textarea{width:100%;padding:12px 15px;border:1.5px solid var(--border);border-radius:4px;background:var(--white);font-family:var(--texto);font-size:16px;color:var(--navy);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
+  input:focus,select:focus,textarea:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.07);}
+  textarea{resize:vertical;min-height:110px;line-height:1.6;overflow-y:hidden;}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A7060'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:500px){.two{grid-template-columns:1fr;}}
+  .sdiv{display:flex;align-items:center;gap:12px;margin:26px 0 20px;}
+  .sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--border);}
+  .sdiv span{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;white-space:nowrap;}
+  .gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px;}
+  .gender-opt{border:2px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;transition:all .2s;background:var(--white);text-align:center;}
+  .gender-opt:hover{border-color:var(--coral);}
+  .gender-opt.selected{border-color:var(--coral);background:var(--coral-l);}
+  .gender-emoji{font-size:30px;margin-bottom:8px;}
+  .gender-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+  .gender-desc{font-size:12px;color:var(--muted);}
+
+  /* PORTADAS */
+  .portada-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;max-width:520px;}
+  .portada-card{border:2px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:all .2s;background:var(--white);}
+  .portada-card:hover{border-color:var(--coral);}
+  .portada-card.selected{border-color:var(--coral);box-shadow:0 0 0 3px rgba(140,106,85,.15);}
+  .portada-card svg{width:100%;aspect-ratio:832/1176;display:block;}
+  .portada-card-num{font-size:10px;font-weight:700;letter-spacing:.6px;line-height:1.25;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 2px;}
+  .portada-card.selected .portada-card-num{color:var(--coral);}
+  
+
+  .vc{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:22px;margin-bottom:14px;transition:border-color .2s;}
+  .vc:hover{border-color:rgba(140,106,85,.3);}
+  .vc.done{border-color:var(--coral);background:var(--coral-l);}
+  .vc-q{font-family:var(--display);font-size:17px;color:var(--navy);line-height:1.45;margin-bottom:5px;}
+  .vc-h{font-size:12px;color:var(--muted);margin-bottom:15px;font-style:italic;line-height:1.5;}
+  .vc-ctrls{display:flex;align-items:center;gap:11px;flex-wrap:wrap;}
+  .btn-rec{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;border:2px solid var(--coral);background:var(--white);color:var(--coral);font-family:var(--texto);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+  .btn-rec:hover{background:var(--coral);color:var(--white);}
+  .btn-rec.rec{background:var(--coral);color:var(--white);animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(140,106,85,.4)}50%{box-shadow:0 0 0 8px rgba(140,106,85,0)}}
+  .rdot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .btn-rec.rec .rdot{animation:blink .8s step-end infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .rtimer{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:34px;}
+  .rbadge{display:none;align-items:center;gap:5px;font-size:11px;color:var(--coral);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+  .rbadge.show{display:flex;}
+  .rbadge::before{content:'✓';}
+  audio.ap{display:none;width:100%;margin-top:10px;height:36px;}
+  audio.ap.show{display:block;}
+  .btn-clr{display:none;font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--texto);}
+  .btn-clr.show{display:inline;}
+  .or-d{display:flex;align-items:center;gap:10px;margin:10px 0 8px;}
+  .or-d::before,.or-d::after{content:'';flex:1;height:1px;background:var(--border);}
+  .or-d span{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .tf{display:none;}
+  .tf.show{display:block;}
+  .asp-mini{width:46px;height:46px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:10px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  .nino-fila{display:grid;grid-template-columns:1fr 96px 34px;gap:10px;margin-bottom:10px;align-items:center}
+  .nino-fila button{border:0;background:none;font-size:18px;cursor:pointer;color:inherit;opacity:.6}
+  .ninos-mas{border:1.5px dashed rgba(74,44,31,.35);border-radius:12px;background:none;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer;color:inherit}
+  .asp.plegada .asp-desc{display:none}
+  .asp-sinfoto{display:block;width:100%;margin:10px 0 2px;padding:10px 14px;border:1.5px dashed rgba(74,44,31,.35);border-radius:12px;background:none;font:inherit;font-size:15px;font-weight:600;color:inherit;cursor:pointer;text-align:left}
+  .asp:not(.plegada) .asp-sinfoto{display:none}
+  .btn-tw{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--texto);}
+  .tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+  .tone-opt{border:1.5px solid var(--border);border-radius:6px;padding:14px 16px;cursor:pointer;transition:all .2s;background:var(--white);}
+  .tone-opt:hover{border-color:var(--coral);}
+  .tone-opt.selected{border-color:var(--coral);background:var(--coral-l);}
+  .te{font-size:20px;margin-bottom:5px;}
+  .tt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+  .td{font-size:11px;color:var(--muted);line-height:1.4;}
+  .uzone{border:2px dashed var(--border);border-radius:6px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--white);}
+  .uzone:hover{border-color:var(--coral);background:var(--coral-l);}
+  .uzone-icon{font-size:22px;margin-bottom:6px;}
+  .uzone-txt{font-size:13px;color:var(--muted);}
+  #fileInput{display:none;}
+  .fi{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);}
+  .fi::before{content:'✓';color:var(--coral);font-weight:700;}
+  .sb{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:18px 22px;margin-bottom:14px;}
+  .sb h3{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--coral);margin-bottom:12px;}
+  .sr{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .sr:last-child{border:none;}
+  .sk{color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;min-width:120px;}
+  .sv{color:var(--navy);text-align:right;flex:1;}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:34px;padding-top:22px;border-top:1px solid var(--border);}
+  .btn-back{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;font-family:var(--texto);padding:12px 0;transition:color .2s;}
+  .btn-back:hover{color:var(--coral);}
+  .btn-back.h{visibility:hidden;}
+  .btn-next{background:var(--coral);color:var(--white);border:none;padding:13px 30px;border-radius:2px;font-family:var(--texto);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+  .btn-next:hover{background:#6F5A4C;transform:translateY(-1px);box-shadow:0 4px 14px rgba(140,106,85,.28);}
+  .perm{display:none;background:#FFF3CD;border:1px solid #FFD966;border-radius:4px;padding:11px 15px;font-size:13px;color:#7A6000;margin-bottom:12px;}
+  .perm.show{display:block;}
+  .fin{text-align:center;padding:60px 0 40px;}
+  .fin-h{font-size:50px;margin-bottom:22px;animation:hb 1.2s ease infinite;}
+  @keyframes hb{0%,100%{transform:scale(1)}30%{transform:scale(1.15)}60%{transform:scale(1.05)}}
+  .fin-t{font-family:var(--display);font-size:32px;color:var(--navy);margin-bottom:12px;}
+  .fin-s{font-size:15px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 28px;}
+  .fin-box{background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:16px 26px;display:inline-block;font-size:14px;color:var(--muted);line-height:1.7;}
+  .fin-box strong{color:var(--coral);}
+
+  /* ===== Mismo estilo que la web: blanco roto y tonos de marrón ===== */
+  .brand{font-weight:800;letter-spacing:3px;color:var(--navy);text-decoration:none;display:inline-block;}
+  .step-lbl{font-family:var(--display);font-weight:500;}
+  .prog-track{height:4px;}
+  .sh-chapter{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:2px;}
+  .sh-title{font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.5px;}
+  /* En los títulos solo van en color los nombres; las terminaciones de género (sola/solo, niña/niño…) van como el resto */
+  .sh-title span{color:inherit;}
+  .sh-title .G-name,.sh-title #childNamesH,.sh-title #txt-presentamos{color:var(--coral);}
+  .field label,.sdiv span,.sk,.sb h3,.ch-num,.gender-title,.tt,.portada-card-num,.rbadge,.btn-rec,.btn-back,.btn-next,.btn-clr,.btn-tw{font-family:var(--display);}
+  .chapter-badge{border:none;background:var(--navy);border-radius:100px;padding:8px 16px;}
+  .ch-num{color:var(--boton);}
+  .ch-name{color:var(--cream);font-weight:500;}
+  input[type=text],input[type=email],select,textarea{border-radius:12px;}
+  input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(140,106,85,.15);}
+  .vc{border-radius:20px;}
+  .vc:hover{border-color:rgba(140,106,85,.45);}
+  .vc-q{font-weight:700;font-size:19px;line-height:1.3;}
+  .vc.done{background:var(--coral-l);border-color:var(--coral);}
+  .gender-opt,.tone-opt,.portada-card,.uzone,.sb{border-radius:16px;}
+  .gender-opt.selected,.tone-opt.selected{background:var(--coral-l);border-color:var(--navy);}
+  .portada-card.selected{border-color:var(--navy);box-shadow:0 0 0 3px rgba(74,44,31,.12);}
+  .btn-rec{border-radius:100px;font-size:13px;letter-spacing:.5px;text-transform:none;}
+  .btn-rec.rec{animation:none;}
+  .btn-next{background:var(--boton);color:var(--navy);font-weight:800;font-size:15px;letter-spacing:0;text-transform:none;border-radius:100px;padding:14px 28px;box-shadow:0 12px 26px -14px rgba(74,44,31,.55);}
+  .btn-next:hover{background:var(--boton);transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(74,44,31,.6);}
+  .btn-next[onclick="submit()"]{background:var(--navy)!important;color:var(--cream);}
+  .btn-back{text-transform:none;letter-spacing:0;font-size:14px;}
+  .perm{background:var(--coral-l);border-color:var(--coral);color:var(--navy);}
+  .fin-t{font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.5px;}
+  .fin-h{color:var(--coral);}
+  .fin-box strong{color:var(--coral);}
+  /* Campo obligatorio sin rellenar */
+  input.falta, select.falta, textarea.falta, .vc.falta, .uzone.falta { border-color: #C0392B !important; box-shadow: 0 0 0 3px rgba(192, 57, 43, .12) !important; }
+  .vc.falta .vc-q::after { content: ' · obligatoria'; color: #C0392B; font-size: .75em; font-style: italic; }
+
+  /* ¿Cómo son? Una tarjeta por persona con botones para elegir (sin escribir) */
+  .asp{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:18px 20px;margin-bottom:12px;}
+  .asp.falta{border-color:#C0392B;box-shadow:0 0 0 3px rgba(192,57,43,.12);}
+  .asp-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+  .asp-t{font-family:var(--display);font-weight:700;font-size:17px;color:var(--navy);}
+  .asp-t small{font-weight:500;font-size:13px;color:var(--muted);}
+  .asp-x{background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;font-family:var(--texto);}
+  .asp-g{margin-bottom:9px;}
+  .asp-gl{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+  .asp-g.falta .asp-gl{color:#C0392B;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:6px 13px;font-family:var(--texto);font-size:14px;color:var(--navy);cursor:pointer;transition:all .15s;}
+  .chip:hover{border-color:var(--coral);}
+  .chip.on{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  .asp input[type=text]{padding:9px 13px;font-size:15px;}
+  .asp-foto{margin-bottom:10px;}
+  .uzone.asp-foto{padding:14px;}
+  .asp-foto.ok{background:var(--coral-l);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--navy);}
+  .asp-foto.ok button{background:none;border:none;color:var(--coral);text-decoration:underline;cursor:pointer;font-family:var(--texto);font-size:13px;margin-left:6px;}
+  /* Ventana para recortar la foto (por si sale más gente) */
+  .rec-fondo{position:fixed;inset:0;background:rgba(40,25,15,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .rec-caja{background:var(--cream);border-radius:20px;padding:18px;width:100%;max-width:560px;max-height:96vh;display:flex;flex-direction:column;gap:12px;}
+  .rec-t{font-family:var(--display);font-weight:700;font-size:18px;color:var(--navy);}
+  .rec-h{font-size:13px;color:var(--muted);line-height:1.5;}
+  .rec-img{height:min(60vh,460px);background:#eee;border-radius:12px;overflow:hidden;}
+  .rec-img img{display:block;max-width:100%;}
+  .rec-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;}
+  .rec-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy);}
+  .rec-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  /* Aviso del principio: cuantos más detalles, más fiel */
+  .aviso-det{margin-top:16px;background:var(--coral-l);border:1.5px solid var(--coral);border-radius:16px;padding:14px 18px;}
+  .aviso-det-t{font-family:var(--display);font-weight:800;font-size:17px;color:var(--navy);margin-bottom:4px;}
+  .aviso-det-s{font-size:14px;color:var(--navy);line-height:1.6;}
+  /* Pago por transferencia (pantalla final) */
+  .pago{max-width:460px;margin:26px auto 0;text-align:left;background:var(--white);border:1.5px solid var(--coral);border-radius:16px;padding:18px 20px;}
+  .pago-t{font-family:var(--display);font-weight:800;font-size:19px;color:var(--navy);margin-bottom:6px;}
+  .pago-s{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:10px;}
+  .pago-f{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border);font-size:14px;}
+  .pago-f span{min-width:72px;font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+  .pago-f b{flex:1;color:var(--navy);word-break:break-all;}
+  .pago-btn{display:block;text-align:center;background:var(--navy);color:var(--cream);text-decoration:none;border-radius:100px;padding:15px 20px;font-family:var(--display);font-weight:800;font-size:16px;margin-top:6px;}
+  .pago-f button{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:5px 11px;font-family:var(--display);font-weight:700;font-size:12px;color:var(--coral);cursor:pointer;}
+  .asp-o{font-size:12px;color:var(--muted);font-style:italic;margin:2px 0 10px;}
+  .asp-add{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 22px;}
+  .asp-add button{border:1.5px dashed var(--coral);background:none;border-radius:100px;padding:8px 15px;font-family:var(--display);font-weight:700;font-size:13px;color:var(--coral);cursor:pointer;}
+  .asp-add button:hover{background:var(--coral-l);}
+  /* Formulario colaborativo: invitar a otras personas a aportar recuerdos */
+  .invita{background:#fff;border:1.5px dashed var(--border);border-radius:16px;padding:16px 16px 14px;margin:18px 0 6px}
+  .invita-t{font-family:var(--display);font-weight:700;font-size:15px;color:var(--navy);margin-bottom:4px}
+  .invita-s{font-size:14px;line-height:1.55;color:var(--muted);margin-bottom:12px}
+  .invita-b{font-family:var(--display);font-weight:700;font-size:14px;border-radius:999px;padding:10px 16px;border:1.5px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer;margin:0 6px 6px 0}
+  .invita-b.sec{background:#fff;color:var(--navy);border-color:var(--border)}
+  .invita-link{display:block;width:100%;font-size:13px;color:var(--navy);background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;margin:0 0 10px;word-break:break-all}
+  .invita-lista{margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
+  .invita-item{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.5;color:var(--navy);padding:8px 0;border-bottom:1px solid var(--coral-l)}
+  .invita-item input{width:18px;height:18px;flex:none;margin-top:2px;accent-color:#4A2C1F}
+  .invita-item.fuera .invita-txt{opacity:.45;text-decoration:line-through}
+  .invita-fotos{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .invita-fotos img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+  .invita-item.fuera .invita-fotos{opacity:.45}
+  .invita-quien{font-weight:700}
+  .invita-etapa{font-size:12px;color:var(--coral);font-family:var(--display);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-left:6px}
+  .invita-msg{font-size:13px;color:var(--muted);margin-top:6px}
+  /* Repaso de la IA al terminar cada etapa (y corrección de la dedicatoria) */
+  .ia{background:var(--white);border:2px solid var(--navy);border-radius:20px;padding:20px 22px;margin:22px 0 6px;}
+  .ia-t{font-family:var(--display);font-weight:800;font-size:19px;color:var(--navy);margin-bottom:4px;}
+  .ia-s{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:12px;}
+  .ia-q{font-family:var(--display);font-weight:700;font-size:16px;color:var(--navy);line-height:1.35;margin:14px 0 6px;}
+  .ia textarea{min-height:70px;}
+  .ia-cargando{display:flex;align-items:center;gap:12px;font-size:15px;color:var(--navy);}
+  .ia-cargando::before{content:'';width:18px;height:18px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--coral);animation:gira 1s linear infinite;flex:none;}
+  @keyframes gira{to{transform:rotate(360deg)}}
+  .ia-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:14px;}
+  .ia-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy);}
+  .ia-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream);}
+  .ia-ded{font-size:16px;font-style:italic;line-height:1.6;background:var(--cream);border-radius:12px;padding:12px 15px;margin-bottom:6px;}
+  .ia-cambio{background:#F9E1D6;color:#B4472C;border-radius:3px;padding:0 2px;font-weight:700;}
+  .ia-leyenda{font-size:13px;color:var(--muted);margin:8px 0 0;}
+  .ia-leyenda span{background:#F9E1D6;color:#B4472C;border-radius:3px;padding:0 4px;font-weight:700;}
+  .ia-ded mark{background:#F6DFA8;color:inherit;border-radius:3px;padding:0 2px;font-style:normal;font-weight:700;}
+</style>
+<style>.idioma{display:inline-flex;align-items:center;gap:5px;font:600 12px/1 system-ui,-apple-system,sans-serif;letter-spacing:1px;color:#8C6A55;white-space:nowrap}.idioma a{color:#8C6A55;text-decoration:none;padding:6px 2px;opacity:.75}.idioma a:hover{opacity:1;text-decoration:underline}.idioma a[aria-current]{color:#4A2C1F;opacity:1;font-weight:800}.idioma span{opacity:.5}.nav-der{display:flex;align-items:center;gap:14px;flex-shrink:0}.idioma-flot{position:absolute;top:12px;right:16px;z-index:40}@media (max-width:600px){.nav-der{gap:10px}}@media (max-width:400px){.nav-der{gap:8px}.nav-der .pill{padding:9px 12px;font-size:13px;white-space:nowrap}}@media (max-width:900px){nav .wrap{position:relative}.menu li.menu-idioma{display:block!important;position:absolute;top:0;right:max(20px,env(safe-area-inset-right,0px))}.menu-idioma .idioma{font-size:11px}.menu-idioma .idioma a{padding:5px 2px}}</style>
+<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-idioma]');if(a){try{localStorage.setItem('tus_idioma',a.getAttribute('data-idioma'))}catch(x){}}});</script>
+</head>
+<body>
+
+<div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+<header style="position:relative">
+  <div class="idioma idioma-flot" role="group" aria-label="Idioma"><a href="/formulario-nuevo" lang="es" hreflang="es" data-idioma="es" title="Castellano">ES</a><span aria-hidden="true">|</span><a href="/ca/formulario-nuevo" lang="ca" hreflang="ca" data-idioma="ca" aria-current="true" title="Català">CA</a></div>
+  <a class="brand" href="/ca/">Tale Us Stories</a>
+  <div class="step-lbl" id="stepLbl">Pas 1 de 7</div>
+</header>
+<div class="wrap">
+
+<div class="screen active" id="s0">
+  <div class="sh">
+    <div class="sh-chapter">Abans de començar</div>
+    <h1 class="sh-title">No cal escriure.<br>Només explicar.</h1>
+    <p class="sh-sub">Anirem etapa per etapa. En cada una, grava una nota de veu amb tot el que se t'acudeixi i et mostrarem el que hem entès.</p>
+    <p class="sh-sub" style="margin-top:10px;"><strong>Al teu ritme:</strong> es desa en aquest dispositiu i pots tornar-hi quan vulguis. <strong>Més gent amb records?</strong> Podràs convidar-los a aportar els seus des del mòbil.</p>
+    <div class="aviso-det">
+      <div class="aviso-det-t">✨ La màgia és als detalls</div>
+      <div class="aviso-det-s">El sobrenom de casa, la cançó del cotxe, el jersei de sempre… <b>Com més detalls, més us reconeixereu a cada pàgina.</b></div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Nom del protagonista</label>
+    <input type="text" id="protName" placeholder="Ex.: Maria, Josep, Carles…" oninput="onNameInput()">
+  </div>
+  <div class="field">
+    <label>Els nens del llibre</label>
+    <div class="hint">El nom de cada nen i l'edat que té avui. Si és un nadó, en mesos (per exemple: 8 mesos).</div>
+    <div id="ninosFilas"></div>
+    <button type="button" class="ninos-mas" onclick="ninoFila('', '', true)">+ Afegeix un altre nen</button>
+    <input type="text" id="childNames" style="display:none">
+    <input type="text" id="childAges" style="display:none">
+  </div>
+  <div class="field">
+    <label>El protagonista és…</label>
+    <div class="gender-grid">
+      <div class="gender-opt selected" id="gf" onclick="setGender('f',this)">
+        <div class="gender-emoji">👩</div>
+        <div class="gender-title">Una dona</div>
+        <div class="gender-desc">Mama, àvia, tieta, amiga…</div>
+      </div>
+      <div class="gender-opt" id="gm" onclick="setGender('m',this)">
+        <div class="gender-emoji">👨</div>
+        <div class="gender-title">Un home</div>
+        <div class="gender-desc">Papa, avi, tiet, amic…</div>
+      </div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="field">
+      <label>Qui és per als nens?</label>
+      <select id="bookType" onchange="tipoElegido()">
+        <option value="">Tria una opció</option>
+        <option value="Mamá">Mama</option>
+        <option value="Papá">Papa</option>
+        <option value="Abuela">Àvia</option>
+        <option value="Abuelo">Avi</option>
+        <option value="Tía">Tieta</option>
+        <option value="Tío">Tiet</option>
+        <option value="Otra persona">Una altra persona</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Qui fa l'encàrrec</label>
+      <input type="text" id="orderer" placeholder="Ex.: Javier, el seu marit">
+    </div>
+  </div>
+  <div class="field">
+    <label>Qui narra el llibre?</label>
+    <div class="gender-grid">
+      <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">El mateix protagonista</div>
+        <div class="gender-desc">"Quan jo era <span class="G-petit"></span>…"</div>
+      </div>
+      <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
+        <div class="gender-emoji">👨‍👩‍👧</div>
+        <div class="gender-title">Una altra persona</div>
+        <div class="gender-desc">"Abans de ser <span class="G-vuestra"></span>…"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELECCIÓN DE PORTADA -->
+  <div class="field">
+    <label>Tria la portada</label>
+    <div class="hint">Pots canviar-la més endavant si cal.</div>
+    <div class="portada-grid" id="portada-grid"></div>
+    <div class="hint" style="margin-top:12px">Triada: <b id="portada-nombre">Vichy rosa</b></div>
+  </div>
+
+  <div class="field">
+    <label>Format del llibre</label>
+    <div class="gender-grid">
+      <div class="gender-opt formato-opt" id="fb" onclick="setFormato('blanda',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">Tapa tova · 43,50 €</div>
+        <div class="gender-desc">+ 5,95 € d'enviament</div>
+      </div>
+      <div class="gender-opt formato-opt selected" id="fd" onclick="setFormato('dura',this)">
+        <div class="gender-emoji">📕</div>
+        <div class="gender-title">Tapa dura · 61,50 €</div>
+        <div class="gender-desc">La més triada · + 5,95 € d'enviament</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="field">
+      <label>El teu correu electrònic</label>
+      <input type="email" id="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="Aquí t'escriurem sobre la teva comanda">
+    </div>
+    <div class="field">
+      <label>El teu telèfon</label>
+      <input type="text" id="clienteTelefono" name="tel" autocomplete="tel" inputmode="tel" placeholder="Per si hem de contactar amb tu">
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back h"></button>
+    <button class="btn-next" onclick="startForm()">Comencem →</button>
+  </div>
+</div>
+
+<div class="screen" id="s1">
+  <div class="sh">
+    <div class="sh-chapter">01 · Els personatges</div>
+    <h2 class="sh-title">Qui és qui<br>en aquesta història?</h2>
+    <p class="sh-sub">Primer, els protagonistes del llibre i com són.</p>
+  </div>
+  <div class="perm" id="permBanner">El teu navegador necessita accés al micròfon. Si ho prefereixes, fes servir els camps de text.</div>
+
+  <div class="two">
+    <div class="field"><label data-yo="Els nens del llibre són els teus…">Els nens del llibre són els seus…</label>
+      <select id="relacionNinos">
+        <option value="">Tria una opció</option>
+        <option value="Son sus hijos">Fills</option>
+        <option value="Son sus nietos">Nets</option>
+        <option value="Son sus sobrinos">Nebots</option>
+        <option value="Otra relación">Una altra relació</option>
+      </select>
+    </div>
+    <div class="field"><label data-yo="Com et diuen els nens?">Com li diuen els nens?</label><input type="text" id="nicknames" placeholder="Ex.: mama, iaia, l'àvia Pepa…"></div>
+  </div>
+  <div class="field"><label data-yo="Quina edat tens avui?">Quina edat té avui?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ex.: 38"></div>
+  <div class="field"><label data-yo="Descriu-te en 3 paraules">Descriu-<span class="G-lo"></span> en 3 paraules</label><input type="text" id="tresPalabras" placeholder="Ex.: alegre, valenta i curiosa"></div>
+  <div class="two">
+    <div class="field"><label data-yo="A què et dediques?">A què es dedica?</label><input type="text" id="job" placeholder="Ex.: arquitecta, mestre, jubilada…"></div>
+    <div class="field"><label data-yo="Les teves aficions">Les seves aficions</label><input type="text" id="sport" placeholder="Ex.: el surf i dibuixar"></div>
+  </div>
+  <div class="hint" style="margin:-8px 0 18px" data-yo="La teva professió i les teves aficions apareixeran com a detalls als dibuixos.">La seva professió i les seves aficions apareixeran com a detalls als dibuixos.</div>
+
+  <div class="sdiv"><span>Com són? Així els dibuixarem</span></div>
+  <div class="hint" style="margin-bottom:14px">Per dibuixar cada persona igual a totes les pàgines (de nadó, de nen/a, de jove i avui): <b>puja una foto</b> de la seva cara, amb bona llum i mirant a càmera, i marca el color dels cabells i dels ulls. Si no tens foto, toca <b>"No tinc foto"</b> i descriu-la amb els botons. Les fotos només es fan servir per dibuixar.</div>
+  <div id="aspCards"></div>
+  <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
+  <input type="file" id="fotoNinos" accept="image/*" style="display:none" onchange="aspGrupo(this)">
+  <div class="hint" style="margin-bottom:6px" data-yo="Surten més persones a la història (la teva parella, els teus pares, un amic…)? Afegeix-les perquè també s'hi assemblin:">Surten més persones a la història (la seva parella, els seus pares, un amic…)? Afegeix-les perquè també s'hi assemblin:</div>
+  <div class="asp-add">
+    <button type="button" onclick="aspAdd('pareja')" data-yo="+ La teva parella">+ La seva parella</button>
+    <button type="button" onclick="aspAdd('madre')" data-yo="+ La teva mare">+ La seva mare</button>
+    <button type="button" onclick="aspAdd('padre')" data-yo="+ El teu pare">+ El seu pare</button>
+    <button type="button" onclick="aspAdd('hermano')">+ Un germà o una germana</button>
+    <button type="button" onclick="aspAdd('otra')">+ Una altra persona</button>
+  </div>
+  <div class="hint" style="margin:14px 0 6px;background:var(--coral-l);border-radius:12px;padding:12px 14px;color:var(--navy)"><b>Important:</b> qui surti a la història sense foto ni descripció, el dibuixarem lliurement, així que no s'assemblarà a la persona real. Si no vols pujar cap foto, descriu-la amb els botons. Amb foto és com més s'assemblen; només amb la descripció, la semblança serà aproximada.</div>
+  <input type="text" id="aspectoFamilia" style="display:none">
+  <input type="text" id="iaDatos" style="display:none">
+  <!-- Formulario colaborativo: enlace secreto para que otras personas aporten recuerdos, y las que se dejan fuera -->
+  <input type="text" id="aportaId" style="display:none">
+  <input type="text" id="aportaFuera" style="display:none">
+  <div id="aspInputs" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(0)">← Enrere</button>
+    <button class="btn-next" onclick="go(2)">Següent →</button>
+  </div>
+</div>
+
+<div class="screen" id="s2">
+  <div class="sh">
+    <div class="sh-chapter">02 · De nadó i de <span class="G-petit"></span></div>
+    <h2 class="sh-title" data-yo="Quan eres<br><span class=&quot;G-unna&quot;></span> <span class=&quot;G-ninoa&quot;></span>.">Quan <span class="G-name"></span><br>era <span class="G-unna"></span> <span class="G-ninoa"></span>.</h2>
+    <p class="sh-sub">Grava una nota de veu i explica'ns tot el que se t'acudeixi, sense pressa, com si ho expliquessis a una amiga. En continuar, et mostrem el que hem entès i t'avisem si hi falta alguna cosa important.</p>
+  </div>
+  <div class="vc" id="vc0">
+    <div class="vc-q" data-yo="Com eres de nadó i de <span class=&quot;G-petit&quot;></span>?">Com era <span class="G-name"></span> de nadó i de <span class="G-petit"></span>?</div>
+    <div class="vc-h" data-yo="💡 Et pot ajudar: on vas néixer i créixer i com era casa teva · com eres de caràcter (<span class=&quot;G-timid&quot;></span>, <span class=&quot;G-entremaliat&quot;></span>, <span class=&quot;G-curios&quot;></span>…) · els teus germans (quants nois i quantes noies, més grans o més petits), si tenies mascota, un amic o una amiga especial · a què t'agradava jugar i què volies ser de gran · <b>i si recordes alguna anècdota, explica-la!</b>">💡 Et pot ajudar: on va néixer i créixer i com era casa seva · com era de caràcter (<span class="G-timid"></span>, <span class="G-entremaliat"></span>, <span class="G-curios"></span>…) · els seus germans (quants nois i quantes noies, més grans o més petits), si tenia mascota, un amic o una amiga especial · a què li agradava jugar i què volia ser de gran · <b>i si recordes alguna anècdota, explica-la!</b></div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb0" onclick="toggleRec(0)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt0">0:00</span><span class="rbadge" id="bd0">Gravat</span></div>
+    <audio class="ap" id="ap0"></audio><button class="btn-clr" id="bc0" onclick="clearRec(0)">Torna a gravar</button>
+    <div class="or-d"><span>o escriu</span></div>
+    <div class="tf" id="tf0"><textarea placeholder="Explica-ho aquí si prefereixes escriure…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(0)">Prefereixo escriure</button>
+  </div>
+  <div class="ia" id="ia2" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(1)">← Enrere</button>
+    <button class="btn-next" onclick="go(3)">Següent →</button>
+  </div>
+</div>
+
+<div class="screen" id="s3">
+  <div class="sh">
+    <div class="sh-chapter">03 · La joventut</div>
+    <h2 class="sh-title" data-yo="Quan vas començar<br>a volar <span class=&quot;G-sol&quot;></span>.">Quan <span class="G-name"></span> va començar<br>a volar <span class="G-sol"></span>.</h2>
+    <p class="sh-sub">L'adolescència, els estudis, els somnis i les primeres aventures.</p>
+  </div>
+  <div class="vc" id="vc2">
+    <div class="vc-q" data-yo="Com eres d'adolescent i de jove?">Com era <span class="G-name"></span> d'adolescent i de jove?</div>
+    <div class="vc-h" data-yo="💡 Et pot ajudar: què t'apassionava · els teus amics i la teva música · què vas estudiar i la teva primera feina · un viatge o una decisió valenta · com vas arribar a dedicar-te al que fas avui · <b>i si recordes alguna anècdota, explica-la!</b>">💡 Et pot ajudar: què l'apassionava · els seus amics i la seva música · què va estudiar i la seva primera feina · un viatge o una decisió valenta · com va arribar a dedicar-se al que fa avui · <b>i si recordes alguna anècdota, explica-la!</b></div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb2" onclick="toggleRec(2)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt2">0:00</span><span class="rbadge" id="bd2">Gravat</span></div>
+    <audio class="ap" id="ap2"></audio><button class="btn-clr" id="bc2" onclick="clearRec(2)">Torna a gravar</button>
+    <div class="or-d"><span>o escriu</span></div>
+    <div class="tf" id="tf2"><textarea placeholder="Explica-ho aquí si prefereixes escriure…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(2)">Prefereixo escriure</button>
+  </div>
+  <div class="ia" id="ia3" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(2)">← Enrere</button>
+    <button class="btn-next" onclick="go(4)">Següent →</button>
+  </div>
+</div>
+
+<div class="screen" id="s4">
+  <div class="sh">
+    <div class="sh-chapter">04 · Amor i família</div>
+    <h2 class="sh-title" data-yo="Quan la teva família<br>va créixer.">Quan <span class="G-name"></span> va veure<br>créixer la família.</h2>
+    <p class="sh-sub" data-yo="L'amor i l'arribada dels nens: una etapa més de la teva història.">L'amor i l'arribada dels nens: una etapa més de la seva història.</p>
+  </div>
+  <div class="vc" id="vc4">
+    <div class="vc-q" data-yo="Com va començar la teva família?">Com va començar <span class="G-name"></span> la seva família?</div>
+    <div class="vc-h" id="guiaFamilia"></div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb4" onclick="toggleRec(4)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt4">0:00</span><span class="rbadge" id="bd4">Gravat</span></div>
+    <audio class="ap" id="ap4"></audio><button class="btn-clr" id="bc4" onclick="clearRec(4)">Torna a gravar</button>
+    <div class="or-d"><span>o escriu</span></div>
+    <div class="tf" id="tf4"><textarea placeholder="Explica-ho aquí si prefereixes escriure…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(4)">Prefereixo escriure</button>
+  </div>
+  <div class="ia" id="ia4" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(3)">← Enrere</button>
+    <button class="btn-next" onclick="go(5)">Següent →</button>
+  </div>
+</div>
+
+<div class="screen" id="s5">
+  <div class="sh">
+    <div class="sh-chapter">05 · Amb els nens avui</div>
+    <h2 class="sh-title"><span class="G-name"></span> amb <span id="childNamesH">els nens</span>.</h2>
+    <p class="sh-sub">La relació que tenen avui. Aquest és el cor del llibre.</p>
+  </div>
+  <div class="vc" id="vc6">
+    <div class="vc-q" data-yo="Com és avui la teva vida amb els nens?">Com és avui la relació entre <span class="G-name"></span> i els nens?</div>
+    <div class="vc-h">💡 Et pot ajudar: com és cada nen (caràcter i què li encanta) · què feu junts · una tradició o un ritual només vostre · com és casa vostra i si teniu mascota · <b>i algun record especial o divertit amb els nens, si se t'acut</b></div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb6" onclick="toggleRec(6)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt6">0:00</span><span class="rbadge" id="bd6">Gravat</span></div>
+    <audio class="ap" id="ap6"></audio><button class="btn-clr" id="bc6" onclick="clearRec(6)">Torna a gravar</button>
+    <div class="or-d"><span>o escriu</span></div>
+    <div class="tf" id="tf6"><textarea placeholder="Explica-ho aquí si prefereixes escriure…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(6)">Prefereixo escriure</button>
+  </div>
+  <div class="ia" id="ia5" style="display:none"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(4)">← Enrere</button>
+    <button class="btn-next" onclick="go(6)">Següent →</button>
+  </div>
+</div>
+
+<div class="screen" id="s6">
+  <div class="sh">
+    <div class="sh-chapter">06 · El final del llibre</div>
+    <h2 class="sh-title" data-yo="El que t'agradaria<br>que sabessin.">El que voldria<br>que sabessin.</h2>
+    <p class="sh-sub">El tancament del llibre, la dedicatòria i on l'enviem.</p>
+  </div>
+  <div class="vc" id="vc8">
+    <div class="vc-q" data-yo="Què t'agradaria que els nens sabessin quan siguin grans?">Què creus que <span class="G-name"></span> voldria que els nens sabessin quan siguin grans?</div>
+    <div class="vc-h">Un valor, un consell, allò que hi ha en cada cosa que fa.</div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb8" onclick="toggleRec(8)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt8">0:00</span><span class="rbadge" id="bd8">Gravat</span></div>
+    <audio class="ap" id="ap8"></audio><button class="btn-clr" id="bc8" onclick="clearRec(8)">Torna a gravar</button>
+    <div class="or-d"><span>o escriu</span></div>
+    <div class="tf" id="tf8"><textarea placeholder="Explica-ho aquí si prefereixes escriure…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(8)">Prefereixo escriure</button>
+  </div>
+  <div class="vc" id="vc9" data-opcional="1">
+    <div class="vc-q">Ens hem deixat alguna cosa al tinter?</div>
+    <div class="vc-h">Aquell record que no encaixava en cap etapa, una persona molt important, un costum, una frase… Allò sense el qual sents que el llibre no seria del tot <span class="G-suyo">seu</span>. És opcional: si ja hi és tot, continua sense més.</div>
+    <div class="vc-ctrls"><button class="btn-rec" id="rb9" onclick="toggleRec(9)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt9">0:00</span><span class="rbadge" id="bd9">Gravat</span></div>
+    <audio class="ap" id="ap9"></audio><button class="btn-clr" id="bc9" onclick="clearRec(9)">Torna a gravar</button>
+    <div class="or-d"><span>o escriu</span></div>
+    <div class="tf" id="tf9"><textarea placeholder="Explica-ho aquí si prefereixes escriure…"></textarea></div>
+    <button class="btn-tw" onclick="toggleTF(9)">Prefereixo escriure</button>
+  </div>
+
+  <div class="sdiv"><span>La dedicatòria</span></div>
+  <div class="field">
+    <label>La teva dedicatòria per a la contraportada</label>
+    <div class="hint">Anirà impresa a la contraportada del llibre. Pots triar un d'aquests exemples (i retocar-lo si vols) o escriure la teva. En continuar, revisarem que no tingui faltes.</div>
+    <div class="ded-ej" id="dedEjemplos"></div>
+    <textarea id="dedicatoria" maxlength="350" rows="4" spellcheck="true" lang="ca" placeholder="Ex.: Lucas, Martina: aquest llibre és perquè no oblideu mai d'on veniu…"></textarea>
+    <div class="ded-cont"><span id="dedCont">0</span> / 350</div>
+  </div>
+  <div class="field">
+    <label>Com la signes?</label>
+    <input type="text" id="dedicatoriaFirma" maxlength="40" spellcheck="true" lang="ca" placeholder="Ex.: Amb tot el nostre amor, el papa i l'àvia Carmen">
+  </div>
+  <div class="ia" id="iaDed" style="display:none"></div>
+
+  <div class="sdiv"><span>Últims detalls</span></div>
+  <div class="field">
+    <label>To del llibre</label>
+    <div class="tone-grid">
+      <div class="tone-opt" data-valor="Divertido" onclick="selTone(this)"><div class="te">😄</div><div class="tt">Divertit</div><div class="td">Humor i moments que fan riure</div></div>
+      <div class="tone-opt" data-valor="Emotivo" onclick="selTone(this)"><div class="te">💛</div><div class="tt">Emotiu</div><div class="td">Càlid, que arribi al cor</div></div>
+      <div class="tone-opt selected" data-valor="Equilibrado" onclick="selTone(this)"><div class="te">✨</div><div class="tt">Equilibrat</div><div class="td">Humor i emoció a parts iguals</div></div>
+      <div class="tone-opt" data-valor="Aventurero" onclick="selTone(this)"><div class="te">🌍</div><div class="tt">Aventurer</div><div class="td">Que inspiri a conèixer el món</div></div>
+    </div>
+  </div>
+  <div class="field" style="margin-top:22px;">
+    <label>Hi ha alguna situació delicada? (opcional)</label>
+    <div class="hint">Algú que ja no hi és, una separació… Explica'ns com vols que ho tractem (o si prefereixes que no hi surti).</div>
+    <textarea id="delicadas" data-opcional="1" placeholder="Ex.: l'avi va morir fa dos anys; ens agradaria que sortís als records de la infància, amb afecte." style="min-height:65px;"></textarea>
+  </div>
+  <div class="field">
+    <label>Hi ha res que NO hagi de sortir? (opcional)</label>
+    <textarea id="noShow" data-opcional="1" placeholder="Temes sensibles, persones que prefereixen no sortir-hi… Si no hi ha res, deixa-ho en blanc." style="min-height:65px;"></textarea>
+  </div>
+  <div class="field">
+    <label>Altres fotos (opcional)</label>
+    <div class="hint">Fotos <span class="G-deprot">de la protagonista</span> en altres èpoques, de la família o de llocs especials. Fins a 3 fotos.</div>
+    <div class="uzone" onclick="if (fotosExtra.length < 3) document.getElementById('fileInput').click()">
+      <div class="uzone-icon">📷</div>
+      <div class="uzone-txt">Fes clic per afegir fotos</div>
+    </div>
+    <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this)">
+    <div id="fileList"></div>
+  </div>
+
+  <!-- El cliente decide si quiere ver los personajes antes de dibujar el libro (por defecto, sorpresa) -->
+  <div class="field">
+    <label>Vols veure els personatges abans que dibuixem el llibre?</label>
+    <div class="gender-grid">
+      <div class="gender-opt selected" id="vpNo" onclick="setValidar('no',this)">
+        <div class="gender-emoji">🎁</div>
+        <div class="gender-title">No, que sigui sorpresa</div>
+        <div class="gender-desc">Ja ens encarreguem nosaltres que s'assemblin</div>
+      </div>
+      <div class="gender-opt" id="vpSi" onclick="setValidar('si',this)">
+        <div class="gender-emoji">👀</div>
+        <div class="gender-title">Sí, els vull veure</div>
+        <div class="gender-desc">Te'ls enviem per correu electrònic i tens 24 h per donar-nos l'OK</div>
+      </div>
+    </div>
+    <div class="hint" style="margin-top:8px">Si tens dubtes amb les fotos, millor tria veure'ls.</div>
+  </div>
+
+  <!-- La dirección va al final: pedirla al principio echa para atrás a mucha gente -->
+  <div class="sdiv"><span>On enviem el llibre?</span></div>
+  <div class="two">
+    <div class="field"><label>Nom de qui el rep</label><input type="text" id="envioNombre" name="ship-name" autocomplete="shipping name" placeholder="Ex.: Javier García López"></div>
+    <div class="field"><label>Telèfon</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="Per a l'empresa de missatgeria"><div class="hint">Hi hem posat el teu; canvia'l si el rep una altra persona.</div></div>
+  </div>
+  <div class="field"><label>Adreça</label><input type="text" id="envioDireccion" name="ship-address" autocomplete="shipping street-address" placeholder="Carrer, número, pis i porta"></div>
+  <div class="two">
+    <div class="field"><label>Codi postal</label><input type="text" id="envioCP" name="ship-zip" autocomplete="shipping postal-code" inputmode="numeric" placeholder="Ex.: 08012"></div>
+    <div class="field"><label>Ciutat</label><input type="text" id="envioCiudad" name="ship-city" autocomplete="shipping address-level2" placeholder="Ex.: Barcelona"></div>
+  </div>
+  <div class="field"><label>Província</label><input type="text" id="envioProvincia" name="ship-state" autocomplete="shipping address-level1" placeholder="Ex.: Barcelona"></div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(5)">← Enrere</button>
+    <button class="btn-next" onclick="go(7)">Revisa-ho tot →</button>
+  </div>
+</div>
+
+<div class="screen" id="s7">
+  <div class="sh">
+    <div class="sh-chapter">07 · Revisió</div>
+    <h2 class="sh-title">Tot a punt<br>per enviar.</h2>
+    <p class="sh-sub">Revisa que tot sigui correcte. Pots tornar enrere si vols canviar alguna cosa.</p>
+  </div>
+  <div class="sb">
+    <h3>Dades de la comanda</h3>
+    <div class="sr"><span class="sk">Protagonista</span><span class="sv" id="rv-prot">—</span></div>
+    <div class="sr"><span class="sk">Per a</span><span class="sv" id="rv-child">—</span></div>
+    <div class="sr"><span class="sk">Per als nens és</span><span class="sv" id="rv-type">—</span></div>
+    <div class="sr"><span class="sk">Encarregat per</span><span class="sv" id="rv-ord">—</span></div>
+    <div class="sr"><span class="sk">Correu electrònic</span><span class="sv" id="rv-email">—</span></div>
+    <div class="sr"><span class="sk">Telèfon</span><span class="sv" id="rv-tel">—</span></div>
+    <div class="sr"><span class="sk">Dedicatòria</span><span class="sv" id="rv-ded">—</span></div>
+    <div class="sr"><span class="sk">Enviament</span><span class="sv" id="rv-envio">—</span></div>
+    <div class="sr"><span class="sk">Portada</span><span class="sv" id="rv-portada">—</span></div>
+    <div class="sr"><span class="sk">Format</span><span class="sv" id="rv-formato">—</span></div>
+    <div class="sr"><span class="sk">To</span><span class="sv" id="rv-tone">—</span></div>
+    <div class="sr"><span class="sk">Personatges</span><span class="sv" id="rv-validar">—</span></div>
+  </div>
+  <div class="sb">
+    <h3>Estructura del llibre</h3>
+    <div id="rv-chapters"></div>
+  </div>
+  <div class="sb" id="rv-pago" style="display:none">
+    <h3>Pagament</h3>
+    <div class="sr"><span class="sk">Import</span><span class="sv" id="rv-importe">—</span></div>
+    <div class="sr"><span class="sk">Forma de pagament</span><span class="sv">Targeta, pagament segur amb Stripe. És l'últim pas: la teva història ens arriba tan bon punt pagues.</span></div>
+  </div>
+  <div class="sb">
+    <h3>Codi de descompte</h3>
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">Tens un codi? Escriu-lo aquí i s'aplicarà a la pàgina de pagament.</p>
+    <input type="text" id="codigoDescuento" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Codi de descompte" style="width:100%;max-width:280px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);background:#fff;">
+  </div>
+  <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
+    <h3 style="color:var(--coral);">Què passa ara?</h3>
+    <div class="sr"><span class="sk">Ara</span><span class="sv" id="rv-ahora">Pagues amb targeta i la teva història ens arriba.</span></div>
+    <div class="sr"><span class="sk">En rebre el pagament</span><span class="sv">Escrivim, il·lustrem i imprimim el llibre.</span></div>
+    <div class="sr"><span class="sk">2-3 setmanes</span><span class="sv" style="color:var(--coral);font-weight:700;">El llibre a les teves mans.</span></div>
+  </div>
+  <!-- Privacidad: nota sencilla mientras Tale Us Stories está en pruebas (sin empresa todavía) -->
+  <div class="sb">
+    <h3>Les teves dades i les teves fotos</h3>
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 12px;">Fem servir el que ens expliques, les teves notes de veu i les teves fotos <b>només per fer el teu llibre</b> i enviar-te'l. No ho donem a ningú més que als serveis que ho fan possible (l'escriptura i la il·lustració amb intel·ligència artificial i la impremta). Les fotos i els enregistraments els esborrem com a molt tard 6 mesos després de lliurar el llibre. Per a qualsevol dubte, o si vols que esborrem les teves dades abans, escriu-nos a <a href="mailto:hello@taleusstories.com" style="color:var(--coral);">hello@taleusstories.com</a>. Tots els detalls, a les <a href="/ca/legal#condiciones" target="_blank" rel="noopener" style="color:var(--coral);">condicions de venda</a> i a la <a href="/ca/legal#privacidad" target="_blank" rel="noopener" style="color:var(--coral);">política de privacitat</a>.</p>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--navy);cursor:pointer;line-height:1.5;"><input type="checkbox" id="aceptoPrivacidad" style="width:20px;height:20px;flex:none;margin-top:1px;accent-color:#4A2C1F;"> Accepto les condicions de venda i la política de privacitat. Entenc que, com que és un llibre fet a mida, no té dret de desistiment, i tinc permís per enviar les fotos i les dades de les persones que hi surten.</label>
+  </div>
+  <div class="nav">
+    <button class="btn-back" onclick="go(6)">← Enrere</button>
+    <button class="btn-next" onclick="submit()" style="background:var(--navy);padding:15px 36px;font-size:12px;">Vés a pagar ♥</button>
+  </div>
+</div>
+
+<div class="screen" id="sFinal">
+  <div class="fin">
+    <div class="fin-h">♥</div>
+    <h2 class="fin-t">Història rebuda!</h2>
+    <p class="fin-s">Gràcies per confiar-nos una cosa tan especial. Només falta el pagament: tan bon punt el rebem, començarem el teu llibre, i d'aquí a <strong>2-3 setmanes</strong> el tindràs a casa.</p>
+    <div class="fin-box">Un llibre únic per a <strong id="f-child">els nens</strong><br>sobre les aventures <strong id="f-prot">del protagonista</strong></div>
+    <p class="fin-s" style="margin-top:22px;font-size:14px;">Algun dubte? Escriu-nos per <a href="https://www.instagram.com/tale_us_stories" target="_blank" rel="noopener" style="color:var(--coral);">Instagram</a>.</p>
+    <!-- Pago con tarjeta (Stripe): el botón lleva al enlace de pago del formato elegido -->
+    <div class="pago" id="pago-tarjeta">
+      <div class="pago-t">Últim pas: el pagament</div>
+      <p class="pago-s">Paga amb targeta de manera segura (Stripe). Comencem el teu llibre tan bon punt rebem el pagament.</p>
+      <a class="pago-btn" id="pago-enlace" href="javascript:void(0)" target="_self">Paga <span id="pago-importe3">—</span> amb targeta →</a>
+    </div>
+    <!-- Pago por transferencia (ya no se usa: ahora se paga con tarjeta) -->
+    <div class="pago" id="pago-transferencia" style="display:none">
+      <div class="pago-t">Últim pas: el pagament</div>
+      <p class="pago-s">Per confirmar la comanda, fes una transferència amb aquestes dades. Comencem el teu llibre tan bon punt la rebem.</p>
+      <div class="pago-f"><span>Import</span><b id="pago-importe">—</b></div>
+      <div class="pago-f"><span>Titular</span><b id="pago-titular">—</b></div>
+      <div class="pago-f"><span>IBAN</span><b id="pago-iban">—</b><button type="button" onclick="copiaPago('pago-iban',this)">Copia</button></div>
+      <div class="pago-f"><span>Concepte</span><b id="pago-concepto">—</b><button type="button" onclick="copiaPago('pago-concepto',this)">Copia</button></div>
+      <p class="pago-s" style="margin-top:12px">Fes una captura d'aquesta pantalla per tenir-ho a mà. Si tens qualsevol dubte, escriu-nos a hello@taleusstories.com.</p>
+    </div>
+    <!-- Mientras no estén puestos el titular y el IBAN, se avisa de que los datos llegarán por email -->
+    <div class="pago" id="pago-sin" style="display:none">
+      <div class="pago-t">Últim pas: el pagament</div>
+      <p class="pago-s">D'aquí a unes hores t'escriurem al correu electrònic amb les dades per fer la transferència (<b id="pago-importe2">—</b>). Comencem el teu llibre tan bon punt la rebem.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script src="/portadas.js?v=20261104a"></script>
+<script>
+let cur = 0;
+const TOTAL = 7;
+let gender = 'f';
+let narrator = 'other';
+let selectedPortada = '1';
+let formato = 'dura';
+var FORMATOS = { dura: 'Tapa dura · 61,50 €', blanda: 'Tapa blanda · 43,50 €' };
+var PRECIOS = { dura: '61,50 €', blanda: '43,50 €' };
+var TOTALES = { dura: '67,45 €', blanda: '49,45 €' };
+// Lo que se ENSEÑA en catalán (FORMATOS va tal cual al payload, en castellano): 'Tapa dura · 61,50 €' / 'Tapa tova · 43,50 €'
+var FORMATOS_CA = { dura: FORMATOS.dura, blanda: FORMATOS.blanda.replace('Tapa blanda', 'Tapa tova') };
+// Nombres de las portadas en catalán, solo para enseñarlos (TUSPortadas.diseno(n).nombre va al payload en castellano)
+var PORTADAS_CA = {1:'Vichy rosa',2:'Floral',3:'Escocès',4:'Escacs',5:'Ratlles mandarina',6:'Vichy verd',7:'Ratlles verdes',8:'Quadres',9:'Ratlles sàlvia',10:'Ikat blau',11:'Ratlles corall',12:'Escocès lavanda'};
+function portadaCa(n) { return PORTADAS_CA[+n] || TUSPortadas.diseno(n).nombre; }
+// «de» + nombre en catalán: «d'Antonio», «de Rosa»
+function deCa(x) { return (/^[aeiouàèéíïòóúüh]/i.test(String(x || '')) ? "d'" : 'de ') + x; }
+// ===== DATOS PARA EL PAGO POR TRANSFERENCIA: rellénalos tú (titular y IBAN de la cuenta donde cobras) =====
+// activo: false = de momento no se enseña nada del pago (ni en la revisión ni al final)
+var PAGO = { activo: false, titular: 'PON AQUÍ EL TITULAR DE LA CUENTA', iban: 'PON AQUÍ TU IBAN' };
+// ===== PAGO CON TARJETA (Stripe): enlaces de pago de cada formato =====
+var STRIPE = { dura: 'https://buy.stripe.com/3cIcN6ffoeQx3z21sN3Nm02', blanda: 'https://buy.stripe.com/00w4gAc3c9wd6Ledbv3Nm03' };
+// Donde se guarda la historia hasta que el cliente paga (Make: «Formulario → guardar historia hasta que pague»)
+var GUARDAR = 'https://hook.eu1.make.com/k3ru6hcymtkupq46hflxu9qmzloafpes';
+// Enlace de pago con el código del pedido (para recoger su historia al pagar) y el email del cliente ya puesto
+function enlacePago(pedido) {
+  var e = (document.getElementById('email').value || '').trim();
+  // Código de descuento: lo comprueba y lo aplica Stripe en su página de pago (aquí nunca se muestra ningún código)
+  var c = (document.getElementById('codigoDescuento').value || '').trim().toUpperCase();
+  return STRIPE[formato] + '?client_reference_id=' + encodeURIComponent(pedido) + (e ? '&prefilled_email=' + encodeURIComponent(e) : '') + (c ? '&prefilled_promo_code=' + encodeURIComponent(c) : '');
+}
+// De dónde llegó el cliente (Google, Bing, Instagram, TikTok…), según lo que apuntó la web en su primera visita
+function origenVisita() {
+  var o = {};
+  try { o = JSON.parse(localStorage.getItem('tus_origen') || '{}'); } catch (e) {}
+  var t = ((o.utm || '') + ' ' + (o.ref || '') + ' ' + (o.ua || '')).toLowerCase();
+  // Las IA van antes que Google y Bing (gemini.google.com, copilot.microsoft.com…) para no confundirlas con el buscador
+  var fuentes = [['mail.google', 'Email'], ['outlook', 'Email'], ['chatgpt', 'IA · ChatGPT'], ['openai', 'IA · ChatGPT'], ['gemini', 'IA · Gemini'], ['bard.google', 'IA · Gemini'], ['copilot', 'IA · Copilot'], ['perplexity', 'IA · Perplexity'], ['claude.ai', 'IA · Claude'], ['deepseek', 'IA · DeepSeek'], ['meta.ai', 'IA · Meta AI'], ['you.com', 'IA · You.com'], ['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['pinterest', 'Pinterest'], ['pin.it', 'Pinterest'], ['google', 'Google'], ['bing', 'Bing'], ['facebook', 'Facebook'], ['duckduckgo', 'DuckDuckGo'], ['yahoo', 'Yahoo'], ['ecosia', 'Ecosia'], ['mail', 'Email']];
+  var f = fuentes.find(function(x) { return t.indexOf(x[0]) >= 0; });
+  var nombre = f ? f[1] : (o.utm || o.ref || (o.fecha ? 'Directo (escribió la web o sin datos)' : 'Sin datos'));
+  // Si vino por un enlace con UTM (el anuncio de Meta, por ejemplo), se añade: «anuncio: instagram / anuncio / papa»
+  var u = {}; try { u = JSON.parse(localStorage.getItem('tus_utm') || '{}'); } catch (e) {}
+  var anuncio = u.source ? ' · anuncio: ' + [u.source, u.medium, u.campaign].filter(Boolean).join(' / ') + (u.fecha ? ' (' + u.fecha + ')' : '') : '';
+  return nombre + (o.fecha ? ' · entró por ' + (o.pag || '/') + ' el ' + o.fecha : '') + anuncio;
+}
+// El concepto de la transferencia: así sabes de qué pedido es cada pago
+function conceptoPago() {
+  var p = (document.getElementById('protName').value || '').trim(), e = (document.getElementById('email').value || '').trim();
+  return 'Libro ' + (p || 'Tale Us') + (e ? ' · ' + e : '');
+}
+function copiaPago(id, b) {
+  var t = document.getElementById(id).textContent;
+  try { navigator.clipboard.writeText(t).then(function() { b.textContent = 'Copiat!'; setTimeout(function() { b.textContent = 'Copia'; }, 1500); }); } catch (e) {}
+}
+
+// ¿Ver los personajes antes de dibujar? 'no' = sorpresa (por defecto) · 'si' = se los enviamos para que den el OK (24 h)
+var validarPers = 'no';
+function setValidar(v, el) {
+  validarPers = v === 'si' ? 'si' : 'no';
+  document.querySelectorAll('#vpNo,#vpSi').forEach(function(o) { o.classList.remove('selected'); });
+  (el || document.getElementById(validarPers === 'si' ? 'vpSi' : 'vpNo')).classList.add('selected');
+  if (el) saveDraft();   // al recuperar el borrador no se guarda a medias
+}
+
+function setFormato(val, el) {
+  formato = val;
+  document.querySelectorAll('.formato-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+// Las portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
+function pintaPortadas() {
+  var n = (document.getElementById('protName') || {}).value || 'Carmen';
+  document.querySelectorAll('.portada-card').forEach(function(c) {
+    c.querySelector('.pv').innerHTML = TUSPortadas.svg(+c.dataset.portada, n, null, { calidad: 'mini' });
+  });
+}
+(function() {
+  var g = document.getElementById('portada-grid');
+  TUSPortadas.disenos.forEach(function(e) {
+    var d = document.createElement('div'); d.className = 'portada-card' + (e.n === 1 ? ' selected' : ''); d.dataset.portada = e.n;
+    d.innerHTML = '<div class="pv"></div><div class="portada-card-num">' + portadaCa(e.n) + '</div>';
+    d.onclick = function() { selPortada(d, String(e.n)); };
+    g.appendChild(d);
+  });
+  pintaPortadas();
+  document.getElementById('protName').addEventListener('input', pintaPortadas);
+})();
+
+function selPortada(el, num) {
+  document.querySelectorAll('.portada-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedPortada = num;
+  var pn = document.getElementById('portada-nombre'); if (pn) pn.textContent = portadaCa(num);
+}
+
+function setNarrator(val, el) {
+  narrator = val;
+  document.querySelectorAll('#n1,#n2').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  if (typeof updateAll === 'function') updateAll();
+}
+
+// Palabras con género (catalán): [femenino, masculino]
+const G = {
+  el:   ['ella', 'ell'],
+  lo:   ['la',   'lo'],      // «Descriu-la» / «Descriu-lo»
+  unna: ['una',  'un'],
+  ninoa:['nena', 'nen'],
+  oa:   ['a',    'o'],       // ya no se usa en el texto catalán
+  petit: ['petita', 'petit'],
+  sol:   ['sola',   'sol'],
+  timid: ['tímida', 'tímid'],
+  entremaliat: ['entremaliada', 'entremaliat'],
+  curios: ['curiosa', 'curiós'],
+  name: ['ella', 'ell'],
+  vuestra: ['la vostra mama', 'el vostre papa'],
+  protag: ['La protagonista', 'El protagonista'],
+};
+
+function g(key) { return G[key][gender === 'f' ? 0 : 1]; }
+
+function nameOrPronoun() {
+  const n = document.getElementById('protName')?.value.trim();
+  return n || g('name');
+}
+
+function updateAll() {
+  // Si el protagonista cuenta su propia historia, las preguntas se le hacen de tú
+  var yo = narrator === 'protagonist';
+  document.querySelectorAll('[data-yo]').forEach(function(el) {
+    if (el.dataset.otro === undefined) el.dataset.otro = el.innerHTML;
+    el.innerHTML = yo ? el.dataset.yo : el.dataset.otro;
+  });
+  document.querySelectorAll('.G-suyo').forEach(function(el) { el.textContent = yo ? 'teu' : 'seu'; });
+  const nm = nameOrPronoun();
+  document.querySelectorAll('.G-name').forEach(function(el) { el.textContent = nm; });
+  var artProt = gender === 'f' ? 'la protagonista' : 'el protagonista';
+  var el1 = document.getElementById('txt-presentamos');
+  if (el1) el1.textContent = artProt;
+  var el2 = document.getElementById('txt-describirías');
+  if (el2) el2.textContent = artProt;
+  document.querySelectorAll('.G-el').forEach(function(el) { el.textContent = g('el'); });
+  document.querySelectorAll('.G-lo').forEach(function(el) { el.textContent = g('lo'); });
+  document.querySelectorAll('.G-unna').forEach(function(el) { el.textContent = g('unna'); });
+  document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
+  document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
+  ['petit', 'sol', 'timid', 'entremaliat', 'curios'].forEach(function(k) { document.querySelectorAll('.G-' + k).forEach(function(el) { el.textContent = g(k); }); });
+  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = g('vuestra'); });
+  document.querySelectorAll('.G-protag').forEach(function(el) { el.textContent = g('protag'); });
+  document.querySelectorAll('.G-deprot').forEach(function(el) { el.textContent = yo ? 'de tu' : (gender === 'f' ? 'de la protagonista' : 'del protagonista'); });
+  var cn = document.getElementById('childNames')?.value.trim() || 'els nens';
+  var cnh = document.getElementById('childNamesH');
+  if (cnh) cnh.textContent = cn;
+  // Guía de «Amor y familia»: si los niños son sus nietos, se pregunta por sus hijos y luego por los nietos
+  var gf = document.getElementById('guiaFamilia');
+  if (gf && yo) gf.innerHTML = (document.getElementById('relacionNinos') || {}).value === 'Son sus nietos'
+    ? '💡 Et pot ajudar: com vas conèixer la teva parella (si en tens) · com va ser tenir els teus fills · i, anys després, com vas viure l\'arribada de cada net · <b>i si recordes alguna anècdota, explica-la!</b>'
+    : '💡 Et pot ajudar: com vas conèixer la teva parella (si en tens) · com va ser l\'arribada de cadascun dels nens · com et va canviar la vida · <b>i si recordes alguna anècdota (la primera cita, el primer dia a casa amb el nadó…), explica-la!</b>';
+  else if (gf) gf.innerHTML = (document.getElementById('relacionNinos') || {}).value === 'Son sus nietos'
+    ? '💡 Et pot ajudar: com va conèixer la seva parella (si en té) · com va ser tenir els seus fills · i, anys després, com va viure l\'arribada de cada net · <b>i si recordes alguna anècdota, explica-la!</b>'
+    : '💡 Et pot ajudar: com va conèixer la seva parella (si en té) · com va ser l\'arribada de cadascun dels nens · com li va canviar la vida · <b>i si recordes alguna anècdota (la primera cita, el primer dia a casa amb el nadó…), explica-la!</b>';
+}
+document.addEventListener('change', function(e) { if (e.target.id === 'relacionNinos') updateAll(); if (e.target.id === 'bookType') relacionDesdeTipo(); });
+// Si el tipo de libro ya lo dice (la Abuela, Mamá, el Tío…), «Los niños del libro son sus…» se marca solo (se puede cambiar)
+// Al elegir quién es (Mamá, Abuelo…), también se marca si es mujer u hombre y de quién son los niños
+function tipoElegido() {
+  var t = document.getElementById('bookType').value;
+  if (/^(Mamá|Abuela|Tía)$/.test(t)) setGender('f', document.getElementById('gf'));
+  if (/^(Papá|Abuelo|Tío)$/.test(t)) setGender('m', document.getElementById('gm'));
+  var r = document.getElementById('relacionNinos'); if (r) r.value = '';   // se recalcula con la nueva elección
+  relacionDesdeTipo();
+}
+function relacionDesdeTipo() {
+  var r = document.getElementById('relacionNinos'), t = (document.getElementById('bookType') || {}).value || '';
+  if (!r || r.value) return;
+  r.value = /Abuel/.test(t) ? 'Son sus nietos' : /Mamá|Papá/.test(t) ? 'Son sus hijos' : /Tí[ao]/.test(t) ? 'Son sus sobrinos' : '';
+  updateAll();
+}
+
+function setGender(g_val, el) {
+  gender = g_val;
+  document.querySelectorAll('#gf,#gm').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  updateAll();
+}
+
+function onNameInput() { updateAll(); }
+
+// Datos mínimos antes de empezar: sin ellos no se puede hacer el libro ni contactar con el cliente
+function startForm() { relacionDesdeTipo(); go(1); }
+
+// Todos los campos son obligatorios (las fotos no): no se avanza hasta completar la pantalla actual.
+// Las preguntas de voz cuentan como respondidas con la grabación o con el texto escrito.
+function marcaFalta(el, lista, nombre) { el.classList.add('falta'); lista.push(nombre); }
+
+function validarPantalla(n) {
+  var s = document.getElementById('s' + n), falta = [];
+  if (!s) return falta;
+  s.querySelectorAll('.falta').forEach(function(e) { e.classList.remove('falta'); });
+  // Preguntas con nota de voz: valen la grabación o el texto escrito
+  s.querySelectorAll('.vc').forEach(function(vc) {
+    if (vc.dataset.opcional) return;
+    var i = vc.id.replace('vc', ''), ta = vc.querySelector('textarea');
+    if (!(audioBlobs[i] || pendingTx[i] || (ta && ta.value.trim()))) marcaFalta(vc, falta, '"' + vc.querySelector('.vc-q').textContent.trim().slice(0, 70) + '…"');
+  });
+  // Campos de texto, desplegables y cuadros sueltos (los ocultos no cuentan)
+  s.querySelectorAll('input[type=text], input[type=email], select, textarea[id]').forEach(function(el) {
+    // en ¿Cómo son?, en el repaso de la IA y en los marcados como opcionales no hace falta escribir
+    if (!el.offsetParent || el.closest('.asp') || el.closest('.ia') || el.dataset.opcional) return;
+    var ok = el.type === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) : !!el.value.trim();
+    if (!ok) {
+      var lab = el.closest('.field') && el.closest('.field').querySelector('label');
+      marcaFalta(el, falta, el.type === 'email' ? 'un correu electrònic vàlid' : (lab ? lab.textContent.trim() : (el.placeholder || 'un camp')));
+    }
+  });
+  // ¿Cómo son?: de la protagonista y de cada niño hace falta al menos pelo, ojos y piel
+  if (s.querySelector('#aspCards')) aspFaltan().forEach(function(t) { falta.push(t); });
+  // Sin repetir (p. ej. «Los niños del libro» por el nombre y por la edad)
+  return falta.filter(function(x, i) { return falta.indexOf(x) === i; });
+}
+
+function go(n) {
+  if (n > cur && cur < TOTAL) {
+    var falta = validarPantalla(cur);
+    if (falta.length) {
+      alert('Per continuar, completa:\n\n• ' + falta.join('\n• '));
+      var primero = document.querySelector('#s' + cur + ' .falta');
+      if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    // Al terminar una etapa, la IA repasa lo contado; al terminar el final, revisa la dedicatoria
+    if (ETAPAS[cur] && !iaListo(cur)) { iaRevisar(cur, n); return; }
+    if (cur === 6 && !dedListo()) { dedRevisar(n); return; }
+  }
+  var prevId = cur <= TOTAL ? 's' + cur : 'sFinal';
+  var prevEl = document.getElementById(prevId);
+  if (prevEl) prevEl.classList.remove('active');
+  cur = n;
+  // El teléfono de envío sale ya con el suyo (no se pide dos veces); se puede cambiar
+  var tEnv = document.getElementById('envioTelefono');
+  if (tEnv && !tEnv.value.trim()) tEnv.value = (document.getElementById('clienteTelefono').value || '').trim();
+  var nextId = n <= TOTAL ? 's' + n : 'sFinal';
+  var nextEl = document.getElementById(nextId);
+  if (nextEl) nextEl.classList.add('active');
+  if (n === 1) aspPinta();
+  var stepLbl = document.getElementById('stepLbl');
+  if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Pas ' + (n + 1) + ' de ' + TOTAL) : (n === TOTAL ? 'Revisió' : 'Fet!');
+  var prog = document.getElementById('prog');
+  if (prog) prog.style.width = Math.min((n / TOTAL) * 100, 100) + '%';
+  updateAll();
+  if (n === TOTAL) buildReview();
+  setTimeout(autoAltoTodos, 30);   // los cuadros de la pantalla nueva, a su altura (p. ej. al volver con el borrador)
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  marcaPaso(n);
+  invitaPinta(n);
+}
+
+// ---------- Formulario colaborativo ----------
+// Quien encarga el libro crea un enlace secreto (/aportar?c=…) y lo pasa a hermanos, pareja, amigos o a la propia
+// protagonista. Lo que aporten se guarda en /api/aportaciones (Cloudflare KV) y, al enviar el pedido, se añade a la
+// nota de su etapa firmado («Aportación de Jordi, su hijo»), así Make lo recibe sin cambiar nada. Desde aquí se
+// puede dejar fuera cualquier aportación.
+var APORTA_MAX_FOTOS = 8;   // en el pedido (el envío a Make no debe pasar de unos 5 MB)
+var APORTA_CAMPO = { infancia: 'q2_infancia', juventud: 'q3_sueno', familia: 'q4_pareja', ninos: 'q5_ninos', otros: 'q6_deseo' };
+var APORTA_ETAPA = { infancia: 'De pequeño/a', juventud: 'Juventud', familia: 'Amor y familia', ninos: 'Con los niños', otros: 'Otros recuerdos' };   // va al payload (aportaciones): en castellano
+var APORTA_ETAPA_CA = { infancia: 'De petit/a', juventud: 'Joventut', familia: 'Amor i família', ninos: 'Amb els nens', otros: 'Altres records' };   // solo para enseñar
+var aportaItems = null, aportaCargando = false;
+function aportaEsc(t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function aportaClave(it) { return (it.fecha || '') + '|' + (it.nombre || ''); }
+function aportaFuera() { try { return JSON.parse(document.getElementById('aportaFuera').value || '[]'); } catch (e) { return []; } }
+function aportaUrl() { var id = document.getElementById('aportaId').value; return id ? location.origin + '/aportar?c=' + id : ''; }
+function invitaPinta(n) {
+  var caja = document.getElementById('invita');
+  if (!caja) {
+    caja = document.createElement('div'); caja.className = 'invita'; caja.id = 'invita';
+    caja.addEventListener('click', invitaClic);
+  }
+  var pantalla = document.getElementById('s' + n);
+  // En la revisión no: quedaba entre la casilla de condiciones y «Ir a pagar» y despistaba en el móvil
+  if (n < 2 || n >= TOTAL || !pantalla) { if (caja.parentNode) caja.parentNode.removeChild(caja); return; }
+  var nav = pantalla.querySelector('.nav');
+  pantalla.insertBefore(caja, nav);
+  invitaHtml();
+  if (document.getElementById('aportaId').value && !aportaCargando) aportaCarga();
+}
+function invitaHtml() {
+  var caja = document.getElementById('invita'); if (!caja) return;
+  var prot = (document.getElementById('protName').value || '').trim() || g('vuestra');
+  var propia = narrator === 'protagonist';
+  var url = aportaUrl();
+  var h = '<div class="invita-t">👥 ' + (propia ? 'Algú més vol aportar els seus records?' : 'Algú més coneix bé ' + aportaEsc(prot) + '?') + '</div>';
+  if (!url) {
+    h += '<div class="invita-s">' + (propia ? 'La teva parella, els teus germans o un amic poden gravar els seus records sobre tu (i enviar fotos) des del mòbil.' : 'Els seus germans, la seva parella, un amic… o ' + aportaEsc(prot) + ' en persona poden gravar els seus records (i enviar fotos) des del mòbil.') + ' Tu veus tot el que envien i decideixes què entra al llibre.</div>' +
+      '<button type="button" class="invita-b" data-a="crear">Convida algú a aportar</button>';
+  } else {
+    h += '<div class="invita-s">Envia aquest enllaç a qui vulguis. Cada persona tria l\'etapa, grava o escriu el seu record (i puja fotos si vol) i ens arriba aquí.</div>' +
+      '<span class="invita-link">' + aportaEsc(url) + '</span>' +
+      '<button type="button" class="invita-b" data-a="wa">Envia per WhatsApp</button>' +
+      '<button type="button" class="invita-b sec" data-a="copiar">Copia l\'enllaç</button>' +
+      '<button type="button" class="invita-b sec" data-a="ver">Mira les aportacions</button>';
+    var fuera = aportaFuera();
+    if (aportaItems && aportaItems.length) {
+      h += '<div class="invita-lista"><div class="invita-s" style="margin-bottom:4px">Han aportat ' + aportaItems.length + (aportaItems.length === 1 ? ' record' : ' records') + '. Desmarca el que no vulguis que entri al llibre.</div>';
+      aportaItems.forEach(function (it) {
+        var k = aportaClave(it), off = fuera.indexOf(k) >= 0, txt = String(it.texto || '');
+        var et = it.etapa === 'infancia' ? (gender === 'f' ? 'De petita' : 'De petit') : (APORTA_ETAPA_CA[it.etapa] || '');
+        h += '<label class="invita-item' + (off ? ' fuera' : '') + '"><input type="checkbox" data-k="' + aportaEsc(k) + '"' + (off ? '' : ' checked') + '><span class="invita-txt"><span class="invita-quien">' + aportaEsc(it.nombre) + (it.relacion ? ' (' + aportaEsc(it.relacion) + ')' : '') + '</span><span class="invita-etapa">' + aportaEsc(et) + '</span><br>' + aportaEsc(txt.length > 220 ? txt.slice(0, 220) + '…' : txt) +
+          ((it.fotos && it.fotos.length) ? '<span class="invita-fotos">' + it.fotos.map(function (n) { return '<img loading="lazy" alt="Foto aportada" src="/api/aportaciones?c=' + encodeURIComponent(document.getElementById('aportaId').value) + '&f=' + (+n) + '">'; }).join('') + '</span>' : '') +
+          '</span></label>';
+      });
+      h += '</div>';
+    } else if (aportaItems) {
+      h += '<div class="invita-msg">Encara no ha arribat cap aportació. Pots continuar amb el formulari i tornar-hi a mirar més tard.</div>';
+    }
+  }
+  caja.innerHTML = h + '<div class="invita-msg" id="invitaMsg"></div>';
+}
+async function invitaClic(ev) {
+  var cb = ev.target.closest('input[type=checkbox][data-k]');
+  if (cb) {
+    var fuera = aportaFuera(), k = cb.getAttribute('data-k'), i = fuera.indexOf(k);
+    if (cb.checked && i >= 0) fuera.splice(i, 1); else if (!cb.checked && i < 0) fuera.push(k);
+    document.getElementById('aportaFuera').value = JSON.stringify(fuera); saveDraft();
+    cb.closest('.invita-item').classList.toggle('fuera', !cb.checked);
+    return;
+  }
+  var b = ev.target.closest('button[data-a]'); if (!b) return;
+  var a = b.getAttribute('data-a'), msg = document.getElementById('invitaMsg');
+  if (a === 'crear') {
+    var prot = (document.getElementById('protName').value || '').trim();
+    if (!prot) { msg.textContent = 'Primer escriu el nom del protagonista (al primer pas).'; return; }
+    b.disabled = true; b.textContent = 'Creant l\'enllaç…';
+    try {
+      var quien = narrator === 'protagonist' ? prot : (document.getElementById('orderer').value || '').trim();
+      var r = await fetch('/api/aportaciones', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'crear', prot: prot, quien: quien, g: gender }) });
+      var j = await r.json(); if (!r.ok || !j.id) throw new Error(j.error || 'error');
+      document.getElementById('aportaId').value = j.id; saveDraft();
+      aportaItems = []; invitaHtml();
+    } catch (e) { b.disabled = false; b.textContent = 'Convida algú a aportar'; msg.textContent = 'No hem pogut crear l\'enllaç. Torna-ho a provar d\'aquí a un moment.'; }
+  } else if (a === 'copiar') {
+    try { await navigator.clipboard.writeText(aportaUrl()); msg.textContent = 'Enllaç copiat.'; } catch (e) { msg.textContent = 'Mantén premut l\'enllaç per copiar-lo.'; }
+  } else if (a === 'wa') {
+    var p = (document.getElementById('protName').value || '').trim();
+    var t = 'Estic preparant un conte il·lustrat amb la història ' + deCa(p) + '. M\'ajudes amb els teus records? Pots gravar una nota de veu aquí: ' + aportaUrl();
+    window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank');
+  } else if (a === 'ver') {
+    msg.textContent = 'Mirant…'; await aportaCarga(); var m = document.getElementById('invitaMsg'); if (m && !m.textContent) m.textContent = 'Actualitzat.';
+  }
+}
+async function aportaCarga() {
+  var id = document.getElementById('aportaId').value; if (!id) return [];
+  aportaCargando = true;
+  try {
+    var r = await fetch('/api/aportaciones?c=' + encodeURIComponent(id));
+    var j = await r.json();
+    if (r.ok) aportaItems = j.items || [];
+  } catch (e) {}
+  aportaCargando = false;
+  invitaHtml();
+  return aportaItems || [];
+}
+// Al enviar el pedido: las aportaciones marcadas se añaden a la nota de su etapa, firmadas
+async function aportaAnade(payload) {
+  if (!document.getElementById('aportaId').value) return;
+  var items = await aportaCarga(), fuera = aportaFuera(), usadas = [], id = document.getElementById('aportaId').value;
+  payload.fotos_aportadas = [];
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    if (fuera.indexOf(aportaClave(it)) >= 0) continue;
+    var campo = APORTA_CAMPO[it.etapa] || APORTA_CAMPO.otros;
+    var firma = it.nombre + (it.relacion ? ', ' + it.relacion : '');
+    var nf = 0;
+    // Fotos aportadas: se descargan, se reducen como las demás (1024 px) y van con las fotos del pedido (carpeta de Drive)
+    for (var k = 0; it.fotos && k < it.fotos.length && payload.fotos_aportadas.length < APORTA_MAX_FOTOS; k++) {
+      try {
+        var r = await fetch('/api/aportaciones?c=' + encodeURIComponent(id) + '&f=' + (+it.fotos[k]));
+        if (!r.ok) continue;
+        var b64 = await photoToBase64(await r.blob());
+        if (b64) { payload.fotos_aportadas.push(b64); nf++; }
+      } catch (e) {}
+    }
+    var texto = String(it.texto || '').trim();
+    if (nf) texto += (texto ? '\n' : '') + '(' + (nf > 1 ? 'Envía ' + nf + ' fotos' : 'Envía 1 foto') + ', guardada' + (nf > 1 ? 's' : '') + ' en la carpeta del pedido con las demás fotos.)';
+    payload[campo] = (payload[campo] || '') + '\n\nAportación de ' + firma + ':\n' + texto;
+    usadas.push({ nombre: it.nombre, relacion: it.relacion || '', etapa: it.etapa, fotos: nf });
+  }
+  payload.aportaciones = usadas.length ? usadas.map(function (u) { return u.nombre + (u.relacion ? ' (' + u.relacion + ')' : '') + ' · ' + (APORTA_ETAPA[u.etapa] || u.etapa) + (u.fotos ? ' · ' + u.fotos + (u.fotos > 1 ? ' fotos' : ' foto') : ''); }).join('\n') : '';
+  payload.aportaciones_enlace = document.getElementById('aportaId').value;
+}
+
+// Medición del embudo: cada pantalla tiene su dirección (/formulario-nuevo/paso-2 … /revision, /enviado) y
+// Cloudflare Web Analytics la cuenta como una página vista; así el informe ve en qué paso se queda la gente.
+// Cada cambio de pantalla se añade al historial: el botón «atrás» del móvil vuelve a la pantalla anterior.
+function rutaPaso(n) { return '/ca/formulario-nuevo' + (n === 0 ? '' : n < TOTAL ? '/paso-' + (n + 1) : n === TOTAL ? '/revision' : '/enviado'); }
+function marcaPaso(n) {
+  try {
+    var ruta = rutaPaso(n);
+    if (location.pathname === ruta) return;
+    history.pushState({ paso: n }, '', ruta + location.search);
+  } catch (e) {}
+}
+try { history.replaceState({ paso: 0 }, '', rutaPaso(0) + location.search); } catch (e) {}
+window.addEventListener('popstate', function (ev) {
+  if (enviado) return;
+  var n = ev.state && typeof ev.state.paso === 'number' ? ev.state.paso : 0;
+  if (n !== cur && n <= TOTAL) go(n);
+  // Si no se ha podido ir a ese paso (falta algo por rellenar), la dirección vuelve a la pantalla en la que sigue
+  if (n !== cur) { try { history.replaceState({ paso: cur }, '', rutaPaso(cur) + location.search); } catch (e) {} }
+});
+
+var recorders = {}, audioBlobs = {}, timers = {}, recSecs = {}, transcribedTexts = {}, pendingTx = {};
+
+async function blobToBase64(blob) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      var result = reader.result;
+      var base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function transcribeAudio(idx, blob) {
+  var bd = document.getElementById('bd' + idx);
+  if (bd) { bd.textContent = 'Transcrivint…'; bd.classList.add('show'); }
+  try {
+    var base64 = await blobToBase64(blob);
+    var res = await fetch('/api/transcribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audioBase64: base64, mimeType: blob.type, idioma: 'ca' })
+    });
+    var data = await res.json();
+    if (res.ok && data.text) {
+      transcribedTexts[idx] = data.text.trim();
+      if (bd) bd.textContent = 'Gravat';
+      // La transcripción se guarda en el cuadro de texto, pero no se enseña: al seguir, la IA enseña el resumen
+      // (quien quiera verla o escribir más, la tiene en «Prefiero escribir»)
+      var tfBox = document.getElementById('tf' + idx);
+      var ta = tfBox && tfBox.querySelector('textarea');
+      if (ta) {
+        ta.value = ta.value.trim() ? ta.value.trim() + '\n\n' + transcribedTexts[idx] : transcribedTexts[idx];
+        saveDraft();
+        tfEtiqueta(idx);
+      }
+    } else {
+      txFailed(idx);
+    }
+  } catch (err) {
+    txFailed(idx);
+  }
+}
+
+function txFailed(idx) {
+  var bd = document.getElementById('bd' + idx);
+  if (bd) bd.textContent = 'No s\'ha pogut transcriure: escriu-ho a sota o torna a gravar';
+  transcribedTexts[idx] = '';
+  var tfBox = document.getElementById('tf' + idx);
+  if (tfBox) tfBox.classList.add('show');
+}
+
+async function toggleRec(idx) {
+  var btn = document.getElementById('rb' + idx);
+  if (recorders[idx] && recorders[idx].state === 'recording') { recorders[idx].stop(); return; }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    var permBanner = document.getElementById('permBanner');
+    if (permBanner) permBanner.classList.remove('show');
+    // Calidad de voz suficiente para transcribir y archivos pequeños (notas largas no superan el límite de Netlify)
+    var mr;
+    try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 32000 }); } catch (e2) { mr = new MediaRecorder(stream); }
+    recorders[idx] = mr;
+    var chunks = [];
+    mr.ondataavailable = function(e) { chunks.push(e.data); };
+    mr.onstop = function() {
+      stream.getTracks().forEach(function(t) { t.stop(); });
+      // El iPhone graba en mp4, no en webm: usar el formato real para que Whisper lo reconozca
+      var blob = new Blob(chunks, { type: (mr.mimeType || 'audio/webm').split(';')[0] });
+      audioBlobs[idx] = blob;
+      var url = URL.createObjectURL(blob);
+      var a = document.getElementById('ap' + idx);
+      a.src = url; a.classList.add('show');
+      document.getElementById('bd' + idx).classList.add('show');
+      document.getElementById('bc' + idx).classList.add('show');
+      document.getElementById('vc' + idx).classList.add('done');
+      document.getElementById('vc' + idx).classList.remove('falta');
+      btn.classList.remove('rec');
+      btn.innerHTML = '<span class="rdot"></span> Grava';
+      clearInterval(timers[idx]);
+      pendingTx[idx] = transcribeAudio(idx, blob).finally(function() { delete pendingTx[idx]; });
+    };
+    mr.start();
+    btn.classList.add('rec');
+    btn.innerHTML = '<span class="rdot"></span> Atura';
+    recSecs[idx] = 0;
+    timers[idx] = setInterval(function() {
+      recSecs[idx]++;
+      document.getElementById('rt' + idx).textContent = fmt(recSecs[idx]);
+    }, 1000);
+  } catch(e) {
+    var pb = document.getElementById('permBanner');
+    if (pb) pb.classList.add('show');
+    var tf = document.getElementById('tf' + idx);
+    if (tf) tf.classList.add('show');
+  }
+}
+
+function clearRec(idx) {
+  try { if (recorders[idx]) recorders[idx].stop(); } catch(e) {}
+  audioBlobs[idx] = null;
+  // Quitar del cuadro de texto la transcripción de la grabación que se descarta
+  var ta = document.querySelector('#tf' + idx + ' textarea');
+  if (ta && transcribedTexts[idx]) { ta.value = ta.value.replace(transcribedTexts[idx], '').trim(); autoAlto(ta); saveDraft(); }
+  transcribedTexts[idx] = '';
+  var a = document.getElementById('ap' + idx);
+  a.src = ''; a.classList.remove('show');
+  var bd = document.getElementById('bd' + idx);
+  bd.textContent = 'Gravat';
+  bd.classList.remove('show');
+  document.getElementById('bc' + idx).classList.remove('show');
+  document.getElementById('vc' + idx).classList.remove('done');
+  document.getElementById('rt' + idx).textContent = '0:00';
+  var btn = document.getElementById('rb' + idx);
+  btn.classList.remove('rec');
+  btn.innerHTML = '<span class="rdot"></span> Grava';
+  clearInterval(timers[idx]);
+}
+
+function toggleTF(idx) {
+  var tf = document.getElementById('tf' + idx);
+  if (tf) { tf.classList.toggle('show'); autoAlto(tf.querySelector('textarea')); }
+}
+
+// Si ya hay algo contado (grabado o escrito), el botón invita a verlo y corregirlo
+function tfEtiqueta(idx) {
+  var b = document.querySelector('#vc' + idx + ' .btn-tw'), ta = document.querySelector('#tf' + idx + ' textarea');
+  if (b && ta) b.textContent = ta.value.trim() ? '✎ Mira i corregeix el que has explicat' : 'Prefereixo escriure';
+}
+
+// Los cuadros de texto crecen con lo que se escribe (o se transcribe): siempre se lee todo sin hacer scroll dentro
+function autoAlto(ta) {
+  if (!ta || !ta.offsetParent) return;
+  ta.style.height = 'auto';
+  ta.style.height = (ta.scrollHeight + 4) + 'px';
+}
+function autoAltoTodos() { document.querySelectorAll('textarea').forEach(autoAlto); }
+document.addEventListener('input', function(e) { if (e.target.tagName === 'TEXTAREA') autoAlto(e.target); });
+window.addEventListener('resize', autoAltoTodos);
+
+function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+
+function selTone(el) {
+  document.querySelectorAll('.tone-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+// Otras fotos: se van sumando (hasta 3) en vez de sustituirse, y se ve una miniatura de cada una
+var fotosExtra = [];
+function handleFiles(input) {
+  Array.from(input.files || []).forEach(function(f) { if (fotosExtra.length < 3 && /^image\//.test(f.type || 'image/')) fotosExtra.push(f); });
+  input.value = '';   // así se puede volver a elegir otra foto (o la misma)
+  pintaFotosExtra();
+}
+function pintaFotosExtra() {
+  var list = document.getElementById('fileList');
+  list.innerHTML = '';
+  list.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px;margin-top:12px';
+  fotosExtra.forEach(function(f, i) {
+    var d = document.createElement('div');
+    d.style.cssText = 'width:96px;text-align:center;font-size:12px';
+    var img = document.createElement('img');
+    img.src = URL.createObjectURL(f);
+    img.style.cssText = 'width:96px;height:96px;object-fit:cover;border-radius:12px;border:1.5px solid var(--border);display:block';
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = 'Treu';
+    b.style.cssText = 'background:none;border:none;color:var(--coral);text-decoration:underline;cursor:pointer;font-family:var(--texto);font-size:12px;margin-top:4px';
+    b.onclick = function() { fotosExtra.splice(i, 1); pintaFotosExtra(); };
+    d.appendChild(img); d.appendChild(b); list.appendChild(d);
+  });
+  var t = document.querySelector('.uzone[onclick*="fileInput"] .uzone-txt');
+  if (t) t.textContent = fotosExtra.length >= 3 ? 'Ja tens 3 fotos (treu-ne alguna per canviar-la)' : (fotosExtra.length ? 'Afegeix una altra foto (' + fotosExtra.length + ' de 3)' : 'Fes clic per afegir fotos');
+}
+
+function handlePhoto(input, txtId) {
+  var txt = document.getElementById(txtId);
+  if (txt && input.files[0]) txt.textContent = '✓ ' + input.files[0].name + ' (fes clic per canviar-la)';
+}
+
+// Reduce la foto a 1024 px en JPEG y devuelve el base64 sin prefijo (el envío pesa poco)
+function photoToBase64(file) {
+  return new Promise(function(resolve) {
+    if (!file) return resolve('');
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function() {
+      var scale = Math.min(1, 1024 / Math.max(img.width, img.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.onerror = function() { URL.revokeObjectURL(url); resolve(''); };
+    img.src = url;
+  });
+}
+
+// Guardado automático en este navegador (textos y elecciones; los audios ya quedan transcritos en su cuadro)
+var DRAFT_KEY = 'tus_borrador_v2';   // distinto del formulario anterior: las preguntas no son las mismas
+
+var enviado = false;
+
+function saveDraft() {
+  if (enviado) return; // tras enviar, un clic en la pantalla final no debe recrear el borrador
+  try {
+    var d = { gender: gender, narrator: narrator, portada: selectedPortada, formato: formato, validar: validarPers, paso: cur <= TOTAL ? cur : 0, fields: {}, tf: {} };
+    document.querySelectorAll('input[type=text][id],input[type=email][id],select[id],textarea[id]').forEach(function(el) { d.fields[el.id] = el.value; });
+    for (var i = 0; i <= 13; i++) {
+      var ta = document.querySelector('#tf' + i + ' textarea');
+      if (ta && ta.value) d.tf[i] = ta.value;
+    }
+    // El tono se guarda con su valor en castellano (data-valor): el borrador es el mismo que el de la versión castellana
+    var t = document.querySelector('.tone-opt.selected');
+    d.tone = t ? t.dataset.valor : '';
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+  } catch (e) {}
+}
+
+// Aviso al volver: se retoma el borrador guardado, con opción de empezar de cero
+function avisoBorrador() {
+  var b = document.createElement('div');
+  b.style.cssText = 'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9999;background:#4A2C1F;color:#FBFAF7;font:600 14px system-ui,sans-serif;padding:10px 16px;border-radius:100px;box-shadow:0 8px 20px rgba(0,0,0,.25);display:flex;gap:12px;align-items:center;max-width:calc(100% - 32px)';
+  b.innerHTML = 'Continuem on ho vas deixar <button type="button" style="all:unset;cursor:pointer;text-decoration:underline">Comença de zero</button> <button type="button" aria-label="Tanca" style="all:unset;cursor:pointer;padding:0 4px">✕</button>';
+  var bs = b.querySelectorAll('button');
+  bs[0].onclick = function() { if (confirm('Vols esborrar el que has escrit i començar de nou?')) { enviado = true; try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} location.reload(); } };
+  bs[1].onclick = function() { b.remove(); };
+  document.body.appendChild(b);
+  setTimeout(function() { if (b.parentNode) b.remove(); }, 15000);
+}
+
+// Niños: una fila por niño (nombre y edad de hoy); se guardan juntos en #childNames y #childAges
+function ninosSync() {
+  var noms = [], edades = [];
+  document.querySelectorAll('#ninosFilas .nino-fila').forEach(function(f) {
+    var n = f.children[0].value.trim(), e = f.children[1].value.trim();
+    if (n) { noms.push(n); if (e) edades.push(n + ' ' + e); }
+  });
+  var cn = document.getElementById('childNames'), ca = document.getElementById('childAges');
+  cn.value = noms.join(', '); ca.value = edades.join(', ');
+  cn.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function ninoFila(n, e, foco) {
+  var f = document.createElement('div'); f.className = 'nino-fila';
+  f.innerHTML = '<input type="text" placeholder="Nom"><input type="text" placeholder="Edat" autocomplete="off"><button type="button" aria-label="Treu">✕</button>';
+  f.children[0].value = n || ''; f.children[1].value = e || '';
+  f.children[0].oninput = f.children[1].oninput = ninosSync;
+  f.children[2].onclick = function() { f.remove(); if (!document.querySelector('#ninosFilas .nino-fila')) ninoFila(); ninosSync(); };
+  document.getElementById('ninosFilas').appendChild(f);
+  // En el móvil no se pone el cursor solo: el iPhone salta y deja la pantalla en blanco un momento
+  if (foco && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) f.children[0].focus();
+}
+function ninosCarga() {
+  var cont = document.getElementById('ninosFilas'); if (!cont) return; cont.innerHTML = '';
+  var noms = (document.getElementById('childNames').value || '').split(/\s*,\s*|\s+y\s+|\s+e\s+/i).map(function(s) { return s.trim(); }).filter(Boolean);
+  var partes = (document.getElementById('childAges').value || '').split(/\s*,\s*/);
+  noms.forEach(function(n) {
+    var p = partes.filter(function(x) { return x.toLowerCase().indexOf(n.toLowerCase() + ' ') === 0; })[0];
+    ninoFila(n, p ? p.slice(n.length).trim() : '');
+  });
+  if (!noms.length) ninoFila();
+}
+
+function loadDraft() {
+  try {
+    var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    if (!d) return;
+    Object.keys(d.fields || {}).forEach(function(id) { var el = document.getElementById(id); if (el) el.value = d.fields[id]; });
+    Object.keys(d.tf || {}).forEach(function(i) {
+      var box = document.getElementById('tf' + i);
+      var ta = box && box.querySelector('textarea');
+      // Lo ya contado se guarda sin enseñarlo: la tarjeta queda marcada como hecha
+      if (ta) { ta.value = d.tf[i]; var vc = document.getElementById('vc' + i), bd = document.getElementById('bd' + i); if (vc) vc.classList.add('done'); if (bd) { bd.textContent = 'Desat'; bd.classList.add('show'); } tfEtiqueta(i); }
+    });
+    if (d.gender) setGender(d.gender, document.getElementById(d.gender === 'm' ? 'gm' : 'gf'));
+    if (d.narrator) setNarrator(d.narrator, document.getElementById(d.narrator === 'protagonist' ? 'n1' : 'n2'));
+    if (d.formato) setFormato(d.formato, document.getElementById(d.formato === 'blanda' ? 'fb' : 'fd'));
+    if (d.validar) setValidar(d.validar);
+    if (d.portada) { var pc = document.querySelector('.portada-card[data-portada="' + d.portada + '"]'); if (pc) selPortada(pc, d.portada); }
+    pintaPortadas();
+    if (d.tone) document.querySelectorAll('.tone-opt').forEach(function(o) { if (o.dataset.valor === d.tone) selTone(o); });
+    // Volver al paso en el que se quedó (sin saltar a la revisión)
+    if (d.paso > 0 && d.paso < TOTAL) { go(d.paso); avisoBorrador(); }
+  } catch (e) {}
+}
+
+document.addEventListener('input', saveDraft);
+// Contador de la dedicatoria (máx. 350 caracteres para que quepa bien en la contraportada)
+function cuentaDed() { var d = document.getElementById('dedicatoria'); document.getElementById('dedCont').textContent = d.value.length; }
+document.getElementById('dedicatoria').addEventListener('input', cuentaDed);
+window.addEventListener('load', cuentaDed);   // por si vuelve con el borrador guardado
+
+// Dedicatorias de ejemplo con los nombres del pedido: con un clic pasan al cuadro, donde se pueden retocar
+function ejemplosDedicatoria() {
+  var ninos = (document.getElementById('childNames').value || '').trim();
+  // Con cómo le llaman los niños (mamá, yaya…): «lo mucho que te quiere mamá», no «…te quiere Javier»
+  var apodo = ((document.getElementById('nicknames') || {}).value || '').split(/\s*[,;\/]\s*|\s+o\s+/)[0].trim();
+  var prot = apodo || (document.getElementById('protName').value || '').trim() || g('vuestra');
+  var varios = !ninos || /,|\sy\s|\se\s|\si\s/.test(ninos);
+  var a = ninos || 'Estimats nens';
+  if (varios) return [
+    a + ': aquest llibre és perquè no oblideu mai d\'on veniu. És la història ' + deCa(prot) + ', i també una mica la vostra. Us estimem fins a l\'infinit.',
+    'Per a ' + (ninos || 'vosaltres') + ', perquè quan sigueu grans pugueu tornar a aquestes pàgines i recordar com us estima ' + prot + '.',
+    'Hi ha històries que mereixen quedar-se per sempre. Aquesta és la ' + deCa(prot) + ', explicada per a ' + (ninos || 'vosaltres') + ' amb tot l\'amor del món.'
+  ];
+  return [
+    a + ': aquest llibre és perquè no oblidis mai d\'on vens. És la història ' + deCa(prot) + ', i també una mica la teva. T\'estimem fins a l\'infinit.',
+    'Per a ' + ninos + ', perquè quan siguis gran puguis tornar a aquestes pàgines i recordar com t\'estima ' + prot + '.',
+    'Hi ha històries que mereixen quedar-se per sempre. Aquesta és la ' + deCa(prot) + ', explicada per a ' + ninos + ' amb tot l\'amor del món.'
+  ];
+}
+function pintaEjemplosDed() {
+  var cont = document.getElementById('dedEjemplos'), actual = document.getElementById('dedicatoria').value.trim();
+  cont.innerHTML = '';
+  ejemplosDedicatoria().forEach(function (t) {
+    var d = document.createElement('div'), b = document.createElement('button');
+    d.className = 'ded-op' + (actual === t ? ' elegida' : '');
+    d.textContent = '"' + t + '"';
+    b.type = 'button'; b.textContent = actual === t ? '✓ Triada' : 'Fes servir aquesta dedicatòria';
+    b.onclick = function () {
+      var ta = document.getElementById('dedicatoria');
+      ta.value = t; ta.dispatchEvent(new Event('input', { bubbles: true }));
+      pintaEjemplosDed(); ta.focus();
+    };
+    d.appendChild(b); cont.appendChild(d);
+  });
+}
+// Se repintan al cambiar los nombres, el género o la propia dedicatoria
+document.addEventListener('input', function (e) { if (['childNames', 'protName', 'nicknames', 'dedicatoria'].indexOf(e.target.id) >= 0) pintaEjemplosDed(); });
+document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#gf,#gm')) pintaEjemplosDed(); });
+window.addEventListener('load', pintaEjemplosDed);
+// Al rellenar un campo marcado en rojo, se quita la marca
+document.addEventListener('input', function(e) { var f = e.target.closest && e.target.closest('.falta'); if (f && (e.target.value || '').trim()) f.classList.remove('falta'); });
+document.addEventListener('change', function(e) { if (e.target.classList && e.target.classList.contains('falta') && e.target.value) e.target.classList.remove('falta'); });
+document.addEventListener('click', function() { setTimeout(saveDraft, 0); });
+
+// Etapas: la nota principal y, si la hay, la anécdota
+var CHAPTERS = [
+  { name: 'De nadó i de petit/a', q: 0 },
+  { name: 'La joventut', q: 2 },
+  { name: 'Amor i família', q: 4 },
+  { name: 'Amb els nens avui', q: 6 },
+  { name: 'El final del llibre', q: 8 },
+];
+
+function buildReview() {
+  document.getElementById('rv-prot').textContent  = document.getElementById('protName').value || '—';
+  document.getElementById('rv-child').textContent = document.getElementById('childNames').value || '—';
+  var bt = document.getElementById('bookType');   // se enseña la etiqueta catalana; el valor (castellano) va al payload
+  document.getElementById('rv-type').textContent  = bt.value && bt.selectedIndex >= 0 ? bt.options[bt.selectedIndex].text : '—';
+  document.getElementById('rv-ord').textContent   = document.getElementById('orderer').value || '—';
+  document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
+  var ev = function(id){ return document.getElementById(id).value.trim(); };
+  document.getElementById('rv-tel').textContent = ev('clienteTelefono') || '—';
+  document.getElementById('rv-ded').textContent = ev('dedicatoria') ? '"' + ev('dedicatoria') + '" — ' + ev('dedicatoriaFirma') : '—';
+  var envio = [ev('envioNombre'), ev('envioDireccion'), (ev('envioCP') + ' ' + ev('envioCiudad')).trim(), ev('envioProvincia'), ev('envioTelefono')].filter(Boolean).join(' · ');
+  document.getElementById('rv-envio').textContent = envio || '—';
+  document.getElementById('rv-portada').textContent = portadaCa(selectedPortada);
+  document.getElementById('rv-formato').textContent = FORMATOS_CA[formato];
+  document.getElementById('rv-importe').textContent = PRECIOS[formato] + ' + 5,95 € d\'enviament = ' + TOTALES[formato];
+  document.getElementById('rv-pago').style.display = '';
+  var tEl = document.querySelector('.tone-opt.selected .tt');
+  document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrat';
+  document.getElementById('rv-validar').textContent = validarPers === 'si' ? 'Els vull veure abans (24 h per donar l\'OK)' : 'Sorpresa: no els vull veure abans';
+  var c = document.getElementById('rv-chapters');
+  c.innerHTML = '';
+  CHAPTERS.forEach(function(ch) {
+    var ok = !!(audioBlobs[ch.q] || txtVc(ch.q)), an = ch.an != null && !!(audioBlobs[ch.an] || txtVc(ch.an));
+    var row = document.createElement('div');
+    row.className = 'sr';
+    row.innerHTML = '<span class="sk" style="text-transform:none;letter-spacing:0;font-size:12px;">' + ch.name + '</span><span class="sv">' + (ok ? '✓ Explicat' + (an ? ' · amb anècdota' : '') : 'Falta') + '</span>';
+    c.appendChild(row);
+  });
+}
+
+async function submit() {
+  var btn = document.querySelector('.btn-next[onclick="submit()"]');
+  var acepto = document.getElementById('aceptoPrivacidad');
+  if (acepto && !acepto.checked) {
+    alert('Per enviar la teva història, marca la casella d\'acceptació de les condicions i la privacitat.');
+    acepto.closest('.sb').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviant…'; }
+
+  // No enviar hasta que terminen las notas de voz que aún se están transcribiendo
+  var pend = Object.keys(pendingTx).map(function(k) { return pendingTx[k]; });
+  if (pend.length) {
+    if (btn) btn.textContent = 'Acabant de transcriure…';
+    await Promise.all(pend);
+    if (btn) btn.textContent = 'Enviant…';
+  }
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+  var payload = {
+    protagonistName: document.getElementById('protName').value || '',
+    childName:       document.getElementById('childNames').value || '',
+    gender:          gender === 'f' ? 'mujer' : 'hombre',
+    relacion:        document.getElementById('bookType').value || '',   // quién es para los niños: Mamá, Abuela, Tío…
+    senderName:      document.getElementById('orderer').value || '',
+    senderEmail:     document.getElementById('email').value || '',
+    cliente_telefono: val('clienteTelefono'),
+    // Portada: en Make todas salen por la ruta «Estilo 1», cuya plantilla elige el diseño con portadaColorId (1–8)
+    portadaEstilo:   'Estilo 1',
+    portadaDiseno:   Number(selectedPortada),
+    portadaNombre:   TUSPortadas.diseno(selectedPortada).nombre,
+    portadaColor:    'Portada ' + selectedPortada + ' · ' + TUSPortadas.diseno(selectedPortada).nombre,
+    portadaColorHex: TUSPortadas.diseno(selectedPortada).lomo,
+    portadaColorId:  String(selectedPortada),
+    formato:         FORMATOS[formato],
+    q1_nacimiento:   document.getElementById('birthPlace') ? document.getElementById('birthPlace').value : '',
+    q1_apodo:        document.getElementById('job') ? document.getElementById('job').value : '',
+    q2_juego:        document.getElementById('sport') ? document.getElementById('sport').value : '',
+    q5_lugar:        document.getElementById('places') ? document.getElementById('places').value : '',
+    tone:            (document.querySelector('.tone-opt.selected') ? document.querySelector('.tone-opt.selected').dataset.valor : 'Equilibrado'),
+    narrator:        narrator === 'protagonist' ? 'protagonista' : 'otra_persona',
+    // ¿Quiere ver los personajes antes? 'no' = sorpresa (Cris los valida sin enviárselos)
+    validar_personajes: validarPers,
+    // Datos rápidos que antes no se enviaban
+    d_hermanos:          val('siblings'),
+    d_mascota:           val('pets'),
+    d_lugar_infancia:    val('childhoodPlace'),
+    d_estudios:          val('school'),
+    d_viaje:             val('travel'),
+    d_edades:            val('childAges'),
+    d_aspecto_ninos:     val('childLooks'),
+    // ¿Cómo son? (elegido con botones): una línea por persona, para la ficha de personajes y las ilustraciones
+    aspecto_familia:     aspTexto(),
+    d_apodos:            val('nicknames'),
+    d_historia_conocida: val('knownStory'),
+    d_no_mostrar:        val('noShow'),
+    // Dedicatoria de la contraportada (se imprime tal cual)
+    dedicatoria:         val('dedicatoria'),
+    dedicatoria_firma:   val('dedicatoriaFirma'),
+    // Dirección de envío (para la imprenta)
+    envio_nombre:        val('envioNombre'),
+    envio_direccion:     val('envioDireccion'),
+    envio_cp:            val('envioCP'),
+    envio_ciudad:        val('envioCiudad'),
+    envio_provincia:     val('envioProvincia'),
+    envio_telefono:      val('envioTelefono'),
+  };
+
+  // Formulario por etapas: cada nota va al campo que ya usa Make, y las respuestas a las preguntas de la IA
+  // se añaden a la nota principal de su etapa. Los resúmenes confirmados van aparte (resumen_<etapa>).
+  var fieldMap = {0:'q2_infancia',1:'q2_recuerdo',2:'q3_sueno',3:'q3_aventura',4:'q4_pareja',5:'q4_hijos',6:'q5_ninos',7:'q5_actividad',8:'q6_consejo',9:'q6_deseo'};
+  for (var i = 0; i <= 9; i++) {
+    var tf = document.querySelector('#tf' + i + ' textarea');
+    // El cuadro de texto ya contiene la transcripción (y lo que el cliente haya corregido)
+    var value = (tf && tf.value && tf.value.trim()) ? tf.value.trim() : (transcribedTexts[i] || '').trim();
+    if (value) payload[fieldMap[i]] = value;
+  }
+  Object.keys(ETAPAS).forEach(function(n) {
+    var et = ETAPAS[n], e = ia.etapas[n], resp = iaRespuestas(e), campo = fieldMap[et.vcs[0]];
+    if (resp) payload[campo] = (payload[campo] || '') + '\n\nMás detalles (respuestas a nuestras preguntas):\n' + resp;
+    payload['resumen_' + et.clave] = e && e.resumen ? e.resumen : '';
+  });
+  // Formulario colaborativo: lo que han aportado otras personas, en la nota de su etapa (si falla, se sigue sin ello)
+  try { await aportaAnade(payload); } catch (e) {}
+  payload.q1_nombre = val('tresPalabras');            // cómo es en 3 palabras
+  payload.edad_protagonista = val('protAge');
+  payload.relacion_ninos = val('relacionNinos');       // hijos, nietos, sobrinos…
+  payload.situaciones_delicadas = val('delicadas');
+  payload.dedicatoria_corregida = ia.ded && ia.ded.corregida ? 'sí' : 'no';
+  payload.version_formulario = 'etapas';
+  payload.acepta_privacidad = 'sí';   // no se puede enviar sin marcar la casilla
+  payload.idioma = 'ca';               // pedido hecho desde la versión catalana del formulario
+  payload.origen = origenVisita();     // de dónde llegó a la web la primera vez (lo apunta functions/_middleware.js)
+
+  // Fotos: reducidas en el navegador para que el envío pese poco
+  payload.foto_cara  = await photoToBase64(document.getElementById('fotoCara').files[0]);
+  payload.foto_ninos = await aspCollageNinos();   // una foto por niño, con su nombre debajo
+  payload.foto_familia = await aspCollageFamilia();   // pareja, padres y hermanos con foto, en una sola imagen
+  payload.fotos_extra = [];
+  var extras = fotosExtra.slice(0, 3);
+  for (var j = 0; j < extras.length; j++) {
+    var b64 = await photoToBase64(extras[j]);
+    if (b64) payload.fotos_extra.push(b64);
+  }
+  // Las fotos de las aportaciones van detrás (Make las guarda todas en la carpeta del pedido)
+  if (payload.fotos_aportadas && payload.fotos_aportadas.length) payload.fotos_extra = payload.fotos_extra.concat(payload.fotos_aportadas);
+  delete payload.fotos_aportadas;
+
+  // Primero se paga: la historia se guarda aparte y solo empieza el libro cuando Stripe confirma el pago
+  var pedido = 'TUS' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
+  try {
+    var res = await fetch(GUARDAR, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pedido: pedido, datos: JSON.stringify(payload) })
+    });
+    if (res.ok) {
+      enviado = true;
+      try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+      if (btn) btn.textContent = 'Et portem a pagar…';
+      location.href = enlacePago(pedido);
+    } else {
+      alert('Hi ha hagut un error en desar la teva història. Si us plau, torna-ho a provar.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Vés a pagar ♥'; }
+    }
+  } catch(err) {
+    alert('Error de connexió. Si us plau, torna-ho a provar.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Vés a pagar ♥'; }
+  }
+}
+
+// ---------- Repaso de la IA al terminar cada etapa ----------
+// Al pulsar «Siguiente» en una etapa, /api/ayudante lee lo contado y devuelve un resumen
+// (que la familia puede corregir) y, si falta algo importante, hasta 3 preguntas. Si la función falla,
+// se sigue sin repaso: el formulario nunca se bloquea. El estado va en #iaDatos, así entra en el borrador.
+var ETAPAS = {
+  2: { clave: 'infancia', vcs: [0], nombre: function() { return 'De bebé y de pequeñ' + g('oa'); },
+       imp: ['Dónde nació y dónde creció', 'Cómo era de carácter de pequeño/a', 'Con quién vivía (padres, hermanos) y si tenía mascota', 'Si tenía hermanos: cuántos eran chicos y cuántas chicas, y si eran mayores o pequeños que él o ella (si ya lo han dicho, no lo preguntes)', 'A qué le gustaba jugar o algún amigo o amiga especial'] },
+  3: { clave: 'juventud', vcs: [2], nombre: function() { return 'La juventud'; },
+       imp: ['Qué le apasionaba de adolescente o de joven', 'Qué estudió o cuál fue su primer trabajo', 'Cómo llegó a dedicarse a lo que hace hoy'] },
+  4: { clave: 'familia', vcs: [4], nombre: function() { return 'Amor y familia'; },
+       imp: ['Si tiene o tuvo pareja: su nombre y cómo se conocieron (si no hay pareja, no preguntes)', 'Cómo fue la llegada de cada uno de los niños', 'Si los niños son sus nietos o sobrinos: quiénes son sus padres y qué relación tienen con la protagonista'] },
+  5: { clave: 'ninos', vcs: [6], nombre: function() { return 'Con los niños hoy'; },
+       imp: ['Cómo es cada uno de los niños (carácter y qué le encanta)', 'Qué hacen juntos', 'Algo que sea solo suyo: una tradición, una frase, un lugar o un juego'] }
+};
+var ia = { etapas: {}, ded: {} };
+function iaGuarda() { document.getElementById('iaDatos').value = JSON.stringify(ia); saveDraft(); }
+function iaCarga() { try { var v = JSON.parse(document.getElementById('iaDatos').value || 'null'); if (v && v.etapas) ia = v; ia.ded = ia.ded || {}; } catch (e) {} }
+function txtVc(i) { var ta = document.querySelector('#tf' + i + ' textarea'); return ta ? ta.value.trim() : ''; }
+function vId(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function iaFirma(n) { return ETAPAS[n].vcs.map(txtVc).join('\u0001'); }
+function iaListo(n) { var e = ia.etapas[n]; return !!(e && e.ok && e.firma === iaFirma(n)); }
+function iaEsc(t) { return String(t).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+// Preguntas y respuestas de la IA ya contestadas (las de rondas anteriores también)
+function iaRespuestas(e) {
+  if (!e) return '';
+  var r = (e.previas ? [e.previas] : []);
+  (e.preguntas || []).forEach(function(p, i) { var a = ((e.respuestas || [])[i] || '').trim(); if (a) r.push('P: ' + p + '\nR: ' + a); });
+  return r.join('\n\n');
+}
+
+async function iaRevisar(n, destino) {
+  var et = ETAPAS[n], panel = document.getElementById('ia' + n), e = ia.etapas[n];
+  // Ya hay un repaso de este mismo texto: la primera vez se enseña, la segunda («Siguiente» otra vez) vale como «Todo bien»
+  if (e && !e.ok && e.firma === iaFirma(n) && e.resumen) {
+    if (panel.dataset.listo) { iaConfirma(n, destino); return; }
+    iaPintaPanel(n, destino); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+  }
+  panel.style.display = ''; panel.dataset.listo = '';
+  panel.innerHTML = '<div class="ia-cargando">Estem llegint el que ens has explicat…</div>';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  var pend = et.vcs.filter(function(i) { return pendingTx[i]; }).map(function(i) { return pendingTx[i]; });
+  if (pend.length) await Promise.all(pend);   // primero, que terminen de transcribirse las notas de voz
+  var firma = iaFirma(n), previas = iaRespuestas(e), r = null;
+  try {
+    var res = await fetch('/api/ayudante', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        accion: 'revisar', etapaNombre: et.nombre(),
+        protagonista: [vId('protName') || 'la protagonista', gender === 'f' ? 'mujer' : 'hombre', vId('protAge') ? vId('protAge') + ' años' : '', vId('relacionNinos'), vId('nicknames') ? 'los niños ' + (gender === 'f' ? 'la' : 'lo') + ' llaman ' + vId('nicknames') : '', narrator === 'protagonist' ? 'IMPORTANTE: quien rellena el formulario es la propia persona protagonista contando su propia historia, así que hazle las preguntas de tú, sobre su propia vida (¿cómo eras…?, ¿qué hacías…?)' : ''].filter(Boolean).join(', '),
+        ninos: [vId('childNames'), vId('childAges')].filter(Boolean).join(' · '),
+        texto: txtVc(et.vcs[0]), respuestasPrevias: previas, imprescindibles: et.imp,
+        resumenAnterior: e && e.nCorr ? (e.antes || '') : '',
+        idioma: 'ca'
+      })
+    });
+    if (res.ok) r = await res.json();
+  } catch (err) {}
+  var nCorr = e && e.nCorr ? e.nCorr : 0, antes = nCorr ? (e.antes || '') : '';
+  if (!r || typeof r.resumen !== 'string' || !r.resumen.trim()) {
+    if (nCorr && antes) {
+      // Falla la IA al corregir: se deja el resumen anterior para que la familia lo cambie a mano
+      ia.etapas[n] = { firma: firma, resumen: antes, preguntas: [], respuestas: [], previas: previas, ok: false, nCorr: nCorr, manual: true };
+      iaGuarda(); iaPintaPanel(n, destino); return;
+    }
+    // Sin ayuda de la IA: se sigue igual
+    panel.style.display = 'none'; panel.innerHTML = '';
+    ia.etapas[n] = { firma: firma, resumen: '', preguntas: [], respuestas: [], previas: previas, ok: true };
+    iaGuarda(); go(destino); return;
+  }
+  ia.etapas[n] = { firma: firma, resumen: r.resumen.trim(), preguntas: (r.preguntas || []).slice(0, 2), respuestas: [], previas: previas, ok: false, nCorr: nCorr, antes: antes };
+  iaGuarda(); iaPintaPanel(n, destino);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function iaPintaPanel(n, destino) {
+  var e = ia.etapas[n], panel = document.getElementById('ia' + n);
+  panel.style.display = '';
+  // El resumen se lee como texto; para corregirlo basta con decir qué está mal (por voz o escrito) y la IA lo rehace
+  var corregido = e.nCorr && e.antes && !e.manual;
+  panel.innerHTML = '<div class="ia-t">' + (e.manual ? '✏️ Escriu el resum com ha de ser' : corregido ? '✨ Hem corregit el resum' : '✨ Això és el que hem entès') + '</div>' +
+    (e.manual ? '<div class="ia-s">Canvia el que calgui directament al text.</div><textarea class="ia-resumen" style="min-height:150px;font-size:15.5px;line-height:1.65"></textarea>'
+      : '<div class="ia-resumen-txt"></div>' + (corregido ? '<div class="ia-leyenda"><span>En color</span>, el que hem canviat.</div>' : '')) +
+    (e.preguntas.length ? '<div class="ia-t" style="margin-top:20px;font-size:17px">🔎 Ens falta alguna dada important</div>' +
+      '<div class="ia-s">Si la saps, explica\'ns-la aquí. Si no, deixa-ho en blanc i continua sense problema.</div>' +
+      e.preguntas.map(function(p, i) {
+        return '<div class="ia-q">' + iaEsc(p) + '</div><textarea class="ia-resp" data-i="' + i + '" placeholder="La teva resposta (opcional)"></textarea>' +
+          '<button type="button" class="btn-tw ia-mic" data-i="' + i + '">🎙️ Prefereixo explicar-ho amb una nota de veu</button>';
+      }).join('') : '') +
+    (e.manual ? '<div class="ia-bts"><button type="button" class="si">Desa i continua →</button></div>' :
+    '<div class="ia-t" style="margin-top:22px;font-size:17px">' + (corregido ? 'Ara està tot bé?' : 'Hi ha alguna cosa que no hàgim entès bé?') + '</div>' +
+    '<div class="ia-corr" style="display:none">' +
+      '<div class="ia-s">Digues-nos què cal canviar, com si ens ho expliquessis. Ex.: "no era a Barcelona, era a Girona" o "el seu germà es diu Marc, no Mario".</div>' +
+      '<button type="button" class="btn-rec ia-corr-mic"><span class="rdot"></span> Grava la correcció</button>' +
+      '<textarea class="ia-corr-txt" placeholder="…o escriu-ho aquí" style="margin-top:10px;min-height:70px"></textarea>' +
+      '<div class="ia-bts" style="justify-content:flex-start"><button type="button" class="si ia-corr-ok">Corregeix el resum</button>' +
+        (e.nCorr ? '<button type="button" class="ia-manual">✏️ Prefereixo escriure\'l jo</button>' : '') + '</div>' +
+    '</div>' +
+    '<div class="ia-bts"><button type="button" class="ia-quiero">' + (corregido ? 'Encara no està bé' : 'Sí, vull corregir alguna cosa') + '</button><button type="button" class="si">Està tot bé, continua →</button></div>');
+  var rt = panel.querySelector('.ia-resumen-txt');
+  if (rt) {
+    if (corregido) rt.innerHTML = iaMarcaCambios(e.antes, e.resumen); else rt.textContent = e.resumen;
+    rt.style.cssText = 'white-space:pre-line;background:var(--cream);border-radius:12px;padding:14px 16px;font-size:15.5px;line-height:1.65;margin-top:8px';
+  }
+  var rm = panel.querySelector('textarea.ia-resumen');
+  if (rm) {
+    rm.value = e.resumen;
+    rm.oninput = function() { e.resumen = rm.value; iaGuarda(); };
+    panel.querySelector('.ia-bts .si').onclick = function() {
+      if (!rm.value.trim()) { alert('Escriu el resum abans de continuar.'); return; }
+      iaConfirma(n, destino);
+    };
+    panel.dataset.listo = '1';
+    setTimeout(function() { autoAlto(rm); }, 30);
+    return;
+  }
+  panel.querySelectorAll('.ia-resp').forEach(function(ta) {
+    var i = +ta.dataset.i; ta.value = (e.respuestas || [])[i] || '';
+    ta.oninput = function() { e.respuestas[i] = ta.value; iaGuarda(); };
+  });
+  panel.querySelectorAll('.ia-mic').forEach(function(b) { b.onclick = function() { iaGrabar(b, panel.querySelector('.ia-resp[data-i="' + b.dataset.i + '"]')); }; });
+  panel.querySelector('.ia-quiero').onclick = function() {
+    panel.querySelector('.ia-corr').style.display = ''; this.style.display = 'none';
+    panel.querySelector('.ia-corr').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  var cm = panel.querySelector('.ia-corr-mic'), ct = panel.querySelector('.ia-corr-txt');
+  cm.onclick = function() { iaGrabar(cm, ct); };
+  panel.querySelector('.ia-corr-ok').onclick = function() {
+    var t = ct.value.trim();
+    if (!t) { alert('Explica\'ns (gravant o escrivint) què cal corregir.'); return; }
+    // La corrección se añade a lo que ya sabemos y la IA vuelve a hacer el resumen
+    e.previas = iaRespuestas(e) + (iaRespuestas(e) ? '\n\n' : '') + 'CORRECCIÓN DE LA FAMILIA (manda sobre lo anterior): ' + t;
+    e.antes = e.resumen; e.nCorr = (e.nCorr || 0) + 1;
+    e.preguntas = []; e.respuestas = []; e.resumen = ''; panel.dataset.listo = '';
+    iaGuarda(); iaRevisar(n, destino);
+  };
+  var bm = panel.querySelector('.ia-manual');
+  if (bm) bm.onclick = function() { e.manual = true; iaGuarda(); iaPintaPanel(n, destino); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  panel.querySelector('.ia-bts .si:not(.ia-corr-ok)').onclick = function() { iaConfirma(n, destino); };
+  panel.dataset.listo = '1';
+  setTimeout(function() { panel.querySelectorAll('textarea').forEach(autoAlto); }, 30);
+}
+
+// Resumen corregido con lo que ha cambiado en color: cada línea nueva se compara, palabra a palabra,
+// con la línea del resumen anterior que más se le parece
+function iaMarcaCambios(antes, ahora) {
+  function pals(l) { return l.split(/(\s+)/); }
+  function norm(w) { return w.toLowerCase().replace(/[.,;:!?¡¿«»"()]/g, ''); }
+  var viejas = String(antes || '').split('\n');
+  return String(ahora).split('\n').map(function(l) {
+    var nw = pals(l), mejor = null, punt = 0;
+    viejas.forEach(function(v) {
+      var vs = {}; pals(v).forEach(function(w) { if (w.trim()) vs[norm(w)] = 1; });
+      var c = 0, t = 0; nw.forEach(function(w) { if (w.trim()) { t++; if (vs[norm(w)]) c++; } });
+      var p = t ? c / t : 0; if (p > punt) { punt = p; mejor = v; }
+    });
+    if (punt === 1 && mejor.trim() === l.trim()) return iaEsc(l);
+    if (!mejor || punt < 0.3) return l.trim() ? '<span class="ia-cambio">' + iaEsc(l) + '</span>' : '';
+    // Palabras comunes en orden (LCS) se quedan igual; el resto, en color
+    var a = pals(mejor).filter(function(w) { return w.trim(); }).map(norm);
+    var idx = [], bn = [];
+    nw.forEach(function(w, p) { if (w.trim()) { idx.push(p); bn.push(norm(w)); } });
+    var m = a.length, k = bn.length, L = [], i, j;
+    for (i = 0; i <= m; i++) L.push(new Array(k + 1).fill(0));
+    for (i = m - 1; i >= 0; i--) for (j = k - 1; j >= 0; j--)
+      L[i][j] = a[i] === bn[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    var igual = {}; i = 0; j = 0;
+    while (i < m && j < k) {
+      if (a[i] === bn[j]) { igual[idx[j]] = 1; i++; j++; }
+      else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++;
+    }
+    var out = '', abierto = false;
+    nw.forEach(function(w, p) {
+      if (!w.trim()) { out += w; return; }
+      if (!igual[p] && !abierto) { out += '<span class="ia-cambio">'; abierto = true; }
+      if (igual[p] && abierto) { out = out.replace(/(\s*)$/, '</span>$1'); abierto = false; }
+      out += iaEsc(w);
+    });
+    if (abierto) out += '</span>';
+    return out;
+  }).join('\n');
+}
+
+function iaConfirma(n, destino) {
+  var e = ia.etapas[n]; if (!e) return go(destino);
+  var rs = document.querySelector('#ia' + n + ' .ia-resumen'); if (rs) e.resumen = rs.value.trim();
+  e.ok = true; iaGuarda(); go(destino);
+}
+
+// Nota de voz corta para contestar una pregunta de la IA: se transcribe y se añade al cuadro
+var iaRec = null;
+async function iaGrabar(btn, ta) {
+  if (iaRec && iaRec.state === 'recording') { iaRec.stop(); return; }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true }), chunks = [];
+    try { iaRec = new MediaRecorder(stream, { audioBitsPerSecond: 32000 }); } catch (e2) { iaRec = new MediaRecorder(stream); }
+    var mr = iaRec;
+    mr.ondataavailable = function(ev) { chunks.push(ev.data); };
+    mr.onstop = async function() {
+      stream.getTracks().forEach(function(t) { t.stop(); });
+      btn.textContent = 'Transcrivint…';
+      var blob = new Blob(chunks, { type: (mr.mimeType || 'audio/webm').split(';')[0] });
+      try {
+        var res = await fetch('/api/transcribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ audioBase64: await blobToBase64(blob), mimeType: blob.type, idioma: 'ca' }) });
+        var d = await res.json();
+        if (res.ok && d.text) { ta.value = (ta.value.trim() ? ta.value.trim() + '\n' : '') + d.text.trim(); ta.dispatchEvent(new Event('input', { bubbles: true })); autoAlto(ta); }
+        btn.textContent = res.ok && d.text ? '🎙️ Afegeix una altra nota de veu' : 'No s\'ha pogut transcriure: escriu-ho a dalt';
+      } catch (err) { btn.textContent = 'No s\'ha pogut transcriure: escriu-ho a dalt'; }
+    };
+    mr.start();
+    btn.textContent = '⏹ Atura la gravació';
+  } catch (e) { btn.textContent = 'Sense micròfon: escriu-ho a dalt'; }
+}
+
+// ---------- Dedicatoria: corregir faltas (sin cambiar las palabras) ----------
+function dedFirma() { return vId('dedicatoria') + '\u0001' + vId('dedicatoriaFirma'); }
+function dedListo() { return ia.ded && ia.ded.firma === dedFirma(); }
+
+// Marca en amarillo las palabras de la versión corregida que no estaban igual en la original
+function marcaCambios(orig, nuevo) {
+  var a = orig.split(/\s+/).filter(Boolean), b = nuevo.split(/\s+/).filter(Boolean), m = [], i, j;
+  for (i = 0; i <= a.length; i++) { m.push([]); for (j = 0; j <= b.length; j++) m[i].push(0); }
+  for (i = a.length - 1; i >= 0; i--) for (j = b.length - 1; j >= 0; j--) m[i][j] = a[i] === b[j] ? m[i + 1][j + 1] + 1 : Math.max(m[i + 1][j], m[i][j + 1]);
+  var out = []; i = 0; j = 0;
+  while (j < b.length) {
+    if (i < a.length && a[i] === b[j]) { out.push(iaEsc(b[j])); i++; j++; }
+    else if (i < a.length && m[i + 1][j] >= m[i][j + 1]) i++;
+    else { out.push('<mark>' + iaEsc(b[j]) + '</mark>'); j++; }
+  }
+  return out.join(' ');
+}
+
+async function dedRevisar(destino) {
+  var panel = document.getElementById('iaDed'), firma = dedFirma();
+  // Segunda vez que pulsa «Revisar todo» con la propuesta a la vista: se queda con la suya
+  if (panel.dataset.listo && panel.dataset.firma === firma) { ia.ded = { firma: firma, corregida: false }; iaGuarda(); panel.style.display = 'none'; go(destino); return; }
+  panel.style.display = ''; panel.dataset.listo = '';
+  panel.innerHTML = '<div class="ia-cargando">Revisant l\'ortografia de la dedicatòria…</div>';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  var r = null, texto = vId('dedicatoria'), firmaTxt = vId('dedicatoriaFirma');
+  try {
+    var res = await fetch('/api/ayudante', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'dedicatoria', texto: texto, firma: firmaTxt, idioma: 'ca' }) });
+    if (res.ok) r = await res.json();
+  } catch (err) {}
+  var nt = r && typeof r.texto === 'string' ? r.texto.trim() : '', nf = r && typeof r.firma === 'string' ? r.firma.trim() : firmaTxt;
+  if (!r || !r.hayCambios || !nt || (nt === texto && nf === firmaTxt)) {
+    // Sin faltas (o sin IA): se sigue tal cual
+    panel.style.display = 'none'; panel.innerHTML = '';
+    ia.ded = { firma: firma, corregida: false }; iaGuarda(); go(destino); return;
+  }
+  panel.innerHTML = '<div class="ia-t">✏️ Hem repassat la teva dedicatòria</div>' +
+    '<div class="ia-s">Com que anirà impresa al llibre, hem corregit alguna falta d\'ortografia o de puntuació (el que està marcat en groc), sense canviar les teves paraules. Quedaria així:</div>' +
+    '<div class="ia-ded">"' + marcaCambios(texto, nt) + '"' + (nf ? '<br>— ' + marcaCambios(firmaTxt, nf) : '') + '</div>' +
+    '<div class="ia-bts"><button type="button" class="no">Deixa la meva</button><button type="button" class="si">Fes servir aquesta</button></div>';
+  panel.dataset.listo = '1'; panel.dataset.firma = firma;
+  panel.querySelector('.no').onclick = function() { ia.ded = { firma: firma, corregida: false }; iaGuarda(); panel.style.display = 'none'; go(destino); };
+  panel.querySelector('.si').onclick = function() {
+    var d = document.getElementById('dedicatoria'), f = document.getElementById('dedicatoriaFirma');
+    d.value = nt; f.value = nf;
+    d.dispatchEvent(new Event('input', { bubbles: true })); cuentaDed();
+    ia.ded = { firma: dedFirma(), corregida: true }; iaGuarda(); panel.style.display = 'none'; go(destino);
+  };
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ---------- ¿Cómo son? ----------
+// Una tarjeta por persona (protagonista, cada niño y, si se añaden, pareja, madre, padre y hermanos) con botones
+// para elegir. Lo elegido se guarda como JSON en #aspectoFamilia (así entra en el borrador) y se envía en texto.
+// Las opciones (o) son los VALORES que se guardan y se envían (aspecto_familia): en castellano.
+// t es el título visible (catalán) y ASP_CA traduce cada opción solo para enseñarla en el botón.
+var ASP_GRUPOS = [
+  { k: 'pelo',  t: 'Cabell',          o: ['Rubio', 'Castaño claro', 'Castaño oscuro', 'Moreno', 'Pelirrojo', 'Canoso', 'Sin pelo'] },
+  { k: 'tipo',  t: 'Tipus de cabell', o: ['Liso', 'Ondulado', 'Rizado'] },
+  { k: 'largo', t: 'Llargada',        o: ['Corto', 'Media melena', 'Largo'] },
+  { k: 'ojos',  t: 'Ulls',            o: ['Marrones', 'Miel', 'Verdes', 'Azules', 'Negros'] },
+  { k: 'piel',  t: 'Pell',            o: ['Muy clara', 'Clara', 'Morena', 'Oscura'] },
+  { k: 'extra', t: 'A més', multi: true, o: ['Gafas', 'Pecas', 'Barba', 'Bigote'] }
+];
+var ASP_CA = {
+  'Rubio': 'Ros', 'Castaño claro': 'Castany clar', 'Castaño oscuro': 'Castany fosc', 'Moreno': 'Morè', 'Pelirrojo': 'Pèl-roig', 'Canoso': 'Canós', 'Sin pelo': 'Sense cabells',
+  'Liso': 'Llis', 'Ondulado': 'Ondulat', 'Rizado': 'Arrissat',
+  'Corto': 'Curt', 'Media melena': 'Mitja melena', 'Largo': 'Llarg',
+  'Marrones': 'Marrons', 'Miel': 'Mel', 'Verdes': 'Verds', 'Azules': 'Blaus', 'Negros': 'Negres',
+  'Muy clara': 'Molt clara', 'Clara': 'Clara', 'Morena': 'Morena', 'Oscura': 'Fosca',
+  'Gafas': 'Ulleres', 'Pecas': 'Pigues', 'Barba': 'Barba', 'Bigote': 'Bigoti'
+};
+function aspCa(o) { return ASP_CA[o] || o; }
+function aspChip(o) { return '<button type="button" class="chip" data-v="' + aportaEsc(o) + '">' + aspCa(o) + '</button>'; }
+var ASP_K_CA = { pelo: 'cabell', ojos: 'ulls', piel: 'pell' };   // para el aviso de lo que falta
+var ASP_OBLIG = ['pelo', 'ojos', 'piel'];
+var ASP_TIT = { prot: 'Protagonista', nino: '', pareja: 'Su pareja', madre: 'Su madre', padre: 'Su padre', hermano: 'Hermano/a', otra: 'Otra persona' };   // va al payload y a la foto de la familia: en castellano
+var ASP_TIT_CA = { prot: 'Protagonista', nino: '', pareja: 'La seva parella', madre: 'La seva mare', padre: 'El seu pare', hermano: 'Germà/germana', otra: 'Una altra persona' };   // solo para enseñar
+// En «Otra persona» la familia escribe quién es (su mejor amiga, un vecino…)
+function aspTit(p) { return p.rol === 'otra' && p.quien ? p.quien.trim() : ASP_TIT[p.rol]; }
+var asp = { prot: {}, ninos: {}, extra: [] };
+
+function aspNinos() {
+  return (document.getElementById('childNames').value || '').split(/\s*,\s*|\s+y\s+|\s+e\s+/i).map(function(s) { return s.trim(); }).filter(Boolean);
+}
+function aspGuarda() { document.getElementById('aspectoFamilia').value = JSON.stringify(asp); saveDraft(); }
+function aspCarga() { try { var v = JSON.parse(document.getElementById('aspectoFamilia').value || 'null'); if (v && v.prot) asp = v; } catch (e) {} }
+
+// A los niños no se les ofrece canoso, barba ni bigote
+var ASP_NO_NINOS = ['Canoso', 'Barba', 'Bigote'];
+function aspOps(gr, nino) { return nino ? gr.o.filter(function(o) { return ASP_NO_NINOS.indexOf(o) < 0; }) : gr.o; }
+function aspTarjeta(d, titulo, quitar, conNombre, nino) {
+  var c = document.createElement('div'); c.className = 'asp';
+  var h = '<div class="asp-h"><div class="asp-t">' + titulo + '</div>' + (quitar ? '<button type="button" class="asp-x">Treu</button>' : '') + '</div>';
+  if (d.rol === 'otra') h += '<div class="asp-g"><input type="text" class="asp-quien" placeholder="Qui és? Ex.: la seva millor amiga, el seu avi, un veí"></div>';
+  if (conNombre) h += '<div class="asp-g"><input type="text" class="asp-nombre" placeholder="El seu nom (opcional)"></div>';
+  // Sin foto, la descripción con botones se despliega al pedirla
+  h += '<button type="button" class="asp-sinfoto">No tinc foto: prefereixo descriure com és ▾</button><div class="asp-desc">';
+  ASP_GRUPOS.forEach(function(gr) {
+    h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
+      aspOps(gr, nino).map(aspChip).join('') + '</div></div>';
+  });
+  h += '<div class="asp-g"><input type="text" class="asp-mas" placeholder="Alguna cosa més (opcional). Ex.: sempre amb cua, molt alt, una piga a la galta"></div>';
+  h += '</div>';
+  c.innerHTML = h;
+  if (!d.manual && !d.pelo && !d.ojos && !d.piel && !d.mas) c.classList.add('plegada');
+  c.querySelector('.asp-sinfoto').onclick = function() { d.manual = true; c.classList.remove('plegada'); aspGuarda(); };
+  var qu = c.querySelector('.asp-quien'); if (qu) { qu.value = d.quien || ''; qu.oninput = function() { d.quien = qu.value; aspGuarda(); }; }
+  // Estado inicial y clics
+  c.querySelectorAll('.asp-g[data-k]').forEach(function(g) {
+    var k = g.dataset.k, multi = k === 'extra';
+    g.querySelectorAll('.chip').forEach(function(b) {
+      var v = b.dataset.v;   // valor en castellano (lo visible es la etiqueta catalana)
+      if (multi ? (d.extra || []).indexOf(v) >= 0 : d[k] === v) b.classList.add('on');
+      b.onclick = function() {
+        if (multi) {
+          d.extra = d.extra || [];
+          var i = d.extra.indexOf(v); if (i >= 0) d.extra.splice(i, 1); else d.extra.push(v);
+          b.classList.toggle('on');
+        } else {
+          d[k] = d[k] === v ? '' : v;
+          g.querySelectorAll('.chip').forEach(function(x) { x.classList.toggle('on', x.dataset.v === d[k]); });
+        }
+        g.classList.remove('falta');
+        if (!c.querySelector('.asp-g.falta')) c.classList.remove('falta');
+        aspGuarda();
+      };
+    });
+  });
+  var mas = c.querySelector('.asp-mas'); mas.value = d.mas || ''; mas.oninput = function() { d.mas = mas.value; aspGuarda(); };
+  var nom = c.querySelector('.asp-nombre'); if (nom) { nom.value = d.nombre || ''; nom.oninput = function() { d.nombre = nom.value; aspGuarda(); }; }
+  if (quitar) c.querySelector('.asp-x').onclick = quitar;
+  return c;
+}
+
+// Con foto también preguntamos el color de ojos y de pelo: en las fotos no siempre se ven bien
+// (pasó con el primer pedido: salió con los ojos y el pelo de otro color). Del protagonista, además, el pelo de joven.
+var ASP_COL_OBLIG = ['pelo', 'ojos'];
+function aspColores(d, conJoven, nino) {
+  var c = document.createElement('div'); c.className = 'asp-col';
+  var grupos = [ASP_GRUPOS[0], ASP_GRUPOS[3]];
+  if (conJoven) grupos.push({ k: 'joven', t: 'Cabell de jove (si era diferent)', o: ['Rubio', 'Castaño claro', 'Castaño oscuro', 'Moreno', 'Pelirrojo'] });
+  var h = '<div class="asp-gl" style="margin:10px 0 6px;color:var(--navy)">Per encertar els colors (a les fotos de vegades no es veuen bé):</div>';
+  grupos.forEach(function(gr) {
+    h += '<div class="asp-g" data-k="' + gr.k + '"><div class="asp-gl">' + gr.t + '</div><div class="chips">' +
+      aspOps(gr, nino).map(aspChip).join('') + '</div></div>';
+  });
+  c.innerHTML = h;
+  c.querySelectorAll('.asp-g[data-k]').forEach(function(g) {
+    var k = g.dataset.k;
+    g.querySelectorAll('.chip').forEach(function(b) {
+      var v = b.dataset.v;   // valor en castellano (lo visible es la etiqueta catalana)
+      if (d[k] === v) b.classList.add('on');
+      b.onclick = function() {
+        d[k] = d[k] === v ? '' : v;
+        g.querySelectorAll('.chip').forEach(function(x) { x.classList.toggle('on', x.dataset.v === d[k]); });
+        g.classList.remove('falta');
+        var card = c.closest('.asp'); if (card && !card.querySelector('.asp-g.falta')) card.classList.remove('falta');
+        aspGuarda();
+      };
+    });
+  });
+  return c;
+}
+
+// Foto o botones: con la foto subida solo se piden los colores de ojos y pelo
+function aspFoto(id) { var f = document.getElementById(id); return f && f.files[0]; }
+function aspCajaFoto(id, texto) {
+  var f = aspFoto(id), c = document.createElement('div');
+  if (f) {
+    c.className = 'asp-foto ok';
+    c.innerHTML = '<img class="asp-mini" alt="">✓ Foto pujada: <b></b> <button type="button">Retalla</button> <button type="button">Canvia</button> <button type="button">Treu</button>';
+    c.querySelector('.asp-mini').src = URL.createObjectURL(f);   // miniatura: se ve quién ha quedado marcado
+    c.querySelector('b').textContent = f.name;
+    var bs = c.querySelectorAll('button');
+    bs[0].onclick = function() { aspRecortar(document.getElementById(id)); };
+    bs[1].onclick = function() { document.getElementById(id).click(); };
+    bs[2].onclick = function() { document.getElementById(id).value = ''; aspPinta(); };
+  } else {
+    c.className = 'uzone asp-foto';
+    c.innerHTML = '<span class="uzone-txt">📷 ' + texto + '</span>';
+    c.onclick = function() { document.getElementById(id).click(); };
+  }
+  return c;
+}
+
+// Recortar la foto al subirla (por si sale con más gente). Usa Cropper.js, que se carga solo la primera vez.
+// El recorte sustituye al archivo del propio <input>, así el envío no cambia.
+var CROPPER_V = '1.6.2';
+function aspCargaCropper() {
+  if (window.Cropper) return Promise.resolve();
+  return new Promise(function(ok, ko) {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.css';
+    document.head.appendChild(l);
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.js';
+    s.onload = ok; s.onerror = ko; document.head.appendChild(s);
+  });
+}
+function aspRecortar(input) {
+  var f = input.files[0];
+  if (!f) { aspPinta(); return; }
+  aspCargaCropper().then(function() {
+    var url = URL.createObjectURL(f), fondo = document.createElement('div');
+    fondo.className = 'rec-fondo';
+    fondo.innerHTML = '<div class="rec-caja"><div class="rec-t">Retalla la foto</div>' +
+      '<div class="rec-h">Si a la foto surt més gent, mou i ajusta el requadre perquè només hi ' +
+      (input.id === 'fotoNinos' ? 'quedin els nens' : 'quedi la seva cara') + '.</div>' +
+      '<div class="rec-img"><img alt="Foto per retallar"></div>' +
+      '<div class="rec-bts"><button type="button" data-a="no">Cancel·la</button><button type="button" data-a="entera">Fes servir la foto sencera</button><button type="button" class="si" data-a="si">Fes servir aquest retall</button></div></div>';
+    document.body.appendChild(fondo);
+    var img = fondo.querySelector('img'), cr;
+    // checkOrientation: false → el navegador ya endereza las fotos del móvil (EXIF); si Cropper lo vuelve a hacer, salen giradas
+    img.onload = function() { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.8, background: false, movable: false, zoomable: false, rotatable: false, checkOrientation: false }); };
+    img.src = url;
+    function cierra() { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); aspPinta(); }
+    fondo.querySelector('[data-a="no"]').onclick = function() { input.value = ''; cierra(); };
+    fondo.querySelector('[data-a="entera"]').onclick = cierra;
+    fondo.querySelector('[data-a="si"]').onclick = function() {
+      if (!cr) return cierra();
+      cr.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1600, imageSmoothingQuality: 'high' }).toBlob(function(b) {
+        try {
+          var dt = new DataTransfer();
+          dt.items.add(new File([b], f.name.replace(/\.\w+$/, '') + '-recortada.jpg', { type: 'image/jpeg' }));
+          input.files = dt.files;
+        } catch (e) {}   // si el navegador no deja cambiar el archivo, se usa la foto entera
+        cierra();
+      }, 'image/jpeg', 0.92);
+    };
+  }).catch(function() { aspPinta(); });   // sin conexión al recortador: se usa la foto entera
+}
+
+function aspPinta() {
+  var cont = document.getElementById('aspCards'); if (!cont) return;
+  cont.innerHTML = '';
+  var prot = (document.getElementById('protName').value || '').trim();
+  // Protagonista: foto o botones
+  if (aspFoto('fotoCara')) {
+    var cp = document.createElement('div'); cp.className = 'asp';
+    cp.innerHTML = '<div class="asp-h"><div class="asp-t">Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : '') + '</div></div>';
+    cp.appendChild(aspCajaFoto('fotoCara'));
+    cp.appendChild(aspColores(asp.prot, true));
+    cont.appendChild(cp);
+  } else {
+    var tp = aspTarjeta(asp.prot, 'Protagonista' + (prot ? ' <small>· ' + prot + '</small>' : ''));
+    tp.insertBefore(aspCajaFoto('fotoCara', 'Puja una foto de la seva cara i et saltes aquest pas'), tp.children[1]);
+    cont.appendChild(tp);
+  }
+  // Niños: cada uno con su propia foto o su tarjeta (una foto de grupo no dice quién es quién)
+  var ninos = aspNinos();
+  if (ninos.length) cont.appendChild(aspCajaFoto('fotoNinos', ninos.length > 1 ? 'Tens una foto dels nens? Puja-la i marca qui és cadascun' : 'Tens una foto ' + deCa(ninos[0]) + '? Puja-la i marca la seva cara'));
+  ninos.forEach(function(n) {
+    asp.ninos[n] = asp.ninos[n] || {};
+    var fid = aspInputNino(n);
+    var t = aspTarjeta(asp.ninos[n], n + ' <small>· un dels nens</small>', null, false, true);
+    if (aspFoto(fid)) {
+      t.querySelector('.asp-desc').style.display = 'none';
+      t.querySelector('.asp-sinfoto').style.display = 'none';
+    }
+    // La foto sale de marcarlo en la foto de los niños; si no salía, puede subir una solo suya
+    if (aspFoto(fid)) { t.insertBefore(aspCajaFoto(fid), t.children[1]); t.appendChild(aspColores(asp.ninos[n], false, true)); }
+    else if (aspGrupoUsado) t.insertBefore(aspCajaFoto(fid, 'No surt a la foto: puja una foto ' + deCa(n)), t.children[1]);
+    cont.appendChild(t);
+  });
+  // Pareja, padres y hermanos: también foto o botones (cada uno con su propio <input type=file> en #aspInputs)
+  asp.extra.forEach(function(p, i) {
+    p.id = p.id || ('x' + Date.now().toString(36) + i);
+    var fid = aspInputExtra(p.id);
+    var quitar = function() { var f = document.getElementById(fid); if (f) f.remove(); asp.extra.splice(i, 1); aspGuarda(); aspPinta(); };
+    var t = aspTarjeta(p, ASP_TIT_CA[p.rol], quitar, true);
+    var nombre = t.querySelector('.asp-nombre').parentNode;
+    if (aspFoto(fid)) {
+      t.querySelectorAll('.asp-g[data-k], .asp-mas').forEach(function(g) { (g.classList.contains('asp-mas') ? g.parentNode : g).style.display = 'none'; });
+      t.querySelector('.asp-sinfoto').style.display = 'none';
+      nombre.after(aspCajaFoto(fid));
+      t.appendChild(aspColores(p));
+    } else {
+      nombre.after(aspCajaFoto(fid, 'Puja una foto i et saltes aquest pas'));
+    }
+    cont.appendChild(t);
+  });
+}
+function aspInputExtra(pid) {
+  var id = 'fotoExtra_' + pid;
+  if (!document.getElementById(id)) {
+    var f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.id = id;
+    f.onchange = function() { aspRecortar(f); };
+    document.getElementById('aspInputs').appendChild(f);
+  }
+  return id;
+}
+// Cada niño tiene su propio <input type=file> (en #aspInputs), con su nombre en el id
+function aspIdNino(n) { return 'fotoNino_' + n.normalize('NFD').replace(/[^A-Za-z0-9]/g, '_'); }
+function aspInputNino(n) {
+  var id = aspIdNino(n);
+  if (!document.getElementById(id)) {
+    var f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.id = id;
+    f.onchange = function() { aspRecortar(f); };
+    document.getElementById('aspInputs').appendChild(f);
+  }
+  return id;
+}
+// Foto de grupo: se sube una vez y se recuadra a cada niño por su nombre (así sabemos quién es quién)
+function aspRecuadro(f, n) {
+  return aspCargaCropper().then(function() { return new Promise(function(fin) {
+    var url = URL.createObjectURL(f), fondo = document.createElement('div');
+    fondo.className = 'rec-fondo';
+    fondo.innerHTML = '<div class="rec-caja"><div class="rec-t"></div><div class="rec-h"></div>' +
+      '<div class="rec-img"><img alt="Foto de grup"></div>' +
+      '<div class="rec-bts"><button type="button" data-a="no">No surt a la foto</button><button type="button" class="si" data-a="si"></button></div></div>';
+    fondo.querySelector('.rec-t').textContent = 'Qui és ' + n + '?';
+    fondo.querySelector('.rec-h').textContent = 'Mou i ajusta el requadre perquè només hi quedi la cara ' + deCa(n) + '.';
+    fondo.querySelector('[data-a="si"]').textContent = 'És ' + n;
+    document.body.appendChild(fondo);
+    var img = fondo.querySelector('img'), cr;
+    img.onload = function() { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.35, background: false, movable: false, zoomable: false, rotatable: false, checkOrientation: false }); };
+    img.src = url;
+    function cierra(b) { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); fin(b); }
+    fondo.querySelector('[data-a="no"]').onclick = function() { cierra(null); };
+    fondo.querySelector('[data-a="si"]').onclick = function() {
+      if (!cr) return cierra(null);
+      cr.getCroppedCanvas({ maxWidth: 1200, maxHeight: 1200, imageSmoothingQuality: 'high' }).toBlob(function(b) { cierra(b); }, 'image/jpeg', 0.92);
+    };
+  }); });
+}
+var aspGrupoUsado = false;
+async function aspGrupo(input) {
+  var f = input.files[0]; if (!f) return;
+  aspGrupoUsado = true;
+  var ninos = aspNinos();
+  for (var i = 0; i < ninos.length; i++) {
+    var b = null;
+    try { b = await aspRecuadro(f, ninos[i]); } catch (e) {}
+    if (b) {
+      try {
+        var dt = new DataTransfer();
+        dt.items.add(new File([b], 'Foto de ' + ninos[i] + '.jpg', { type: 'image/jpeg' }));
+        document.getElementById(aspInputNino(ninos[i])).files = dt.files;
+      } catch (e) {}
+    }
+  }
+  input.value = ''; aspPinta();
+}
+function aspAdd(rol) { asp.extra.push({ rol: rol }); aspGuarda(); aspPinta(); }
+
+// Al enviar: las fotos de los familiares se juntan en una sola imagen, cada una con su nombre debajo,
+// para que la ficha de personajes sepa quién es quién
+function aspCollageFamilia() {
+  var conFoto = asp.extra.filter(function(p) { return p.id && aspFoto('fotoExtra_' + p.id); });
+  if (!conFoto.length) return Promise.resolve('');
+  var CEL = 480, ALTO = 560, PIE = 60, cols = Math.min(conFoto.length, 3), filas = Math.ceil(conFoto.length / cols);
+  var cv = document.createElement('canvas'); cv.width = cols * CEL; cv.height = filas * (ALTO + PIE);
+  var x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, cv.width, cv.height);
+  return Promise.all(conFoto.map(function(p, i) {
+    return new Promise(function(ok) {
+      var url = URL.createObjectURL(aspFoto('fotoExtra_' + p.id)), im = new Image();
+      im.onload = function() {
+        var cx = (i % cols) * CEL, cy = Math.floor(i / cols) * (ALTO + PIE), k = Math.min(CEL / im.width, ALTO / im.height);
+        x.drawImage(im, cx + (CEL - im.width * k) / 2, cy + (ALTO - im.height * k) / 2, im.width * k, im.height * k);
+        x.fillStyle = '#222'; x.font = 'bold 30px Arial'; x.textAlign = 'center';
+        x.fillText(aspTit(p) + (p.nombre ? ' (' + p.nombre.trim() + ')' : ''), cx + CEL / 2, cy + ALTO + 42);
+        URL.revokeObjectURL(url); ok();
+      };
+      im.onerror = function() { URL.revokeObjectURL(url); ok(); };
+      im.src = url;
+    });
+  })).then(function() { return cv.toDataURL('image/jpeg', 0.85).split(',')[1]; });
+}
+
+// Al enviar: las fotos de los niños se juntan en una sola imagen, cada una con su nombre debajo
+function aspCollageNinos() {
+  var conFoto = aspNinos().filter(function(n) { return aspFoto(aspIdNino(n)); });
+  if (!conFoto.length) return Promise.resolve('');
+  var CEL = 480, ALTO = 560, PIE = 60, cols = Math.min(conFoto.length, 3), filas = Math.ceil(conFoto.length / cols);
+  var cv = document.createElement('canvas'); cv.width = cols * CEL; cv.height = filas * (ALTO + PIE);
+  var x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, cv.width, cv.height);
+  return Promise.all(conFoto.map(function(n, i) {
+    return new Promise(function(ok) {
+      var url = URL.createObjectURL(aspFoto(aspIdNino(n))), im = new Image();
+      im.onload = function() {
+        var cx = (i % cols) * CEL, cy = Math.floor(i / cols) * (ALTO + PIE), k = Math.min(CEL / im.width, ALTO / im.height);
+        x.drawImage(im, cx + (CEL - im.width * k) / 2, cy + (ALTO - im.height * k) / 2, im.width * k, im.height * k);
+        x.fillStyle = '#222'; x.font = 'bold 30px Arial'; x.textAlign = 'center';
+        x.fillText(n, cx + CEL / 2, cy + ALTO + 42);
+        URL.revokeObjectURL(url); ok();
+      };
+      im.onerror = function() { URL.revokeObjectURL(url); ok(); };
+      im.src = url;
+    });
+  })).then(function() { return cv.toDataURL('image/jpeg', 0.85).split(',')[1]; });
+}
+
+// Qué falta (pelo, ojos y piel de la protagonista y de cada niño); marca las tarjetas en rojo
+function aspFaltan() {
+  var falta = [], cards = document.querySelectorAll('#aspCards .asp');
+  var datos = [[(document.getElementById('protName').value || '').trim() || (gender === 'f' ? 'la protagonista' : 'el protagonista'), asp.prot, aspFoto('fotoCara')]]
+    .concat(aspNinos().map(function(n) { return [n, asp.ninos[n] || {}, aspFoto(aspIdNino(n))]; }));
+  datos.forEach(function(p, i) {
+    // Con foto solo hacen falta los colores de pelo y ojos; sin foto, pelo, ojos y piel
+    var c = cards[i], sin = (p[2] ? ASP_COL_OBLIG : ASP_OBLIG).filter(function(k) { return !p[1][k]; });
+    if (!sin.length || !c) return;
+    c.classList.add('falta'); if (!p[2]) { c.classList.remove('plegada'); p[1].manual = true; }
+    sin.forEach(function(k) { var g = c.querySelector((p[2] ? '.asp-col ' : '') + '.asp-g[data-k="' + k + '"]'); if (g) g.classList.add('falta'); });
+    falta.push('com és ' + p[0] + ' (' + sin.map(function(k) { return ASP_K_CA[k] || k; }).join(', ') + ')');
+  });
+  return falta;
+}
+
+// Texto que se envía: una línea por persona
+function aspTexto() {
+  function linea(d) {
+    var r = [];
+    if (d.pelo) r.push('pelo ' + d.pelo.toLowerCase() + [d.tipo, d.largo].filter(Boolean).map(function(x) { return ', ' + x.toLowerCase(); }).join(''));
+    else if (d.tipo || d.largo) r.push('pelo ' + [d.tipo, d.largo].filter(Boolean).join(', ').toLowerCase());
+    if (d.ojos) r.push('ojos ' + d.ojos.toLowerCase());
+    if (d.piel) r.push('piel ' + d.piel.toLowerCase());
+    if (d.extra && d.extra.length) r.push(d.extra.join(', ').toLowerCase());
+    if (d.mas) r.push(d.mas.trim());
+    if (d.joven) r.push('de joven, pelo ' + d.joven.toLowerCase());
+    return r.join('; ');
+  }
+  // Con foto: la foto + los colores que ha marcado la familia (mandan sobre lo que parezca en la foto)
+  function conFoto(base, d) { var col = [d.pelo ? 'pelo ' + d.pelo.toLowerCase() : '', d.ojos ? 'ojos ' + d.ojos.toLowerCase() : '', d.joven ? 'de joven, pelo ' + d.joven.toLowerCase() : ''].filter(Boolean); return base + (col.length ? '; COLORES REALES: ' + col.join(', ') : ''); }
+  var prot = (document.getElementById('protName').value || '').trim(), out = [];
+  out.push('Protagonista (' + (prot || 'sin nombre') + '): ' + (aspFoto('fotoCara') ? conFoto('ver su foto', asp.prot) : (linea(asp.prot) || 'sin datos')));
+  aspNinos().forEach(function(n) { out.push('Niño/a (' + n + '): ' + (aspFoto(aspIdNino(n)) ? conFoto('ver su foto (en la imagen de los niños, con su nombre)', asp.ninos[n] || {}) : (linea(asp.ninos[n] || {}) || 'sin datos'))); });
+  asp.extra.forEach(function(p) {
+    var l = (p.id && aspFoto('fotoExtra_' + p.id)) ? conFoto('ver su foto (en la imagen de la familia)', p) : linea(p);
+    if (!l && !p.nombre && !p.quien) return;
+    out.push(aspTit(p) + (p.nombre ? ' (' + p.nombre.trim() + ')' : '') + ': ' + (l || 'sin datos'));
+  });
+  return out.join('\n');
+}
+// Las tarjetas de «¿Cómo son?» se pintan al llegar a esa pantalla (en go), no a cada tecla: en iPhone dejaba la pantalla en blanco al escribir
+
+document.getElementById('prog').style.width = '0%';
+loadDraft();
+ninosCarga();
+aspCarga();
+iaCarga();
+aspPinta();
+window.addEventListener('load', aspPinta);   // por si los nombres llegan desde la web (más abajo)
+// Datos que llegan desde «Haz la portada» de la web: nombre, niños, quién es, estilo de portada y si es su propia historia
+(function () {
+  var q = new URLSearchParams(location.search);
+  if (!q.get('nombre') && !q.get('rol') && !q.get('portada')) return;
+  var ROL = { 'Mamá': ['Mamá', 'f'], 'Papá': ['Papá', 'm'], 'Abuela': ['Abuela', 'f'], 'Abuelo': ['Abuelo', 'm'], 'Tía': ['Tía', 'f'], 'Tío': ['Tío', 'm'] };
+  // Por si la web catalana pasa el rol en catalán: se convierte al valor castellano del desplegable
+  var ROL_CA = { 'Mama': 'Mamá', 'Papa': 'Papá', 'Àvia': 'Abuela', 'Avi': 'Abuelo', 'Tieta': 'Tía', 'Tia': 'Tía', 'Tiet': 'Tío', 'Oncle': 'Tío' };
+  if (ROL_CA[q.get('rol')]) q.set('rol', ROL_CA[q.get('rol')]);
+  if (q.get('nombre')) document.getElementById('protName').value = q.get('nombre');
+  if (q.get('ninos')) document.getElementById('childNames').value = q.get('ninos');
+  var r = ROL[q.get('rol')];
+  if (r) { document.getElementById('bookType').value = r[0]; setGender(r[1], document.getElementById(r[1] === 'm' ? 'gm' : 'gf')); relacionDesdeTipo(); }
+  else if (q.get('rol')) { document.getElementById('bookType').value = 'Otra persona'; }
+  var pc = document.querySelector('.portada-card[data-portada="' + q.get('portada') + '"]'); if (pc) selPortada(pc, q.get('portada'));
+  pintaPortadas();
+  if (q.get('yo')) setNarrator('protagonist', document.getElementById('n1'));
+  if (q.get('formato') === 'blanda' || q.get('formato') === 'dura') setFormato(q.get('formato'), document.getElementById(q.get('formato') === 'blanda' ? 'fb' : 'fd'));
+  saveDraft();
+})();
+updateAll();
+</script>
+</body>
+</html>
