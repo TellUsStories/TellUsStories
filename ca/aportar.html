@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aporta els teus records · Tale Us Stories</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="T’han convidat a aportar els teus records a un conte personalitzat de Tale Us Stories.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#FFFFFF;--boton:#DCC8B4;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--navy);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .top{text-align:center;padding:22px 16px 10px;font-family:var(--display);font-weight:800;letter-spacing:3px;font-size:14px;color:var(--navy)}
+  .top a{color:inherit;text-decoration:none}
+  main{max-width:640px;margin:0 auto;padding:8px 16px 60px}
+  .chap{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--coral);margin:18px 0 8px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,7vw,40px);line-height:1.08;margin-bottom:12px}
+  .sub{color:var(--muted);margin-bottom:22px}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:20px 18px;margin-bottom:16px}
+  label{display:block;font-family:var(--display);font-weight:700;font-size:15px;margin-bottom:6px}
+  .hint{font-size:14px;color:var(--muted);margin:-2px 0 10px}
+  input[type=text],textarea{width:100%;font:inherit;font-size:16px;color:var(--navy);background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;outline:none}
+  input[type=text]:focus,textarea:focus{border-color:var(--coral)}
+  textarea{min-height:150px;resize:vertical}
+  .fila{display:flex;gap:12px;flex-wrap:wrap}.fila>div{flex:1 1 200px}
+  .etapas{display:flex;flex-wrap:wrap;gap:8px}
+  .etapas button{font-family:var(--display);font-weight:500;font-size:15px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--cream);color:var(--navy);cursor:pointer}
+  .etapas button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .rec{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .btn{font-family:var(--display);font-weight:700;font-size:16px;border:0;border-radius:999px;padding:13px 22px;cursor:pointer}
+  .btn-rec{background:var(--coral-l);color:var(--navy);display:inline-flex;align-items:center;gap:8px}
+  .btn-rec .dot{width:11px;height:11px;border-radius:50%;background:#C0392B}
+  .btn-rec.grabando{background:#C0392B;color:#fff}.btn-rec.grabando .dot{background:#fff;animation:lat 1s infinite}
+  @keyframes lat{50%{opacity:.3}}
+  .estado{font-size:14px;color:var(--muted)}
+  .btn-env{background:var(--navy);color:#fff;width:100%;font-size:17px;padding:16px}
+  .btn-env:disabled{opacity:.5}
+  .btn-sec{background:transparent;color:var(--navy);border:1.5px solid var(--border)}
+  .ok{text-align:center;padding:30px 18px}
+  .ok .cor{font-size:40px;color:var(--coral)}
+  .err{color:#A33A2B;font-size:15px;margin-top:10px}
+  .mias{margin-top:8px;font-size:15px;color:var(--muted)}
+  .mias li{margin:4px 0 4px 18px}
+  .pie{text-align:center;font-size:13px;color:var(--muted);margin-top:26px}
+  .oculto{display:none}
+  .rec-fondo{position:fixed;inset:0;background:rgba(40,25,15,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+  .rec-caja{background:var(--cream);border-radius:20px;padding:18px;width:100%;max-width:560px;max-height:96vh;display:flex;flex-direction:column;gap:12px}
+  .rec-t{font-family:var(--display);font-weight:700;font-size:18px;color:var(--navy)}
+  .rec-h{font-size:13px;color:var(--muted);line-height:1.5}
+  .rec-img{height:min(60vh,460px);background:#eee;border-radius:12px;overflow:hidden}
+  .rec-img img{display:block;max-width:100%}
+  .rec-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .rec-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy)}
+  .rec-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+  .fotos{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+  .fotos:empty{display:none}
+  .fotos div{position:relative;width:88px;height:88px}
+  .fotos img{width:100%;height:100%;object-fit:cover;border-radius:12px;border:1px solid var(--border)}
+  .fotos button{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:0;background:var(--navy);color:#fff;font-size:15px;line-height:26px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="top"><a href="/ca/">TALE US STORIES</a></div>
+<main>
+  <div id="cargando" class="sub" style="text-align:center;margin-top:40px">Carregant…</div>
+
+  <div id="error" class="card oculto" style="text-align:center">
+    <h1 style="font-size:26px">Aquest enllaç no funciona</h1>
+    <p class="sub" id="errorTxt">Potser ha caducat. Demana a qui te l’ha enviat que te’n faci arribar un de nou.</p>
+  </div>
+
+  <div id="app" class="oculto">
+    <div class="chap">Un conte amb la vostra història</div>
+    <h1 id="titulo">Ajuda’ns a explicar la seva història</h1>
+    <p class="sub" id="intro"></p>
+
+    <div class="card">
+      <div class="fila">
+        <div><label for="nombre">El teu nom</label><input type="text" id="nombre" maxlength="50" placeholder="Per exemple, Jordi" autocomplete="given-name"></div>
+        <div><label for="relacion">Qui ets per a <span class="G-prot">ell o ella</span>?</label><input type="text" id="relacion" maxlength="50" placeholder="El seu fill, la seva germana, una amiga…"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>De quin moment és el teu record?</label>
+      <div class="hint">Tria’n un. Si tens records de diverses èpoques, envia’n un i després afegeix-ne un altre.</div>
+      <div class="etapas" id="etapas">
+        <button type="button" data-e="infancia">De petit/a</button>
+        <button type="button" data-e="juventud">La joventut</button>
+        <button type="button" data-e="familia">Amor i família</button>
+        <button type="button" data-e="ninos">Amb els nens</button>
+        <button type="button" data-e="otros">Un altre record</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>El teu record</label>
+      <div class="hint">Grava una nota de veu, sense pressa, com si ho expliquessis a algú a la sobretaula. La passem a text i la pots corregir. Si ho prefereixes, escriu-ho directament.</div>
+      <div class="rec">
+        <button type="button" class="btn btn-rec" id="btnRec"><span class="dot"></span><span id="recTxt">Gravar una nota de veu</span></button>
+        <span class="estado" id="recEstado"></span>
+      </div>
+      <textarea id="texto" maxlength="12000" placeholder="Explica-ho aquí: una anècdota, com era, alguna cosa que només saps tu…"></textarea>
+    </div>
+
+    <div class="card">
+      <label>Fotos (opcional)</label>
+      <div class="hint">Tens alguna foto d’aquell moment? Ens ajuda a dibuixar les persones i els llocs tal com eren. Fins a 3 per record.</div>
+      <input type="file" id="fotoInput" accept="image/*" multiple style="display:none">
+      <div class="fotos" id="fotos"></div>
+      <button type="button" class="btn btn-sec" id="btnFoto">📷 Afegir una foto</button>
+    </div>
+
+    <button type="button" class="btn btn-env" id="btnEnviar">Enviar el meu record ♥</button>
+    <div class="err" id="errEnviar"></div>
+    <ul class="mias" id="mias"></ul>
+    <p class="pie">El que escriguis només ho veurà qui prepara el llibre i l’equip de Tale Us Stories, per escriure el conte.</p>
+  </div>
+
+  <div id="gracias" class="card ok oculto">
+    <div class="cor">♥</div>
+    <h1 style="font-size:28px">Gràcies!</h1>
+    <p class="sub" id="graciasTxt">El teu record ja està desat.</p>
+    <button type="button" class="btn btn-sec" id="btnOtro">Afegir un altre record</button>
+  </div>
+</main>
+
+<script>
+// Versión catalana de /aportar (mismo funcionamiento; los textos de la API llegan en castellano y aquí se cambian por catalanes)
+var C = new URLSearchParams(location.search).get('c') || '';
+var datos = null, etapa = '', grabador = null, trozos = [], grabando = false, enviados = [];
+var NOMBRES = { infancia: 'De petit/a', juventud: 'La joventut', familia: 'Amor i família', ninos: 'Amb els nens', otros: 'Un altre record' };
+var ERRORES = {
+  'Pon tu nombre': 'Posa el teu nom',
+  'Cuéntanos algún recuerdo o añade una foto': 'Explica’ns algun record o afegeix una foto',
+  'Ya hay muchas aportaciones en este enlace': 'Ja hi ha moltes aportacions en aquest enllaç',
+  'Este enlace ha caducado o no existe': 'Aquest enllaç ha caducat o no existeix',
+  'Enlace no válido': 'L’enllaç no és vàlid'
+};
+function errCa(m) { m = String(m || ''); if (ERRORES[m]) return ERRORES[m]; if (/muchas fotos/.test(m)) return 'Ja hi ha moltes fotos en aquest enllaç'; return 'error de connexió'; }
+function $(id) { return document.getElementById(id); }
+function muestra(id) { ['cargando', 'error', 'app', 'gracias'].forEach(function (x) { $(x).classList.toggle('oculto', x !== id); }); window.scrollTo(0, 0); }
+
+// Lo que la persona invitada ya escribió (su nombre y relación) se recuerda en este móvil
+try { var yo = JSON.parse(localStorage.getItem('tus_aporta_yo') || '{}'); if (yo.nombre) $('nombre').value = yo.nombre; if (yo.relacion) $('relacion').value = yo.relacion; } catch (e) {}
+try { $('texto').value = localStorage.getItem('tus_aporta_borrador_' + C) || ''; } catch (e) {}
+$('texto').addEventListener('input', function () { try { localStorage.setItem('tus_aporta_borrador_' + C, $('texto').value); } catch (e) {} });
+
+async function carga() {
+  if (!/^[a-z0-9]{20}$/.test(C)) { muestra('error'); return; }
+  try {
+    var r = await fetch('/api/aportaciones?c=' + encodeURIComponent(C));
+    var j = await r.json();
+    if (!r.ok) { if (j.error && ERRORES[j.error]) $('errorTxt').textContent = ERRORES[j.error] + '. Demana a qui te l’ha enviat que te’n faci arribar un de nou.'; muestra('error'); return; }
+    datos = j;
+    var p = j.prot, q = j.quien;
+    document.title = 'Records de ' + p + ' · Tale Us Stories';
+    $('titulo').textContent = 'Ens ajudes amb els records de ' + p + '?';
+    $('intro').textContent = (q ? q + ' està preparant' : 'Estan preparant') + ' un conte il·lustrat amb la història real de ' + p + ', per regalar. Els teus records el faran encara més especial: una anècdota, com era de petit o de petita, alguna cosa que només saps tu. I si tens fotos, encara millor.';
+    document.querySelectorAll('.G-prot').forEach(function (s) { s.textContent = p; });
+    if (j.g) {
+      var pe = j.g === 'f' ? 'petita' : 'petit';
+      NOMBRES.infancia = 'De ' + pe;
+      document.querySelector('#etapas [data-e=infancia]').textContent = NOMBRES.infancia;
+      $('intro').textContent = $('intro').textContent.replace('com era de petit o de petita', 'com era de ' + pe);
+    }
+    muestra('app');
+  } catch (e) { $('errorTxt').textContent = 'No ens hem pogut connectar. Comprova la connexió i torna-ho a provar.'; muestra('error'); }
+}
+
+$('etapas').addEventListener('click', function (ev) {
+  var b = ev.target.closest('button'); if (!b) return;
+  etapa = b.getAttribute('data-e');
+  document.querySelectorAll('#etapas button').forEach(function (x) { x.classList.toggle('on', x === b); });
+});
+
+// Nota de voz → texto (la misma transcripción que usa el formulario, en catalán)
+function blobToBase64(blob) { return new Promise(function (ok, ko) { var fr = new FileReader(); fr.onload = function () { ok(String(fr.result).split(',')[1]); }; fr.onerror = ko; fr.readAsDataURL(blob); }); }
+$('btnRec').addEventListener('click', async function () {
+  if (grabando) { grabador.stop(); return; }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    trozos = [];
+    grabador = new MediaRecorder(stream);
+    grabador.ondataavailable = function (e) { if (e.data && e.data.size) trozos.push(e.data); };
+    grabador.onstop = async function () {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      grabando = false; $('btnRec').classList.remove('grabando'); $('recTxt').textContent = 'Gravar una altra nota';
+      var blob = new Blob(trozos, { type: grabador.mimeType || 'audio/webm' });
+      $('recEstado').textContent = 'Passant-ho a text…'; $('btnRec').disabled = true;
+      try {
+        var r = await fetch('/api/transcribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ audioBase64: await blobToBase64(blob), mimeType: blob.type, idioma: 'ca' }) });
+        var j = await r.json();
+        if (!r.ok || !j.text) throw new Error(j.error || 'sin texto');
+        var t = $('texto'); t.value = (t.value.trim() ? t.value.trim() + '\n\n' : '') + j.text.trim();
+        t.dispatchEvent(new Event('input'));
+        $('recEstado').textContent = 'Fet. Revisa el text i corregeix el que calgui.';
+      } catch (e) { $('recEstado').textContent = 'No s’ha pogut passar a text. Torna-ho a provar o escriu-ho.'; }
+      $('btnRec').disabled = false;
+    };
+    grabador.start();
+    grabando = true; $('btnRec').classList.add('grabando'); $('recTxt').textContent = 'Aturar'; $('recEstado').textContent = 'Gravant… parla amb calma';
+  } catch (e) { $('recEstado').textContent = 'No podem fer servir el micròfon. Revisa els permisos o escriu el teu record.'; }
+});
+
+// Fotos: se reducen en el móvil (1600 px, JPEG) antes de enviarlas, así pesan poco
+var fotos = [];   // base64 sin prefijo
+function reduce(file) {
+  return new Promise(function (ok) {
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      var M = 1600, w = img.naturalWidth, h = img.naturalHeight, s = Math.min(1, M / Math.max(w, h));
+      var cv = document.createElement('canvas'); cv.width = Math.round(w * s); cv.height = Math.round(h * s);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      ok(cv.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); ok(''); };
+    img.src = url;
+  });
+}
+function pintaFotos() {
+  $('fotos').innerHTML = '';
+  fotos.forEach(function (b64, i) {
+    var d = document.createElement('div');
+    d.innerHTML = '<img alt="Foto ' + (i + 1) + '"><button type="button" aria-label="Treure la foto">×</button>';
+    d.querySelector('img').src = 'data:image/jpeg;base64,' + b64;
+    d.querySelector('button').onclick = function () { fotos.splice(i, 1); pintaFotos(); };
+    $('fotos').appendChild(d);
+  });
+  $('btnFoto').style.display = fotos.length >= 3 ? 'none' : '';
+  $('btnFoto').textContent = fotos.length ? '📷 Afegir una altra foto (' + fotos.length + ' de 3)' : '📷 Afegir una foto';
+}
+$('btnFoto').addEventListener('click', function () { $('fotoInput').click(); });
+// Recorte: el mismo que en el formulario (Cropper.js, se carga solo la primera vez)
+var CROPPER_V = '1.6.2';
+function cargaCropper() {
+  if (window.Cropper) return Promise.resolve();
+  return new Promise(function (ok, ko) {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.css';
+    document.head.appendChild(l);
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.js';
+    s.onload = ok; s.onerror = ko; document.head.appendChild(s);
+  });
+}
+// Devuelve la foto (recortada o entera) en base64, o '' si se cancela
+function recorta(file) {
+  return cargaCropper().then(function () { return new Promise(function (fin) {
+    var url = URL.createObjectURL(file), fondo = document.createElement('div');
+    fondo.className = 'rec-fondo';
+    fondo.innerHTML = '<div class="rec-caja"><div class="rec-t">Retalla la foto</div>' +
+      '<div class="rec-h">Mou i ajusta el requadre per deixar-hi el que és important. Si ja està bé, fes servir la foto sencera.</div>' +
+      '<div class="rec-img"><img alt="Foto per retallar"></div>' +
+      '<div class="rec-bts"><button type="button" data-a="no">Cancel·lar</button><button type="button" data-a="entera">Fer servir la foto sencera</button><button type="button" class="si" data-a="si">Fer servir aquest retall</button></div></div>';
+    document.body.appendChild(fondo);
+    var img = fondo.querySelector('img'), cr;
+    // checkOrientation: false → el navegador ya endereza las fotos del móvil (EXIF)
+    img.onload = function () { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.8, background: false, movable: false, zoomable: false, rotatable: false, checkOrientation: false }); };
+    img.src = url;
+    function cierra(v) { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); fin(v); }
+    fondo.querySelector('[data-a="no"]').onclick = function () { cierra(''); };
+    fondo.querySelector('[data-a="entera"]').onclick = function () { reduce(file).then(cierra); };
+    fondo.querySelector('[data-a="si"]').onclick = function () {
+      if (!cr) { reduce(file).then(cierra); return; }
+      var cv = cr.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1600, imageSmoothingQuality: 'high' });
+      cierra(cv ? cv.toDataURL('image/jpeg', 0.85).split(',')[1] : '');
+    };
+  }); }).catch(function () { return reduce(file); });   // sin conexión al recortador: la foto entera
+}
+$('fotoInput').addEventListener('change', async function () {
+  var fs = Array.from(this.files || []); this.value = '';
+  for (var i = 0; i < fs.length && fotos.length < 3; i++) {
+    if (!/^image\//.test(fs[i].type || 'image/')) continue;
+    var b = await recorta(fs[i]); if (b) { fotos.push(b); pintaFotos(); }
+  }
+  pintaFotos();
+});
+
+$('btnEnviar').addEventListener('click', async function () {
+  var nombre = $('nombre').value.trim(), relacion = $('relacion').value.trim(), texto = $('texto').value.trim();
+  $('errEnviar').textContent = '';
+  if (!nombre) { $('errEnviar').textContent = 'Posa el teu nom, perquè sapiguem de qui és el record.'; $('nombre').focus(); return; }
+  if (!etapa) { $('errEnviar').textContent = 'Tria de quin moment és el teu record.'; return; }
+  if (texto.length < 3 && !fotos.length) { $('errEnviar').textContent = 'Grava o escriu el teu record (o afegeix una foto) abans d’enviar-lo.'; return; }
+  if (grabando) { $('errEnviar').textContent = 'Atura la gravació abans d’enviar.'; return; }
+  var b = $('btnEnviar'); b.disabled = true; b.textContent = 'Enviant…';
+  try {
+    var r = await fetch('/api/aportaciones', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'aportar', c: C, nombre: nombre, relacion: relacion, etapa: etapa, texto: texto, fotos: fotos }) });
+    var j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'Error');
+    try { localStorage.setItem('tus_aporta_yo', JSON.stringify({ nombre: nombre, relacion: relacion })); localStorage.removeItem('tus_aporta_borrador_' + C); } catch (e) {}
+    enviados.push(NOMBRES[etapa] + (fotos.length ? ' (amb ' + fotos.length + (fotos.length > 1 ? ' fotos)' : ' foto)') : ''));
+    fotos = []; pintaFotos();
+    $('graciasTxt').textContent = 'El teu record ja està desat i ' + (datos.quien || 'qui prepara el llibre') + ' el veurà al seu formulari. Si te’n recordes d’alguna cosa més, en pots afegir un altre.';
+    $('texto').value = ''; etapa = ''; document.querySelectorAll('#etapas button').forEach(function (x) { x.classList.remove('on'); });
+    $('recEstado').textContent = ''; $('recTxt').textContent = 'Gravar una nota de veu';
+    $('mias').innerHTML = enviados.map(function (e) { return '<li>Record enviat: ' + e + '</li>'; }).join('');
+    muestra('gracias');
+  } catch (e) { $('errEnviar').textContent = 'No s’ha pogut enviar: ' + errCa(e.message) + '. Torna-ho a provar.'; }
+  b.disabled = false; b.textContent = 'Enviar el meu record ♥';
+});
+$('btnOtro').addEventListener('click', function () { muestra('app'); });
+
+carga();
+</script>
+</body>
+</html>

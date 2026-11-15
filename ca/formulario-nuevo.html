@@ -297,12 +297,12 @@
       <div class="gender-opt selected" id="gf" onclick="setGender('f',this)">
         <div class="gender-emoji">👩</div>
         <div class="gender-title">Una dona</div>
-        <div class="gender-desc">Mama, àvia, tieta, amiga…</div>
+        <div class="gender-desc">Mare, àvia, tieta, amiga…</div>
       </div>
       <div class="gender-opt" id="gm" onclick="setGender('m',this)">
         <div class="gender-emoji">👨</div>
         <div class="gender-title">Un home</div>
-        <div class="gender-desc">Papa, avi, tiet, amic…</div>
+        <div class="gender-desc">Pare, avi, tiet, amic…</div>
       </div>
     </div>
   </div>
@@ -311,8 +311,8 @@
       <label>Qui és per als nens?</label>
       <select id="bookType" onchange="tipoElegido()">
         <option value="">Tria una opció</option>
-        <option value="Mamá">Mama</option>
-        <option value="Papá">Papa</option>
+        <option value="Mamá">Mare</option>
+        <option value="Papá">Pare</option>
         <option value="Abuela">Àvia</option>
         <option value="Abuelo">Avi</option>
         <option value="Tía">Tieta</option>
@@ -400,7 +400,7 @@
         <option value="Otra relación">Una altra relació</option>
       </select>
     </div>
-    <div class="field"><label data-yo="Com et diuen els nens?">Com li diuen els nens?</label><input type="text" id="nicknames" placeholder="Ex.: mama, iaia, l'àvia Pepa…"></div>
+    <div class="field"><label data-yo="Com et diuen els nens?">Com li diuen els nens?</label><input type="text" id="nicknames" placeholder="Ex.: mare, iaia, l'àvia Pepa…"></div>
   </div>
   <div class="field"><label data-yo="Quina edat tens avui?">Quina edat té avui?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ex.: 38"></div>
   <div class="field"><label data-yo="Descriu-te en 3 paraules">Descriu-<span class="G-lo"></span> en 3 paraules</label><input type="text" id="tresPalabras" placeholder="Ex.: alegre, valenta i curiosa"></div>
@@ -559,7 +559,7 @@
   </div>
   <div class="field">
     <label>Com la signes?</label>
-    <input type="text" id="dedicatoriaFirma" maxlength="40" spellcheck="true" lang="ca" placeholder="Ex.: Amb tot el nostre amor, el papa i l'àvia Carmen">
+    <input type="text" id="dedicatoriaFirma" maxlength="40" spellcheck="true" lang="ca" placeholder="Ex.: Amb tot el nostre amor, el pare i l'àvia Carmen">
   </div>
   <div class="ia" id="iaDed" style="display:none"></div>
 
@@ -660,6 +660,11 @@
     <div class="sr"><span class="sk">Forma de pagament</span><span class="sv">Targeta, pagament segur amb Stripe. És l'últim pas: la teva història ens arriba tan bon punt pagues.</span></div>
   </div>
   <div class="sb">
+    <h3>Hi ha res més que vulguis que tinguem en compte?</h3>
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">Qualsevol cosa que ens ajudi a fer el llibre tal com te l’imagines. Per exemple: que l’escrivim en castellà o en anglès, que alguna cosa del que ens has explicat no hi surti, o alguna cosa que vulguis afegir o a la qual vulguis donar més importància.</p>
+    <textarea id="tenerEnCuenta" rows="3" placeholder="Escriu-ho aquí (opcional)" style="width:100%;box-sizing:border-box;min-height:96px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;line-height:1.5;font-family:inherit;color:var(--navy);background:#fff;resize:vertical;"></textarea>
+  </div>
+  <div class="sb">
     <h3>Codi de descompte</h3>
     <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">Tens un codi? Escriu-lo aquí i s'aplicarà a la pàgina de pagament.</p>
     <input type="text" id="codigoDescuento" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Codi de descompte" style="width:100%;max-width:280px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);background:#fff;">
@@ -715,7 +720,7 @@
 
 </div>
 
-<script src="/portadas.js?v=20261104a"></script>
+<script src="/portadas.js?v=20261115l"></script>
 <script>
 let cur = 0;
 const TOTAL = 7;
@@ -756,7 +761,7 @@ function origenVisita() {
   var fuentes = [['mail.google', 'Email'], ['outlook', 'Email'], ['chatgpt', 'IA · ChatGPT'], ['openai', 'IA · ChatGPT'], ['gemini', 'IA · Gemini'], ['bard.google', 'IA · Gemini'], ['copilot', 'IA · Copilot'], ['perplexity', 'IA · Perplexity'], ['claude.ai', 'IA · Claude'], ['deepseek', 'IA · DeepSeek'], ['meta.ai', 'IA · Meta AI'], ['you.com', 'IA · You.com'], ['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['pinterest', 'Pinterest'], ['pin.it', 'Pinterest'], ['google', 'Google'], ['bing', 'Bing'], ['facebook', 'Facebook'], ['duckduckgo', 'DuckDuckGo'], ['yahoo', 'Yahoo'], ['ecosia', 'Ecosia'], ['mail', 'Email']];
   var f = fuentes.find(function(x) { return t.indexOf(x[0]) >= 0; });
   var nombre = f ? f[1] : (o.utm || o.ref || (o.fecha ? 'Directo (escribió la web o sin datos)' : 'Sin datos'));
-  // Si vino por un enlace con UTM (el anuncio de Meta, por ejemplo), se añade: «anuncio: instagram / anuncio / papa»
+  // Si vino por un enlace con UTM (el anuncio de Meta, por ejemplo), se añade: «anuncio: instagram / anuncio / pare»
   var u = {}; try { u = JSON.parse(localStorage.getItem('tus_utm') || '{}'); } catch (e) {}
   var anuncio = u.source ? ' · anuncio: ' + [u.source, u.medium, u.campaign].filter(Boolean).join(' / ') + (u.fecha ? ' (' + u.fecha + ')' : '') : '';
   return nombre + (o.fecha ? ' · entró por ' + (o.pag || '/') + ' el ' + o.fecha : '') + anuncio;
@@ -790,7 +795,7 @@ function setFormato(val, el) {
 function pintaPortadas() {
   var n = (document.getElementById('protName') || {}).value || 'Carmen';
   document.querySelectorAll('.portada-card').forEach(function(c) {
-    c.querySelector('.pv').innerHTML = TUSPortadas.svg(+c.dataset.portada, n, null, { calidad: 'mini' });
+    c.querySelector('.pv').innerHTML = TUSPortadas.svg(+c.dataset.portada, n, null, { calidad: 'mini', genero: gender === 'f' ? 'f' : 'm' });   // en catalán: «de la», «del» o «de l’»
   });
 }
 (function() {
@@ -832,7 +837,7 @@ const G = {
   entremaliat: ['entremaliada', 'entremaliat'],
   curios: ['curiosa', 'curiós'],
   name: ['ella', 'ell'],
-  vuestra: ['la vostra mama', 'el vostre papa'],
+  vuestra: ['la vostra mare', 'el vostre pare'],
   protag: ['La protagonista', 'El protagonista'],
 };
 
@@ -901,6 +906,7 @@ function setGender(g_val, el) {
   document.querySelectorAll('#gf,#gm').forEach(function(o) { o.classList.remove('selected'); });
   el.classList.add('selected');
   updateAll();
+  try { pintaPortadas(); } catch (e) {}   // el artículo de la portada (de la / del) depende de si es hombre o mujer
 }
 
 function onNameInput() { updateAll(); }
@@ -987,7 +993,7 @@ var aportaItems = null, aportaCargando = false;
 function aportaEsc(t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function aportaClave(it) { return (it.fecha || '') + '|' + (it.nombre || ''); }
 function aportaFuera() { try { return JSON.parse(document.getElementById('aportaFuera').value || '[]'); } catch (e) { return []; } }
-function aportaUrl() { var id = document.getElementById('aportaId').value; return id ? location.origin + '/aportar?c=' + id : ''; }
+function aportaUrl() { var id = document.getElementById('aportaId').value; return id ? location.origin + '/ca/aportar?c=' + id : ''; }
 function invitaPinta(n) {
   var caja = document.getElementById('invita');
   if (!caja) {
@@ -1598,6 +1604,7 @@ async function submit() {
   payload.dedicatoria_corregida = ia.ded && ia.ded.corregida ? 'sí' : 'no';
   payload.version_formulario = 'etapas';
   payload.acepta_privacidad = 'sí';   // no se puede enviar sin marcar la casilla
+  payload.a_tener_en_cuenta = val('tenerEnCuenta');   // pregunta abierta del final: idioma, algo que no salga, algo que destacar…
   payload.idioma = 'ca';               // pedido hecho desde la versión catalana del formulario
   payload.origen = origenVisita();     // de dónde llegó a la web la primera vez (lo apunta functions/_middleware.js)
 
@@ -1627,6 +1634,7 @@ async function submit() {
       enviado = true;
       try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
       if (btn) btn.textContent = 'Et portem a pagar…';
+      try { localStorage.setItem('tus_pago_idioma', 'ca'); } catch (e) {}   // la página de gracias sale en el idioma del formulario
       location.href = enlacePago(pedido);
     } else {
       alert('Hi ha hagut un error en desar la teva història. Si us plau, torna-ho a provar.');
@@ -2301,7 +2309,7 @@ window.addEventListener('load', aspPinta);   // por si los nombres llegan desde 
   if (!q.get('nombre') && !q.get('rol') && !q.get('portada')) return;
   var ROL = { 'Mamá': ['Mamá', 'f'], 'Papá': ['Papá', 'm'], 'Abuela': ['Abuela', 'f'], 'Abuelo': ['Abuelo', 'm'], 'Tía': ['Tía', 'f'], 'Tío': ['Tío', 'm'] };
   // Por si la web catalana pasa el rol en catalán: se convierte al valor castellano del desplegable
-  var ROL_CA = { 'Mama': 'Mamá', 'Papa': 'Papá', 'Àvia': 'Abuela', 'Avi': 'Abuelo', 'Tieta': 'Tía', 'Tia': 'Tía', 'Tiet': 'Tío', 'Oncle': 'Tío' };
+  var ROL_CA = { 'Mare': 'Mamá', 'Pare': 'Papá', 'Àvia': 'Abuela', 'Avi': 'Abuelo', 'Tieta': 'Tía', 'Tia': 'Tía', 'Tiet': 'Tío', 'Oncle': 'Tío' };
   if (ROL_CA[q.get('rol')]) q.set('rol', ROL_CA[q.get('rol')]);
   if (q.get('nombre')) document.getElementById('protName').value = q.get('nombre');
   if (q.get('ninos')) document.getElementById('childNames').value = q.get('ninos');
