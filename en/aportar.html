@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Share your memories · Tale Us Stories</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="You’ve been invited to share your memories for a Tale Us Stories personalised storybook.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234A2C1F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='36' font-style='italic' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FBFAF7;--coral:#8C6A55;--coral-l:#EFE6DC;--navy:#4A2C1F;--muted:#6F5A4C;--border:#E3D6C8;--white:#FFFFFF;--boton:#DCC8B4;--display:'Bricolage Grotesque','Arial Black',sans-serif;--texto:'Literata',Georgia,serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--navy);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .top{text-align:center;padding:22px 16px 10px;font-family:var(--display);font-weight:800;letter-spacing:3px;font-size:14px;color:var(--navy)}
+  .top a{color:inherit;text-decoration:none}
+  main{max-width:640px;margin:0 auto;padding:8px 16px 60px}
+  .chap{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--coral);margin:18px 0 8px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,7vw,40px);line-height:1.08;margin-bottom:12px}
+  .sub{color:var(--muted);margin-bottom:22px}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:20px 18px;margin-bottom:16px}
+  label{display:block;font-family:var(--display);font-weight:700;font-size:15px;margin-bottom:6px}
+  .hint{font-size:14px;color:var(--muted);margin:-2px 0 10px}
+  input[type=text],textarea{width:100%;font:inherit;font-size:16px;color:var(--navy);background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;outline:none}
+  input[type=text]:focus,textarea:focus{border-color:var(--coral)}
+  textarea{min-height:150px;resize:vertical}
+  .fila{display:flex;gap:12px;flex-wrap:wrap}.fila>div{flex:1 1 200px}
+  .etapas{display:flex;flex-wrap:wrap;gap:8px}
+  .etapas button{font-family:var(--display);font-weight:500;font-size:15px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--cream);color:var(--navy);cursor:pointer}
+  .etapas button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .rec{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .btn{font-family:var(--display);font-weight:700;font-size:16px;border:0;border-radius:999px;padding:13px 22px;cursor:pointer}
+  .btn-rec{background:var(--coral-l);color:var(--navy);display:inline-flex;align-items:center;gap:8px}
+  .btn-rec .dot{width:11px;height:11px;border-radius:50%;background:#C0392B}
+  .btn-rec.grabando{background:#C0392B;color:#fff}.btn-rec.grabando .dot{background:#fff;animation:lat 1s infinite}
+  @keyframes lat{50%{opacity:.3}}
+  .estado{font-size:14px;color:var(--muted)}
+  .btn-env{background:var(--navy);color:#fff;width:100%;font-size:17px;padding:16px}
+  .btn-env:disabled{opacity:.5}
+  .btn-sec{background:transparent;color:var(--navy);border:1.5px solid var(--border)}
+  .ok{text-align:center;padding:30px 18px}
+  .ok .cor{font-size:40px;color:var(--coral)}
+  .err{color:#A33A2B;font-size:15px;margin-top:10px}
+  .mias{margin-top:8px;font-size:15px;color:var(--muted)}
+  .mias li{margin:4px 0 4px 18px}
+  .pie{text-align:center;font-size:13px;color:var(--muted);margin-top:26px}
+  .oculto{display:none}
+  .rec-fondo{position:fixed;inset:0;background:rgba(40,25,15,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+  .rec-caja{background:var(--cream);border-radius:20px;padding:18px;width:100%;max-width:560px;max-height:96vh;display:flex;flex-direction:column;gap:12px}
+  .rec-t{font-family:var(--display);font-weight:700;font-size:18px;color:var(--navy)}
+  .rec-h{font-size:13px;color:var(--muted);line-height:1.5}
+  .rec-img{height:min(60vh,460px);background:#eee;border-radius:12px;overflow:hidden}
+  .rec-img img{display:block;max-width:100%}
+  .rec-bts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .rec-bts button{border-radius:100px;padding:11px 18px;font-family:var(--display);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--navy)}
+  .rec-bts button.si{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+  .fotos{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+  .fotos:empty{display:none}
+  .fotos div{position:relative;width:88px;height:88px}
+  .fotos img{width:100%;height:100%;object-fit:cover;border-radius:12px;border:1px solid var(--border)}
+  .fotos button{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:0;background:var(--navy);color:#fff;font-size:15px;line-height:26px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="top"><a href="/en/">TALE US STORIES</a></div>
+<main>
+  <div id="cargando" class="sub" style="text-align:center;margin-top:40px">Loading…</div>
+
+  <div id="error" class="card oculto" style="text-align:center">
+    <h1 style="font-size:26px">This link isn’t working</h1>
+    <p class="sub" id="errorTxt">It may have expired. Ask the person who sent it to you for a new one.</p>
+  </div>
+
+  <div id="app" class="oculto">
+    <div class="chap">A storybook with your story</div>
+    <h1 id="titulo">Help us tell their story</h1>
+    <p class="sub" id="intro"></p>
+
+    <div class="card">
+      <div class="fila">
+        <div><label for="nombre">Your name</label><input type="text" id="nombre" maxlength="50" placeholder="For example, Dani" autocomplete="given-name"></div>
+        <div><label for="relacion">Who are you to <span class="G-prot">them</span>?</label><input type="text" id="relacion" maxlength="50" placeholder="Their son, their sister, a friend…"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>When is your memory from?</label>
+      <div class="hint">Choose one. If you have memories from different times, send one and then add another.</div>
+      <div class="etapas" id="etapas">
+        <button type="button" data-e="infancia">As a child</button>
+        <button type="button" data-e="juventud">Youth</button>
+        <button type="button" data-e="familia">Love and family</button>
+        <button type="button" data-e="ninos">With the children</button>
+        <button type="button" data-e="otros">Another memory</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Your memory</label>
+      <div class="hint">Record a voice note, with no rush, as if you were telling someone over a long lunch. We turn it into text and you can correct it. If you prefer, write it directly.</div>
+      <div class="rec">
+        <button type="button" class="btn btn-rec" id="btnRec"><span class="dot"></span><span id="recTxt">Record a voice note</span></button>
+        <span class="estado" id="recEstado"></span>
+      </div>
+      <textarea id="texto" maxlength="12000" placeholder="Tell it here: an anecdote, what they were like, something only you know…"></textarea>
+    </div>
+
+    <div class="card">
+      <label>Photos (optional)</label>
+      <div class="hint">Do you have a photo from that moment? It helps us draw the people and places as they were. Up to 3 per memory.</div>
+      <input type="file" id="fotoInput" accept="image/*" multiple style="display:none">
+      <div class="fotos" id="fotos"></div>
+      <button type="button" class="btn btn-sec" id="btnFoto">📷 Add a photo</button>
+    </div>
+
+    <button type="button" class="btn btn-env" id="btnEnviar">Send my memory ♥</button>
+    <div class="err" id="errEnviar"></div>
+    <ul class="mias" id="mias"></ul>
+    <p class="pie">What you write will only be seen by the person preparing the book and the Tale Us Stories team, to write the story.</p>
+  </div>
+
+  <div id="gracias" class="card ok oculto">
+    <div class="cor">♥</div>
+    <h1 style="font-size:28px">Thank you!</h1>
+    <p class="sub" id="graciasTxt">Your memory has been saved.</p>
+    <button type="button" class="btn btn-sec" id="btnOtro">Add another memory</button>
+  </div>
+</main>
+
+<script>
+// Versión inglesa de /aportar (mismo funcionamiento; los textos de la API llegan en castellano y aquí se cambian por ingleses)
+var C = new URLSearchParams(location.search).get('c') || '';
+var datos = null, etapa = '', grabador = null, trozos = [], grabando = false, enviados = [];
+var NOMBRES = { infancia: 'As a child', juventud: 'Youth', familia: 'Love and family', ninos: 'With the children', otros: 'Another memory' };
+var ERRORES = {
+  'Pon tu nombre': 'Add your name',
+  'Cuéntanos algún recuerdo o añade una foto': 'Tell us a memory or add a photo',
+  'Ya hay muchas aportaciones en este enlace': 'There are already a lot of contributions on this link',
+  'Este enlace ha caducado o no existe': 'This link has expired or doesn’t exist',
+  'Enlace no válido': 'The link isn’t valid'
+};
+function errEn(m) { m = String(m || ''); if (ERRORES[m]) return ERRORES[m]; if (/muchas fotos/.test(m)) return 'There are already a lot of photos on this link'; return 'connection error'; }
+function $(id) { return document.getElementById(id); }
+function muestra(id) { ['cargando', 'error', 'app', 'gracias'].forEach(function (x) { $(x).classList.toggle('oculto', x !== id); }); window.scrollTo(0, 0); }
+
+// Lo que la persona invitada ya escribió (su nombre y relación) se recuerda en este móvil
+try { var yo = JSON.parse(localStorage.getItem('tus_aporta_yo') || '{}'); if (yo.nombre) $('nombre').value = yo.nombre; if (yo.relacion) $('relacion').value = yo.relacion; } catch (e) {}
+try { $('texto').value = localStorage.getItem('tus_aporta_borrador_' + C) || ''; } catch (e) {}
+$('texto').addEventListener('input', function () { try { localStorage.setItem('tus_aporta_borrador_' + C, $('texto').value); } catch (e) {} });
+
+async function carga() {
+  if (!/^[a-z0-9]{20}$/.test(C)) { muestra('error'); return; }
+  try {
+    var r = await fetch('/api/aportaciones?c=' + encodeURIComponent(C));
+    var j = await r.json();
+    if (!r.ok) { if (j.error && ERRORES[j.error]) $('errorTxt').textContent = ERRORES[j.error] + '. Ask the person who sent it to you for a new one.'; muestra('error'); return; }
+    datos = j;
+    var p = j.prot, q = j.quien;
+    document.title = p + '’s memories · Tale Us Stories';
+    $('titulo').textContent = 'Will you help us with ' + p + '’s memories?';
+    $('intro').textContent = (q ? q + ' is preparing' : 'Someone is preparing') + ' an illustrated storybook with ' + p + '’s real story, as a gift. Your memories will make it even more special: an anecdote, what they were like as a child, something only you know. And if you have photos, even better.';
+    document.querySelectorAll('.G-prot').forEach(function (s) { s.textContent = p; });
+    muestra('app');
+  } catch (e) { $('errorTxt').textContent = 'We couldn’t connect. Check your connection and try again.'; muestra('error'); }
+}
+
+$('etapas').addEventListener('click', function (ev) {
+  var b = ev.target.closest('button'); if (!b) return;
+  etapa = b.getAttribute('data-e');
+  document.querySelectorAll('#etapas button').forEach(function (x) { x.classList.toggle('on', x === b); });
+});
+
+// Nota de voz → texto (la misma transcripción que usa el formulario, en inglés)
+function blobToBase64(blob) { return new Promise(function (ok, ko) { var fr = new FileReader(); fr.onload = function () { ok(String(fr.result).split(',')[1]); }; fr.onerror = ko; fr.readAsDataURL(blob); }); }
+$('btnRec').addEventListener('click', async function () {
+  if (grabando) { grabador.stop(); return; }
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    trozos = [];
+    grabador = new MediaRecorder(stream);
+    grabador.ondataavailable = function (e) { if (e.data && e.data.size) trozos.push(e.data); };
+    grabador.onstop = async function () {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      grabando = false; $('btnRec').classList.remove('grabando'); $('recTxt').textContent = 'Record another note';
+      var blob = new Blob(trozos, { type: grabador.mimeType || 'audio/webm' });
+      $('recEstado').textContent = 'Turning it into text…'; $('btnRec').disabled = true;
+      try {
+        var r = await fetch('/api/transcribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ audioBase64: await blobToBase64(blob), mimeType: blob.type, idioma: 'en' }) });
+        var j = await r.json();
+        if (!r.ok || !j.text) throw new Error(j.error || 'sin texto');
+        var t = $('texto'); t.value = (t.value.trim() ? t.value.trim() + '\n\n' : '') + j.text.trim();
+        t.dispatchEvent(new Event('input'));
+        $('recEstado').textContent = 'Done. Check the text and correct anything you need to.';
+      } catch (e) { $('recEstado').textContent = 'We couldn’t turn it into text. Try again or write it.'; }
+      $('btnRec').disabled = false;
+    };
+    grabador.start();
+    grabando = true; $('btnRec').classList.add('grabando'); $('recTxt').textContent = 'Stop'; $('recEstado').textContent = 'Recording… take your time';
+  } catch (e) { $('recEstado').textContent = 'We can’t use the microphone. Check the permissions or write your memory.'; }
+});
+
+// Fotos: se reducen en el móvil (1600 px, JPEG) antes de enviarlas, así pesan poco
+var fotos = [];   // base64 sin prefijo
+function reduce(file) {
+  return new Promise(function (ok) {
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      var M = 1600, w = img.naturalWidth, h = img.naturalHeight, s = Math.min(1, M / Math.max(w, h));
+      var cv = document.createElement('canvas'); cv.width = Math.round(w * s); cv.height = Math.round(h * s);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      ok(cv.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); ok(''); };
+    img.src = url;
+  });
+}
+function pintaFotos() {
+  $('fotos').innerHTML = '';
+  fotos.forEach(function (b64, i) {
+    var d = document.createElement('div');
+    d.innerHTML = '<img alt="Photo ' + (i + 1) + '"><button type="button" aria-label="Remove the photo">×</button>';
+    d.querySelector('img').src = 'data:image/jpeg;base64,' + b64;
+    d.querySelector('button').onclick = function () { fotos.splice(i, 1); pintaFotos(); };
+    $('fotos').appendChild(d);
+  });
+  $('btnFoto').style.display = fotos.length >= 3 ? 'none' : '';
+  $('btnFoto').textContent = fotos.length ? '📷 Add another photo (' + fotos.length + ' of 3)' : '📷 Add a photo';
+}
+$('btnFoto').addEventListener('click', function () { $('fotoInput').click(); });
+// Recorte: el mismo que en el formulario (Cropper.js, se carga solo la primera vez)
+var CROPPER_V = '1.6.2';
+function cargaCropper() {
+  if (window.Cropper) return Promise.resolve();
+  return new Promise(function (ok, ko) {
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.css';
+    document.head.appendChild(l);
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/' + CROPPER_V + '/cropper.min.js';
+    s.onload = ok; s.onerror = ko; document.head.appendChild(s);
+  });
+}
+// Devuelve la foto (recortada o entera) en base64, o '' si se cancela
+function recorta(file) {
+  return cargaCropper().then(function () { return new Promise(function (fin) {
+    var url = URL.createObjectURL(file), fondo = document.createElement('div');
+    fondo.className = 'rec-fondo';
+    fondo.innerHTML = '<div class="rec-caja"><div class="rec-t">Crop the photo</div>' +
+      '<div class="rec-h">Move and adjust the frame to keep what matters. If it’s fine as it is, use the whole photo.</div>' +
+      '<div class="rec-img"><img alt="Photo to crop"></div>' +
+      '<div class="rec-bts"><button type="button" data-a="no">Cancel</button><button type="button" data-a="entera">Use the whole photo</button><button type="button" class="si" data-a="si">Use this crop</button></div></div>';
+    document.body.appendChild(fondo);
+    var img = fondo.querySelector('img'), cr;
+    // checkOrientation: false → el navegador ya endereza las fotos del móvil (EXIF)
+    img.onload = function () { cr = new Cropper(img, { viewMode: 1, autoCropArea: 0.8, background: false, movable: false, zoomable: false, rotatable: false, checkOrientation: false }); };
+    img.src = url;
+    function cierra(v) { if (cr) cr.destroy(); URL.revokeObjectURL(url); fondo.remove(); fin(v); }
+    fondo.querySelector('[data-a="no"]').onclick = function () { cierra(''); };
+    fondo.querySelector('[data-a="entera"]').onclick = function () { reduce(file).then(cierra); };
+    fondo.querySelector('[data-a="si"]').onclick = function () {
+      if (!cr) { reduce(file).then(cierra); return; }
+      var cv = cr.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1600, imageSmoothingQuality: 'high' });
+      cierra(cv ? cv.toDataURL('image/jpeg', 0.85).split(',')[1] : '');
+    };
+  }); }).catch(function () { return reduce(file); });   // sin conexión al recortador: la foto entera
+}
+$('fotoInput').addEventListener('change', async function () {
+  var fs = Array.from(this.files || []); this.value = '';
+  for (var i = 0; i < fs.length && fotos.length < 3; i++) {
+    if (!/^image\//.test(fs[i].type || 'image/')) continue;
+    var b = await recorta(fs[i]); if (b) { fotos.push(b); pintaFotos(); }
+  }
+  pintaFotos();
+});
+
+$('btnEnviar').addEventListener('click', async function () {
+  var nombre = $('nombre').value.trim(), relacion = $('relacion').value.trim(), texto = $('texto').value.trim();
+  $('errEnviar').textContent = '';
+  if (!nombre) { $('errEnviar').textContent = 'Add your name, so we know whose memory it is.'; $('nombre').focus(); return; }
+  if (!etapa) { $('errEnviar').textContent = 'Choose when your memory is from.'; return; }
+  if (texto.length < 3 && !fotos.length) { $('errEnviar').textContent = 'Record or write your memory (or add a photo) before sending it.'; return; }
+  if (grabando) { $('errEnviar').textContent = 'Stop the recording before sending.'; return; }
+  var b = $('btnEnviar'); b.disabled = true; b.textContent = 'Sending…';
+  try {
+    var r = await fetch('/api/aportaciones', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'aportar', c: C, nombre: nombre, relacion: relacion, etapa: etapa, texto: texto, fotos: fotos }) });
+    var j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'Error');
+    try { localStorage.setItem('tus_aporta_yo', JSON.stringify({ nombre: nombre, relacion: relacion })); localStorage.removeItem('tus_aporta_borrador_' + C); } catch (e) {}
+    enviados.push(NOMBRES[etapa] + (fotos.length ? ' (with ' + fotos.length + (fotos.length > 1 ? ' photos)' : ' photo)') : ''));
+    fotos = []; pintaFotos();
+    $('graciasTxt').textContent = 'Your memory has been saved and ' + (datos.quien || 'the person preparing the book') + ' will see it in their form. If you remember anything else, you can add another one.';
+    $('texto').value = ''; etapa = ''; document.querySelectorAll('#etapas button').forEach(function (x) { x.classList.remove('on'); });
+    $('recEstado').textContent = ''; $('recTxt').textContent = 'Record a voice note';
+    $('mias').innerHTML = enviados.map(function (e) { return '<li>Memory sent: ' + e + '</li>'; }).join('');
+    muestra('gracias');
+  } catch (e) { $('errEnviar').textContent = 'It couldn’t be sent: ' + errEn(e.message) + '. Please try again.'; }
+  b.disabled = false; b.textContent = 'Send my memory ♥';
+});
+$('btnOtro').addEventListener('click', function () { muestra('app'); });
+
+carga();
+</script>
+</body>
+</html>
