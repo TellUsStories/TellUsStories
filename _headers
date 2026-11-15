@@ -20,6 +20,8 @@
   X-Robots-Tag: noindex
 /ca/formulario-nuevo/*
   X-Robots-Tag: noindex
+/en/formulario-nuevo/*
+  X-Robots-Tag: noindex
 
 # Los scripts llevan acentos y símbolos (★): sin charset, hcti los lee mal y salen letras raras en las páginas
 /*.js
@@ -27,6 +29,8 @@
 /aportar*
   X-Robots-Tag: noindex, nofollow
 /ca/aportar*
+  X-Robots-Tag: noindex, nofollow
+/en/aportar*
   X-Robots-Tag: noindex, nofollow
 /mis-personajes*
   X-Robots-Tag: noindex, nofollow

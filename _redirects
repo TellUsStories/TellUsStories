@@ -10,3 +10,7 @@
 /ca/formulario.html /ca/formulario-nuevo 301
 /ca/formulario /ca/formulario-nuevo 301
 /ca/formulario-nuevo/* /ca/formulario-nuevo 200
+# Versión en inglés (/en/): las mismas reglas del formulario
+/en/formulario.html /en/formulario-nuevo 301
+/en/formulario /en/formulario-nuevo 301
+/en/formulario-nuevo/* /en/formulario-nuevo 200

@@ -32,6 +32,7 @@ Otros nombres con los que nos buscan: Tale Us, Tale Us Books, Tale Us Libros, Ta
 ## Páginas
 
 - [Versión en catalán](https://taleusstories.com/ca/): toda la web pública también está en catalán bajo /ca/ (mismas páginas y mismo nombre, por ejemplo https://taleusstories.com/ca/regalo-dia-de-la-madre). Precios y condiciones iguales.
+- [English version](https://taleusstories.com/en/): the whole public website is also in English under /en/ (same pages and file names, e.g. https://taleusstories.com/en/regalo-dia-de-la-madre). Same prices and conditions; books can be written in Spanish, Catalan or English; shipping within Spain.
 
 - [Inicio](https://taleusstories.com/): qué es, cómo funciona, precio y preguntas frecuentes.
 - [Un cuento con tu propia historia](https://taleusstories.com/cuento-con-tu-historia): una madre o un padre cuenta su vida a sus hijos.

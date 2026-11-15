@@ -10,6 +10,7 @@
   var PRECIOS = { dura: 67.45, blanda: 49.45 };   // libro + envío 5,95 € (desde 12/11/2026)
 
   var CA = /^\/ca(\/|$)/.test(location.pathname);   // páginas en catalán
+  var EN = /^\/en(\/|$)/.test(location.pathname);   // páginas en inglés
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 
   /* ---------- 1. De dónde viene (se guarda siempre, sin cookies: solo en el navegador) ---------- */
@@ -61,7 +62,10 @@
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
     var d = document.createElement('div'); d.id = 'tus-ck'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Cookies');
     // Versión en catalán (/ca/): mismo aviso traducido
-    d.innerHTML = CA
+    d.innerHTML = EN
+      ? '<p>We use Meta cookies (Instagram and Facebook) to see which ads work and to show ours to people who may be interested. They are only switched on if you accept. <a href="/en/legal#cookies">More information</a></p>' +
+        '<div class="b"><button class="no" type="button">Reject</button><button class="si" type="button">Accept</button></div>'
+      : CA
       ? '<p>Fem servir galetes de Meta (Instagram i Facebook) per saber quins anuncis funcionen i ensenyar els nostres a qui li puguin interessar. Només s\'activen si les acceptes. <a href="/ca/legal#cookies">Més informació</a></p>' +
         '<div class="b"><button class="no" type="button">Rebutja</button><button class="si" type="button">Accepta</button></div>'
       : '<p>Usamos cookies de Meta (Instagram y Facebook) para saber qué anuncios funcionan y enseñar los nuestros a quien le puedan interesar. Solo se activan si aceptas. <a href="/legal.html#cookies">Más información</a></p>' +
@@ -104,7 +108,7 @@
     return f0.apply(this, arguments);
   };
   // Página de gracias (Stripe vuelve aquí después de pagar): compra, una sola vez por pedido
-  if (/^\/(ca\/)?gracias/.test(location.pathname)) {
+  if (/^\/((ca|en)\/)?gracias/.test(location.pathname)) {
     var p = {}; try { p = JSON.parse(ls('tus_ultimo_pedido') || '{}'); } catch (e) {}
     var fmt2 = q.get('formato') || p.formato || 'blanda';
     var idc = q.get('session_id') || q.get('pedido') || p.pedido || String(p.fecha || '');
