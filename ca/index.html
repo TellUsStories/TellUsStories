@@ -601,12 +601,12 @@
     var sec = document.getElementById('opiniones'); if (!sec || !window.fetch) return;
     var esc = function (t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
     var est = function (n) { return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n); };
-    fetch('/api/opiniones').then(function (r) { return r.ok ? r.json() : []; }).then(function (lista) {
+    fetch('/api/opiniones?idioma=ca').then(function (r) { return r.ok ? r.json() : []; }).then(function (lista) {
       if (!Array.isArray(lista) || !lista.length) return;
       var media = lista.reduce(function (s, o) { return s + o.estrellas; }, 0) / lista.length;
       document.getElementById('opiniones-media').innerHTML = '<b>' + est(Math.round(media)) + '</b>' + media.toFixed(1).replace('.', ',') + ' de 5 · ' + lista.length + (lista.length > 1 ? ' opinions' : ' opinió');
       document.getElementById('opiniones-lista').innerHTML = lista.map(function (o) {
-        return '<article class="opinion"><div class="est" aria-label="' + o.estrellas + ' de 5 estrelles">' + est(o.estrellas) + '</div><p>' + esc(o.texto) + '</p><small>' + esc(o.nombre) + (o.para ? ' · llibre ' + esc(o.para) : '') + '</small></article>';
+        return '<article class="opinion"><div class="est" aria-label="' + o.estrellas + ' de 5 estrelles">' + est(o.estrellas) + '</div><p>' + esc(o.texto) + '</p><small>' + esc(o.nombre) + (o.para ? ' · llibre ' + esc(o.para) : '') + (o.traducida ? ' · <i>traduïda del castellà</i>' : '') + '</small></article>';
       }).join('');
       sec.hidden = false;
       var ld = document.querySelector('script[type="application/ld+json"]');
