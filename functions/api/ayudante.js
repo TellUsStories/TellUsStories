@@ -112,7 +112,16 @@ const EN_CATALAN = {
   revisar: "\n\nIMPORTANTE: la familia usa la web en catalán y escribe en catalán. Escribe las \"preguntas\" y el \"resumen\" en catalán (catalán central, el de Barcelona, con la ortografía cuidada), no en español. Todo lo demás, igual.",
   dedicatoria: "\n\nIMPORTANTE: esta dedicatoria está escrita en catalán. Corrígela con la normativa catalana (accents, apòstrofs, l·l, guionets dels pronoms febles) y déjala en catalán: no la traduzcas al español y no añadas signos de apertura ¿ ¡, que en catalán no existen.",
 };
-function conIdioma(prompt, d, tipo) { return d && d.idioma === "ca" && EN_CATALAN[tipo] ? prompt + EN_CATALAN[tipo] : prompt; }
+// Formulario en inglés (/en/formulario-nuevo manda idioma: "en")
+const EN_INGLES = {
+  revisar: "\n\nIMPORTANTE: la familia usa la web en inglés y escribe en inglés. Escribe las \"preguntas\" y el \"resumen\" en inglés británico sencillo y cálido, no en español. Todo lo demás, igual.",
+  dedicatoria: "\n\nIMPORTANTE: esta dedicatoria está escrita en inglés. Corrígela con la ortografía y la puntuación inglesas y déjala en inglés: no la traduzcas al español y no añadas signos de apertura ¿ ¡, que en inglés no existen.",
+};
+function conIdioma(prompt, d, tipo) {
+  if (d && d.idioma === "ca" && EN_CATALAN[tipo]) return prompt + EN_CATALAN[tipo];
+  if (d && d.idioma === "en" && EN_INGLES[tipo]) return prompt + EN_INGLES[tipo];
+  return prompt;
+}
 
 async function preguntaAClaude(env, prompt, esquema) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
