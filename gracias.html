@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<script>/* Si el pedido se hizo con el formulario en catalán, Stripe vuelve aquí: lo pasamos a la versión catalana (una sola vez) */try{if(localStorage.getItem('tus_pago_idioma')==='ca'){localStorage.removeItem('tus_pago_idioma');location.replace('/ca/gracias'+location.search+location.hash);}}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>¡Gracias! · Tale Us Stories</title>
 <link rel="alternate" hreflang="es" href="https://taleusstories.com/gracias">

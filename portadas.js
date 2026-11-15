@@ -74,11 +74,39 @@
   // svg(dise\u00f1o, nombre, [dise\u00f1oDeMake], [opciones]): la portada delantera con el t\u00edtulo.
   // opciones.calidad: 'mini' (miniaturas), 'hd' (imprenta); por defecto la de la web.
   // opciones.sinTexto: solo la etiqueta vac\u00eda (la contraportada, donde la imprenta pone la dedicatoria)
+  // Idioma del título de la portada: op.idioma (la imprenta, desde el pedido) o el idioma de la página (/ca/ = catalán)
+  var TITULO = { es: 'El universo de', ca: 'L’univers de', en: 'The universe of' };
+  function idioma(l) {
+    l = String(l || (typeof document !== 'undefined' && document.documentElement && document.documentElement.lang) || 'es').slice(0, 2).toLowerCase();
+    return TITULO[l] ? l : 'es';
+  }
+  // En catal\u00e1n el nombre lleva art\u00edculo: \u00abde la Maria\u00bb, \u00abdel Joan\u00bb, \u00abde l\u2019Anna\u00bb / \u00abde l\u2019Oriol\u00bb.
+  // genero: 'f' (mujer) o 'm' (hombre), tambi\u00e9n 'mujer'/'hombre'. Sin g\u00e9nero conocido, sin art\u00edculo.
+  function generoCa(g) { g = String(g || '').toLowerCase(); return /^(f|mujer|dona|female|woman)/.test(g) ? 'f' : /^(m|hombre|home|male|man)/.test(g) ? 'm' : ''; }
+  function articuloCa(nombre, genero) {
+    var n = String(nombre || '').trim(), g = generoCa(genero);
+    if (!n || !g) return '';
+    // Ante vocal (o h + vocal) va l\u2019; salvo los nombres de mujer que empiezan por i/u sin acento (la Isabel, la Irene, la \u00darsula no)
+    if (/^h?[aeiou\u00e0\u00e8\u00e9\u00ed\u00ef\u00f2\u00f3\u00fa\u00fc]/i.test(n)) return g === 'f' && /^h?[iu\u00ef\u00fc]/i.test(n) ? 'la ' : 'l\u2019';
+    return g === 'f' ? 'la ' : 'el ';
+  }
+  // Las dos l\u00edneas de la portada: [t\u00edtulo, nombre]
+  function lineas(nombre, op) {
+    var l = idioma(op && op.idioma), n = String(nombre || '').trim();
+    if (l !== 'ca') return [TITULO[l], n];
+    var a = articuloCa(n, op && op.genero);
+    if (a === 'la ') return ['L\u2019univers de la', n];
+    if (a === 'el ') return ['L\u2019univers del', n];
+    if (a === 'l\u2019') return ['L\u2019univers de', 'l\u2019' + n];
+    return ['L\u2019univers de', n];
+  }
+  function titulo(l) { return TITULO[idioma(l)]; }
   function svg(estilo, nombre, alt, op) {
     op = op || {};
     var d = diseno(/\d/.test(String(alt || '')) ? alt : estilo), n = String(nombre || 'Carmen').trim() || 'Carmen';
+    var LN = lineas(n, op), tt = LN[0];
     // op.espejo: la acuarela va dada la vuelta (imprenta), as\u00ed que el centro de la etiqueta tambi\u00e9n se refleja
-    var e = etiqueta(d), x = op.espejo ? W - e[0] - e[2] / 2 : e[0] + e[2] / 2, nom = n.toUpperCase();
+    var e = etiqueta(d), x = op.espejo ? W - e[0] - e[2] / 2 : e[0] + e[2] / 2, nom = LN[1].toUpperCase();
     var fondoYPapel = (op.sinImagen ? '' : '<image href="' + fondo(d, op.calidad) + '" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>') + papel(d, etiqueta(d, op.espejo));
     if (op.sinTexto) return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + fondoYPapel + '</svg>';
     // El texto nunca puede salirse del marco: \u00abEl universo de\u00bb ocupa siempre el 70 % del ancho de la etiqueta
@@ -88,13 +116,13 @@
     var ajusteN = estN > maxN ? ' textLength="' + maxN + '" lengthAdjust="spacingAndGlyphs"' : '';
     // Aire entre \u00abEl universo de\u00bb y el nombre, para que las tildes (\u00c1, \u00c9, \u00cd\u2026) no toquen la l\u00ednea de arriba
     var yT = Math.round(e[1] + e[3] * .37);
-    return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada ' + esc(d.nombre) + ': El universo de ' + esc(n) + '">' +
+    return '<svg class="tus-portada" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada ' + esc(d.nombre) + ': ' + esc(tt) + ' ' + esc(LN[1]) + '">' +
       // op.sinImagen: sin el estampado (la imprenta lo pone debajo por su cuenta), pero s\u00ed la etiqueta
       fondoYPapel +
-      '<text x="' + x + '" y="' + yT + '" text-anchor="middle" textLength="' + anchoT + '" lengthAdjust="spacingAndGlyphs" font-family="\'Dancing Script\', cursive" font-weight="400" font-size="' + tamT + '" fill="' + d.titulo + '">El universo de</text>' +
+      '<text x="' + x + '" y="' + yT + '" text-anchor="middle" textLength="' + anchoT + '" lengthAdjust="spacingAndGlyphs" font-family="\'Dancing Script\', cursive" font-weight="400" font-size="' + tamT + '" fill="' + d.titulo + '">' + esc(tt) + '</text>' +
       '<text x="' + x + '" y="' + Math.round(yT + tamN * 1.12) + '" text-anchor="middle" font-family="\'Amatic SC\', cursive" font-weight="700" font-size="' + tamN + '" letter-spacing="2"' + ajusteN + ' fill="' + d.nombreCol + '">' + esc(nom) + '</text>' +
       '</svg>';
   }
 
-  window.TUSPortadas = { svg: svg, disenos: DISENOS, diseno: diseno, imagen: imagen, fondo: fondo, etiqueta: etiqueta, W: W, H: H };
+  window.TUSPortadas = { svg: svg, titulo: titulo, idioma: idioma, lineas: lineas, articuloCa: articuloCa, disenos: DISENOS, diseno: diseno, imagen: imagen, fondo: fondo, etiqueta: etiqueta, W: W, H: H };
 })();

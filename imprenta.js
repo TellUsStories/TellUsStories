@@ -129,7 +129,23 @@
   // o = { diseno, prota, ninos, izquierda }. El mismo marco y la misma hoja de papel que las p\u00e1ginas de la historia;
   // dentro, \u00abFin\u00bb, la estrella, para qui\u00e9n es el libro y el logo. izquierda = la p\u00e1gina cae a la izquierda
   // del libro abierto (marco en espejo, como las p\u00e1ginas pares).
+  // Textos de la página de cierre en el idioma del libro (o.idioma: es, ca o en; por defecto castellano)
+  var CIERRE = {
+    es: { fin: 'Fin', memoria: 'En memoria de', frase: '«El amor no se acaba, solo cambia de lugar.»', carinoPara: 'Con todo el cariño, para', hechoPara: 'Un libro hecho con cariño para', yPara: 'y para' },
+    ca: { fin: 'Fi', memoria: 'En record de', frase: '«L’amor no s’acaba, només canvia de lloc.»', carinoPara: 'Amb tot l’amor, per a', hechoPara: 'Un llibre fet amb amor per a', yPara: 'i per a' },
+    en: { fin: 'The End', memoria: 'In loving memory of', frase: '“Love never ends, it just changes place.”', carinoPara: 'With all our love, for', hechoPara: 'A book made with love for', yPara: 'and for' }
+  };
+  // Catalán: el nombre lleva artículo (de la Maria, del Joan, de l’Anna; per a la, per al, per a l’). Devuelve [frase, nombre]
+  function artCa(o, frase, nombre) {
+    if (String(o.idioma || '').slice(0, 2).toLowerCase() !== 'ca' || !TUSPortadas.articuloCa) return [frase, nombre];
+    var a = TUSPortadas.articuloCa(nombre, o.genero);
+    if (a === 'el ') return [frase.replace(/ de$/, ' del').replace(/ a$/, ' al'), nombre];
+    if (a === 'la ') return [frase + ' la', nombre];
+    if (a) return [frase, a + nombre];
+    return [frase, nombre];
+  }
   function cierre(o) {
+    var T = CIERRE[String(o.idioma || 'es').slice(0, 2).toLowerCase()] || CIERRE.es;
     var d = TUSPortadas.diseno(o.diseno), M = SANGRADO + 11, espejo = o.izquierda ? 'transform:scaleX(-1);' : '';
     var prota = String(o.prota || '').trim(), ninos = String(o.ninos || '').trim();
     // El libro es para la protagonista y para los ni\u00f1os: los dos nombres con la misma letra, tama\u00f1o y color
@@ -139,18 +155,18 @@
       var cor = "font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;color:" + d.titulo + ';';
       var ama = "font-family:'Amatic SC',cursive;font-weight:700;letter-spacing:.6mm;color:" + d.nombreCol + ';';
       var orn = '<div style="display:flex;align-items:center;justify-content:center;margin:7mm auto;width:70mm"><i style="flex:1;height:.3mm;background:' + d.titulo + ';opacity:.5"></i><span style="color:#E3A93C;font-size:4.5mm;line-height:1;margin:0 3mm">★</span><i style="flex:1;height:.3mm;background:' + d.titulo + ';opacity:.5"></i></div>';
-      var frase = String(o.frase || '«El amor no se acaba, solo cambia de lugar.»');
+      var frase = String(o.frase || T.frase);
       return '<div class="tus-pag" style="position:relative;overflow:hidden;width:' + PAG.w + 'mm;height:' + PAG.h + 'mm;background:' + d.papel + '">' +
         '<img src="' + TUSPortadas.fondo(d, 'hd') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' + espejo + '">' +
         '<div style="position:absolute;inset:' + M + 'mm;overflow:hidden;background:' + PAPEL + ';box-shadow:0 .6mm 1.6mm rgba(40,25,10,.25)">' +
           '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
           '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + '"></div>' +
           '<div style="position:absolute;left:14mm;right:14mm;top:44%;transform:translateY(-50%);text-align:center">' +
-            '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:26mm;line-height:1;color:' + d.titulo + '">Fin</div>' + orn +
-            '<div style="' + cor + 'font-size:8mm;line-height:1.3">En memoria de</div>' +
-            '<div style="' + ama + 'font-size:22mm;line-height:1.05;margin-top:1mm">' + esc(prota) + '</div>' +
+            '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:26mm;line-height:1;color:' + d.titulo + '">' + T.fin + '</div>' + orn +
+            '<div style="' + cor + 'font-size:8mm;line-height:1.3">' + esc(artCa(o, T.memoria, prota)[0]) + '</div>' +
+            '<div style="' + ama + 'font-size:22mm;line-height:1.05;margin-top:1mm">' + esc(artCa(o, T.memoria, prota)[1]) + '</div>' +
             (frase ? '<div style="' + cor + 'font-size:6.2mm;line-height:1.45;margin:6mm auto 0;max-width:120mm;opacity:.9">' + esc(frase) + '</div>' : '') +
-            (ninos ? orn + '<div style="' + cor + 'font-size:7mm;line-height:1.3">Con todo el cariño, para</div>' +
+            (ninos ? orn + '<div style="' + cor + 'font-size:7mm;line-height:1.3">' + T.carinoPara + '</div>' +
               '<div style="' + ama + 'font-size:' + (ninos.length > 22 ? 13 : 17) + 'mm;line-height:1.1;margin-top:2mm">' + esc(ninos) + '</div>' : '') +
           '</div>' +
           '<div style="position:absolute;left:0;right:0;bottom:20mm;text-align:center;font-family:\'Bricolage Grotesque\',\'Arial Black\',sans-serif;font-weight:800;font-size:5.2mm;letter-spacing:1.2mm;line-height:1.15;color:' + d.titulo + '">TALE US<br>STORIES' +
@@ -164,11 +180,11 @@
         '<div style="position:absolute;inset:2.6mm;border:.6mm solid ' + d.titulo + '"></div>' +
         '<div style="position:absolute;inset:3.9mm;border:.25mm solid ' + d.titulo + '"></div>' +
         '<div style="position:absolute;left:12mm;right:12mm;top:42%;transform:translateY(-50%);text-align:center">' +
-          '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:30mm;line-height:1;color:' + d.titulo + '">Fin</div>' +
+          '<div style="font-family:\'Dancing Script\',cursive;font-weight:500;font-size:30mm;line-height:1;color:' + d.titulo + '">' + T.fin + '</div>' +
           '<div style="color:#E3A93C;font-size:7mm;line-height:1;margin:6mm 0 9mm">\u2605</div>' +
-          (para[0] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;color:' + d.titulo + '">Un libro hecho con cari\u00f1o para</div>' +
-            '<div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:18mm;line-height:1.1;letter-spacing:.6mm;margin-top:2mm;color:' + d.nombreCol + '">' + esc(para[0]) + '</div>' +
-            (para[1] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;margin-top:2mm;color:' + d.titulo + '">y para</div>' +
+          (para[0] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;color:' + d.titulo + '">' + esc(prota ? artCa(o, T.hechoPara, para[0])[0] : T.hechoPara) + '</div>' +
+            '<div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:18mm;line-height:1.1;letter-spacing:.6mm;margin-top:2mm;color:' + d.nombreCol + '">' + esc(prota ? artCa(o, T.hechoPara, para[0])[1] : para[0]) + '</div>' +
+            (para[1] ? '<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-weight:500;font-size:8mm;line-height:1.4;margin-top:2mm;color:' + d.titulo + '">' + T.yPara + '</div>' +
               '<div style="font-family:\'Amatic SC\',cursive;font-weight:700;font-size:18mm;line-height:1.1;letter-spacing:.6mm;margin-top:2mm;color:' + d.nombreCol + '">' + esc(para[1]) + '</div>' : '') : '') +
         '</div>' +
         '<div style="position:absolute;left:0;right:0;bottom:22mm;text-align:center;font-family:\'Bricolage Grotesque\',\'Arial Black\',sans-serif;font-weight:800;font-size:5.2mm;letter-spacing:1.2mm;line-height:1.15;color:' + d.titulo + '">TALE US<br>STORIES' +
@@ -294,10 +310,10 @@
     var imgDel = TUSPortadas.fondo(d, 'hd');
 
     // Delantera: la acuarela de la portada (en espejo si toca) con \u00abEl universo de\u00bb y el nombre en la etiqueta
-    var del = cara(F, S.left + S.width, H.width, TUSPortadas.svg(d.n, nombre, null, { calidad: 'hd', sinImagen: true, espejo: espejoDel }), espejoDel);
+    var del = cara(F, S.left + S.width, H.width, TUSPortadas.svg(d.n, nombre, null, { calidad: 'hd', sinImagen: true, espejo: espejoDel, idioma: o.idioma, genero: o.genero }), espejoDel);
 
     // Lomo: franja lisa del color del dise\u00f1o con el t\u00edtulo en vertical, en blanco (se lee de arriba abajo)
-    var lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;letter-spacing:.3mm;color:#fff">El universo de <b>' + esc(nombre) + '</b></div>' : '';
+    var lomoTxt = S.width >= 5 ? '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;font-family:\'PT Serif\',serif;font-size:' + (S.width * .42).toFixed(2) + 'mm;letter-spacing:.3mm;color:#fff">' + (TUSPortadas.lineas ? (function (L) { return esc(L[0]) + ' <b>' + esc(L[1]) + '</b>'; })(TUSPortadas.lineas(nombre, { idioma: o.idioma, genero: o.genero })) : 'El universo de <b>' + esc(nombre) + '</b>') + '</div>' : '';
     var lomo = '<div style="position:absolute;left:' + (S.left - ext) + 'mm;top:0;width:' + (S.width + 2 * ext) + 'mm;height:' + H.height + 'mm;background:' + d.lomo + '">' + lomoTxt + '</div>';
 
     // Contraportada: el reflejo de la portada (su etiqueta est\u00e1 vac\u00eda); dentro, la dedicatoria tal cual la

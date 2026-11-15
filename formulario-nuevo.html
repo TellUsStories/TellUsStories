@@ -660,6 +660,11 @@
     <div class="sr"><span class="sk">Forma de pago</span><span class="sv">Tarjeta, pago seguro con Stripe. Es el último paso: tu historia nos llega en cuanto pagas.</span></div>
   </div>
   <div class="sb">
+    <h3>¿Hay algo más que quieras que tengamos en cuenta?</h3>
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">Cualquier cosa que nos ayude a hacer el libro como lo imaginas. Por ejemplo: que lo escribamos en catalán o en inglés, que algo de lo que nos has contado no salga, o algo que quieras añadir o a lo que quieras dar más importancia.</p>
+    <textarea id="tenerEnCuenta" rows="3" placeholder="Escríbelo aquí (opcional)" style="width:100%;box-sizing:border-box;min-height:96px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;line-height:1.5;font-family:inherit;color:var(--navy);background:#fff;resize:vertical;"></textarea>
+  </div>
+  <div class="sb">
     <h3>Código de descuento</h3>
     <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">¿Tienes un código? Escríbelo aquí y se aplicará en la página de pago.</p>
     <input type="text" id="codigoDescuento" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Código de descuento" style="width:100%;max-width:280px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);background:#fff;">
@@ -1581,6 +1586,7 @@ async function submit() {
   payload.dedicatoria_corregida = ia.ded && ia.ded.corregida ? 'sí' : 'no';
   payload.version_formulario = 'etapas';
   payload.acepta_privacidad = 'sí';   // no se puede enviar sin marcar la casilla
+  payload.a_tener_en_cuenta = val('tenerEnCuenta');   // pregunta abierta del final: idioma, algo que no salga, algo que destacar…
   payload.idioma = 'es';             // versión del formulario (la catalana, /ca/, manda 'ca')
   payload.origen = origenVisita();     // de dónde llegó a la web la primera vez (lo apunta functions/_middleware.js)
 
@@ -1610,6 +1616,7 @@ async function submit() {
       enviado = true;
       try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
       if (btn) btn.textContent = 'Te llevamos a pagar…';
+      try { localStorage.setItem('tus_pago_idioma', 'es'); } catch (e) {}   // la página de gracias sale en el idioma del formulario
       location.href = enlacePago(pedido);
     } else {
       alert('Hubo un error al guardar tu historia. Por favor inténtalo de nuevo.');
