@@ -6,3 +6,7 @@
 /tt /?utm_source=tiktok&utm_medium=bio 302
 # Pasos del formulario (/formulario-nuevo/paso-2, /revision, /enviado): son la misma página; las direcciones solo sirven para medir el embudo
 /formulario-nuevo/* /formulario-nuevo 200
+# Versión en catalán (/ca/): las mismas reglas del formulario
+/ca/formulario.html /ca/formulario-nuevo 301
+/ca/formulario /ca/formulario-nuevo 301
+/ca/formulario-nuevo/* /ca/formulario-nuevo 200

@@ -9,6 +9,7 @@
   var CLAVE = 'tus_cookies';           // 'si' | 'no'
   var PRECIOS = { dura: 67.45, blanda: 49.45 };   // libro + envío 5,95 € (desde 12/11/2026)
 
+  var CA = /^\/ca(\/|$)/.test(location.pathname);   // páginas en catalán
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 
   /* ---------- 1. De dónde viene (se guarda siempre, sin cookies: solo en el navegador) ---------- */
@@ -59,7 +60,11 @@
       '#tus-ck .no{background:transparent;color:#9E3A26}#tus-ck .si{background:#9E3A26;color:#fff}';
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
     var d = document.createElement('div'); d.id = 'tus-ck'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Cookies');
-    d.innerHTML = '<p>Usamos cookies de Meta (Instagram y Facebook) para saber qué anuncios funcionan y enseñar los nuestros a quien le puedan interesar. Solo se activan si aceptas. <a href="/legal.html#cookies">Más información</a></p>' +
+    // Versión en catalán (/ca/): mismo aviso traducido
+    d.innerHTML = CA
+      ? '<p>Fem servir galetes de Meta (Instagram i Facebook) per saber quins anuncis funcionen i ensenyar els nostres a qui li puguin interessar. Només s\'activen si les acceptes. <a href="/ca/legal#cookies">Més informació</a></p>' +
+        '<div class="b"><button class="no" type="button">Rebutja</button><button class="si" type="button">Accepta</button></div>'
+      : '<p>Usamos cookies de Meta (Instagram y Facebook) para saber qué anuncios funcionan y enseñar los nuestros a quien le puedan interesar. Solo se activan si aceptas. <a href="/legal.html#cookies">Más información</a></p>' +
       '<div class="b"><button class="no" type="button">Rechazar</button><button class="si" type="button">Aceptar</button></div>';
     document.body.appendChild(d);
     d.querySelector('.si').onclick = function () { ls(CLAVE, 'si'); d.remove(); cargarPixel(); };
@@ -99,7 +104,7 @@
     return f0.apply(this, arguments);
   };
   // Página de gracias (Stripe vuelve aquí después de pagar): compra, una sola vez por pedido
-  if (/^\/gracias/.test(location.pathname)) {
+  if (/^\/(ca\/)?gracias/.test(location.pathname)) {
     var p = {}; try { p = JSON.parse(ls('tus_ultimo_pedido') || '{}'); } catch (e) {}
     var fmt2 = q.get('formato') || p.formato || 'blanda';
     var idc = q.get('session_id') || q.get('pedido') || p.pedido || String(p.fecha || '');
