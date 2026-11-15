@@ -4,8 +4,9 @@ const ORIGEN = `<script>try{if(!localStorage.getItem('tus_origen')){var q=new UR
 
 // Medición (banner de cookies + píxel de Meta solo si aceptan + eventos del formulario y del pago). Ver /medicion.js
 // No se carga en las páginas privadas (editor, personajes, pedidos…).
-const MEDICION = `<script src="/medicion.js?v=20261110" defer></script>`;
-const PRIVADAS = /^\/(editor|personajes|pedidos|muestra-imprenta|prueba-paginas|mis-personajes|aportar)/;
+const MEDICION = `<script src="/medicion.js?v=20261115" defer></script>`;
+// Las páginas en catalán viven en /ca/ y también llevan medición; si alguna vez hubiera una privada en /ca/, tampoco
+const PRIVADAS = /^\/(ca\/)?(editor|personajes|pedidos|muestra-imprenta|prueba-paginas|mis-personajes|aportar)/;
 
 export async function onRequest(context) {
   const res = await context.next();
