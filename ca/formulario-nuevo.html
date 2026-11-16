@@ -255,6 +255,31 @@
   .ia-leyenda{font-size:13px;color:var(--muted);margin:8px 0 0;}
   .ia-leyenda span{background:#F9E1D6;color:#B4472C;border-radius:3px;padding:0 4px;font-weight:700;}
   .ia-ded mark{background:#F6DFA8;color:inherit;border-radius:3px;padding:0 2px;font-style:normal;font-weight:700;}
+  /* Paso 1 ligero (16/11): puerta con ejemplo y precio, y solo 3 preguntas */
+  .puerta{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin:18px 0 6px}
+  .puerta-fotos{display:flex;gap:6px}
+  .puerta-fotos img{width:70px;height:auto;border-radius:6px;box-shadow:0 10px 20px -12px rgba(40,25,10,.5)}
+  .puerta ol{list-style:none;display:grid;gap:8px;font-size:14px;line-height:1.45;color:var(--navy)}
+  .puerta b{font-family:var(--display);color:var(--coral)}
+  .precio-chip{display:inline-block;margin-top:14px;background:var(--coral-l);border-radius:100px;padding:8px 14px;font-family:var(--display);font-size:13px;font-weight:700;color:var(--navy)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;border-radius:12px}
+  .chips.falta{box-shadow:0 0 0 3px rgba(192,57,43,.25);}
+  .chip{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:10px 16px;font-family:var(--texto);font-size:15px;color:var(--navy);cursor:pointer}
+  .chip.on{border-color:var(--coral);background:var(--coral-l);font-weight:700}
+  .guardado{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5}
+  .aviso-falta{background:#FBEAE7;border:1.5px solid #C0392B;border-radius:12px;padding:12px 16px;margin:6px 0 16px;font-size:14px;line-height:1.5;color:var(--navy)}
+  .aviso-falta b{display:block;margin-bottom:4px}
+  .aviso-falta ul{margin:0;padding-left:18px}
+  .ultimos .field{margin-top:14px}
+  .ultimos .portada-grid{grid-template-columns:repeat(4,1fr)}
+  #s1[data-parte="a"] .parteB,#s1[data-parte="b"] .parteA{display:none}
+  .mas-detalles{border:1.5px dashed var(--border);border-radius:12px;padding:14px 16px;margin:24px 0}
+  .mas-detalles summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:15px;color:var(--navy)}
+  .mas-detalles summary span{font-family:var(--texto);font-weight:400;font-size:13px;color:var(--muted)}
+  /* Aviso de cookies más pequeño en el formulario, para que no tape las preguntas */
+  #tus-ck{bottom:8px!important;padding:10px 12px!important;font-size:12px!important;line-height:1.35!important}
+  #tus-ck p{margin:0 0 8px!important}
+  #tus-ck button{padding:7px 14px!important;font-size:13px!important}
 </style>
 <style>.idioma{display:inline-flex;align-items:center;gap:5px;font:600 12px/1 system-ui,-apple-system,sans-serif;letter-spacing:1px;color:#8C6A55;white-space:nowrap}.idioma a{color:#8C6A55;text-decoration:none;padding:6px 2px;opacity:.75}.idioma a:hover{opacity:1;text-decoration:underline}.idioma a[aria-current]{color:#4A2C1F;opacity:1;font-weight:800}.idioma span{opacity:.5}.nav-der{display:flex;align-items:center;gap:14px;flex-shrink:0}.idioma-flot{position:absolute;top:12px;right:16px;z-index:40}@media (max-width:600px){.nav-der{gap:10px}}@media (max-width:400px){.nav-der{gap:8px}.nav-der .pill{padding:9px 12px;font-size:13px;white-space:nowrap}}@media (max-width:900px){nav .wrap{position:relative}.menu li.menu-idioma{display:block!important;position:absolute;top:0;right:max(20px,env(safe-area-inset-right,0px))}.menu-idioma .idioma{font-size:11px}.menu-idioma .idioma a{padding:5px 2px}}</style>
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-idioma]');if(a){try{localStorage.setItem('tus_idioma',a.getAttribute('data-idioma'))}catch(x){}}});</script>
@@ -270,30 +295,40 @@
 <div class="wrap">
 
 <div class="screen active" id="s0">
-  <div class="sh">
-    <div class="sh-chapter">Abans de començar</div>
+  <div class="sh" style="padding-bottom:22px">
+    <div class="sh-chapter">La seva història, en un conte</div>
     <h1 class="sh-title">No cal escriure.<br>Només explicar.</h1>
-    <p class="sh-sub">Anirem etapa per etapa. En cada una, grava una nota de veu amb tot el que se t'acudeixi i et mostrarem el que hem entès.</p>
-    <p class="sh-sub" style="margin-top:10px;"><strong>Al teu ritme:</strong> es desa en aquest dispositiu i pots tornar-hi quan vulguis. <strong>Més gent amb records?</strong> Podràs convidar-los a aportar els seus des del mòbil.</p>
-    <div class="aviso-det">
-      <div class="aviso-det-t">✨ La màgia és als detalls</div>
-      <div class="aviso-det-s">El sobrenom de casa, la cançó del cotxe, el jersei de sempre… <b>Com més detalls, més us reconeixereu a cada pàgina.</b></div>
+    <div class="puerta">
+      <div class="puerta-fotos"><img src="img/portada-rayas-m.jpg" width="96" height="136" alt="Portada d'un conte de Tale Us Stories"><img src="img/libro-pagina-1-m.jpg" width="96" height="136" alt="Una pàgina per dins d'un conte de Tale Us Stories"></div>
+      <ol>
+        <li><b>1.</b> Ens ho expliques amb notes de veu, etapa per etapa.</li>
+        <li><b>2.</b> Ho convertim en un conte il·lustrat amb estil aquarel·la, amb els seus trets reals.</li>
+        <li><b>3.</b> T'arriba a casa imprès en 2 o 3 setmanes.</li>
+      </ol>
     </div>
+    <div class="precio-chip">Des de 43,50&nbsp;€ · enviament 5,95&nbsp;€ · pagues al final</div>
   </div>
   <div class="field">
-    <label>Nom del protagonista</label>
-    <input type="text" id="protName" placeholder="Ex.: Maria, Josep, Carles…" oninput="onNameInput()">
+    <label>De qui és la història?</label>
+    <div class="chips" id="chipsTipo">
+      <button type="button" class="chip" data-t="Mamá">Mare</button>
+      <button type="button" class="chip" data-t="Papá">Pare</button>
+      <button type="button" class="chip" data-t="Abuela">Àvia</button>
+      <button type="button" class="chip" data-t="Abuelo">Avi</button>
+      <button type="button" class="chip" data-t="Tía">Tieta</button>
+      <button type="button" class="chip" data-t="Tío">Tiet</button>
+      <button type="button" class="chip" data-t="Otra persona">Una altra persona</button>
+    </div>
+    <select id="bookType" onchange="tipoElegido()" style="display:none" aria-hidden="true" tabindex="-1">
+      <option value=""></option><option value="Mamá">Mare</option><option value="Papá">Pare</option><option value="Abuela">Àvia</option><option value="Abuelo">Avi</option><option value="Tía">Tieta</option><option value="Tío">Tiet</option><option value="Otra persona">Una altra persona</option>
+    </select>
   </div>
-  <div class="field">
-    <label>Els nens del llibre</label>
-    <div class="hint">El nom de cada nen i l'edat que té avui. Si és un nadó, en mesos (per exemple: 8 mesos).</div>
-    <div id="ninosFilas"></div>
-    <button type="button" class="ninos-mas" onclick="ninoFila('', '', true)">+ Afegeix un altre nen</button>
-    <input type="text" id="childNames" style="display:none">
-    <input type="text" id="childAges" style="display:none">
+  <div class="field" id="campoOtra" style="display:none">
+    <label>Qui és per als nens?</label>
+    <input type="text" id="otraPersona" placeholder="Ex.: la besàvia, la seva padrina, un amic de la família…">
   </div>
-  <div class="field">
-    <label>El protagonista és…</label>
+  <div class="field" id="generoOtra" style="display:none">
+    <label>És dona o home?</label>
     <div class="gender-grid">
       <div class="gender-opt selected" id="gf" onclick="setGender('f',this)">
         <div class="gender-emoji">👩</div>
@@ -307,92 +342,62 @@
       </div>
     </div>
   </div>
-  <div class="two">
-    <div class="field">
-      <label>Qui és per als nens?</label>
-      <select id="bookType" onchange="tipoElegido()">
-        <option value="">Tria una opció</option>
-        <option value="Mamá">Mare</option>
-        <option value="Papá">Pare</option>
-        <option value="Abuela">Àvia</option>
-        <option value="Abuelo">Avi</option>
-        <option value="Tía">Tieta</option>
-        <option value="Tío">Tiet</option>
-        <option value="Otra persona">Una altra persona</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Qui fa l'encàrrec</label>
-      <input type="text" id="orderer" placeholder="Ex.: Javier, el seu marit">
-    </div>
+  <div class="field">
+    <label>Com es diu?</label>
+    <input type="text" id="protName" placeholder="Ex.: Maria, Josep, Carme…" oninput="onNameInput()">
   </div>
   <div class="field">
-    <label>Qui narra el llibre?</label>
-    <div class="gender-grid">
-      <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
-        <div class="gender-emoji">📖</div>
-        <div class="gender-title">El mateix protagonista</div>
-        <div class="gender-desc">"Quan jo era <span class="G-petit"></span>…"</div>
-      </div>
-      <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
-        <div class="gender-emoji">👨‍👩‍👧</div>
-        <div class="gender-title">Una altra persona</div>
-        <div class="gender-desc">"Abans de ser <span class="G-vuestra"></span>…"</div>
-      </div>
-    </div>
+    <label>El teu correu electrònic</label>
+    <div class="hint">Només per escriure't sobre la teva comanda. Res de publicitat.</div>
+    <input type="email" id="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="el.teu@correu.com">
   </div>
-
-  <!-- SELECCIÓN DE PORTADA -->
-  <div class="field">
-    <label>Tria la portada</label>
-    <div class="hint">Pots canviar-la més endavant si cal.</div>
-    <div class="portada-grid" id="portada-grid"></div>
-    <div class="hint" style="margin-top:12px">Triada: <b id="portada-nombre">Vichy rosa</b></div>
-  </div>
-
-  <div class="field">
-    <label>Format del llibre</label>
-    <div class="gender-grid">
-      <div class="gender-opt formato-opt" id="fb" onclick="setFormato('blanda',this)">
-        <div class="gender-emoji">📖</div>
-        <div class="gender-title">Tapa tova · 43,50 €</div>
-        <div class="gender-desc">+ 5,95 € d'enviament</div>
-      </div>
-      <div class="gender-opt formato-opt selected" id="fd" onclick="setFormato('dura',this)">
-        <div class="gender-emoji">📕</div>
-        <div class="gender-title">Tapa dura · 61,50 €</div>
-        <div class="gender-desc">La més triada · + 5,95 € d'enviament</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="two">
-    <div class="field">
-      <label>El teu correu electrònic</label>
-      <input type="email" id="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="Aquí t'escriurem sobre la teva comanda">
-    </div>
-    <div class="field">
-      <label>El teu telèfon</label>
-      <input type="text" id="clienteTelefono" name="tel" autocomplete="tel" inputmode="tel" placeholder="Per si hem de contactar amb tu">
-    </div>
-  </div>
-
   <div class="nav">
     <button class="btn-back h"></button>
     <button class="btn-next" onclick="startForm()">Comencem →</button>
   </div>
+  <p class="guardado">Es desa automàticament en aquest mòbil: pots deixar-ho i continuar un altre dia.<br>Algú més té records (germans, avis, amics)? Més endavant els podràs passar un enllaç perquè hi afegeixin els seus des del mòbil.</p>
 </div>
 
-<div class="screen" id="s1">
-  <div class="sh">
+<div class="screen" id="s1" data-parte="a">
+  <div class="sh parteA">
     <div class="sh-chapter">01 · Els personatges</div>
-    <h2 class="sh-title">Qui és qui<br>en aquesta història?</h2>
-    <p class="sh-sub">Primer, els protagonistes del llibre i com són.</p>
+    <h2 class="sh-title" data-yo="Qui és qui<br>en la teva història?">Qui és qui<br>en la història <span class="G-dename"></span>?</h2>
+    <p class="sh-sub">Els nens del llibre i una mica sobre <span class="G-laname"></span>.</p>
+  </div>
+  <div class="sh parteB">
+    <div class="sh-chapter">01 · Els personatges</div>
+    <h2 class="sh-title">Com són?<br>Així els dibuixarem.</h2>
+    <p class="sh-sub">Perquè s'assemblin a totes les pàgines, de petits i de grans.</p>
   </div>
   <div class="perm" id="permBanner">El teu navegador necessita accés al micròfon. Si ho prefereixes, fes servir els camps de text.</div>
 
+  <div class="parteA">
+  <div class="field">
+    <label>Com s'explica la història?</label>
+    <div class="gender-grid">
+      <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title"><span class="G-name"></span>, en primera persona</div>
+        <div class="gender-desc">"Quan jo era <span class="G-petit"></span>…"</div>
+      </div>
+      <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
+        <div class="gender-emoji">👨‍👩‍👧</div>
+        <div class="gender-title">Un narrador, als nens</div>
+        <div class="gender-desc">"Abans de ser <span class="G-vuestra"></span>…"</div>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Els nens del llibre</label>
+    <div class="hint">El nom de cada nen i l'edat que té avui. Si és un nadó, en mesos (per exemple: 8 mesos).</div>
+    <div id="ninosFilas"></div>
+    <button type="button" class="ninos-mas" onclick="ninoFila('', '', true)">+ Afegeix un altre nen</button>
+    <input type="text" id="childNames" style="display:none">
+    <input type="text" id="childAges" style="display:none">
+  </div>
+
   <div class="two">
-    <div class="field"><label data-yo="Els nens del llibre són els teus…">Els nens del llibre són els seus…</label>
+    <div class="field" id="campoRelacion"><label data-yo="Els nens del llibre són els teus…">Els nens del llibre són els seus…</label>
       <select id="relacionNinos">
         <option value="">Tria una opció</option>
         <option value="Son sus hijos">Fills</option>
@@ -401,17 +406,18 @@
         <option value="Otra relación">Una altra relació</option>
       </select>
     </div>
-    <div class="field"><label data-yo="Com et diuen els nens?">Com li diuen els nens?</label><input type="text" id="nicknames" placeholder="Ex.: mare, iaia, l'àvia Pepa…"></div>
+    <div class="field"><label data-yo="Com et diuen els nens? (opcional)">Com diuen els nens <span class="G-aname"></span>? (opcional)</label><div class="hint">Ja ho hem posat nosaltres: canvia-ho si li diuen d'una altra manera (àvia, l'àvia Carme…).</div><input type="text" id="nicknames" data-opcional="1" placeholder="Ex.: mama, àvia, l'àvia Carme…"></div>
   </div>
-  <div class="field"><label data-yo="Quina edat tens avui?">Quina edat té avui?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ex.: 38"></div>
-  <div class="field"><label data-yo="Descriu-te en 3 paraules">Descriu-<span class="G-lo"></span> en 3 paraules</label><input type="text" id="tresPalabras" placeholder="Ex.: alegre, valenta i curiosa"></div>
+  <div class="field"><label data-yo="Quina edat tens avui?">Quina edat té avui <span class="G-laname"></span>?</label><input type="text" id="protAge" inputmode="numeric" placeholder="Ex.: 38"></div>
+  <div class="field"><label data-yo="Descriu-te en 3 paraules">Descriu <span class="G-laname"></span> en 3 paraules</label><input type="text" id="tresPalabras" placeholder="Ex.: alegre, valenta i curiosa"></div>
   <div class="two">
-    <div class="field"><label data-yo="A què et dediques?">A què es dedica?</label><input type="text" id="job" placeholder="Ex.: arquitecta, mestre, jubilada…"></div>
-    <div class="field"><label data-yo="Les teves aficions">Les seves aficions</label><input type="text" id="sport" placeholder="Ex.: el surf i dibuixar"></div>
+    <div class="field"><label data-yo="A què et dediques?">A què es dedica <span class="G-laname"></span>?</label><input type="text" id="job" placeholder="Ex.: arquitecta, mestre, jubilada…"></div>
+    <div class="field"><label data-yo="Les teves aficions">Aficions <span class="G-dename"></span></label><input type="text" id="sport" placeholder="Ex.: el surf i dibuixar"></div>
   </div>
   <div class="hint" style="margin:-8px 0 18px" data-yo="La teva professió i les teves aficions apareixeran com a detalls als dibuixos.">La seva professió i les seves aficions apareixeran com a detalls als dibuixos.</div>
 
-  <div class="sdiv"><span>Com són? Així els dibuixarem</span></div>
+  </div>
+  <div class="parteB">
   <div class="hint" style="margin-bottom:14px">Per dibuixar cada persona igual a totes les pàgines (de nadó, de nen/a, de jove i avui): <b>puja una foto</b> de la seva cara, amb bona llum i mirant a càmera, i marca el color dels cabells i dels ulls. Si no tens foto, toca <b>"No tinc foto"</b> i descriu-la amb els botons. Les fotos només es fan servir per dibuixar.</div>
   <div id="aspCards"></div>
   <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
@@ -424,7 +430,8 @@
     <button type="button" onclick="aspAdd('hermano')">+ Un germà o una germana</button>
     <button type="button" onclick="aspAdd('otra')">+ Una altra persona</button>
   </div>
-  <div class="hint" style="margin:14px 0 6px;background:var(--coral-l);border-radius:12px;padding:12px 14px;color:var(--navy)"><b>Important:</b> qui surti a la història sense foto ni descripció, el dibuixarem lliurement, així que no s'assemblarà a la persona real. Si no vols pujar cap foto, descriu-la amb els botons. Amb foto és com més s'assemblen; només amb la descripció, la semblança serà aproximada.</div>
+  <div class="hint" style="margin:14px 0 6px;background:var(--coral-l);border-radius:12px;padding:12px 14px;color:var(--navy)"><b>Un consell:</b> amb foto és com més s'assemblen. Sense foto, descriu-los amb els botons; qui no tingui ni foto ni descripció sortirà dibuixat a la nostra manera.</div>
+  </div>
   <input type="text" id="aspectoFamilia" style="display:none">
   <input type="text" id="iaDatos" style="display:none">
   <!-- Formulario colaborativo: enlace secreto para que otras personas aporten recuerdos, y las que se dejan fuera -->
@@ -432,19 +439,19 @@
   <input type="text" id="aportaFuera" style="display:none">
   <div id="aspInputs" style="display:none"></div>
   <div class="nav">
-    <button class="btn-back" onclick="go(0)">← Enrere</button>
-    <button class="btn-next" onclick="go(2)">Següent →</button>
+    <button class="btn-back" onclick="s1Atras()">← Enrere</button>
+    <button class="btn-next" onclick="s1Siguiente()">Següent →</button>
   </div>
 </div>
 
 <div class="screen" id="s2">
   <div class="sh">
     <div class="sh-chapter">02 · De nadó i de <span class="G-petit"></span></div>
-    <h2 class="sh-title" data-yo="Quan eres<br><span class=&quot;G-unna&quot;></span> <span class=&quot;G-ninoa&quot;></span>.">Quan <span class="G-name"></span><br>era <span class="G-unna"></span> <span class="G-ninoa"></span>.</h2>
+    <h2 class="sh-title" data-yo="Quan eres<br><span class=&quot;G-unna&quot;></span> <span class=&quot;G-ninoa&quot;></span>.">Quan <span class="G-laname"></span><br>era <span class="G-unna"></span> <span class="G-ninoa"></span>.</h2>
     <p class="sh-sub">Grava una nota de veu i explica'ns tot el que se t'acudeixi, sense pressa, com si ho expliquessis a una amiga. En continuar, et mostrem el que hem entès i t'avisem si hi falta alguna cosa important.</p>
   </div>
   <div class="vc" id="vc0">
-    <div class="vc-q" data-yo="Com eres de nadó i de <span class=&quot;G-petit&quot;></span>?">Com era <span class="G-name"></span> de nadó i de <span class="G-petit"></span>?</div>
+    <div class="vc-q" data-yo="Com eres de nadó i de <span class=&quot;G-petit&quot;></span>?">Com era <span class="G-laname"></span> de nadó i de <span class="G-petit"></span>?</div>
     <div class="vc-h" data-yo="💡 Et pot ajudar: on vas néixer i créixer i com era casa teva · com eres de caràcter (<span class=&quot;G-timid&quot;></span>, <span class=&quot;G-entremaliat&quot;></span>, <span class=&quot;G-curios&quot;></span>…) · els teus germans (quants nois i quantes noies, més grans o més petits), si tenies mascota, un amic o una amiga especial · a què t'agradava jugar i què volies ser de gran · <b>i si recordes alguna anècdota, explica-la!</b>">💡 Et pot ajudar: on va néixer i créixer i com era casa seva · com era de caràcter (<span class="G-timid"></span>, <span class="G-entremaliat"></span>, <span class="G-curios"></span>…) · els seus germans (quants nois i quantes noies, més grans o més petits), si tenia mascota, un amic o una amiga especial · a què li agradava jugar i què volia ser de gran · <b>i si recordes alguna anècdota, explica-la!</b></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb0" onclick="toggleRec(0)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt0">0:00</span><span class="rbadge" id="bd0">Gravat</span></div>
     <audio class="ap" id="ap0"></audio><button class="btn-clr" id="bc0" onclick="clearRec(0)">Torna a gravar</button>
@@ -462,11 +469,11 @@
 <div class="screen" id="s3">
   <div class="sh">
     <div class="sh-chapter">03 · La joventut</div>
-    <h2 class="sh-title" data-yo="Quan vas començar<br>a volar <span class=&quot;G-sol&quot;></span>.">Quan <span class="G-name"></span> va començar<br>a volar <span class="G-sol"></span>.</h2>
+    <h2 class="sh-title" data-yo="Quan vas començar<br>a volar <span class=&quot;G-sol&quot;></span>.">Quan <span class="G-laname"></span> va començar<br>a volar <span class="G-sol"></span>.</h2>
     <p class="sh-sub">L'adolescència, els estudis, els somnis i les primeres aventures.</p>
   </div>
   <div class="vc" id="vc2">
-    <div class="vc-q" data-yo="Com eres d'adolescent i de jove?">Com era <span class="G-name"></span> d'adolescent i de jove?</div>
+    <div class="vc-q" data-yo="Com eres d'adolescent i de jove?">Com era <span class="G-laname"></span> d'adolescent i de jove?</div>
     <div class="vc-h" data-yo="💡 Et pot ajudar: què t'apassionava · els teus amics i la teva música · què vas estudiar i la teva primera feina · un viatge o una decisió valenta · com vas arribar a dedicar-te al que fas avui · <b>i si recordes alguna anècdota, explica-la!</b>">💡 Et pot ajudar: què l'apassionava · els seus amics i la seva música · què va estudiar i la seva primera feina · un viatge o una decisió valenta · com va arribar a dedicar-se al que fa avui · <b>i si recordes alguna anècdota, explica-la!</b></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb2" onclick="toggleRec(2)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt2">0:00</span><span class="rbadge" id="bd2">Gravat</span></div>
     <audio class="ap" id="ap2"></audio><button class="btn-clr" id="bc2" onclick="clearRec(2)">Torna a gravar</button>
@@ -484,11 +491,11 @@
 <div class="screen" id="s4">
   <div class="sh">
     <div class="sh-chapter">04 · Amor i família</div>
-    <h2 class="sh-title" data-yo="Quan la teva família<br>va créixer.">Quan <span class="G-name"></span> va veure<br>créixer la família.</h2>
+    <h2 class="sh-title" data-yo="Quan la teva família<br>va créixer.">Quan <span class="G-laname"></span> va veure<br>créixer la família.</h2>
     <p class="sh-sub" data-yo="L'amor i l'arribada dels nens: una etapa més de la teva història.">L'amor i l'arribada dels nens: una etapa més de la seva història.</p>
   </div>
   <div class="vc" id="vc4">
-    <div class="vc-q" data-yo="Com va començar la teva família?">Com va començar <span class="G-name"></span> la seva família?</div>
+    <div class="vc-q" data-yo="Com va començar la teva família?">Com va començar <span class="G-laname"></span> la seva família?</div>
     <div class="vc-h" id="guiaFamilia"></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb4" onclick="toggleRec(4)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt4">0:00</span><span class="rbadge" id="bd4">Gravat</span></div>
     <audio class="ap" id="ap4"></audio><button class="btn-clr" id="bc4" onclick="clearRec(4)">Torna a gravar</button>
@@ -510,7 +517,7 @@
     <p class="sh-sub">La relació que tenen avui. Aquest és el cor del llibre.</p>
   </div>
   <div class="vc" id="vc6">
-    <div class="vc-q" data-yo="Com és avui la teva vida amb els nens?">Com és avui la relació entre <span class="G-name"></span> i els nens?</div>
+    <div class="vc-q" data-yo="Com és avui la teva vida amb els nens?">Com és avui la relació entre <span class="G-laname"></span> i els nens?</div>
     <div class="vc-h">💡 Et pot ajudar: com és cada nen (caràcter i què li encanta) · què feu junts · una tradició o un ritual només vostre · com és casa vostra i si teniu mascota · <b>i algun record especial o divertit amb els nens, si se t'acut</b></div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb6" onclick="toggleRec(6)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt6">0:00</span><span class="rbadge" id="bd6">Gravat</span></div>
     <audio class="ap" id="ap6"></audio><button class="btn-clr" id="bc6" onclick="clearRec(6)">Torna a gravar</button>
@@ -532,7 +539,7 @@
     <p class="sh-sub">El tancament del llibre, la dedicatòria i on l'enviem.</p>
   </div>
   <div class="vc" id="vc8">
-    <div class="vc-q" data-yo="Què t'agradaria que els nens sabessin quan siguin grans?">Què creus que <span class="G-name"></span> voldria que els nens sabessin quan siguin grans?</div>
+    <div class="vc-q" data-yo="Què t'agradaria que els nens sabessin quan siguin grans?">Què creus que <span class="G-laname"></span> voldria que els nens sabessin quan siguin grans?</div>
     <div class="vc-h">Un valor, un consell, allò que hi ha en cada cosa que fa.</div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb8" onclick="toggleRec(8)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt8">0:00</span><span class="rbadge" id="bd8">Gravat</span></div>
     <audio class="ap" id="ap8"></audio><button class="btn-clr" id="bc8" onclick="clearRec(8)">Torna a gravar</button>
@@ -541,8 +548,8 @@
     <button class="btn-tw" onclick="toggleTF(8)">Prefereixo escriure</button>
   </div>
   <div class="vc" id="vc9" data-opcional="1">
-    <div class="vc-q">Ens hem deixat alguna cosa al tinter?</div>
-    <div class="vc-h">Aquell record que no encaixava en cap etapa, una persona molt important, un costum, una frase… Allò sense el qual sents que el llibre no seria del tot <span class="G-suyo">seu</span>. És opcional: si ja hi és tot, continua sense més.</div>
+    <div class="vc-q">Ens hem deixat alguna cosa al tinter? <span style="font-weight:400;color:var(--muted)">(opcional)</span></div>
+    <div class="vc-h">Aquell record que no encaixava en cap etapa, una persona molt important, un costum, una frase… Allò sense el qual sents que el llibre no seria del tot <span class="G-suyo">seu</span>. Si ja hi és tot, continua sense més.</div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb9" onclick="toggleRec(9)"><span class="rdot"></span> Grava</button><span class="rtimer" id="rt9">0:00</span><span class="rbadge" id="bd9">Gravat</span></div>
     <audio class="ap" id="ap9"></audio><button class="btn-clr" id="bc9" onclick="clearRec(9)">Torna a gravar</button>
     <div class="or-d"><span>o escriu</span></div>
@@ -553,10 +560,11 @@
   <div class="sdiv"><span>La dedicatòria</span></div>
   <div class="field">
     <label>La teva dedicatòria per a la contraportada</label>
-    <div class="hint">Anirà impresa a la contraportada del llibre. Pots triar un d'aquests exemples (i retocar-lo si vols) o escriure la teva. En continuar, revisarem que no tingui faltes.</div>
+    <div class="hint">Anirà impresa a la contraportada del llibre. Tria un d'aquests exemples (i retoca'l si vols) o escriu la teva a sota. En continuar, revisarem que no tingui faltes.</div>
     <div class="ded-ej" id="dedEjemplos"></div>
-    <textarea id="dedicatoria" maxlength="350" rows="4" spellcheck="true" lang="ca" placeholder="Ex.: Lucas, Martina: aquest llibre és perquè no oblideu mai d'on veniu…"></textarea>
-    <div class="ded-cont"><span id="dedCont">0</span> / 350</div>
+    <div style="font-family:var(--display);font-weight:700;font-size:14px;color:var(--navy);margin:16px 0 6px">O escriu la teva:</div>
+    <textarea id="dedicatoria" maxlength="350" rows="4" spellcheck="true" lang="ca" placeholder="Escriu aquí la teva pròpia dedicatòria…"></textarea>
+    <div class="ded-cont">Es desa automàticament · <span id="dedCont">0</span> / 350</div>
   </div>
   <div class="field">
     <label>Com la signes?</label>
@@ -564,9 +572,11 @@
   </div>
   <div class="ia" id="iaDed" style="display:none"></div>
 
-  <div class="sdiv"><span>Últims detalls</span></div>
-  <div class="field">
+  <details class="mas-detalles">
+  <summary>Afegeix més detalls <span>(opcional): el to, temes delicats i més fotos</span></summary>
+  <div class="field" style="margin-top:16px">
     <label>To del llibre</label>
+    <div class="hint">Si no en tries cap, el fem equilibrat: humor i emoció a parts iguals.</div>
     <div class="tone-grid">
       <div class="tone-opt" data-valor="Divertido" onclick="selTone(this)"><div class="te">😄</div><div class="tt">Divertit</div><div class="td">Humor i moments que fan riure</div></div>
       <div class="tone-opt" data-valor="Emotivo" onclick="selTone(this)"><div class="te">💛</div><div class="tt">Emotiu</div><div class="td">Càlid, que arribi al cor</div></div>
@@ -593,6 +603,7 @@
     <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this)">
     <div id="fileList"></div>
   </div>
+  </details>
 
   <!-- El cliente decide si quiere ver los personajes antes de dibujar el libro (por defecto, sorpresa) -->
   <div class="field">
@@ -606,7 +617,7 @@
       <div class="gender-opt" id="vpSi" onclick="setValidar('si',this)">
         <div class="gender-emoji">👀</div>
         <div class="gender-title">Sí, els vull veure</div>
-        <div class="gender-desc">Te'ls enviem per correu electrònic i tens 24 h per donar-nos l'OK</div>
+        <div class="gender-desc">Te'ls enviem per correu electrònic i tens 24 h per donar-nos l'OK. Si no ens dius res, continuem amb el llibre.</div>
       </div>
     </div>
     <div class="hint" style="margin-top:8px">Si tens dubtes amb les fotos, millor tria veure'ls.</div>
@@ -616,7 +627,7 @@
   <div class="sdiv"><span>On enviem el llibre?</span></div>
   <div class="two">
     <div class="field"><label>Nom de qui el rep</label><input type="text" id="envioNombre" name="ship-name" autocomplete="shipping name" placeholder="Ex.: Javier García López"></div>
-    <div class="field"><label>Telèfon</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="Per a l'empresa de missatgeria"><div class="hint">Hi hem posat el teu; canvia'l si el rep una altra persona.</div></div>
+    <div class="field"><label>Telèfon</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="Per a l'empresa de missatgeria"><div class="hint">El de qui el rep.</div></div>
   </div>
   <div class="field"><label>Adreça</label><input type="text" id="envioDireccion" name="ship-address" autocomplete="shipping street-address" placeholder="Carrer, número, pis i porta"></div>
   <div class="two">
@@ -633,8 +644,43 @@
 <div class="screen" id="s7">
   <div class="sh">
     <div class="sh-chapter">07 · Revisió</div>
-    <h2 class="sh-title">Tot a punt<br>per enviar.</h2>
-    <p class="sh-sub">Revisa que tot sigui correcte. Pots tornar enrere si vols canviar alguna cosa.</p>
+    <h2 class="sh-title">Gairebé a punt:<br>els últims detalls.</h2>
+    <p class="sh-sub">Tria la portada i la tapa, i revisa que tot estigui bé. Pots tornar enrere si vols canviar alguna cosa.</p>
+  </div>
+  <div class="sb ultimos">
+    <h3>Els últims detalls</h3>
+  <!-- SELECCIÓN DE PORTADA -->
+  <div class="field">
+    <label>Tria la portada</label>
+    <div class="hint">Pots canviar-la més endavant si cal.</div>
+    <div class="portada-grid" id="portada-grid"></div>
+    <div class="hint" style="margin-top:12px">Triada: <b id="portada-nombre">Vichy rosa</b></div>
+  </div>
+
+  <div class="field">
+    <label>Format del llibre</label>
+    <div class="gender-grid">
+      <div class="gender-opt formato-opt" id="fb" onclick="setFormato('blanda',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">Tapa tova · 43,50 €</div>
+        <div class="gender-desc">+ 5,95 € d'enviament</div>
+      </div>
+      <div class="gender-opt formato-opt selected" id="fd" onclick="setFormato('dura',this)">
+        <div class="gender-emoji">📕</div>
+        <div class="gender-title">Tapa dura · 61,50 €</div>
+        <div class="gender-desc">La més triada · + 5,95 € d'enviament</div>
+      </div>
+    </div>
+  </div>
+    <div class="field">
+      <label>Qui fa l'encàrrec</label>
+      <input type="text" id="orderer" placeholder="Ex.: Javier, el seu marit">
+    </div>
+    <div class="field">
+      <label>El teu telèfon</label>
+      <div class="hint">Hi hem posat el de l'entrega: canvia'l si el teu és un altre.</div>
+      <input type="text" id="clienteTelefono" name="tel" autocomplete="tel" inputmode="tel" placeholder="Per si hem de contactar amb tu">
+    </div>
   </div>
   <div class="sb">
     <h3>Dades de la comanda</h3>
@@ -665,11 +711,11 @@
     <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">Qualsevol cosa que ens ajudi a fer el llibre tal com te l’imagines. Per exemple: que l’escrivim en castellà o en anglès, que alguna cosa del que ens has explicat no hi surti, o alguna cosa que vulguis afegir o a la qual vulguis donar més importància.</p>
     <textarea id="tenerEnCuenta" rows="3" placeholder="Escriu-ho aquí (opcional)" style="width:100%;box-sizing:border-box;min-height:96px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;line-height:1.5;font-family:inherit;color:var(--navy);background:#fff;resize:vertical;"></textarea>
   </div>
-  <div class="sb">
-    <h3>Codi de descompte</h3>
-    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">Tens un codi? Escriu-lo aquí i s'aplicarà a la pàgina de pagament.</p>
+  <details class="sb codigo-plegado" style="padding-top:14px;padding-bottom:14px">
+    <summary style="font-size:14px;cursor:pointer;color:var(--muted)">Tens un codi de descompte?</summary>
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 10px;">Escriu-lo aquí i s'aplicarà a la pàgina de pagament.</p>
     <input type="text" id="codigoDescuento" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Codi de descompte" style="width:100%;max-width:280px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);background:#fff;">
-  </div>
+  </details>
   <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
     <h3 style="color:var(--coral);">Què passa ara?</h3>
     <div class="sr"><span class="sk">Ara</span><span class="sv" id="rv-ahora">Pagues amb targeta i la teva història ens arriba.</span></div>
@@ -680,7 +726,7 @@
   <div class="sb">
     <h3>Les teves dades i les teves fotos</h3>
     <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 12px;">Fem servir el que ens expliques, les teves notes de veu i les teves fotos <b>només per fer el teu llibre</b> i enviar-te'l. No ho donem a ningú més que als serveis que ho fan possible (l'escriptura i la il·lustració amb intel·ligència artificial i la impremta). Les fotos i els enregistraments els esborrem com a molt tard 6 mesos després de lliurar el llibre. Per a qualsevol dubte, o si vols que esborrem les teves dades abans, escriu-nos a <a href="mailto:hello@taleusstories.com" style="color:var(--coral);">hello@taleusstories.com</a>. Tots els detalls, a les <a href="/ca/legal#condiciones" target="_blank" rel="noopener" style="color:var(--coral);">condicions de venda</a> i a la <a href="/ca/legal#privacidad" target="_blank" rel="noopener" style="color:var(--coral);">política de privacitat</a>.</p>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--navy);cursor:pointer;line-height:1.5;"><input type="checkbox" id="aceptoPrivacidad" style="width:20px;height:20px;flex:none;margin-top:1px;accent-color:#4A2C1F;"> Accepto les condicions de venda i la política de privacitat. Entenc que, com que és un llibre fet a mida, no té dret de desistiment, i tinc permís per enviar les fotos i les dades de les persones que hi surten.</label>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--navy);cursor:pointer;line-height:1.5;"><input type="checkbox" id="aceptoPrivacidad" style="width:20px;height:20px;flex:none;margin-top:1px;accent-color:#4A2C1F;"> <span>Accepto les condicions de venda i la política de privacitat.<br>Sé que, com que el llibre es fa a mida, no es pot retornar, tret que arribi malmès o amb un error d'impressió.</span></label>
   </div>
   <div class="nav">
     <button class="btn-back" onclick="go(6)">← Enrere</button>
@@ -738,7 +784,19 @@ var FORMATOS_CA = { dura: FORMATOS.dura, blanda: FORMATOS.blanda.replace('Tapa b
 var PORTADAS_CA = {1:'Vichy rosa',2:'Floral',3:'Escocès',4:'Escacs',5:'Ratlles mandarina',6:'Vichy verd',7:'Ratlles verdes',8:'Quadres',9:'Ratlles sàlvia',10:'Ikat blau',11:'Ratlles corall',12:'Escocès lavanda'};
 function portadaCa(n) { return PORTADAS_CA[+n] || TUSPortadas.diseno(n).nombre; }
 // «de» + nombre en catalán: «d'Antonio», «de Rosa»
-function deCa(x) { return (/^[aeiouàèéíïòóúüh]/i.test(String(x || '')) ? "d'" : 'de ') + x; }
+function deCa(x) {
+  x = String(x || '');
+  if (/^el\s/i.test(x)) return 'del ' + x.slice(3);     // «del tiet», «del Josep»
+  if (/^els\s/i.test(x)) return 'dels ' + x.slice(4);
+  if (/^(la|l['’])/i.test(x)) return 'de ' + x;          // «de la Carme», «de l'Anna»
+  return (/^[aeiouàèéíïòóúüh]/i.test(x) ? "d'" : 'de ') + x;
+}
+// Artículo personal (catalán): «la Carme», «l'Anna», «la Irene» (i/u átona), «el Josep», «l'Albert»
+function ambArticle(nom, gen) {
+  nom = String(nom || '').trim(); if (!nom) return nom;
+  if (gen === 'f') return (/^h?[iu][^aeiouàèéíïòóúü]/i.test(nom) || !/^h?[aeiouàèéíïòóúü]/i.test(nom)) ? 'la ' + nom : "l'" + nom;
+  return /^h?[aeiouàèéíïòóúü]/i.test(nom) ? "l'" + nom : 'el ' + nom;
+}
 // ===== DATOS PARA EL PAGO POR TRANSFERENCIA: rellénalos tú (titular y IBAN de la cuenta donde cobras) =====
 // activo: false = de momento no se enseña nada del pago (ni en la revisión ni al final)
 var PAGO = { activo: false, titular: 'PON AQUÍ EL TITULAR DE LA CUENTA', iban: 'PON AQUÍ TU IBAN' };
@@ -790,6 +848,7 @@ function setFormato(val, el) {
   formato = val;
   document.querySelectorAll('.formato-opt').forEach(function(o) { o.classList.remove('selected'); });
   el.classList.add('selected');
+  if (typeof cur !== 'undefined' && cur === TOTAL) buildReview();   // la tapa se elige en la revisión: el resumen y el importe cambian al momento
 }
 
 // Las portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
@@ -816,6 +875,7 @@ function selPortada(el, num) {
   el.classList.add('selected');
   selectedPortada = num;
   var pn = document.getElementById('portada-nombre'); if (pn) pn.textContent = portadaCa(num);
+  if (typeof cur !== 'undefined' && cur === TOTAL) buildReview();
 }
 
 function setNarrator(val, el) {
@@ -843,6 +903,8 @@ const G = {
 };
 
 function g(key) { return G[key][gender === 'f' ? 0 : 1]; }
+// «Lucas, Vera» → «Lucas i Vera» (solo para mostrar; lo que se envía no cambia)
+function listaY(t) { var p = String(t || '').split(/\s*,\s*/).filter(Boolean); return p.length > 1 ? p.slice(0, -1).join(', ') + ' i ' + p[p.length - 1] : p.join(''); }
 
 function nameOrPronoun() {
   const n = document.getElementById('protName')?.value.trim();
@@ -859,6 +921,11 @@ function updateAll() {
   document.querySelectorAll('.G-suyo').forEach(function(el) { el.textContent = yo ? 'teu' : 'seu'; });
   const nm = nameOrPronoun();
   document.querySelectorAll('.G-name').forEach(function(el) { el.textContent = nm; });
+  // Con artículo si hay nombre (sin nombre queda «ella» / «ell»): «la Carme», «de la Carme», «a la Carme», «al Josep»
+  var pn = (document.getElementById('protName') || {}).value.trim(), la = pn ? ambArticle(pn, gender) : nm;
+  document.querySelectorAll('.G-laname').forEach(function(el) { el.textContent = la; });
+  document.querySelectorAll('.G-dename').forEach(function(el) { el.textContent = deCa(la); });
+  document.querySelectorAll('.G-aname').forEach(function(el) { el.textContent = /^el\s/i.test(la) ? 'al ' + la.slice(3) : 'a ' + la; });
   var artProt = gender === 'f' ? 'la protagonista' : 'el protagonista';
   var el1 = document.getElementById('txt-presentamos');
   if (el1) el1.textContent = artProt;
@@ -870,10 +937,13 @@ function updateAll() {
   document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
   document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
   ['petit', 'sol', 'timid', 'entremaliat', 'curios'].forEach(function(k) { document.querySelectorAll('.G-' + k).forEach(function(el) { el.textContent = g(k); }); });
-  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = g('vuestra'); });
+  var VUESTRA = { 'Mamá': 'la vostra mare', 'Papá': 'el vostre pare', 'Abuela': 'la vostra àvia', 'Abuelo': 'el vostre avi', 'Tía': 'la vostra tieta', 'Tío': 'el vostre tiet' };
+  var otraTxt = (((document.getElementById('otraPersona') || {}).value) || '').trim().replace(/^(la seva|el seu|la vostra|el vostre|la|el)\s+/i, '').replace(/^l['’]/i, '');
+  var vt = VUESTRA[(document.getElementById('bookType') || {}).value] || (otraTxt ? (gender === 'f' ? 'la vostra ' : 'el vostre ') + otraTxt : g('vuestra'));
+  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = vt; });
   document.querySelectorAll('.G-protag').forEach(function(el) { el.textContent = g('protag'); });
   document.querySelectorAll('.G-deprot').forEach(function(el) { el.textContent = yo ? 'de tu' : (gender === 'f' ? 'de la protagonista' : 'del protagonista'); });
-  var cn = document.getElementById('childNames')?.value.trim() || 'els nens';
+  var cn = listaY(document.getElementById('childNames')?.value.trim()) || 'els nens';
   var cnh = document.getElementById('childNamesH');
   if (cnh) cnh.textContent = cn;
   // Guía de «Amor y familia»: si los niños son sus nietos, se pregunta por sus hijos y luego por los nietos
@@ -885,6 +955,7 @@ function updateAll() {
     ? '💡 Et pot ajudar: com va conèixer la seva parella (si en té) · com va ser tenir els seus fills · i, anys després, com va viure l\'arribada de cada net · <b>i si recordes alguna anècdota, explica-la!</b>'
     : '💡 Et pot ajudar: com va conèixer la seva parella (si en té) · com va ser l\'arribada de cadascun dels nens · com li va canviar la vida · <b>i si recordes alguna anècdota (la primera cita, el primer dia a casa amb el nadó…), explica-la!</b>';
 }
+document.addEventListener('input', function(e) { if (e.target.id === 'otraPersona') { apodoDesdeTipo(); updateAll(); } });
 document.addEventListener('change', function(e) { if (e.target.id === 'relacionNinos') updateAll(); if (e.target.id === 'bookType') relacionDesdeTipo(); });
 // Si el tipo de libro ya lo dice (la Abuela, Mamá, el Tío…), «Los niños del libro son sus…» se marca solo (se puede cambiar)
 // Al elegir quién es (Mamá, Abuelo…), también se marca si es mujer u hombre y de quién son los niños
@@ -894,6 +965,61 @@ function tipoElegido() {
   if (/^(Papá|Abuelo|Tío)$/.test(t)) setGender('m', document.getElementById('gm'));
   var r = document.getElementById('relacionNinos'); if (r) r.value = '';   // se recalcula con la nueva elección
   relacionDesdeTipo();
+  apodoDesdeTipo();
+  chipsSync();
+}
+// Paso 1 (16/11): «De qui és la història?» con botones. El botón también dice si es mujer u hombre y de quién son
+// los niños, así que esas preguntas solo salen con «Una altra persona». Nada se pregunta dos veces.
+var APODO = { 'Mamá': 'mama', 'Papá': 'papa', 'Abuela': "l'àvia", 'Abuelo': "l'avi", 'Tía': 'la tieta', 'Tío': 'el tiet' };
+function apodoDesdeTipo() {
+  var n = document.getElementById('nicknames'), t = document.getElementById('bookType').value;
+  if (!n) return;
+  // Solo se rellena si está vacío o si lo habíamos puesto nosotros (no se pisa lo que haya escrito la familia)
+  var v = n.value.trim(), puestoPorNosotros = !v || n.dataset.auto === n.value || Object.keys(APODO).some(function(k) { return APODO[k] === v; });
+  var otraP = ((document.getElementById('otraPersona') || {}).value || '').trim();
+  if (puestoPorNosotros || (n.dataset.auto !== undefined && n.value === n.dataset.auto)) { n.value = APODO[t] || (t === 'Otra persona' ? otraP : ''); n.dataset.auto = n.value; }
+}
+// Con «Una altra persona», lo que escriban en «Qui és per als nens?» (la besàvia, la seva padrina…). El pedido va en castellano.
+function quienEs() {
+  var t = (document.getElementById('bookType') || {}).value || '', o = ((document.getElementById('otraPersona') || {}).value || '').trim();
+  return t === 'Otra persona' && o ? 'Otra persona: ' + o : t;
+}
+function chipsSync() {
+  var t = (document.getElementById('bookType') || {}).value || '';
+  document.querySelectorAll('#chipsTipo .chip').forEach(function(c) { c.classList.toggle('on', c.dataset.t === t); });
+  var otra = t === 'Otra persona';
+  var go_ = document.getElementById('generoOtra'); if (go_) go_.style.display = otra ? '' : 'none';
+  var co = document.getElementById('campoOtra'); if (co) co.style.display = otra ? '' : 'none';
+  var cr = document.getElementById('campoRelacion'); if (cr) cr.style.display = (otra || !t) ? '' : 'none';
+}
+document.addEventListener('click', function(e) {
+  var c = e.target.closest && e.target.closest('#chipsTipo .chip'); if (!c) return;
+  var s = document.getElementById('bookType'); s.value = c.dataset.t;
+  document.getElementById('chipsTipo').classList.remove('falta');
+  tipoElegido(); saveDraft();
+});
+// Paso 2 en dos partes (16/11): primero los datos, luego «Com són?» (fotos y botones)
+function s1Siguiente() {
+  var s = document.getElementById('s1');
+  if (s.dataset.parte !== 'b') {
+    var falta = validarPantalla(1); avisaFalta(1, falta);
+    if (falta.length) { var p = s.querySelector('.falta'); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    s.dataset.parte = 'b'; aspPinta(); window.scrollTo({ top: 0, behavior: 'smooth' }); return;
+  }
+  go(2);
+}
+function s1Atras() {
+  var s = document.getElementById('s1');
+  if (s.dataset.parte === 'b') { s.dataset.parte = 'a'; avisaFalta(1, []); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  go(0);
+}
+// Avisos de «et falta…» dentro de la pantalla, no en una ventana
+function avisaFalta(n, falta) {
+  var s = document.getElementById(n <= TOTAL ? 's' + n : 'sFinal'); if (!s) return;
+  var a = s.querySelector('.aviso-falta');
+  if (!falta || !falta.length) { if (a) a.remove(); return; }
+  if (!a) { a = document.createElement('div'); a.className = 'aviso-falta'; a.setAttribute('role', 'alert'); s.insertBefore(a, s.querySelector('.nav')); }
+  a.innerHTML = '<b>Per continuar, et falta:</b><ul>' + falta.map(function(f) { return '<li>' + String(f).replace(/[<>&]/g, '') + '</li>'; }).join('') + '</ul>';
 }
 function relacionDesdeTipo() {
   var r = document.getElementById('relacionNinos'), t = (document.getElementById('bookType') || {}).value || '';
@@ -923,6 +1049,7 @@ function validarPantalla(n) {
   var s = document.getElementById('s' + n), falta = [];
   if (!s) return falta;
   s.querySelectorAll('.falta').forEach(function(e) { e.classList.remove('falta'); });
+  if (n === 0 && !document.getElementById('bookType').value) marcaFalta(document.getElementById('chipsTipo'), falta, 'de qui és la història');
   // Preguntas con nota de voz: valen la grabación o el texto escrito
   s.querySelectorAll('.vc').forEach(function(vc) {
     if (vc.dataset.opcional) return;
@@ -940,7 +1067,7 @@ function validarPantalla(n) {
     }
   });
   // ¿Cómo son?: de la protagonista y de cada niño hace falta al menos pelo, ojos y piel
-  if (s.querySelector('#aspCards')) aspFaltan().forEach(function(t) { falta.push(t); });
+  if (s.querySelector('#aspCards') && !(n === 1 && s.dataset.parte !== 'b')) aspFaltan().forEach(function(t) { falta.push(t); });
   // Sin repetir (p. ej. «Los niños del libro» por el nombre y por la edad)
   return falta.filter(function(x, i) { return falta.indexOf(x) === i; });
 }
@@ -948,8 +1075,8 @@ function validarPantalla(n) {
 function go(n) {
   if (n > cur && cur < TOTAL) {
     var falta = validarPantalla(cur);
+    avisaFalta(cur, falta);
     if (falta.length) {
-      alert('Per continuar, completa:\n\n• ' + falta.join('\n• '));
       var primero = document.querySelector('#s' + cur + ' .falta');
       if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -958,6 +1085,7 @@ function go(n) {
     if (ETAPAS[cur] && !iaListo(cur)) { iaRevisar(cur, n); return; }
     if (cur === 6 && !dedListo()) { dedRevisar(n); return; }
   }
+  var prevN = cur;
   var prevId = cur <= TOTAL ? 's' + cur : 'sFinal';
   var prevEl = document.getElementById(prevId);
   if (prevEl) prevEl.classList.remove('active');
@@ -968,13 +1096,14 @@ function go(n) {
   var nextId = n <= TOTAL ? 's' + n : 'sFinal';
   var nextEl = document.getElementById(nextId);
   if (nextEl) nextEl.classList.add('active');
-  if (n === 1) aspPinta();
+  if (n === 1) { document.getElementById('s1').dataset.parte = (typeof prevN !== 'undefined' && prevN > 1) ? 'b' : 'a'; aspPinta(); }
   var stepLbl = document.getElementById('stepLbl');
   if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Pas ' + (n + 1) + ' de ' + TOTAL) : (n === TOTAL ? 'Revisió' : 'Fet!');
   var prog = document.getElementById('prog');
   if (prog) prog.style.width = Math.min((n / TOTAL) * 100, 100) + '%';
   updateAll();
-  if (n === TOTAL) buildReview();
+  // Revisión: «El teu telèfon» sale ya con el de la entrega (no se escribe dos veces); se puede cambiar
+  if (n === TOTAL) { var ct = document.getElementById('clienteTelefono'); if (ct && !ct.value.trim()) ct.value = (document.getElementById('envioTelefono').value || '').trim(); buildReview(); }
   setTimeout(autoAltoTodos, 30);   // los cuadros de la pantalla nueva, a su altura (p. ej. al volver con el borrador)
   window.scrollTo({ top: 0, behavior: 'smooth' });
   marcaPaso(n);
@@ -1067,7 +1196,7 @@ async function invitaClic(ev) {
     try { await navigator.clipboard.writeText(aportaUrl()); msg.textContent = 'Enllaç copiat.'; } catch (e) { msg.textContent = 'Mantén premut l\'enllaç per copiar-lo.'; }
   } else if (a === 'wa') {
     var p = (document.getElementById('protName').value || '').trim();
-    var t = 'Estic preparant un conte il·lustrat amb la història ' + deCa(p) + '. M\'ajudes amb els teus records? Pots gravar una nota de veu aquí: ' + aportaUrl();
+    var t = 'Estic preparant un conte il·lustrat amb la història ' + deCa(ambArticle(p, gender)) + '. M\'ajudes amb els teus records? Pots gravar una nota de veu aquí: ' + aportaUrl();
     window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank');
   } else if (a === 'ver') {
     msg.textContent = 'Mirant…'; await aportaCarga(); var m = document.getElementById('invitaMsg'); if (m && !m.textContent) m.textContent = 'Actualitzat.';
@@ -1384,6 +1513,8 @@ function ninoFila(n, e, foco) {
   f.innerHTML = '<input type="text" placeholder="Nom"><input type="text" placeholder="Edat" autocomplete="off"><button type="button" aria-label="Treu">✕</button>';
   f.children[0].value = n || ''; f.children[1].value = e || '';
   f.children[0].oninput = f.children[1].oninput = ninosSync;
+  // Los niños se escriben ahora en la misma pantalla que «Com són?»: al terminar el nombre (no a cada tecla), sale su tarjeta
+  f.children[0].onchange = function() { ninosSync(); aspPinta(); };
   f.children[2].onclick = function() { f.remove(); if (!document.querySelector('#ninosFilas .nino-fila')) ninoFila(); ninosSync(); };
   document.getElementById('ninosFilas').appendChild(f);
   // En el móvil no se pone el cursor solo: el iPhone salta y deja la pantalla en blanco un momento
@@ -1431,10 +1562,12 @@ window.addEventListener('load', cuentaDed);   // por si vuelve con el borrador g
 
 // Dedicatorias de ejemplo con los nombres del pedido: con un clic pasan al cuadro, donde se pueden retocar
 function ejemplosDedicatoria() {
-  var ninos = (document.getElementById('childNames').value || '').trim();
-  // Con cómo le llaman los niños (mamá, yaya…): «lo mucho que te quiere mamá», no «…te quiere Javier»
+  var ninos = listaY((document.getElementById('childNames').value || '').trim());
+  // Con cómo le llaman los niños (mama, àvia…): «lo mucho que te quiere mamá», no «…te quiere Javier»
   var apodo = ((document.getElementById('nicknames') || {}).value || '').split(/\s*[,;\/]\s*|\s+o\s+/)[0].trim();
-  var prot = apodo || (document.getElementById('protName').value || '').trim() || g('vuestra');
+  var nomProt = (document.getElementById('protName').value || '').trim();
+  var prot = apodo || (nomProt ? ambArticle(nomProt, gender) : g('vuestra'));
+  if (/^mama$/i.test(prot)) prot = 'la ' + prot; else if (/^papa$/i.test(prot)) prot = 'el ' + prot;
   var varios = !ninos || /,|\sy\s|\se\s|\si\s/.test(ninos);
   var a = ninos || 'Estimats nens';
   if (varios) return [
@@ -1486,11 +1619,12 @@ function buildReview() {
   document.getElementById('rv-prot').textContent  = document.getElementById('protName').value || '—';
   document.getElementById('rv-child').textContent = document.getElementById('childNames').value || '—';
   var bt = document.getElementById('bookType');   // se enseña la etiqueta catalana; el valor (castellano) va al payload
-  document.getElementById('rv-type').textContent  = bt.value && bt.selectedIndex >= 0 ? bt.options[bt.selectedIndex].text : '—';
+  var otraR = ((document.getElementById('otraPersona') || {}).value || '').trim();
+  document.getElementById('rv-type').textContent  = bt.value === 'Otra persona' && otraR ? 'Una altra persona: ' + otraR : (bt.value && bt.selectedIndex >= 0 ? bt.options[bt.selectedIndex].text : '—');
   document.getElementById('rv-ord').textContent   = document.getElementById('orderer').value || '—';
   document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
   var ev = function(id){ return document.getElementById(id).value.trim(); };
-  document.getElementById('rv-tel').textContent = ev('clienteTelefono') || '—';
+  document.getElementById('rv-tel').textContent = ev('clienteTelefono') || ev('envioTelefono') || '—';
   document.getElementById('rv-ded').textContent = ev('dedicatoria') ? '"' + ev('dedicatoria') + '" — ' + ev('dedicatoriaFirma') : '—';
   var envio = [ev('envioNombre'), ev('envioDireccion'), (ev('envioCP') + ' ' + ev('envioCiudad')).trim(), ev('envioProvincia'), ev('envioTelefono')].filter(Boolean).join(' · ');
   document.getElementById('rv-envio').textContent = envio || '—';
@@ -1498,9 +1632,12 @@ function buildReview() {
   document.getElementById('rv-formato').textContent = FORMATOS_CA[formato];
   document.getElementById('rv-importe').textContent = PRECIOS[formato] + ' + 5,95 € d\'enviament = ' + TOTALES[formato];
   document.getElementById('rv-pago').style.display = '';
+  var bp = document.querySelector('.btn-next[onclick="submit()"]'); if (bp && !bp.disabled) bp.textContent = 'Vés a pagar ' + TOTALES[formato] + ' ♥';
+  // Si ya trae un código (por un enlace), la caja del código sale abierta
+  var cp = document.querySelector('.codigo-plegado'); if (cp && ev('codigoDescuento')) cp.open = true;
   var tEl = document.querySelector('.tone-opt.selected .tt');
   document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Equilibrat';
-  document.getElementById('rv-validar').textContent = validarPers === 'si' ? 'Els vull veure abans (24 h per donar l\'OK)' : 'Sorpresa: no els vull veure abans';
+  document.getElementById('rv-validar').textContent = validarPers === 'si' ? 'Els vull veure abans (24 h per donar l\'OK; si no hi ha resposta, continuem)' : 'Sorpresa: no els vull veure abans';
   var c = document.getElementById('rv-chapters');
   c.innerHTML = '';
   CHAPTERS.forEach(function(ch) {
@@ -1515,6 +1652,16 @@ function buildReview() {
 async function submit() {
   var btn = document.querySelector('.btn-next[onclick="submit()"]');
   var acepto = document.getElementById('aceptoPrivacidad');
+  // «Qui fa l'encàrrec» y el teléfono se preguntan ahora aquí, en la revisión
+  var ord = document.getElementById('orderer'), tel = document.getElementById('clienteTelefono'), faltaR = [];
+  if (ord && !ord.value.trim()) { ord.classList.add('falta'); faltaR.push("qui fa l'encàrrec"); }
+  if (tel && !tel.value.trim()) { tel.classList.add('falta'); faltaR.push('el teu telèfon'); }
+  if (faltaR.length) {
+    avisaFalta(TOTAL, faltaR);
+    document.querySelector('#s' + TOTAL + ' .falta').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  avisaFalta(TOTAL, []);
   if (acepto && !acepto.checked) {
     alert('Per enviar la teva història, marca la casella d\'acceptació de les condicions i la privacitat.');
     acepto.closest('.sb').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1537,10 +1684,10 @@ async function submit() {
     protagonistName: document.getElementById('protName').value || '',
     childName:       document.getElementById('childNames').value || '',
     gender:          gender === 'f' ? 'mujer' : 'hombre',
-    relacion:        document.getElementById('bookType').value || '',   // quién es para los niños: Mamá, Abuela, Tío…
+    relacion:        quienEs(),   // quién es para los niños: Mamá, Abuela, Tío… o «Otra persona: la besàvia»
     senderName:      document.getElementById('orderer').value || '',
     senderEmail:     document.getElementById('email').value || '',
-    cliente_telefono: val('clienteTelefono'),
+    cliente_telefono: val('clienteTelefono') || val('envioTelefono'),
     // Portada: en Make todas salen por la ruta «Estilo 1», cuya plantilla elige el diseño con portadaColorId (1–8)
     portadaEstilo:   'Estilo 1',
     portadaDiseno:   Number(selectedPortada),
@@ -2323,6 +2470,8 @@ window.addEventListener('load', aspPinta);   // por si los nombres llegan desde 
   if (q.get('formato') === 'blanda' || q.get('formato') === 'dura') setFormato(q.get('formato'), document.getElementById(q.get('formato') === 'blanda' ? 'fb' : 'fd'));
   saveDraft();
 })();
+chipsSync();
+if (document.getElementById('bookType').value) apodoDesdeTipo();
 updateAll();
 </script>
 </body>
