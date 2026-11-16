@@ -255,6 +255,31 @@
   .ia-leyenda{font-size:13px;color:var(--muted);margin:8px 0 0;}
   .ia-leyenda span{background:#F9E1D6;color:#B4472C;border-radius:3px;padding:0 4px;font-weight:700;}
   .ia-ded mark{background:#F6DFA8;color:inherit;border-radius:3px;padding:0 2px;font-style:normal;font-weight:700;}
+  /* Paso 1 ligero (16/11): puerta con ejemplo y precio, y solo 3 preguntas */
+  .puerta{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin:18px 0 6px}
+  .puerta-fotos{display:flex;gap:6px}
+  .puerta-fotos img{width:70px;height:auto;border-radius:6px;box-shadow:0 10px 20px -12px rgba(40,25,10,.5)}
+  .puerta ol{list-style:none;display:grid;gap:8px;font-size:14px;line-height:1.45;color:var(--navy)}
+  .puerta b{font-family:var(--display);color:var(--coral)}
+  .precio-chip{display:inline-block;margin-top:14px;background:var(--coral-l);border-radius:100px;padding:8px 14px;font-family:var(--display);font-size:13px;font-weight:700;color:var(--navy)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;border-radius:12px}
+  .chips.falta{box-shadow:0 0 0 3px rgba(192,57,43,.25);}
+  .chip{border:1.5px solid var(--border);background:var(--white);border-radius:100px;padding:10px 16px;font-family:var(--texto);font-size:15px;color:var(--navy);cursor:pointer}
+  .chip.on{border-color:var(--coral);background:var(--coral-l);font-weight:700}
+  .guardado{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5}
+  .aviso-falta{background:#FBEAE7;border:1.5px solid #C0392B;border-radius:12px;padding:12px 16px;margin:6px 0 16px;font-size:14px;line-height:1.5;color:var(--navy)}
+  .aviso-falta b{display:block;margin-bottom:4px}
+  .aviso-falta ul{margin:0;padding-left:18px}
+  .ultimos .field{margin-top:14px}
+  .ultimos .portada-grid{grid-template-columns:repeat(4,1fr)}
+  #s1[data-parte="a"] .parteB,#s1[data-parte="b"] .parteA{display:none}
+  .mas-detalles{border:1.5px dashed var(--border);border-radius:12px;padding:14px 16px;margin:24px 0}
+  .mas-detalles summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:15px;color:var(--navy)}
+  .mas-detalles summary span{font-family:var(--texto);font-weight:400;font-size:13px;color:var(--muted)}
+  /* Aviso de cookies más pequeño en el formulario, para que no tape las preguntas */
+  #tus-ck{bottom:8px!important;padding:10px 12px!important;font-size:12px!important;line-height:1.35!important}
+  #tus-ck p{margin:0 0 8px!important}
+  #tus-ck button{padding:7px 14px!important;font-size:13px!important}
 </style>
 <style>.idioma{display:inline-flex;align-items:center;gap:5px;font:600 12px/1 system-ui,-apple-system,sans-serif;letter-spacing:1px;color:#8C6A55;white-space:nowrap}.idioma a{color:#8C6A55;text-decoration:none;padding:6px 2px;opacity:.75}.idioma a:hover{opacity:1;text-decoration:underline}.idioma a[aria-current]{color:#4A2C1F;opacity:1;font-weight:800}.idioma span{opacity:.5}.nav-der{display:flex;align-items:center;gap:14px;flex-shrink:0}.idioma-flot{position:absolute;top:12px;right:16px;z-index:40}@media (max-width:600px){.nav-der{gap:10px}}@media (max-width:400px){.nav-der{gap:8px}.nav-der .pill{padding:9px 12px;font-size:13px;white-space:nowrap}}@media (max-width:900px){nav .wrap{position:relative}.menu li.menu-idioma{display:block!important;position:absolute;top:0;right:max(20px,env(safe-area-inset-right,0px))}.menu-idioma .idioma{font-size:11px}.menu-idioma .idioma a{padding:5px 2px}}</style>
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-idioma]');if(a){try{localStorage.setItem('tus_idioma',a.getAttribute('data-idioma'))}catch(x){}}});</script>
@@ -270,30 +295,40 @@
 <div class="wrap">
 
 <div class="screen active" id="s0">
-  <div class="sh">
-    <div class="sh-chapter">Before you start</div>
+  <div class="sh" style="padding-bottom:22px">
+    <div class="sh-chapter">Their story, in a storybook</div>
     <h1 class="sh-title">No need to write.<br>Just tell us.</h1>
-    <p class="sh-sub">We’ll go stage by stage. In each one, record a voice note with everything that comes to mind and we’ll show you what we’ve understood.</p>
-    <p class="sh-sub" style="margin-top:10px;"><strong>At your own pace:</strong> it’s saved on this device and you can come back whenever you like. <strong>More people with memories?</strong> You can invite them to add theirs from their phone.</p>
-    <div class="aviso-det">
-      <div class="aviso-det-t">✨ The magic is in the details</div>
-      <div class="aviso-det-s">The family nickname, the song in the car, that jumper they always wear… <b>The more details, the more you’ll recognise yourselves on every page.</b></div>
+    <div class="puerta">
+      <div class="puerta-fotos"><img src="img/portada-rayas-m.jpg" width="96" height="136" alt="Cover of a Tale Us Stories storybook"><img src="img/libro-pagina-1-m.jpg" width="96" height="136" alt="An inside page of a Tale Us Stories storybook"></div>
+      <ol>
+        <li><b>1.</b> You tell us with voice notes, stage by stage.</li>
+        <li><b>2.</b> We turn it into a storybook illustrated in a watercolour style, with their real features.</li>
+        <li><b>3.</b> It arrives at your home, printed, in 2 or 3 weeks.</li>
+      </ol>
     </div>
+    <div class="precio-chip">From €43.50 · shipping €5.95 · you pay at the end</div>
   </div>
   <div class="field">
-    <label>Main character’s name</label>
-    <input type="text" id="protName" placeholder="E.g. Carla, Elena, Marc…" oninput="onNameInput()">
+    <label>Who is the story about?</label>
+    <div class="chips" id="chipsTipo">
+      <button type="button" class="chip" data-t="Mamá">Mum</button>
+      <button type="button" class="chip" data-t="Papá">Dad</button>
+      <button type="button" class="chip" data-t="Abuela">Grandma</button>
+      <button type="button" class="chip" data-t="Abuelo">Grandad</button>
+      <button type="button" class="chip" data-t="Tía">Aunt</button>
+      <button type="button" class="chip" data-t="Tío">Uncle</button>
+      <button type="button" class="chip" data-t="Otra persona">Someone else</button>
+    </div>
+    <select id="bookType" onchange="tipoElegido()" style="display:none" aria-hidden="true" tabindex="-1">
+      <option value=""></option><option value="Mamá">Mum</option><option value="Papá">Dad</option><option value="Abuela">Grandma</option><option value="Abuelo">Grandad</option><option value="Tía">Aunt</option><option value="Tío">Uncle</option><option value="Otra persona">Someone else</option>
+    </select>
   </div>
-  <div class="field">
-    <label>The children in the book</label>
-    <div class="hint">Each child’s name and how old they are today. If it’s a baby, in months (for example: 8 months).</div>
-    <div id="ninosFilas"></div>
-    <button type="button" class="ninos-mas" onclick="ninoFila('', '', true)">+ Add another child</button>
-    <input type="text" id="childNames" style="display:none">
-    <input type="text" id="childAges" style="display:none">
+  <div class="field" id="campoOtra" style="display:none">
+    <label>Who are they to the children?</label>
+    <input type="text" id="otraPersona" placeholder="E.g. great-grandma, their godmother, a family friend…">
   </div>
-  <div class="field">
-    <label>The main character is…</label>
+  <div class="field" id="generoOtra" style="display:none">
+    <label>Are they a woman or a man?</label>
     <div class="gender-grid">
       <div class="gender-opt selected" id="gf" onclick="setGender('f',this)">
         <div class="gender-emoji">👩</div>
@@ -307,92 +342,62 @@
       </div>
     </div>
   </div>
-  <div class="two">
-    <div class="field">
-      <label>Who are they to the children?</label>
-      <select id="bookType" onchange="tipoElegido()">
-        <option value="">Choose an option</option>
-        <option value="Mamá">Mum</option>
-        <option value="Papá">Dad</option>
-        <option value="Abuela">Grandma</option>
-        <option value="Abuelo">Grandad</option>
-        <option value="Tía">Aunt</option>
-        <option value="Tío">Uncle</option>
-        <option value="Otra persona">Someone else</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Who is ordering the book</label>
-      <input type="text" id="orderer" placeholder="E.g. Dani, her husband">
-    </div>
+  <div class="field">
+    <label>What’s their name?</label>
+    <input type="text" id="protName" placeholder="E.g. Carla, Elena, Marc…" oninput="onNameInput()">
   </div>
   <div class="field">
-    <label>Who narrates the book?</label>
-    <div class="gender-grid">
-      <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
-        <div class="gender-emoji">📖</div>
-        <div class="gender-title">The main character</div>
-        <div class="gender-desc">“When I was little…”</div>
-      </div>
-      <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
-        <div class="gender-emoji">👨‍👩‍👧</div>
-        <div class="gender-title">Someone else</div>
-        <div class="gender-desc">“Before becoming <span class="G-vuestra"></span>…”</div>
-      </div>
-    </div>
+    <label>Your email</label>
+    <div class="hint">Only to write to you about your order. No advertising.</div>
+    <input type="email" id="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="you@email.com">
   </div>
-
-  <!-- SELECCIÓN DE PORTADA -->
-  <div class="field">
-    <label>Choose the cover</label>
-    <div class="hint">You can change it later if you need to.</div>
-    <div class="portada-grid" id="portada-grid"></div>
-    <div class="hint" style="margin-top:12px">Chosen: <b id="portada-nombre">Pink gingham</b></div>
-  </div>
-
-  <div class="field">
-    <label>Book format</label>
-    <div class="gender-grid">
-      <div class="gender-opt formato-opt" id="fb" onclick="setFormato('blanda',this)">
-        <div class="gender-emoji">📖</div>
-        <div class="gender-title">Paperback · €43.50</div>
-        <div class="gender-desc">+ €5.95 shipping</div>
-      </div>
-      <div class="gender-opt formato-opt selected" id="fd" onclick="setFormato('dura',this)">
-        <div class="gender-emoji">📕</div>
-        <div class="gender-title">Hardback · €61.50</div>
-        <div class="gender-desc">Most popular · + €5.95 shipping</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="two">
-    <div class="field">
-      <label>Your email</label>
-      <input type="email" id="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="We’ll write to you here about your order">
-    </div>
-    <div class="field">
-      <label>Your phone number</label>
-      <input type="text" id="clienteTelefono" name="tel" autocomplete="tel" inputmode="tel" placeholder="In case we need to contact you">
-    </div>
-  </div>
-
   <div class="nav">
     <button class="btn-back h"></button>
     <button class="btn-next" onclick="startForm()">Let’s start →</button>
   </div>
+  <p class="guardado">It saves automatically on this phone: you can stop and carry on another day.<br>Does anyone else have memories (siblings, grandparents, friends)? Later on you can send them a link so they can add theirs from their phone.</p>
 </div>
 
-<div class="screen" id="s1">
-  <div class="sh">
+<div class="screen" id="s1" data-parte="a">
+  <div class="sh parteA">
     <div class="sh-chapter">01 · The characters</div>
-    <h2 class="sh-title">Who’s who<br>in this story?</h2>
-    <p class="sh-sub">First, the main characters of the book and what they look like.</p>
+    <h2 class="sh-title" data-yo="Who’s who<br>in your story?">Who’s who<br>in <span class="G-poss"></span> story?</h2>
+    <p class="sh-sub">The children in the book and a little about <span class="G-name"></span>.</p>
+  </div>
+  <div class="sh parteB">
+    <div class="sh-chapter">01 · The characters</div>
+    <h2 class="sh-title">What do they look like?<br>That’s how we’ll draw them.</h2>
+    <p class="sh-sub">So they look the same on every page, as children and as grown-ups.</p>
   </div>
   <div class="perm" id="permBanner">Your browser needs access to the microphone. If you prefer, use the text boxes.</div>
 
+  <div class="parteA">
+  <div class="field">
+    <label>How is the story told?</label>
+    <div class="gender-grid">
+      <div class="gender-opt" id="n1" onclick="setNarrator('protagonist',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title"><span class="G-name"></span>, in the first person</div>
+        <div class="gender-desc">“When I was little…”</div>
+      </div>
+      <div class="gender-opt selected" id="n2" onclick="setNarrator('other',this)">
+        <div class="gender-emoji">👨‍👩‍👧</div>
+        <div class="gender-title">A narrator, to the children</div>
+        <div class="gender-desc">“Before becoming <span class="G-vuestra"></span>…”</div>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label>The children in the book</label>
+    <div class="hint">Each child’s name and how old they are today. If it’s a baby, in months (for example: 8 months).</div>
+    <div id="ninosFilas"></div>
+    <button type="button" class="ninos-mas" onclick="ninoFila('', '', true)">+ Add another child</button>
+    <input type="text" id="childNames" style="display:none">
+    <input type="text" id="childAges" style="display:none">
+  </div>
+
   <div class="two">
-    <div class="field"><label data-yo="The children in the book are your…">The children in the book are <span class="G-su"></span>…</label>
+    <div class="field" id="campoRelacion"><label data-yo="The children in the book are your…">The children in the book are <span class="G-su"></span>…</label>
       <select id="relacionNinos">
         <option value="">Choose an option</option>
         <option value="Son sus hijos">Children</option>
@@ -401,17 +406,18 @@
         <option value="Otra relación">Another relationship</option>
       </select>
     </div>
-    <div class="field"><label data-yo="What do the children call you?">What do the children call <span class="G-lo"></span>?</label><input type="text" id="nicknames" placeholder="E.g. Mummy, Nana, Granny Rose…"></div>
+    <div class="field"><label data-yo="What do the children call you? (optional)">What do the children call <span class="G-name"></span>? (optional)</label><div class="hint">We’ve filled it in for you: change it if they call <span class="G-lo"></span> something else (Granny, Granny Rose…).</div><input type="text" id="nicknames" data-opcional="1" placeholder="E.g. Mum, Granny, Granny Rose…"></div>
   </div>
-  <div class="field"><label data-yo="How old are you today?">How old is <span class="G-el"></span> today?</label><input type="text" id="protAge" inputmode="numeric" placeholder="E.g. 38"></div>
-  <div class="field"><label data-yo="Describe yourself in 3 words">Describe <span class="G-lo"></span> in 3 words</label><input type="text" id="tresPalabras" placeholder="E.g. cheerful, brave and curious"></div>
+  <div class="field"><label data-yo="How old are you today?">How old is <span class="G-name"></span> today?</label><input type="text" id="protAge" inputmode="numeric" placeholder="E.g. 38"></div>
+  <div class="field"><label data-yo="Describe yourself in 3 words">Describe <span class="G-name"></span> in 3 words</label><input type="text" id="tresPalabras" placeholder="E.g. cheerful, brave and curious"></div>
   <div class="two">
-    <div class="field"><label data-yo="What do you do for a living?">What does <span class="G-el"></span> do for a living?</label><input type="text" id="job" placeholder="E.g. architect, teacher, retired…"></div>
-    <div class="field"><label data-yo="Your hobbies"><span class="G-suC"></span> hobbies</label><input type="text" id="sport" placeholder="E.g. surfing and drawing"></div>
+    <div class="field"><label data-yo="What do you do for a living?">What does <span class="G-name"></span> do for a living?</label><input type="text" id="job" placeholder="E.g. architect, teacher, retired…"></div>
+    <div class="field"><label data-yo="Your hobbies"><span class="G-possC"></span> hobbies</label><input type="text" id="sport" placeholder="E.g. surfing and drawing"></div>
   </div>
   <div class="hint" style="margin:-8px 0 18px" data-yo="Your job and hobbies will appear as details in the illustrations."><span class="G-suC"></span> job and hobbies will appear as details in the illustrations.</div>
 
-  <div class="sdiv"><span>What do they look like? That’s how we’ll draw them</span></div>
+  </div>
+  <div class="parteB">
   <div class="hint" style="margin-bottom:14px">To draw each person the same on every page (as a baby, as a child, as a young adult and today): <b>upload a photo</b> of their face, in good light and looking at the camera, and mark their hair and eye colour. If you don’t have a photo, tap <b>“No photo”</b> and describe them with the buttons. Photos are only used for the illustrations.</div>
   <div id="aspCards"></div>
   <input type="file" id="fotoCara" accept="image/*" style="display:none" onchange="aspRecortar(this)">
@@ -424,7 +430,8 @@
     <button type="button" onclick="aspAdd('hermano')">+ A brother or sister</button>
     <button type="button" onclick="aspAdd('otra')">+ Someone else</button>
   </div>
-  <div class="hint" style="margin:14px 0 6px;background:var(--coral-l);border-radius:12px;padding:12px 14px;color:var(--navy)"><b>Important:</b> anyone who appears in the story without a photo or a description will be drawn freely, so they won’t look like the real person. If you don’t want to upload a photo, describe them with the buttons. A photo gives the closest likeness; with just a description, the likeness will be approximate.</div>
+  <div class="hint" style="margin:14px 0 6px;background:var(--coral-l);border-radius:12px;padding:12px 14px;color:var(--navy)"><b>A tip:</b> a photo gives the closest likeness. Without a photo, describe them with the buttons; anyone with neither a photo nor a description will be drawn our own way.</div>
+  </div>
   <input type="text" id="aspectoFamilia" style="display:none">
   <input type="text" id="iaDatos" style="display:none">
   <!-- Formulario colaborativo: enlace secreto para que otras personas aporten recuerdos, y las que se dejan fuera -->
@@ -432,8 +439,8 @@
   <input type="text" id="aportaFuera" style="display:none">
   <div id="aspInputs" style="display:none"></div>
   <div class="nav">
-    <button class="btn-back" onclick="go(0)">← Back</button>
-    <button class="btn-next" onclick="go(2)">Next →</button>
+    <button class="btn-back" onclick="s1Atras()">← Back</button>
+    <button class="btn-next" onclick="s1Siguiente()">Next →</button>
   </div>
 </div>
 
@@ -541,8 +548,8 @@
     <button class="btn-tw" onclick="toggleTF(8)">I’d rather write</button>
   </div>
   <div class="vc" id="vc9" data-opcional="1">
-    <div class="vc-q">Have we left anything out?</div>
-    <div class="vc-h">That memory that didn’t fit into any stage, a very important person, a habit, a saying… Something without which you feel the book wouldn’t quite be <span class="G-suyo">hers</span>. It’s optional: if everything’s already there, just carry on.</div>
+    <div class="vc-q">Have we left anything out? <span style="font-weight:400;color:var(--muted)">(optional)</span></div>
+    <div class="vc-h">That memory that didn’t fit into any stage, a very important person, a habit, a saying… Something without which you feel the book wouldn’t quite be <span class="G-suyo">hers</span>. If everything’s already there, just carry on.</div>
     <div class="vc-ctrls"><button class="btn-rec" id="rb9" onclick="toggleRec(9)"><span class="rdot"></span> Record</button><span class="rtimer" id="rt9">0:00</span><span class="rbadge" id="bd9">Recorded</span></div>
     <audio class="ap" id="ap9"></audio><button class="btn-clr" id="bc9" onclick="clearRec(9)">Record again</button>
     <div class="or-d"><span>or write</span></div>
@@ -553,10 +560,11 @@
   <div class="sdiv"><span>The dedication</span></div>
   <div class="field">
     <label>Your dedication for the back cover</label>
-    <div class="hint">It will be printed on the back cover of the book. You can choose one of these examples (and tweak it if you like) or write your own. When you continue, we’ll check it for spelling mistakes.</div>
+    <div class="hint">It will be printed on the back cover of the book. Choose one of these examples (and tweak it if you like) or write your own below. When you continue, we’ll check it for spelling mistakes.</div>
     <div class="ded-ej" id="dedEjemplos"></div>
-    <textarea id="dedicatoria" maxlength="350" rows="4" spellcheck="true" lang="en" placeholder="E.g. Lucas, Martina: this book is so you never forget where you come from…"></textarea>
-    <div class="ded-cont"><span id="dedCont">0</span> / 350</div>
+    <div style="font-family:var(--display);font-weight:700;font-size:14px;color:var(--navy);margin:16px 0 6px">Or write your own:</div>
+    <textarea id="dedicatoria" maxlength="350" rows="4" spellcheck="true" lang="en" placeholder="Write your own dedication here…"></textarea>
+    <div class="ded-cont">Saved automatically · <span id="dedCont">0</span> / 350</div>
   </div>
   <div class="field">
     <label>How will you sign it?</label>
@@ -564,9 +572,11 @@
   </div>
   <div class="ia" id="iaDed" style="display:none"></div>
 
-  <div class="sdiv"><span>Final details</span></div>
-  <div class="field">
+  <details class="mas-detalles">
+  <summary>Add more details <span>(optional): tone, sensitive topics and more photos</span></summary>
+  <div class="field" style="margin-top:16px">
     <label>Tone of the book</label>
+    <div class="hint">If you don’t choose, we’ll make it balanced: humour and emotion in equal measure.</div>
     <div class="tone-grid">
       <div class="tone-opt" data-valor="Divertido" onclick="selTone(this)"><div class="te">😄</div><div class="tt">Funny</div><div class="td">Humour and moments that make you laugh</div></div>
       <div class="tone-opt" data-valor="Emotivo" onclick="selTone(this)"><div class="te">💛</div><div class="tt">Heartfelt</div><div class="td">Warm and touching</div></div>
@@ -593,6 +603,7 @@
     <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this)">
     <div id="fileList"></div>
   </div>
+  </details>
 
   <!-- El cliente decide si quiere ver los personajes antes de dibujar el libro (por defecto, sorpresa) -->
   <div class="field">
@@ -606,7 +617,7 @@
       <div class="gender-opt" id="vpSi" onclick="setValidar('si',this)">
         <div class="gender-emoji">👀</div>
         <div class="gender-title">Yes, I want to see them</div>
-        <div class="gender-desc">We’ll email them to you and you’ll have 24 hours to give us the OK</div>
+        <div class="gender-desc">We’ll email them to you and you’ll have 24 hours to give us the OK. If we don’t hear from you, we’ll go ahead with the book.</div>
       </div>
     </div>
     <div class="hint" style="margin-top:8px">If you’re unsure about the photos, it’s best to choose to see them.</div>
@@ -616,7 +627,7 @@
   <div class="sdiv"><span>Where shall we send the book?</span></div>
   <div class="two">
     <div class="field"><label>Recipient’s name</label><input type="text" id="envioNombre" name="ship-name" autocomplete="shipping name" placeholder="E.g. Laura García López"></div>
-    <div class="field"><label>Phone</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="For the courier"><div class="hint">We’ve filled in yours; change it if someone else is receiving it.</div></div>
+    <div class="field"><label>Phone</label><input type="text" id="envioTelefono" name="ship-tel" autocomplete="shipping tel" inputmode="tel" placeholder="For the courier"><div class="hint">The recipient’s number.</div></div>
   </div>
   <div class="field"><label>Address</label><input type="text" id="envioDireccion" name="ship-address" autocomplete="shipping street-address" placeholder="Street, number, floor and door"></div>
   <div class="two">
@@ -633,8 +644,43 @@
 <div class="screen" id="s7">
   <div class="sh">
     <div class="sh-chapter">07 · Review</div>
-    <h2 class="sh-title">All ready<br>to send.</h2>
-    <p class="sh-sub">Check that everything is correct. You can go back if you want to change anything.</p>
+    <h2 class="sh-title">Almost there:<br>the final details.</h2>
+    <p class="sh-sub">Choose the cover and the format, and check that everything is right. You can go back if you want to change anything.</p>
+  </div>
+  <div class="sb ultimos">
+    <h3>The final details</h3>
+  <!-- SELECCIÓN DE PORTADA -->
+  <div class="field">
+    <label>Choose the cover</label>
+    <div class="hint">You can change it later if you need to.</div>
+    <div class="portada-grid" id="portada-grid"></div>
+    <div class="hint" style="margin-top:12px">Chosen: <b id="portada-nombre">Pink gingham</b></div>
+  </div>
+
+  <div class="field">
+    <label>Book format</label>
+    <div class="gender-grid">
+      <div class="gender-opt formato-opt" id="fb" onclick="setFormato('blanda',this)">
+        <div class="gender-emoji">📖</div>
+        <div class="gender-title">Paperback · €43.50</div>
+        <div class="gender-desc">+ €5.95 shipping</div>
+      </div>
+      <div class="gender-opt formato-opt selected" id="fd" onclick="setFormato('dura',this)">
+        <div class="gender-emoji">📕</div>
+        <div class="gender-title">Hardback · €61.50</div>
+        <div class="gender-desc">Most popular · + €5.95 shipping</div>
+      </div>
+    </div>
+  </div>
+    <div class="field">
+      <label>Who is ordering the book</label>
+      <input type="text" id="orderer" placeholder="E.g. Dani, her husband">
+    </div>
+    <div class="field">
+      <label>Your phone number</label>
+      <div class="hint">We’ve filled in the delivery number: change it if yours is different.</div>
+      <input type="text" id="clienteTelefono" name="tel" autocomplete="tel" inputmode="tel" placeholder="In case we need to contact you">
+    </div>
   </div>
   <div class="sb">
     <h3>Order details</h3>
@@ -665,11 +711,11 @@
     <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">Anything that helps us make the book the way you imagine it. For example: that we write it in Spanish or Catalan, that something you’ve told us is left out, or something you’d like to add or give more importance to.</p>
     <textarea id="tenerEnCuenta" rows="3" placeholder="Write it here (optional)" style="width:100%;box-sizing:border-box;min-height:96px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;line-height:1.5;font-family:inherit;color:var(--navy);background:#fff;resize:vertical;"></textarea>
   </div>
-  <div class="sb">
-    <h3>Discount code</h3>
-    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px;">Have a code? Enter it here and it will be applied on the payment page.</p>
+  <details class="sb codigo-plegado" style="padding-top:14px;padding-bottom:14px">
+    <summary style="font-size:14px;cursor:pointer;color:var(--muted)">Have a discount code?</summary>
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 10px;">Enter it here and it will be applied on the payment page.</p>
     <input type="text" id="codigoDescuento" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Discount code" style="width:100%;max-width:280px;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);background:#fff;">
-  </div>
+  </details>
   <div class="sb" style="background:var(--coral-l);border-color:var(--coral);">
     <h3 style="color:var(--coral);">What happens next?</h3>
     <div class="sr"><span class="sk">Now</span><span class="sv" id="rv-ahora">You pay by card and your story reaches us.</span></div>
@@ -680,7 +726,7 @@
   <div class="sb">
     <h3>Your data and your photos</h3>
     <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 12px;">We use what you tell us, your voice notes and your photos <b>only to make your book</b> and send it to you. We don’t share them with anyone except the services that make it possible (writing and illustration with artificial intelligence, and the printer). We delete the photos and recordings no later than 6 months after delivering the book. If you have any questions, or if you’d like us to delete your data sooner, write to us at <a href="mailto:hello@taleusstories.com" style="color:var(--coral);">hello@taleusstories.com</a>. You’ll find all the details in the <a href="/en/legal#condiciones" target="_blank" rel="noopener" style="color:var(--coral);">terms of sale</a> and the <a href="/en/legal#privacidad" target="_blank" rel="noopener" style="color:var(--coral);">privacy policy</a>.</p>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--navy);cursor:pointer;line-height:1.5;"><input type="checkbox" id="aceptoPrivacidad" style="width:20px;height:20px;flex:none;margin-top:1px;accent-color:#4A2C1F;"> I accept the terms of sale and the privacy policy. I understand that, as this is a made-to-order book, there is no right of withdrawal, and that I have permission to send the photos and details of the people who appear in it.</label>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--navy);cursor:pointer;line-height:1.5;"><input type="checkbox" id="aceptoPrivacidad" style="width:20px;height:20px;flex:none;margin-top:1px;accent-color:#4A2C1F;"> <span>I accept the terms of sale and the privacy policy.<br>I understand that, as the book is made to order, it can’t be returned unless it arrives damaged or with a printing fault.</span></label>
   </div>
   <div class="nav">
     <button class="btn-back" onclick="go(6)">← Back</button>
@@ -792,6 +838,7 @@ function setFormato(val, el) {
   formato = val;
   document.querySelectorAll('.formato-opt').forEach(function(o) { o.classList.remove('selected'); });
   el.classList.add('selected');
+  if (typeof cur !== 'undefined' && cur === TOTAL) buildReview();   // la tapa se elige en la revisión: el resumen y el importe cambian al momento
 }
 
 // Las portadas se dibujan con el nombre del protagonista (portadas.js); cada una tiene su color fijo
@@ -818,6 +865,7 @@ function selPortada(el, num) {
   el.classList.add('selected');
   selectedPortada = num;
   var pn = document.getElementById('portada-nombre'); if (pn) pn.textContent = portadaEn(num);
+  if (typeof cur !== 'undefined' && cur === TOTAL) buildReview();
 }
 
 function setNarrator(val, el) {
@@ -842,6 +890,8 @@ const G = {
 };
 
 function g(key) { return G[key][gender === 'f' ? 0 : 1]; }
+// «Lucas, Vera» → «Lucas and Vera» (solo para mostrar; lo que se envía no cambia)
+function listaY(t) { var p = String(t || '').split(/\s*,\s*/).filter(Boolean); return p.length > 1 ? p.slice(0, -1).join(', ') + ' and ' + p[p.length - 1] : p.join(''); }
 
 function nameOrPronoun() {
   const n = document.getElementById('protName')?.value.trim();
@@ -858,6 +908,10 @@ function updateAll() {
   document.querySelectorAll('.G-suyo').forEach(function(el) { el.textContent = yo ? 'yours' : (gender === 'f' ? 'hers' : 'his'); });
   const nm = nameOrPronoun();
   document.querySelectorAll('.G-name').forEach(function(el) { el.textContent = nm; });
+  // Posesivo: «Carmen’s», «Agnes’s»; sin nombre, «her» / «his»
+  var pnm = ((document.getElementById('protName') || {}).value || '').trim(), poss = pnm ? pnm + '’s' : g('su');
+  document.querySelectorAll('.G-poss').forEach(function(el) { el.textContent = poss; });
+  document.querySelectorAll('.G-possC').forEach(function(el) { el.textContent = poss.charAt(0).toUpperCase() + poss.slice(1); });
   var artProt = gender === 'f' ? 'la protagonista' : 'el protagonista';
   var el1 = document.getElementById('txt-presentamos');
   if (el1) el1.textContent = artProt;
@@ -869,10 +923,13 @@ function updateAll() {
   document.querySelectorAll('.G-ninoa').forEach(function(el) { el.textContent = g('ninoa'); });
   document.querySelectorAll('.G-oa').forEach(function(el) { el.textContent = g('oa'); });
   ['su', 'suC'].forEach(function(k) { document.querySelectorAll('.G-' + k).forEach(function(el) { el.textContent = g(k); }); });
-  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = g('vuestra'); });
+  var VUESTRA = { 'Mamá': 'your mum', 'Papá': 'your dad', 'Abuela': 'your grandma', 'Abuelo': 'your grandad', 'Tía': 'your aunt', 'Tío': 'your uncle' };
+  var otraTxt = (((document.getElementById('otraPersona') || {}).value) || '').trim().replace(/^(the|her|his|their|your)\s+/i, '');
+  var vt = VUESTRA[(document.getElementById('bookType') || {}).value] || (otraTxt ? 'your ' + otraTxt : g('vuestra'));
+  document.querySelectorAll('.G-vuestra').forEach(function(el) { el.textContent = vt; });
   document.querySelectorAll('.G-protag').forEach(function(el) { el.textContent = g('protag'); });
   document.querySelectorAll('.G-deprot').forEach(function(el) { el.textContent = yo ? 'of you' : 'of the main character'; });
-  var cn = document.getElementById('childNames')?.value.trim() || 'the children';
+  var cn = listaY(document.getElementById('childNames')?.value.trim()) || 'the children';
   var cnh = document.getElementById('childNamesH');
   if (cnh) cnh.textContent = cn;
   // Guía de «Amor y familia»: si los niños son sus nietos, se pregunta por sus hijos y luego por los nietos
@@ -884,6 +941,7 @@ function updateAll() {
     ? '💡 This might help: how ' + g('el') + ' met ' + g('su') + ' partner (if ' + g('el') + ' has one) · what it was like having ' + g('su') + ' children · and, years later, how ' + g('el') + ' felt when each grandchild arrived · <b>and if you remember an anecdote, tell us!</b>'
     : '💡 This might help: how ' + g('el') + ' met ' + g('su') + ' partner (if ' + g('el') + ' has one) · what the arrival of each of the children was like · how it changed ' + g('su') + ' life · <b>and if you remember an anecdote (the first date, the first day at home with the baby…), tell us!</b>';
 }
+document.addEventListener('input', function(e) { if (e.target.id === 'otraPersona') { apodoDesdeTipo(); updateAll(); } });
 document.addEventListener('change', function(e) { if (e.target.id === 'relacionNinos') updateAll(); if (e.target.id === 'bookType') relacionDesdeTipo(); });
 // Si el tipo de libro ya lo dice (la Abuela, Mamá, el Tío…), «Los niños del libro son sus…» se marca solo (se puede cambiar)
 // Al elegir quién es (Mamá, Abuelo…), también se marca si es mujer u hombre y de quién son los niños
@@ -893,6 +951,61 @@ function tipoElegido() {
   if (/^(Papá|Abuelo|Tío)$/.test(t)) setGender('m', document.getElementById('gm'));
   var r = document.getElementById('relacionNinos'); if (r) r.value = '';   // se recalcula con la nueva elección
   relacionDesdeTipo();
+  apodoDesdeTipo();
+  chipsSync();
+}
+// Paso 1 (16/11): «Who is the story about?» con botones. El botón también dice si es mujer u hombre y de quién son
+// los niños, así que esas preguntas solo salen con «Someone else». Nada se pregunta dos veces.
+var APODO = { 'Mamá': 'Mum', 'Papá': 'Dad', 'Abuela': 'Grandma', 'Abuelo': 'Grandad', 'Tía': 'Auntie', 'Tío': 'Uncle' };
+function apodoDesdeTipo() {
+  var n = document.getElementById('nicknames'), t = document.getElementById('bookType').value;
+  if (!n) return;
+  // Solo se rellena si está vacío o si lo habíamos puesto nosotros (no se pisa lo que haya escrito la familia)
+  var v = n.value.trim(), puestoPorNosotros = !v || n.dataset.auto === n.value || Object.keys(APODO).some(function(k) { return APODO[k] === v; });
+  var otraP = ((document.getElementById('otraPersona') || {}).value || '').trim();
+  if (puestoPorNosotros || (n.dataset.auto !== undefined && n.value === n.dataset.auto)) { n.value = APODO[t] || (t === 'Otra persona' ? otraP : ''); n.dataset.auto = n.value; }
+}
+// Con «Someone else», lo que escriban en «Who are they to the children?» (great-grandma…). El pedido va en castellano.
+function quienEs() {
+  var t = (document.getElementById('bookType') || {}).value || '', o = ((document.getElementById('otraPersona') || {}).value || '').trim();
+  return t === 'Otra persona' && o ? 'Otra persona: ' + o : t;
+}
+function chipsSync() {
+  var t = (document.getElementById('bookType') || {}).value || '';
+  document.querySelectorAll('#chipsTipo .chip').forEach(function(c) { c.classList.toggle('on', c.dataset.t === t); });
+  var otra = t === 'Otra persona';
+  var go_ = document.getElementById('generoOtra'); if (go_) go_.style.display = otra ? '' : 'none';
+  var co = document.getElementById('campoOtra'); if (co) co.style.display = otra ? '' : 'none';
+  var cr = document.getElementById('campoRelacion'); if (cr) cr.style.display = (otra || !t) ? '' : 'none';
+}
+document.addEventListener('click', function(e) {
+  var c = e.target.closest && e.target.closest('#chipsTipo .chip'); if (!c) return;
+  var s = document.getElementById('bookType'); s.value = c.dataset.t;
+  document.getElementById('chipsTipo').classList.remove('falta');
+  tipoElegido(); saveDraft();
+});
+// Paso 2 en dos partes (16/11): primero los datos, luego «What do they look like?» (fotos y botones)
+function s1Siguiente() {
+  var s = document.getElementById('s1');
+  if (s.dataset.parte !== 'b') {
+    var falta = validarPantalla(1); avisaFalta(1, falta);
+    if (falta.length) { var p = s.querySelector('.falta'); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    s.dataset.parte = 'b'; aspPinta(); window.scrollTo({ top: 0, behavior: 'smooth' }); return;
+  }
+  go(2);
+}
+function s1Atras() {
+  var s = document.getElementById('s1');
+  if (s.dataset.parte === 'b') { s.dataset.parte = 'a'; avisaFalta(1, []); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  go(0);
+}
+// Avisos de «you still need…» dentro de la pantalla, no en una ventana
+function avisaFalta(n, falta) {
+  var s = document.getElementById(n <= TOTAL ? 's' + n : 'sFinal'); if (!s) return;
+  var a = s.querySelector('.aviso-falta');
+  if (!falta || !falta.length) { if (a) a.remove(); return; }
+  if (!a) { a = document.createElement('div'); a.className = 'aviso-falta'; a.setAttribute('role', 'alert'); s.insertBefore(a, s.querySelector('.nav')); }
+  a.innerHTML = '<b>To continue, you still need:</b><ul>' + falta.map(function(f) { return '<li>' + String(f).replace(/[<>&]/g, '') + '</li>'; }).join('') + '</ul>';
 }
 function relacionDesdeTipo() {
   var r = document.getElementById('relacionNinos'), t = (document.getElementById('bookType') || {}).value || '';
@@ -922,6 +1035,7 @@ function validarPantalla(n) {
   var s = document.getElementById('s' + n), falta = [];
   if (!s) return falta;
   s.querySelectorAll('.falta').forEach(function(e) { e.classList.remove('falta'); });
+  if (n === 0 && !document.getElementById('bookType').value) marcaFalta(document.getElementById('chipsTipo'), falta, 'who the story is about');
   // Preguntas con nota de voz: valen la grabación o el texto escrito
   s.querySelectorAll('.vc').forEach(function(vc) {
     if (vc.dataset.opcional) return;
@@ -939,7 +1053,7 @@ function validarPantalla(n) {
     }
   });
   // ¿Cómo son?: de la protagonista y de cada niño hace falta al menos pelo, ojos y piel
-  if (s.querySelector('#aspCards')) aspFaltan().forEach(function(t) { falta.push(t); });
+  if (s.querySelector('#aspCards') && !(n === 1 && s.dataset.parte !== 'b')) aspFaltan().forEach(function(t) { falta.push(t); });
   // Sin repetir (p. ej. «Los niños del libro» por el nombre y por la edad)
   return falta.filter(function(x, i) { return falta.indexOf(x) === i; });
 }
@@ -947,8 +1061,8 @@ function validarPantalla(n) {
 function go(n) {
   if (n > cur && cur < TOTAL) {
     var falta = validarPantalla(cur);
+    avisaFalta(cur, falta);
     if (falta.length) {
-      alert('To continue, please complete:\n\n• ' + falta.join('\n• '));
       var primero = document.querySelector('#s' + cur + ' .falta');
       if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -957,6 +1071,7 @@ function go(n) {
     if (ETAPAS[cur] && !iaListo(cur)) { iaRevisar(cur, n); return; }
     if (cur === 6 && !dedListo()) { dedRevisar(n); return; }
   }
+  var prevN = cur;
   var prevId = cur <= TOTAL ? 's' + cur : 'sFinal';
   var prevEl = document.getElementById(prevId);
   if (prevEl) prevEl.classList.remove('active');
@@ -967,13 +1082,14 @@ function go(n) {
   var nextId = n <= TOTAL ? 's' + n : 'sFinal';
   var nextEl = document.getElementById(nextId);
   if (nextEl) nextEl.classList.add('active');
-  if (n === 1) aspPinta();
+  if (n === 1) { document.getElementById('s1').dataset.parte = (typeof prevN !== 'undefined' && prevN > 1) ? 'b' : 'a'; aspPinta(); }
   var stepLbl = document.getElementById('stepLbl');
   if (stepLbl) stepLbl.textContent = n < TOTAL ? ('Step ' + (n + 1) + ' of ' + TOTAL) : (n === TOTAL ? 'Review' : 'Done!');
   var prog = document.getElementById('prog');
   if (prog) prog.style.width = Math.min((n / TOTAL) * 100, 100) + '%';
   updateAll();
-  if (n === TOTAL) buildReview();
+  // Revisión: «Your phone number» sale ya con el de la entrega (no se escribe dos veces); se puede cambiar
+  if (n === TOTAL) { var ct = document.getElementById('clienteTelefono'); if (ct && !ct.value.trim()) ct.value = (document.getElementById('envioTelefono').value || '').trim(); buildReview(); }
   setTimeout(autoAltoTodos, 30);   // los cuadros de la pantalla nueva, a su altura (p. ej. al volver con el borrador)
   window.scrollTo({ top: 0, behavior: 'smooth' });
   marcaPaso(n);
@@ -1383,6 +1499,8 @@ function ninoFila(n, e, foco) {
   f.innerHTML = '<input type="text" placeholder="Name"><input type="text" placeholder="Age" autocomplete="off"><button type="button" aria-label="Remove">✕</button>';
   f.children[0].value = n || ''; f.children[1].value = e || '';
   f.children[0].oninput = f.children[1].oninput = ninosSync;
+  // Los niños se escriben ahora en la misma pantalla que «What do they look like?»: al terminar el nombre, sale su tarjeta
+  f.children[0].onchange = function() { ninosSync(); aspPinta(); };
   f.children[2].onclick = function() { f.remove(); if (!document.querySelector('#ninosFilas .nino-fila')) ninoFila(); ninosSync(); };
   document.getElementById('ninosFilas').appendChild(f);
   // En el móvil no se pone el cursor solo: el iPhone salta y deja la pantalla en blanco un momento
@@ -1430,8 +1548,8 @@ window.addEventListener('load', cuentaDed);   // por si vuelve con el borrador g
 
 // Dedicatorias de ejemplo con los nombres del pedido: con un clic pasan al cuadro, donde se pueden retocar
 function ejemplosDedicatoria() {
-  var ninos = (document.getElementById('childNames').value || '').trim();
-  // Con cómo le llaman los niños (mamá, yaya…): «lo mucho que te quiere mamá», no «…te quiere Javier»
+  var ninos = listaY((document.getElementById('childNames').value || '').trim());
+  // Con cómo le llaman los niños (Mum, Granny…): «lo mucho que te quiere mamá», no «…te quiere Javier»
   var apodo = ((document.getElementById('nicknames') || {}).value || '').split(/\s*[,;\/]\s*|\s+o\s+|\s+or\s+/i)[0].trim();
   var prot = apodo || (document.getElementById('protName').value || '').trim() || g('vuestra');
   // En inglés «you» vale para uno o varios niños: los mismos tres ejemplos
@@ -1480,11 +1598,12 @@ function buildReview() {
   document.getElementById('rv-prot').textContent  = document.getElementById('protName').value || '—';
   document.getElementById('rv-child').textContent = document.getElementById('childNames').value || '—';
   var bt = document.getElementById('bookType');   // se enseña la etiqueta inglesa; el valor (castellano) va al payload
-  document.getElementById('rv-type').textContent  = bt.value && bt.selectedIndex >= 0 ? bt.options[bt.selectedIndex].text : '—';
+  var otraR = ((document.getElementById('otraPersona') || {}).value || '').trim();
+  document.getElementById('rv-type').textContent  = bt.value === 'Otra persona' && otraR ? 'Someone else: ' + otraR : (bt.value && bt.selectedIndex >= 0 ? bt.options[bt.selectedIndex].text : '—');
   document.getElementById('rv-ord').textContent   = document.getElementById('orderer').value || '—';
   document.getElementById('rv-email').textContent = document.getElementById('email').value || '—';
   var ev = function(id){ return document.getElementById(id).value.trim(); };
-  document.getElementById('rv-tel').textContent = ev('clienteTelefono') || '—';
+  document.getElementById('rv-tel').textContent = ev('clienteTelefono') || ev('envioTelefono') || '—';
   document.getElementById('rv-ded').textContent = ev('dedicatoria') ? '"' + ev('dedicatoria') + '" — ' + ev('dedicatoriaFirma') : '—';
   var envio = [ev('envioNombre'), ev('envioDireccion'), (ev('envioCP') + ' ' + ev('envioCiudad')).trim(), ev('envioProvincia'), ev('envioTelefono')].filter(Boolean).join(' · ');
   document.getElementById('rv-envio').textContent = envio || '—';
@@ -1492,9 +1611,12 @@ function buildReview() {
   document.getElementById('rv-formato').textContent = FORMATOS_EN[formato];
   document.getElementById('rv-importe').textContent = PRECIOS_EN[formato] + ' + €5.95 shipping = ' + TOTALES_EN[formato];
   document.getElementById('rv-pago').style.display = '';
+  var bp = document.querySelector('.btn-next[onclick="submit()"]'); if (bp && !bp.disabled) bp.textContent = 'Go to payment ' + TOTALES_EN[formato] + ' ♥';
+  // Si ya trae un código (por un enlace), la caja del código sale abierta
+  var cp = document.querySelector('.codigo-plegado'); if (cp && ev('codigoDescuento')) cp.open = true;
   var tEl = document.querySelector('.tone-opt.selected .tt');
   document.getElementById('rv-tone').textContent  = tEl ? tEl.textContent : 'Balanced';
-  document.getElementById('rv-validar').textContent = validarPers === 'si' ? 'I want to see them first (24 hours to give the OK)' : 'Surprise: I don’t want to see them first';
+  document.getElementById('rv-validar').textContent = validarPers === 'si' ? 'I want to see them first (24 hours to give the OK; if we don’t hear back, we go ahead)' : 'Surprise: I don’t want to see them first';
   var c = document.getElementById('rv-chapters');
   c.innerHTML = '';
   CHAPTERS.forEach(function(ch) {
@@ -1509,6 +1631,16 @@ function buildReview() {
 async function submit() {
   var btn = document.querySelector('.btn-next[onclick="submit()"]');
   var acepto = document.getElementById('aceptoPrivacidad');
+  // «Who is ordering the book» y el teléfono se preguntan ahora aquí, en la revisión
+  var ord = document.getElementById('orderer'), tel = document.getElementById('clienteTelefono'), faltaR = [];
+  if (ord && !ord.value.trim()) { ord.classList.add('falta'); faltaR.push('who is ordering the book'); }
+  if (tel && !tel.value.trim()) { tel.classList.add('falta'); faltaR.push('your phone number'); }
+  if (faltaR.length) {
+    avisaFalta(TOTAL, faltaR);
+    document.querySelector('#s' + TOTAL + ' .falta').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  avisaFalta(TOTAL, []);
   if (acepto && !acepto.checked) {
     alert('To send your story, please tick the box to accept the terms of sale and the privacy policy.');
     acepto.closest('.sb').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1531,10 +1663,10 @@ async function submit() {
     protagonistName: document.getElementById('protName').value || '',
     childName:       document.getElementById('childNames').value || '',
     gender:          gender === 'f' ? 'mujer' : 'hombre',
-    relacion:        document.getElementById('bookType').value || '',   // quién es para los niños: Mamá, Abuela, Tío…
+    relacion:        quienEs(),   // quién es para los niños: Mamá, Abuela, Tío… o «Otra persona: great-grandma»
     senderName:      document.getElementById('orderer').value || '',
     senderEmail:     document.getElementById('email').value || '',
-    cliente_telefono: val('clienteTelefono'),
+    cliente_telefono: val('clienteTelefono') || val('envioTelefono'),
     // Portada: en Make todas salen por la ruta «Estilo 1», cuya plantilla elige el diseño con portadaColorId (1–8)
     portadaEstilo:   'Estilo 1',
     portadaDiseno:   Number(selectedPortada),
@@ -2318,6 +2450,8 @@ window.addEventListener('load', aspPinta);   // por si los nombres llegan desde 
   if (q.get('formato') === 'blanda' || q.get('formato') === 'dura') setFormato(q.get('formato'), document.getElementById(q.get('formato') === 'blanda' ? 'fb' : 'fd'));
   saveDraft();
 })();
+chipsSync();
+if (document.getElementById('bookType').value) apodoDesdeTipo();
 updateAll();
 </script>
 </body>
