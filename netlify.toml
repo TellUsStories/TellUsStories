@@ -1,5 +1,7 @@
 [build]
   publish = "."
+  # La web está en Cloudflare Pages desde el 20/10: Netlify no debe publicar nada (gastaba créditos)
+  ignore = "exit 0"
   functions = "netlify/functions"
 
 [functions]
