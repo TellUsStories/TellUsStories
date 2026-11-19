@@ -59,7 +59,62 @@
   // 2. Encaja el dibujo en el hueco que queda bajo el texto: lo m\u00e1s grande posible (como mucho a todo el
   //    ancho), centrado, y si sobra hueco lo reparte arriba y abajo. Si hay que reducirlo, funde sus lados
   //    con la hoja. Si no se puede leer la imagen, la trata como si el dibujo ocupara toda la imagen.
+  // Papel igual en todas las paginas (19/11): antes de encajar, el crema del dibujo se lleva al crema de
+  // referencia (PAPEL_OBJ, el de la pag. 3 del libro de Ana). Solo se tocan los puntos claros y poco
+  // saturados (el papel); el dibujo no cambia. Se hace en cada montaje, asi cualquier cambio sale igual.
+  // Si la pagina ya lleva filtro de color (igualar colores a mano) o no se puede leer, no se toca.
+  var PAPEL_OBJ = [250, 242, 228];
+  // Cada punto se mueve segun lo que se parece al papel medido (m): el papel entero, del todo; lo que se
+  // aleja, cada vez menos; el dibujo, nada
+  function ajustePapel(px, delta, m) {
+    for (var k = 0; k < px.length; k += 4) {
+      var r = px[k], g = px[k + 1], b = px[k + 2];
+      var dist = Math.abs(r - m[0]) + Math.abs(g - m[1]) + Math.abs(b - m[2]);
+      var w = dist <= 14 ? 1 : 1 - (dist - 14) / 46;
+      if (w <= 0) continue;
+      px[k] = r + delta[0] * w; px[k + 1] = g + delta[1] * w; px[k + 2] = b + delta[2] * w;
+    }
+  }
+  function igualarPapel(img) {
+    img.dataset.pap = '1';
+    try {
+      var fl = getComputedStyle(img).filter;
+      if (fl && fl !== 'none') return false;
+      var W = img.naturalWidth, H = img.naturalHeight;
+      if (!W || !H) return false;
+      var c = document.createElement('canvas'); c.width = W; c.height = H;
+      var x = c.getContext('2d'); x.drawImage(img, 0, 0);
+      var dat = x.getImageData(0, 0, W, H), px = dat.data, s = [0, 0, 0], n = 0;
+      for (var k = 0; k < px.length; k += 16) {
+        var r = px[k], g = px[k + 1], b = px[k + 2], mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+        if (mn >= 215 && (mx - mn) / mx < 0.13) { s[0] += r; s[1] += g; s[2] += b; n++; }
+      }
+      if (n < px.length / 16 * 0.01) return false;
+      var m = [s[0] / n, s[1] / n, s[2] / n];
+      var delta = [PAPEL_OBJ[0] - m[0], PAPEL_OBJ[1] - m[1], PAPEL_OBJ[2] - m[2]];
+      img.dataset.pap = '2';   // el papel del dibujo es ya el de referencia: la hoja lleva ese mismo crema
+      if (Math.max(Math.abs(delta[0]), Math.abs(delta[1]), Math.abs(delta[2])) < 2) return false;
+      ajustePapel(px, delta, m);
+      x.putImageData(dat, 0, 0);
+      var tex = img.parentNode.querySelector('.tus-tex');
+      if (tex && tex.src) {
+        var t2 = new Image(); t2.crossOrigin = 'anonymous';
+        t2.onload = function () {
+          try {
+            var c2 = document.createElement('canvas'); c2.width = t2.naturalWidth; c2.height = t2.naturalHeight;
+            var x2 = c2.getContext('2d'); x2.drawImage(t2, 0, 0);
+            var d2 = x2.getImageData(0, 0, c2.width, c2.height); ajustePapel(d2.data, delta, m);x2.putImageData(d2, 0, 0);
+            tex.src = c2.toDataURL('image/jpeg', 0.95);
+          } catch (e) {}
+        };
+        t2.src = tex.src;
+      }
+      img.src = c.toDataURL('image/png');
+      return true;
+    } catch (e) { return false; }
+  }
   function encajar(img) {
+    if (img.dataset.pap == null && igualarPapel(img)) return;
     var hoja = img.parentNode, txt = hoja.querySelector('.tus-txt');
     if (img.dataset.ini == null) {
       img.dataset.ini = '0';
@@ -92,6 +147,7 @@
         t = y / hh;
         for (y = hh - 1; y > t * hh && !cuerpo(Math.max(0, y - 11)); y--);
         b = Math.min(1, (y + 1) / hh);
+        if (img.dataset.pap === '2') fondo = PAPEL_OBJ.slice();
         var c = 'rgb(' + fondo.join(',') + ')';
         hoja.style.background = c;
         // El texto lleva detr\u00e1s el mismo crema, fundido abajo: nada del dibujo asoma entre las letras
