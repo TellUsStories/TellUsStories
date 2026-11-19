@@ -1766,6 +1766,13 @@ async function submit() {
     var b64 = await photoToBase64(extras[j]);
     if (b64) payload.fotos_extra.push(b64);
   }
+  // Si una foto elegida no se ha podido leer (pasa en algunos móviles), se avisa antes de pagar en vez de mandarla en blanco
+  if (aspFotosMal || (document.getElementById('fotoCara').files[0] && !payload.foto_cara) || extras.length > payload.fotos_extra.length) {
+    aspFotosMal = false;
+    alert('No hem pogut llegir una de les fotos que has pujat. Torna-la a triar (si en retallar-la dona problemes, prem «Fer servir la foto sencera») i prem una altra vegada el botó de pagar.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Vés a pagar ♥'; }
+    return;
+  }
   // Las fotos de las aportaciones van detrás (Make las guarda todas en la carpeta del pedido)
   if (payload.fotos_aportadas && payload.fotos_aportadas.length) payload.fotos_extra = payload.fotos_extra.concat(payload.fotos_aportadas);
   delete payload.fotos_aportadas;
@@ -2230,6 +2237,7 @@ function aspRecortar(input) {
     fondo.querySelector('[data-a="si"]').onclick = function() {
       if (!cr) return cierra();
       cr.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1600, imageSmoothingQuality: 'high' }).toBlob(function(b) {
+        if (!b || b.size < 2000) { aspFotosMal = true; cierra(); return; }   // el móvil no pudo recortar: se usa la foto entera
         try {
           var dt = new DataTransfer();
           dt.items.add(new File([b], f.name.replace(/\.\w+$/, '') + '-recortada.jpg', { type: 'image/jpeg' }));
@@ -2330,11 +2338,12 @@ function aspRecuadro(f, n) {
     fondo.querySelector('[data-a="no"]').onclick = function() { cierra(null); };
     fondo.querySelector('[data-a="si"]').onclick = function() {
       if (!cr) return cierra(null);
-      cr.getCroppedCanvas({ maxWidth: 1200, maxHeight: 1200, imageSmoothingQuality: 'high' }).toBlob(function(b) { cierra(b); }, 'image/jpeg', 0.92);
+      cr.getCroppedCanvas({ maxWidth: 1200, maxHeight: 1200, imageSmoothingQuality: 'high' }).toBlob(function(b) { cierra(b && b.size > 2000 ? b : null); }, 'image/jpeg', 0.92);
     };
   }); });
 }
 var aspGrupoUsado = false;
+var aspFotosMal = false;   // alguna foto elegida no se ha podido leer o recortar
 async function aspGrupo(input) {
   var f = input.files[0]; if (!f) return;
   aspGrupoUsado = true;
@@ -2372,7 +2381,7 @@ function aspCollageFamilia() {
         x.fillText(aspTit(p) + (p.nombre ? ' (' + p.nombre.trim() + ')' : ''), cx + CEL / 2, cy + ALTO + 42);
         URL.revokeObjectURL(url); ok();
       };
-      im.onerror = function() { URL.revokeObjectURL(url); ok(); };
+      im.onerror = function() { aspFotosMal = true; URL.revokeObjectURL(url); ok(); };
       im.src = url;
     });
   })).then(function() { return cv.toDataURL('image/jpeg', 0.85).split(',')[1]; });
@@ -2395,7 +2404,7 @@ function aspCollageNinos() {
         x.fillText(n, cx + CEL / 2, cy + ALTO + 42);
         URL.revokeObjectURL(url); ok();
       };
-      im.onerror = function() { URL.revokeObjectURL(url); ok(); };
+      im.onerror = function() { aspFotosMal = true; URL.revokeObjectURL(url); ok(); };
       im.src = url;
     });
   })).then(function() { return cv.toDataURL('image/jpeg', 0.85).split(',')[1]; });
