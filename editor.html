@@ -249,8 +249,12 @@ var FUENTES = 'https://hook.eu1.make.com/iofhcdmogsuxivqlogcju49ilm5hdx4v';
 var fuentes = null;
 function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 function cargarFuentes() {
-  fetch(FUENTES + '?carpeta=' + encodeURIComponent(CARPETA) + '&clave=' + encodeURIComponent(CLAVE))
+  // Se guarda 30 min en esta pestaña: cada recarga del editor gastaba créditos de Make (20/11)
+  var kF = 'tus_fuentes_' + CARPETA, cF = null;
+  try { cF = JSON.parse(sessionStorage.getItem(kF) || 'null'); } catch (e) { cF = null; }
+  (cF && Date.now() - cF.t < 1800000 ? Promise.resolve(cF.d) : fetch(FUENTES + '?carpeta=' + encodeURIComponent(CARPETA) + '&clave=' + encodeURIComponent(CLAVE))
     .then(function (r) { return r.text(); })
+    .then(function (t) { try { var j = JSON.parse(t); if (j && j.paginas) sessionStorage.setItem(kF, JSON.stringify({ t: Date.now(), d: t })); } catch (e) {} return t; }))
     .then(function (t) {
       try { fuentes = JSON.parse(t); } catch (e) { fuentes = null; }
       if (!fuentes || !fuentes.paginas) { fuentes = null; return; }
@@ -350,10 +354,13 @@ function problemas(p) {
 var LISTA = 'https://hook.eu1.make.com/9crm4fjr848su91hizbvgoyypkvxag7p';
 var pedido = null;
 function cargarPedido() {
+  // Igual que «De dónde sale»: 30 min guardado en esta pestaña para no gastar créditos en cada recarga (20/11)
+  try { var cP = JSON.parse(sessionStorage.getItem('tus_pedido_' + CARPETA) || 'null'); if (cP && Date.now() - cP.t < 1800000) { pedido = cP.d; return Promise.resolve(); } } catch (e) {}
   return fetch(LISTA + '?clave=' + encodeURIComponent(CLAVE)).then(function (r) { return r.text(); }).then(function (t) {
     var d = JSON.parse(t), f = (d.values || []).filter(function (x) { return x && ((x[19] || '').trim() === CARPETA || (x[15] || '').indexOf(CARPETA) >= 0); })[0];
     // Columnas de la hoja: C protagonista, D niños, E formato
     pedido = f ? { prota: f[2] || '', ninos: f[3] || '', formato: f[4] || '' } : { prota: '', ninos: '', formato: '' };
+    try { if (f) sessionStorage.setItem('tus_pedido_' + CARPETA, JSON.stringify({ t: Date.now(), d: pedido })); } catch (e) {}
   }).catch(function () { pedido = { prota: '', ninos: '', formato: '' }; });
 }
 function datosCierre() {
