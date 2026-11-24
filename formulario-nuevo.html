@@ -354,7 +354,7 @@
   </div>
   <div class="field">
     <label>Tu email</label>
-    <div class="hint">Solo para escribirte sobre tu pedido. Nada de publicidad.</div>
+    <div class="hint">Solo para escribirte sobre tu pedido (y, si lo dejas a medias, recordártelo una vez). Nada de publicidad.</div>
     <input type="email" id="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="tu@email.com">
   </div>
   <div class="nav">
@@ -1080,6 +1080,7 @@ function go(n) {
   setTimeout(autoAltoTodos, 30);   // los cuadros de la pantalla nueva, a su altura (p. ej. al volver con el borrador)
   window.scrollTo({ top: 0, behavior: 'smooth' });
   marcaPaso(n);
+  recordatorioAvisa('paso', n);
   invitaPinta(n);
 }
 
@@ -1219,6 +1220,16 @@ async function aportaAnade(payload) {
 // Cloudflare Web Analytics la cuenta como una página vista; así el informe ve en qué paso se queda la gente.
 // Cada cambio de pantalla se añade al historial: el botón «atrás» del móvil vuelve a la pantalla anterior.
 function rutaPaso(n) { return '/formulario-nuevo' + (n === 0 ? '' : n < TOTAL ? '/paso-' + (n + 1) : n === TOTAL ? '/revision' : '/enviado'); }
+// Recordatorio (Cris, 24/11): si deja el formulario a medias, al día siguiente le llega UN solo email (Make + /api/recordatorio)
+function recordatorioAvisa(accion, n) {
+  try {
+    var em = (document.getElementById('email').value || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
+    if (accion === 'paso' && !(n >= 1 && n <= TOTAL)) return;
+    fetch('/api/recordatorio', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+      body: JSON.stringify({ accion: accion, email: em, prot: (document.getElementById('protName').value || '').trim(), tipo: document.getElementById('bookType').value, propia: (typeof narrator !== 'undefined' && narrator === 'protagonist') ? 1 : 0, paso: (n || 0) + 1, idioma: 'es' }) }).catch(function () {});
+  } catch (e) {}
+}
 function marcaPaso(n) {
   try {
     var ruta = rutaPaso(n);
@@ -1756,6 +1767,7 @@ async function submit() {
       enviado = true;
       try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
       if (btn) btn.textContent = 'Te llevamos a pagar…';
+      recordatorioAvisa('hecho');
       try { localStorage.setItem('tus_pago_idioma', 'es'); } catch (e) {}   // la página de gracias sale en el idioma del formulario
       location.href = enlacePago(pedido);
     } else {
