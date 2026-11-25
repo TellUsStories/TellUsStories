@@ -14,3 +14,7 @@
 /en/formulario.html /en/formulario-nuevo 301
 /en/formulario /en/formulario-nuevo 301
 /en/formulario-nuevo/* /en/formulario-nuevo 200
+# 25/11: la comparativa a medida vs generado al momento se fusiona en la guía de cuentos personalizados
+/cuento-personalizado-a-medida /guia-cuentos-personalizados 301
+/ca/cuento-personalizado-a-medida /ca/guia-cuentos-personalizados 301
+/en/cuento-personalizado-a-medida /en/guia-cuentos-personalizados 301
