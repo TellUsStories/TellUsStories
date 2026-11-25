@@ -129,7 +129,8 @@
   .boton.claro { background: var(--claro); }
 
   /* MENÚ */
-  nav { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--papel) 94%, transparent); backdrop-filter: blur(8px); }
+  .aviso-navidad{display:block;background:var(--tinta);color:var(--papel);text-align:center;font-size:14px;line-height:1.4;padding:9px 16px;text-decoration:none}.aviso-navidad b{font-weight:700}.aviso-navidad span{text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.aviso-navidad:hover span{text-decoration-thickness:2px}
+    nav { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--papel) 94%, transparent); backdrop-filter: blur(8px); }
   nav .wrap { display: flex; justify-content: space-between; align-items: center; padding-block: 14px; gap: 16px; }
   .logo { font-family: var(--display); font-weight: 800; font-size: 15px; letter-spacing: 2px; text-transform: uppercase; color: var(--tinta); text-decoration: none; line-height: 1.05; }
   .logo span { display: block; width: 28px; height: 3px; background: var(--acento); margin-top: 5px; border-radius: 2px; }
@@ -394,7 +395,8 @@
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-idioma]');if(a){try{localStorage.setItem('tus_idioma',a.getAttribute('data-idioma'))}catch(x){}}});</script>
 </head>
 <body>
-
+<a class="aviso-navidad" id="aviso-navidad" href="/regalo-navidad-original" data-reyes="Para Reyes llega si lo pides antes del 22 de diciembre."><b>Cuento personalizado para Navidad: pídelo antes del 10 de diciembre.</b> <span>Ver fechas</span></a>
+<script>(function(){var h=new Date(),y=h.getFullYear(),n=new Date(y,11,10,23,59),r=new Date(y,11,22,23,59),a=document.getElementById("aviso-navidad");if(!a)return;var m=h.getMonth();if(m===0&&h.getDate()>6||m>0&&m<10){a.style.display="none";return}if(h>n&&h<=r){a.querySelector("b").textContent=a.getAttribute("data-reyes")}else if(h>r){a.style.display="none"}})();</script>
 <nav><div class="wrap">
   <div class="marca"><a class="logo" href="/">Tale Us<br>Stories<span></span></a><span class="slogan">Vuestra historia, su cuento favorito.</span></div>
   <ul class="menu">
