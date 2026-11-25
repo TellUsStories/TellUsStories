@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Conte personalitzat per regalar per Nadal | Tale Us Stories</title>
-<meta name="description" content="Un regal de Nadal original per a la mare, el pare o els avis: un conte personalitzat il·lustrat amb estil aquarel·la amb la seva història real. Demana'l abans del 10/12.">
+<title>Conte personalitzat per a Nadal i Reis | Tale Us Stories</title>
+<meta name="description" content="Un regal original per a la mare, el pare o els avis: un conte amb la seva història real. Demana'l abans del 10/12 per Nadal o del 22/12 per Reis.">
 <link rel="canonical" href="https://taleusstories.com/ca/regalo-navidad-original">
 <link rel="alternate" hreflang="es" href="https://taleusstories.com/regalo-navidad-original">
 <link rel="alternate" hreflang="ca" href="https://taleusstories.com/ca/regalo-navidad-original">
@@ -55,6 +55,7 @@
       "mainEntity": [
         { "@type": "Question", "name": "Arriba a temps per Nadal?", "acceptedAnswer": { "@type": "Answer", "text": "El llibre tarda entre 2 i 3 setmanes des que ens expliqueu la història. Per tenir-lo per a la Nit de Nadal, demana'l com a molt tard el 10 de desembre; com més aviat, més tranquils." } },
         { "@type": "Question", "name": "I com a regal de Reis?", "acceptedAnswer": { "@type": "Answer", "text": "També. Per obrir-lo el 6 de gener, demana'l abans del 22 de desembre." } },
+        { "@type": "Question", "name": "Quan és millor demanar-lo?", "acceptedAnswer": { "@type": "Answer", "text": "Com més aviat millor. Demanar-lo al novembre o a principis de desembre et dona temps per reunir records sense presses: des del formulari pots passar un enllaç a germans, tiets o amics perquè hi afegeixin els seus des del mòbil." } },
         { "@type": "Question", "name": "Pot ser una sorpresa per obrir sota l'arbre?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Ens podeu explicar la seva història sense que ho sàpiga, i arriba a casa a punt per embolicar." } },
         { "@type": "Question", "name": "He d'escriure jo la història?", "acceptedAnswer": { "@type": "Answer", "text": "No. Ens l'expliques amb notes de veu, al teu ritme, i nosaltres la convertim en un conte per als nens." } },
         { "@type": "Question", "name": "Què és un conte personalitzat de Nadal?", "acceptedAnswer": { "@type": "Answer", "text": "Un llibre il·lustrat que explica la història real d'algú de la família (la mare, el pare, els avis o un tiet) perquè la llegeixin els nens. Porta els seus trets reals i la vostra dedicatòria, i es regala per Nadal per llegir-lo tots junts." } },
@@ -66,7 +67,8 @@
 </script>
 <style>.idioma{display:inline-flex;align-items:center;gap:5px;font:600 12px/1 system-ui,-apple-system,sans-serif;letter-spacing:1px;color:#8C6A55;white-space:nowrap}.idioma a{color:#8C6A55;text-decoration:none;padding:6px 2px;opacity:.75}.idioma a:hover{opacity:1;text-decoration:underline}.idioma a[aria-current]{color:#4A2C1F;opacity:1;font-weight:800}.idioma span{opacity:.5}.nav-der{display:flex;align-items:center;gap:14px;flex-shrink:0}.idioma-flot{position:absolute;top:12px;right:16px;z-index:40}@media (max-width:600px){.nav-der{gap:10px}}@media (max-width:400px){.nav-der{gap:8px}.nav-der .pill{padding:9px 12px;font-size:13px;white-space:nowrap}}@media (max-width:900px){nav .wrap{position:relative}.menu li.menu-idioma{display:block!important;position:absolute;top:0;right:max(20px,env(safe-area-inset-right,0px))}.menu-idioma .idioma{font-size:11px}.menu-idioma .idioma a{padding:5px 2px}}</style>
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-idioma]');if(a){try{localStorage.setItem('tus_idioma',a.getAttribute('data-idioma'))}catch(x){}}});</script>
-<style>/* 16/11: en el móvil las dos cajas de precio no cabían y la de tapa dura se cortaba */.precio>div{min-width:0}.precio .cifras{flex-wrap:wrap}.precio .cifra{flex:1 1 120px;min-width:0}@media (max-width:420px){.precio .cifra{padding:14px 10px}.precio .cifra b{font-size:30px}}</style></head>
+<style>/* 16/11: en el móvil las dos cajas de precio no cabían y la de tapa dura se cortaba */.precio>div{min-width:0}.precio .cifras{flex-wrap:wrap}.precio .cifra{flex:1 1 120px;min-width:0}@media (max-width:420px){.precio .cifra{padding:14px 10px}.precio .cifra b{font-size:30px}}</style>
+<style>/* 25/11: avís de dates (compte enrere Nadal / Reis) */.cuenta{display:block;width:fit-content;max-width:100%;margin-top:18px;padding:10px 18px;border-radius:18px;background:var(--papel-2);font-family:var(--display);font-weight:700;font-size:15px;line-height:1.4}.cuenta b{color:var(--acento)}</style></head>
 <body>
 
 <nav><div class="wrap">
@@ -82,6 +84,8 @@
     <h1>Un regal de Nadal original: <em>la seva història, sota l'arbre.</em></h1>
     <p class="intro">Aquest any, regala una cosa que ningú més pot regalar. Convertim la història real de la mare, el pare o els avis en un <strong>conte personalitzat il·lustrat amb estil aquarel·la</strong>, per obrir-lo per Nadal i llegir-lo en família.</p>
     <a class="boton" href="/ca/formulario-nuevo">Crea el seu llibre →</a>
+    <p class="cuenta" id="cuenta">Demana'l abans del <b>10 de desembre</b> per a la Nit de Nadal, o del <b>22</b> per a Reis.</p>
+    <script>(function(){var e=document.getElementById('cuenta'),h=new Date(),y=h.getFullYear();if(h.getMonth()<9){e.style.display='none';return}function q(D){return Math.ceil((new Date(y,11,D,23,59,59)-h)/864e5)}function t(n){return n==1?'avui és l\'últim dia':'queden <b>'+n+' dies</b>'}var a=q(10),b=q(22);if(a>=1)e.innerHTML='Per tenir-lo la Nit de Nadal, '+t(a)+' per demanar-lo (fins al 10 de desembre).';else if(b>=1)e.innerHTML='Per a la Nit de Nadal ja no arriba, però per a Reis sí: '+t(b)+' per demanar-lo (fins al 22 de desembre).';else e.style.display='none'})();</script>
   </div>
   <figure class="libro foto vertical">
     <div class="hojas">
@@ -136,6 +140,15 @@
 </section>
 
 <section class="wrap" style="padding-top:0">
+  <span class="eyebrow">Regal de Reis</span>
+  <h2 class="aparece">Vas tard per a la Nit de Nadal? <em>Que el portin els Reis.</em></h2>
+  <div class="texto-largo aparece">
+    <p>Si el 10 de desembre se't tira a sobre, encara tens fins al 22 per demanar-lo com a <strong>regal de Reis original</strong> per a la mare, el pare o els avis. I té la seva gràcia: el matí del 6 de gener, amb els nens en pijama i la casa més tranquil·la que la Nit de Nadal, hi ha temps per llegir-lo de cap a peus.</p>
+    <p>Una idea: que els nens el deixin al costat de les sabates amb una nota escrita per ells. Així el regal arriba de part dels Reis… i dels petits de la casa.</p>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:0">
   <span class="eyebrow">Idees per regalar-lo</span>
   <h2 class="aparece">Un moment <em>per recordar.</em></h2>
   <div class="pasos">
@@ -176,6 +189,7 @@
   <div class="faq aparece">
     <details><summary>Arriba a temps per Nadal?</summary><p>El llibre tarda entre 2 i 3 setmanes des que ens expliqueu la història. Per tenir-lo per a la Nit de Nadal, demana'l com a molt tard el 10 de desembre; com més aviat, més tranquils.</p></details>
     <details><summary>I com a regal de Reis?</summary><p>També. Per obrir-lo el 6 de gener, demana'l abans del 22 de desembre.</p></details>
+    <details><summary>Quan és millor demanar-lo?</summary><p>Com més aviat millor. Demanar-lo al novembre o a principis de desembre et dona temps per reunir records sense presses: des del formulari pots passar un enllaç a germans, tiets o amics perquè hi afegeixin els seus des del mòbil.</p></details>
     <details><summary>Pot ser una sorpresa per obrir sota l'arbre?</summary><p>Sí. Ens podeu explicar la seva història sense que ho sàpiga, i arriba a casa a punt per embolicar.</p></details>
     <details><summary>He d'escriure jo la història?</summary><p>No. Ens l'expliques amb notes de veu, al teu ritme, i nosaltres la convertim en un conte per als nens.</p></details>
     <details><summary>Què és un conte personalitzat de Nadal?</summary><p>Un llibre il·lustrat que explica la història real d'algú de la família (la mare, el pare, els avis o un tiet) perquè la llegeixin els nens. Porta els seus trets reals i la vostra dedicatòria, i es regala per Nadal per llegir-lo tots junts.</p></details>
