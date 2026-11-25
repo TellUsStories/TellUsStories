@@ -59,38 +59,51 @@ function esc(s) {
 const TEXTOS = {
   es: {
     url: "https://taleusstories.com/formulario-nuevo",
-    asunto: function (p) { return p ? "La historia de " + p + " te está esperando" : "Tu historia te está esperando"; },
+    asunto: function (p) { return p === null ? "Tu cuento te está esperando" : p ? "La historia de " + p + " te está esperando" : "Tu historia te está esperando"; },
     hola: "Hola:",
-    p1: function (p) { return "Hace unos días empezaste a contarnos " + (p ? "la historia de <b>" + esc(p) + "</b>" : "<b>tu historia</b>") + " y se quedó a medias. No te preocupes: lo que ya habías contado sigue guardado. Abre el formulario desde el mismo móvil u ordenador y seguirás justo donde lo dejaste."; },
-    boton: function (p) { return p ? "Seguir con la historia de " + esc(p) : "Seguir con tu historia"; },
+    p1: function (p) { return "Hace unos días empezaste a contarnos " + (p === null ? "<b>una historia</b>" : p ? "la historia de <b>" + esc(p) + "</b>" : "<b>tu historia</b>") + " y se quedó a medias. No te preocupes: lo que ya habías contado sigue guardado. Abre el formulario desde el mismo móvil u ordenador y seguirás justo donde lo dejaste."; },
+    boton: function (p) { return p === null ? "Seguir con el cuento" : p ? "Seguir con la historia de " + esc(p) : "Seguir con tu historia"; },
     p2: "Si tienes alguna duda o algo no ha funcionado, responde a este email y te ayudamos.",
     firma: "Un abrazo,<br>Cris · Tale Us Stories",
     eslogan: "Vuestra historia, su cuento favorito.",
   },
   ca: {
     url: "https://taleusstories.com/ca/formulario-nuevo",
-    asunto: function (p) { return p ? "La història de " + p + " t'està esperant" : "La teva història t'està esperant"; },
+    asunto: function (p) { return p === null ? "El teu conte t'està esperant" : p ? "La història de " + p + " t'està esperant" : "La teva història t'està esperant"; },
     hola: "Hola:",
-    p1: function (p) { return "Fa uns dies vas començar a explicar-nos " + (p ? "la història de <b>" + esc(p) + "</b>" : "<b>la teva història</b>") + " i es va quedar a mitges. No pateixis: el que ja ens havies explicat continua guardat. Obre el formulari des del mateix mòbil o ordinador i continuaràs just on ho vas deixar."; },
-    boton: function (p) { return p ? "Continuar amb la història de " + esc(p) : "Continuar amb la teva història"; },
+    p1: function (p) { return "Fa uns dies vas començar a explicar-nos " + (p === null ? "<b>una història</b>" : p ? "la història de <b>" + esc(p) + "</b>" : "<b>la teva història</b>") + " i es va quedar a mitges. No pateixis: el que ja ens havies explicat continua guardat. Obre el formulari des del mateix mòbil o ordinador i continuaràs just on ho vas deixar."; },
+    boton: function (p) { return p === null ? "Continuar amb el conte" : p ? "Continuar amb la història de " + esc(p) : "Continuar amb la teva història"; },
     p2: "Si tens qualsevol dubte o alguna cosa no ha funcionat, respon aquest correu i t'ajudarem.",
     firma: "Una abraçada,<br>Cris · Tale Us Stories",
     eslogan: "La vostra història, el seu conte preferit.",
   },
   en: {
     url: "https://taleusstories.com/en/formulario-nuevo",
-    asunto: function (p) { return p ? p + "'s story is waiting for you" : "Your story is waiting for you"; },
+    asunto: function (p) { return p === null ? "Your book is waiting for you" : p ? p + "'s story is waiting for you" : "Your story is waiting for you"; },
     hola: "Hello,",
-    p1: function (p) { return "A few days ago you started telling us " + (p ? "<b>" + esc(p) + "</b>'s story" : "<b>your story</b>") + " and it was left halfway. Don't worry: everything you had already told us is still saved. Open the form on the same phone or computer and you'll pick up right where you left off."; },
-    boton: function (p) { return p ? "Continue " + esc(p) + "'s story" : "Continue your story"; },
+    p1: function (p) { return "A few days ago you started telling us " + (p === null ? "<b>a story</b>" : p ? "<b>" + esc(p) + "</b>'s story" : "<b>your story</b>") + " and it was left halfway. Don't worry: everything you had already told us is still saved. Open the form on the same phone or computer and you'll pick up right where you left off."; },
+    boton: function (p) { return p === null ? "Continue your book" : p ? "Continue " + esc(p) + "'s story" : "Continue your story"; },
     p2: "If you have any questions or something didn't work, just reply to this email and we'll help you.",
     firma: "Warm wishes,<br>Cris · Tale Us Stories",
     eslogan: "Your story, their favourite book.",
   },
 };
+// 25/11 (tras el «Hola, Yo» de Ana): el nombre del protagonista se limpia antes de usarlo.
+//   ""   → es su propia historia («tu historia»), también si escriben «Yo», «Jo», «Me»…
+//   null → no sabemos de quién es (campo vacío o raro): texto neutro, sin nombre
+//   texto → el nombre, con la primera letra en mayúscula («carmen» → «Carmen»; «mi madre» se deja tal cual)
+const YO = /^(yo|jo|i|me|mí|myself|nosotros|nosotras|nosaltres|we)([\s,.(!]|$)/i;
+const MINUS = /^(mi|mis|tu|tus|su|sus|la|el|los|las|my|our|the|his|her|their)\s/i;
+function nombrePara(d) {
+  if (d.propia) return "";
+  const n = String(d.prot || "").replace(/\s+/g, " ").trim();
+  if (YO.test(n)) return "";
+  if (n.length < 2 || !/\p{L}/u.test(n)) return null;
+  return MINUS.test(n) ? n : n.charAt(0).toLocaleUpperCase("es") + n.slice(1);
+}
 function correo(d) {
   const T = TEXTOS[d.idioma] || TEXTOS.es;
-  const p = d.propia ? "" : (d.prot || "");
+  const p = nombrePara(d);
   const f = "font-family:Georgia,'Times New Roman',serif;";
   const html =
     '<!doctype html><html lang="' + (TEXTOS[d.idioma] ? d.idioma : "es") + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>' +
