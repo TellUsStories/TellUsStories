@@ -125,8 +125,23 @@ export async function onRequestOptions() {
 export async function onRequestGet({ request, env }) {
   if (!env.APORTACIONES) return responde(500, { error: "Falta el almacén" });
   const q = new URL(request.url).searchParams;
-  if (q.get("accion") !== "pendientes") return responde(400, { error: "Acción desconocida" });
+  const accion = q.get("accion");
+  if (accion !== "pendientes" && accion !== "lista") return responde(400, { error: "Acción desconocida" });
   if (!(await claveOk(env, q.get("clave") || ""))) return responde(403, { error: "No autorizado" });
+  // 26/11: ?accion=lista&clave=K → todos los guardados (para contarle a Cris quién se quedó a medias y de dónde venía)
+  if (accion === "lista") {
+    const todos = [];
+    let c2;
+    do {
+      const l = await env.APORTACIONES.list({ prefix: "r:", cursor: c2 });
+      for (const k of l.keys) {
+        const d = await lee(env, k.name);
+        if (d) todos.push({ email: d.email, prot: d.prot, tipo: d.tipo, paso: d.paso, idioma: d.idioma, inicio: d.inicio, ultimo: d.ultimo, origen: d.origen || "", hecho: !!d.hecho, avisado: !!d.avisado });
+      }
+      c2 = l.list_complete ? null : l.cursor;
+    } while (c2);
+    return responde(200, { items: todos, n: todos.length });
+  }
   const ahora = Date.now(), items = [];
   const prueba = (q.get("prueba") || "").trim().toLowerCase();
   let cursor;
@@ -141,7 +156,7 @@ export async function onRequestGet({ request, env }) {
       if (!esPrueba && !(t < ahora - ESPERA_H * 3600000 && t > ahora - MAX_DIAS * 86400000)) continue;
       if (prueba && !esPrueba) continue;
       const c = correo(d);
-      items.push({ email: d.email, prot: d.prot, tipo: d.tipo, propia: d.propia ? 1 : 0, paso: d.paso, idioma: d.idioma, ultimo: d.ultimo, asunto: c.asunto, html: c.html });
+      items.push({ email: d.email, prot: d.prot, tipo: d.tipo, propia: d.propia ? 1 : 0, paso: d.paso, idioma: d.idioma, ultimo: d.ultimo, origen: d.origen || "", asunto: c.asunto, html: c.html });
     }
     cursor = lista.list_complete ? null : lista.cursor;
   } while (cursor);
@@ -165,6 +180,7 @@ export async function onRequestPost({ request, env }) {
     d.propia = b.propia ? 1 : 0;      // su propia historia → el email dice «tu historia»
     d.paso = Math.max(1, Math.min(20, parseInt(b.paso, 10) || 1));
     d.idioma = IDIOMAS.includes(b.idioma) ? b.idioma : (d.idioma || "es");
+    d.origen = corta(b.origen, 200) || d.origen || "";   // 26/11: origen de la visita (como la columna V de pedidos)
     d.ultimo = ahora;
     d.hecho = false;          // si empieza otra historia después de enviar una, vuelve a contar (pero «avisado» se queda)
     await guarda(env, k, d);
