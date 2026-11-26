@@ -1255,7 +1255,7 @@ function recordatorioAvisa(accion, n) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
     if (accion === 'paso' && !(n >= 1 && n <= TOTAL)) return;
     fetch('/api/recordatorio', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
-      body: JSON.stringify({ accion: accion, email: em, prot: (document.getElementById('protName').value || '').trim(), tipo: document.getElementById('bookType').value, propia: (typeof narrator !== 'undefined' && narrator === 'protagonist') ? 1 : 0, paso: (n || 0) + 1, idioma: 'ca' }) }).catch(function () {});
+      body: JSON.stringify({ accion: accion, email: em, prot: (document.getElementById('protName').value || '').trim(), tipo: document.getElementById('bookType').value, propia: (typeof narrator !== 'undefined' && narrator === 'protagonist') ? 1 : 0, paso: (n || 0) + 1, idioma: 'ca', origen: (function () { try { return origenVisita(); } catch (e) { return ''; } })() }) }).catch(function () {});
   } catch (e) {}
 }
 function marcaPaso(n) {
